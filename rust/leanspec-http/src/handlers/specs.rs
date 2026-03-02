@@ -13,9 +13,10 @@ use leanspec_core::utils::{
 };
 use leanspec_core::{
     global_frontmatter_validator, global_structure_validator, global_token_count_validator,
-    global_token_counter, CompletionVerifier, DependencyGraph, FrontmatterParser, LeanSpecConfig,
-    MetadataUpdate as CoreMetadataUpdate, SpecArchiver, SpecFilterOptions, SpecHierarchyNode,
-    SpecLoader, SpecStats, SpecStatus, SpecWriter, TemplateLoader, TokenStatus, ValidationResult,
+    global_token_counter, search_specs_with_options, CompletionVerifier, DependencyGraph,
+    FrontmatterParser, LeanSpecConfig, MetadataUpdate as CoreMetadataUpdate, SearchOptions,
+    SpecArchiver, SpecFilterOptions, SpecHierarchyNode, SpecLoader, SpecStats, SpecStatus,
+    SpecWriter, TemplateLoader, TokenStatus, ValidationResult,
 };
 
 use crate::error::{ApiError, ApiResult};
@@ -1622,69 +1623,42 @@ pub async fn search_project_specs(
         )
     })?;
 
-    let query_lower = req.query.to_lowercase();
-
-    // Filter by search query
-    let mut results: Vec<SpecSummary> = all_specs
-        .iter()
-        .filter(|s| {
-            // Search in title, path, content, and tags
-            s.title.to_lowercase().contains(&query_lower)
-                || s.path.to_lowercase().contains(&query_lower)
-                || s.content.to_lowercase().contains(&query_lower)
-                || s.frontmatter
-                    .tags
-                    .iter()
-                    .any(|t| t.to_lowercase().contains(&query_lower))
-        })
-        .filter(|s| {
-            // Apply additional filters if provided
-            if let Some(ref filters) = req.filters {
-                if let Some(ref status) = filters.status {
-                    if s.frontmatter.status.to_string() != *status {
-                        return false;
-                    }
-                }
-                if let Some(ref priority) = filters.priority {
-                    match &s.frontmatter.priority {
-                        Some(p) if p.to_string() == *priority => {}
-                        _ => return false,
-                    }
-                }
-                if let Some(ref tags) = filters.tags {
-                    if !tags.iter().all(|t| s.frontmatter.tags.contains(t)) {
-                        return false;
-                    }
-                }
-            }
-            true
-        })
-        .map(|s| SpecSummary::from(s).with_project_id(&project.id))
-        .collect();
-
-    // Sort by relevance (title matches first, then by spec number)
-    results.sort_by(|a, b| {
-        let a_title_match = a
-            .title
-            .as_ref()
-            .map(|t| t.to_lowercase().contains(&query_lower))
-            .unwrap_or(false);
-        let b_title_match = b
-            .title
-            .as_ref()
-            .map(|t| t.to_lowercase().contains(&query_lower))
-            .unwrap_or(false);
-
-        // Title matches come first
-        match (a_title_match, b_title_match) {
-            (true, false) => std::cmp::Ordering::Less,
-            (false, true) => std::cmp::Ordering::Greater,
-            _ => {
-                // Then sort by spec number descending (newer first)
-                b.spec_number.cmp(&a.spec_number)
+    // Build enriched query by appending UI filter fields to the search query.
+    // This lets the core search engine handle field filters (status:, priority:, tag:)
+    // alongside the user's text query with boolean operators, fuzzy matching, etc.
+    let mut enriched_query = req.query.clone();
+    if let Some(ref filters) = req.filters {
+        if let Some(ref status) = filters.status {
+            enriched_query.push_str(&format!(" status:{}", status));
+        }
+        if let Some(ref priority) = filters.priority {
+            enriched_query.push_str(&format!(" priority:{}", priority));
+        }
+        if let Some(ref tags) = filters.tags {
+            for tag in tags {
+                enriched_query.push_str(&format!(" tag:{}", tag));
             }
         }
-    });
+    }
+
+    // Use the core search engine for advanced query parsing, fuzzy matching,
+    // boolean operators, field filters, and relevance scoring.
+    let search_results =
+        search_specs_with_options(&all_specs, &enriched_query, SearchOptions::new());
+
+    // Map core SearchResults back to SpecSummary objects.
+    // Build a lookup from path → SpecInfo for efficient mapping.
+    let spec_map: std::collections::HashMap<&str, &leanspec_core::SpecInfo> =
+        all_specs.iter().map(|s| (s.path.as_str(), s)).collect();
+
+    let results: Vec<SpecSummary> = search_results
+        .iter()
+        .filter_map(|sr| {
+            spec_map
+                .get(sr.path.as_str())
+                .map(|s| SpecSummary::from(*s).with_project_id(&project.id))
+        })
+        .collect();
 
     let total = results.len();
 
