@@ -1,0 +1,1 @@
+export type DetectionResult = { runner: RunnerDefinition, detected: boolean, reasons: Array<string>, };

@@ -14,6 +14,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Stdio;
 use tokio::process::Command;
+use ts_rs::TS;
 
 pub const RUNNERS_SCHEMA_URL: &str = "https://leanspec.dev/schemas/runners.json";
 
@@ -44,7 +45,8 @@ pub struct RunnersFile {
     pub default: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 pub struct RunnerDefinition {
     pub id: String,
     pub name: Option<String>,
@@ -60,7 +62,8 @@ pub struct RunnerDefinition {
     pub prompt_flag: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 pub struct DetectionConfig {
     #[serde(default)]
     pub commands: Vec<String>,
@@ -72,7 +75,8 @@ pub struct DetectionConfig {
     pub extensions: Vec<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 pub struct DetectionResult {
     pub runner: RunnerDefinition,
     pub detected: bool,

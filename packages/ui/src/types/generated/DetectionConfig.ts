@@ -1,0 +1,1 @@
+export type DetectionConfig = { commands: Array<string>, config_dirs: Array<string>, env_vars: Array<string>, extensions: Array<string>, };

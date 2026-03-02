@@ -3,15 +3,13 @@
  * Framework-agnostic types for spec data structures
  */
 
-/**
- * Valid spec status values
- */
-export type SpecStatus = 'draft' | 'planned' | 'in-progress' | 'complete' | 'archived';
+import type {
+  SpecPriority as GeneratedSpecPriority,
+  SpecStatus as GeneratedSpecStatus,
+} from './generated';
 
-/**
- * Valid spec priority values
- */
-export type SpecPriority = 'low' | 'medium' | 'high' | 'critical';
+export type SpecStatus = GeneratedSpecStatus;
+export type SpecPriority = GeneratedSpecPriority;
 
 /**
  * Spec relationship information

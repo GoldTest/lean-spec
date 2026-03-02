@@ -1,20 +1,24 @@
 import type {
   LightweightSpec as UiLightweightSpec,
   SpecRelationships as UiSpecRelationships,
-  SpecPriority as UiSpecPriority,
-  SpecStatus as UiSpecStatus,
   SpecWithMetadata as UiSpecWithMetadata,
   SubSpec as UiSubSpec,
 } from './specs';
+import type {
+  SessionMode as GeneratedSessionMode,
+  SessionStatus as GeneratedSessionStatus,
+  SpecPriority as GeneratedSpecPriority,
+  SpecStatus as GeneratedSpecStatus,
+} from './generated';
 
-export type SpecStatus = UiSpecStatus;
-export type SpecPriority = UiSpecPriority;
+export type SpecStatus = GeneratedSpecStatus;
+export type SpecPriority = GeneratedSpecPriority;
 export type TokenStatus = 'optimal' | 'good' | 'warning' | 'critical';
 export type ValidationStatus = 'pass' | 'warn' | 'fail';
 
-export type SessionStatus = 'pending' | 'running' | 'paused' | 'completed' | 'failed' | 'cancelled';
+export type SessionStatus = GeneratedSessionStatus;
 /** @deprecated 'ralph' is deprecated and kept only for backward-compatibility with existing sessions */
-export type SessionMode = 'guided' | 'autonomous' | 'ralph';
+export type SessionMode = GeneratedSessionMode;
 export type SessionProtocol = 'acp' | 'subprocess';
 
 export type SubSpec = UiSubSpec & {

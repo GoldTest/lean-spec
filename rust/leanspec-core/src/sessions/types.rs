@@ -8,9 +8,11 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use ts_rs::TS;
 
 /// A coding session
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 pub struct Session {
     /// Unique session ID (UUID)
     pub id: String,
@@ -112,7 +114,8 @@ impl Session {
 }
 
 /// Session mode - controls behavior during execution
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 #[serde(rename_all = "lowercase")]
 pub enum SessionMode {
     /// Pause between phases for user review
@@ -127,7 +130,8 @@ pub enum SessionMode {
 }
 
 /// Session status
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 #[serde(rename_all = "snake_case")]
 pub enum SessionStatus {
     /// Session created but not started
@@ -238,7 +242,8 @@ pub enum EventType {
 }
 
 /// Configuration for creating a new session
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, TS)]
+#[ts(export, export_to = "../../../packages/ui/src/types/generated/")]
 pub struct SessionConfig {
     /// Project path
     pub project_path: String,

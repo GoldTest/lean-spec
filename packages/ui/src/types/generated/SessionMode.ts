@@ -1,0 +1,1 @@
+export type SessionMode = "guided" | "autonomous" | "ralph";

@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: complete
 created: 2026-03-02
 priority: medium
 tags:
@@ -15,6 +15,8 @@ updated_at: 2026-03-02T03:02:29.439336378Z
 transitions:
 - status: in-progress
   at: 2026-03-02T03:02:29.439336378Z
+- status: complete
+  at: 2026-03-02T16:11:00Z
 ---
 # Phase 4: Rust → TypeScript Type Generation
 
@@ -90,10 +92,10 @@ cargo test export_bindings  # dedicated test for type export
 
 - [x] Add `ts-rs` to `leanspec-http` and `leanspec-core` dependencies
 - [x] Add `#[derive(TS)]` to all HTTP request/response structs
-- [ ] Add `#[derive(TS)]` to core spec/session types
+- [x] Add `#[derive(TS)]` to core spec/session types
 - [x] Create `export_bindings` test target
 - [x] Generate initial `types/generated/` directory
-- [ ] Update UI imports to use generated types (gradual)
+- [x] Update UI imports to use generated types (gradual)
 - [x] Add CI step to detect stale types
 - [x] Document type generation workflow in CONTRIBUTING.md
 
@@ -129,8 +131,16 @@ cargo test export_bindings
 - Checklist progress: **5/8 complete (62%)**.
 
 - Generated binding files now emit exported type aliases to avoid UI compile errors.
-- HTTP type coverage is now broad and exportable through `rust/leanspec-http/tests/export_bindings.rs` (48 generated files in `packages/ui/src/types/generated/`).
-- Core TS derives currently cover shared spec enums/types (`SpecStatus`, `SpecPriority`, `StatusTransition`); broader core session-type derivation remains open.
-- UI migration to consume generated bindings directly is still pending (no active imports from `src/types/generated` yet).
+- HTTP type coverage is broad and exportable through `rust/leanspec-http/tests/export_bindings.rs`.
+- Core TS derives now include session/runner-facing types:
+  - `Session`, `SessionConfig`, `SessionMode`, `SessionStatus`
+  - `RunnerDefinition`, `DetectionConfig`, `DetectionResult`
+- Generated barrel updated in `packages/ui/src/types/generated/index.ts` to expose new core session/runner files.
+- UI migration completed for shared enums/modes:
+  - `packages/ui/src/types/specs.ts` now aliases generated `SpecStatus`/`SpecPriority`.
+  - `packages/ui/src/types/api.ts` now aliases generated `SpecStatus`/`SpecPriority`/`SessionStatus`/`SessionMode`.
+- Validation:
+  - `cargo test -p leanspec-http --test export_bindings` passes.
+  - `packages/ui`: `pnpm typecheck` passes.
 
-- Checklist progress: **6/8 complete (75%)**.
+- Checklist progress: **8/8 complete (100%)**.

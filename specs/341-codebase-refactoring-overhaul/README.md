@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: complete
 created: 2026-03-02
 priority: high
 tags:
@@ -17,6 +17,8 @@ transitions:
   at: 2026-03-02T15:48:00Z
 - status: in-progress
   at: 2026-03-02T15:57:00Z
+- status: complete
+  at: 2026-03-02T16:11:00Z
 ---
 # Codebase Refactoring Overhaul
 
@@ -181,7 +183,7 @@ Automate Rust → TypeScript type synchronization:
 - [x] Phase 2a: Extract page sub-components
 - [x] Phase 2b: Extract complex component compositions
 - [x] Phase 3: Reorganize `leanspec-core` internals
-- [ ] Phase 4: Implement type generation pipeline
+- [x] Phase 4: Implement type generation pipeline
 - [x] Phase 5: Unify error handling
 - [x] All tests pass after each phase
 - [x] No API breaking changes
@@ -219,4 +221,4 @@ Automate Rust → TypeScript type synchronization:
   - `packages/ui`: `pnpm typecheck`
   - Rust changed crates: `cargo test -p leanspec-core -p leanspec-http -p leanspec-mcp`
 
-- Checklist progress: **11/12 complete (92%)**.
+- Checklist progress: **12/12 complete (100%)**.
