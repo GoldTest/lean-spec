@@ -1,29 +1,19 @@
-//! Utility functions and structures
+//! Backward-compatible re-exports from domain modules.
+//!
+//! Implementations have moved to `spec_ops`, `io`, and `compute` modules.
+//! This module re-exports everything for backward compatibility.
 
-mod content_ops;
-mod dependency_graph;
-mod hash;
-mod insights;
-mod project_discovery;
-mod spec_archiver;
-mod spec_loader;
-mod spec_writer;
-mod stats;
-mod template_loader;
-mod token_counter;
-
-pub use content_ops::{
-    apply_checklist_toggles, apply_replacements, apply_section_updates, preserve_title_heading,
-    rebuild_content, split_frontmatter, ChecklistToggle, ChecklistToggleResult, MatchMode,
-    Replacement, ReplacementResult, SectionMode, SectionUpdate,
+pub use crate::compute::{
+    global_token_counter, Insights, SpecStats, TokenCount, TokenCounter, TokenStatus,
 };
-pub use dependency_graph::{CompleteDependencyGraph, DependencyGraph, ImpactRadius};
-pub use hash::hash_content;
-pub use insights::Insights;
-pub use project_discovery::{DiscoveredProject, DiscoveryError, ProjectDiscovery};
-pub use spec_archiver::{ArchiveError, SpecArchiver};
-pub use spec_loader::{LoadError, SpecHierarchyNode, SpecLoader, SpecRelationshipIndex};
-pub use spec_writer::{MetadataUpdate, SpecWriter, WriteError};
-pub use stats::SpecStats;
-pub use template_loader::{TemplateError, TemplateLoader};
-pub use token_counter::{global_token_counter, TokenCount, TokenCounter, TokenStatus};
+pub use crate::io::{
+    hash_content, DiscoveredProject, DiscoveryError, ProjectDiscovery, TemplateError,
+    TemplateLoader,
+};
+pub use crate::spec_ops::{
+    apply_checklist_toggles, apply_replacements, apply_section_updates, preserve_title_heading,
+    rebuild_content, split_frontmatter, ArchiveError, ChecklistToggle, ChecklistToggleResult,
+    CompleteDependencyGraph, DependencyGraph, ImpactRadius, LoadError, MatchMode, MetadataUpdate,
+    Replacement, ReplacementResult, SectionMode, SectionUpdate, SpecArchiver, SpecHierarchyNode,
+    SpecLoader, SpecRelationshipIndex, SpecWriter, WriteError,
+};

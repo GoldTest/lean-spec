@@ -58,25 +58,30 @@ pub mod ai_native;
 pub mod models_registry;
 
 // Re-exports for convenience
+pub use compute::{
+    global_token_counter, Insights, SpecStats, TokenCount, TokenCounter, TokenStatus,
+};
 pub use error::{CoreError, CoreResult};
+pub use io::{
+    hash_content, DiscoveredProject, DiscoveryError, ProjectDiscovery, TemplateError,
+    TemplateLoader,
+};
 pub use parsers::FrontmatterParser;
 pub use relationships::{
     validate_dependency_addition, validate_parent_assignment,
     validate_parent_assignment_with_index, RelationshipError,
 };
+pub use spec_ops::{
+    apply_checklist_toggles, apply_replacements, apply_section_updates, preserve_title_heading,
+    rebuild_content, split_frontmatter, ArchiveError, ChecklistToggle, ChecklistToggleResult,
+    CompleteDependencyGraph, DependencyGraph, ImpactRadius, LoadError, MatchMode, MetadataUpdate,
+    Replacement, ReplacementResult, SectionMode, SectionUpdate, SpecArchiver, SpecHierarchyNode,
+    SpecLoader, SpecWriter, WriteError,
+};
 pub use types::{
     CheckboxItem, CompletionVerificationResult, ErrorSeverity, IncompleteChildSpec, LeanSpecConfig,
     Progress, SpecFilterOptions, SpecFrontmatter, SpecInfo, SpecPriority, SpecStatus,
     StatusTransition, UmbrellaVerificationResult, ValidationError, ValidationResult,
-};
-pub use utils::{
-    apply_checklist_toggles, apply_replacements, apply_section_updates, global_token_counter,
-    hash_content, preserve_title_heading, rebuild_content, split_frontmatter, ArchiveError,
-    ChecklistToggle, ChecklistToggleResult, CompleteDependencyGraph, DependencyGraph,
-    DiscoveredProject, DiscoveryError, ImpactRadius, Insights, LoadError, MatchMode,
-    MetadataUpdate, ProjectDiscovery, Replacement, ReplacementResult, SectionMode, SectionUpdate,
-    SpecArchiver, SpecHierarchyNode, SpecLoader, SpecStats, SpecWriter, TemplateError,
-    TemplateLoader, TokenCount, TokenCounter, TokenStatus, WriteError,
 };
 pub use validators::{
     global_frontmatter_validator, global_structure_validator, global_token_count_validator,
