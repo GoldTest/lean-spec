@@ -55,8 +55,7 @@ pub(crate) fn tool_validate(specs_dir: &str, args: Value) -> Result<String, Stri
 pub(crate) fn get_definition() -> crate::protocol::ToolDefinition {
     crate::protocol::ToolDefinition {
         name: "validate".to_string(),
-        description: "Validate specs for issues (frontmatter, structure, dependencies)"
-            .to_string(),
+        description: "Validate specs for issues (frontmatter, structure, dependencies)".to_string(),
         input_schema: json!({
             "type": "object",
             "properties": {

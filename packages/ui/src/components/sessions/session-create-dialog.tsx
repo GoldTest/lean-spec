@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   AlertDescription,
@@ -13,7 +13,6 @@ import {
   PromptInputSelectValue,
   PromptInputSubmit,
   PromptInputTextarea,
-  cn,
 } from '@/library';
 import { useTranslation } from 'react-i18next';
 import type { Session, SessionMode, Spec } from '../../types/api';
@@ -45,7 +44,6 @@ export function SessionCreateDialog({
   const [selectedSpecIds, setSelectedSpecIds] = useState<string[]>(defaultSpecId ? [defaultSpecId] : []);
   const [promptTemplate, setPromptTemplate] = useState('');
   const [specs, setSpecs] = useState<Spec[]>([]);
-  const [specContents, setSpecContents] = useState<Record<string, string>>({});
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -84,58 +82,8 @@ export function SessionCreateDialog({
       return;
     }
     setError(null);
-    setPromptTemplate((prev) => prev || t('sessions.labels.promptTemplateDefault'));
     setTimeout(() => inputRef.current?.focus(), 50);
-  }, [open, t]);
-
-  useEffect(() => {
-    if (!open || selectedSpecIds.length === 0) {
-      return;
-    }
-    const missing = selectedSpecIds.filter((specId) => !specContents[specId]);
-    if (missing.length === 0) {
-      return;
-    }
-
-    const loadMissingSpecs = async () => {
-      const entries = await Promise.all(
-        missing.map(async (specId) => {
-          try {
-            const detail = await api.getSpec(specId);
-            return [specId, detail.contentMd ?? detail.content ?? ''] as const;
-          } catch {
-            return [specId, ''] as const;
-          }
-        })
-      );
-      setSpecContents((prev) => ({ ...prev, ...Object.fromEntries(entries) }));
-    };
-
-    void loadMissingSpecs();
-  }, [open, selectedSpecIds, specContents]);
-
-  const composedPrompt = useMemo(() => {
-    const trimmedTemplate = promptTemplate.trim();
-    if (selectedSpecIds.length === 0) {
-      return trimmedTemplate;
-    }
-
-    const joinedSpecs = selectedSpecIds
-      .map((specId) => specContents[specId])
-      .filter((content): content is string => Boolean(content && content.trim()))
-      .join('\n\n---\n\n');
-
-    if (!joinedSpecs) {
-      return trimmedTemplate;
-    }
-    if (!trimmedTemplate) {
-      return joinedSpecs;
-    }
-    if (trimmedTemplate.includes('{specs}')) {
-      return trimmedTemplate.replace('{specs}', joinedSpecs);
-    }
-    return `${trimmedTemplate}\n\n${joinedSpecs}`;
-  }, [promptTemplate, selectedSpecIds, specContents]);
+  }, [open]);
 
   const runCreate = useCallback(async () => {
     if (!projectPath) return;
@@ -145,7 +93,7 @@ export function SessionCreateDialog({
       const created = await api.createSession({
         projectPath,
         specIds: selectedSpecIds,
-        prompt: composedPrompt || null,
+        prompt: promptTemplate.trim() || null,
         runner,
         mode,
       });
@@ -160,7 +108,7 @@ export function SessionCreateDialog({
     } finally {
       setCreating(false);
     }
-  }, [projectPath, selectedSpecIds, composedPrompt, runner, mode, onCreated, onOpenChange, t]);
+  }, [projectPath, selectedSpecIds, promptTemplate, runner, mode, onCreated, onOpenChange, t]);
 
   if (!open) {
     return null;
@@ -252,17 +200,6 @@ export function SessionCreateDialog({
             </PromptInputFooter>
           </PromptInput>
 
-          <div className="rounded-lg border bg-muted/30 p-3">
-            <div className="mb-1 text-xs font-medium text-muted-foreground">{t('sessions.labels.promptPreview')}</div>
-            <pre
-              className={cn(
-                'max-h-56 overflow-auto whitespace-pre-wrap break-words rounded bg-background p-2 text-xs leading-relaxed',
-                !composedPrompt && 'text-muted-foreground'
-              )}
-            >
-              {composedPrompt || t('sessions.labels.promptPreviewEmpty')}
-            </pre>
-          </div>
         </div>
       </div>
     </div>

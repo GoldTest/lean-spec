@@ -1,6 +1,3 @@
-#![allow(unused_imports)]
-
-mod legacy;
 mod runners;
 #[allow(clippy::module_inception)]
 mod sessions;

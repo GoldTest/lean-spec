@@ -1,5 +1,5 @@
 mod compute;
-mod legacy;
+mod helpers;
 mod read;
 mod write;
 

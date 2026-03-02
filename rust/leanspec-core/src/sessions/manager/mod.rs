@@ -1,8 +1,6 @@
 #![allow(unused_imports)]
 
-mod control;
-mod legacy;
 mod lifecycle;
 mod queries;
 
-pub use legacy::*;
+pub use lifecycle::*;
