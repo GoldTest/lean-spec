@@ -1,23 +1,11 @@
 ---
 name: leanspec-sdd
-description: Spec-Driven Development methodology for AI-assisted development. Use when working in a LeanSpec project.
-compatibility: Requires lean-spec CLI or @leanspec/mcp server
-metadata:
-  author: LeanSpec
-  version: 0.2.23
-  homepage: https://leanspec.dev
+description: Spec-Driven Development methodology for AI-assisted development. Use when working with specs, planning features, multi-step changes, task breakdowns, design decisions, or any task involving a specs/ folder or .lean-spec/config.json.
 ---
 
 # LeanSpec SDD Skill
 
 Teach agents how to run Spec-Driven Development (SDD) in LeanSpec projects. This skill is an addon: it **does not replace** MCP or CLI tools.
-
-## When to Use This Skill
-
-Activate this skill when any of the following are true:
-- The repository contains a specs/ folder or .lean-spec/config.json
-- The user mentions LeanSpec, specs, SDD, or spec-driven planning
-- The task requires multi-step changes, breaking changes, or design decisions
 
 ## Core Principles
 
@@ -145,8 +133,3 @@ See detailed guidance in:
 - [references/examples.md](./references/examples.md)
 - [references/commands.md](./references/commands.md)
 
-## Compatibility Notes
-
-- Works with any Agent Skills-compatible tool (Claude, Cursor, Codex, Letta, Factory).
-- Requires either LeanSpec MCP tools or CLI access to manage specs.
-- This skill is additive and does not change existing LeanSpec tooling.

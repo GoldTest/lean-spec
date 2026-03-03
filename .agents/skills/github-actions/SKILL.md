@@ -1,26 +1,11 @@
 ---
 name: github-actions
-description: GitHub Actions workflow management for LeanSpec. Use when triggering, monitoring, or debugging CI/CD workflows.
-compatibility: Requires GitHub CLI (gh) and repository access
-metadata:
-  author: LeanSpec
-  version: 0.1.0
-  homepage: https://leanspec.dev
-  internal: true
+description: GitHub Actions workflow management for LeanSpec. Use when triggering CI/CD workflows, monitoring build status, debugging failed runs, managing artifacts, or checking CI before releases.
 ---
 
 # GitHub Actions Skill
 
 Teach agents how to trigger, monitor, and manage GitHub Actions workflows for the LeanSpec project.
-
-## When to Use This Skill
-
-Activate this skill when any of the following are true:
-- Triggering CI/CD workflows manually
-- Monitoring workflow run status
-- Debugging failed workflow runs
-- Managing workflow artifacts
-- Checking build status before releases
 
 ## Core Principles
 
@@ -104,122 +89,6 @@ gh run download <run-id> --name ui-dist
 gh run download <run-id> --name binaries-linux-x64
 ```
 
-## Workflow Details
-
-### CI Workflow (`ci.yml`)
-
-**Triggers**: Push to main, PRs to main
-
-**Jobs**:
-1. **node** - Node.js/TypeScript build and test
-   - Install dependencies
-   - Build all packages
-   - Run typecheck
-   - Run tests
-   - Upload UI build artifact
-
-2. **rust** - Rust build and test (depends on node)
-   - Check formatting (`cargo fmt`)
-   - Run clippy linting
-   - Build binaries
-   - Run tests
-   - Validate specs
-
-**Common Failures**:
-- TypeScript errors → Run `pnpm typecheck` locally
-- Test failures → Run `pnpm test` locally
-- Clippy warnings → Run `cargo clippy -- -D warnings` in `rust/`
-- Formatting issues → Run `cargo fmt` in `rust/`
-
-### Publish Workflow (`publish.yml`)
-
-**Triggers**:
-- GitHub Release creation (primary production method)
-- Manual workflow dispatch (for dev/testing)
-
-**Inputs** (for manual dispatch):
-- `dry_run` (boolean) - Validate without publishing
-- `dev` (boolean) - Publish with `@dev` tag
-
-**Jobs**:
-1. **build-ui** - Build UI package first
-2. **rust-binaries** - Build for all platforms (matrix: darwin-x64, darwin-arm64, linux-x64, windows-x64)
-3. **publish-platform** - Publish platform-specific npm packages
-4. **publish-main** - Publish main packages (after platform packages propagate)
-
-**Common Failures**:
-- Platform packages not propagating → Retry publish-main job
-- Version mismatch → Run `pnpm sync-versions` locally
-- npm auth errors → Check `NPM_TOKEN` secret
-
-### Desktop Build Workflow (`desktop-build.yml`)
-
-**Triggers**: Changes to `packages/desktop/`, `packages/ui/`, or the workflow file
-
-**Jobs**:
-- Matrix build on macOS, Ubuntu, Windows
-- Builds Tauri desktop bundle
-- Uploads artifacts per platform
-
-## Workflow Patterns for Agents
-
-### Pattern 1: Check Before Triggering
-
-Always check if a workflow is already running before triggering:
-
-```bash
-# Check for running CI workflows
-gh run list --workflow ci.yml --status in_progress
-
-# Only trigger if nothing is running
-gh workflow run ci.yml
-```
-
-### Pattern 2: Wait for Completion
-
-```bash
-# Trigger and wait
-gh workflow run publish.yml --field dev=true
-
-# Get the latest run ID
-RUN_ID=$(gh run list --workflow publish.yml --limit 1 --json databaseId --jq '.[0].databaseId')
-
-# Watch until completion
-gh run watch $RUN_ID
-```
-
-### Pattern 3: Debug and Retry
-
-```bash
-# Check what failed
-gh run view <run-id> --log-failed
-
-# If transient failure, retry just failed jobs
-gh run rerun <run-id> --failed
-
-# If you need clean state, retry all
-gh run rerun <run-id>
-```
-
-### Pattern 4: Pre-Release Validation
-
-Before publishing a release:
-
-```bash
-# 1. Ensure CI passes
-gh run list --workflow ci.yml --branch main --limit 1
-
-# 2. Run publish dry run
-gh workflow run publish.yml --field dev=true --field dry_run=true
-
-# 3. Watch the dry run
-RUN_ID=$(gh run list --workflow publish.yml --limit 1 --json databaseId --jq '.[0].databaseId')
-gh run watch $RUN_ID
-
-# 4. If successful, trigger real dev publish
-gh workflow run publish.yml --field dev=true
-```
-
 ## Decision Tree
 
 ```
@@ -241,34 +110,6 @@ Need build artifacts?
 
 ## Reference Documentation
 
-- [references/WORKFLOWS.md](./references/WORKFLOWS.md) - Detailed workflow documentation
-- [references/COMMANDS.md](./references/COMMANDS.md) - Complete command reference
+- [references/WORKFLOWS.md](./references/WORKFLOWS.md) - Detailed workflow documentation (jobs, triggers, durations)
+- [references/COMMANDS.md](./references/COMMANDS.md) - Complete `gh` command reference
 - [references/TROUBLESHOOTING.md](./references/TROUBLESHOOTING.md) - Common issues and solutions
-
-## Setup Requirements
-
-### GitHub CLI Authentication
-
-```bash
-# Check if authenticated
-gh auth status
-
-# Login if needed
-gh auth login
-
-# Verify repo access
-gh repo view codervisor/lean-spec
-```
-
-### Required Permissions
-
-- Repository read access (for viewing runs)
-- Repository write access (for triggering workflows)
-- `NPM_TOKEN` secret configured (for publish workflow)
-
-## Auto-activation Hints
-
-If the tool supports auto-activation, detect:
-- Tasks related to: "CI", "workflow", "build", "deploy", "publish", "GitHub Actions"
-- Commands being run: `gh run`, `gh workflow`
-- Errors mentioning: workflow failures, CI failures, build errors

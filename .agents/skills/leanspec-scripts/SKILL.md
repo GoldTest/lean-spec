@@ -1,11 +1,6 @@
 ---
 name: leanspec-scripts
-description: All pnpm and cargo commands for LeanSpec development. Use when looking up build, dev, test, or publish commands.
-compatibility: Requires pnpm, Node.js 18+, and Rust toolchain
-metadata:
-  author: LeanSpec
-  version: 0.1.0
-  internal: true
+description: All pnpm and cargo commands for LeanSpec development. Use when looking up build, dev, test, publish, format, lint, or validation commands.
 ---
 
 # LeanSpec Scripts Reference

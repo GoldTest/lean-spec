@@ -141,9 +141,8 @@ npm install @leanspec/ui@dev
 
 ## Package Publication Notes
 
-**Important**: http-server` package IS published to npm as a public scoped package (required dependency for `@leanspec/ui`, provides the API backend)
-- The `@leanspec/ui` package IS published to npm as a public scoped package
-- Packages `lean-spec` (CLI), `@leanspec/mcp` (MCP), `@leanspec/ui-components`, `@leanspec/http-serverd package (required dependency for `@leanspec/ui`)
-- The `@leanspec/ui` package IS published to npm as a public scoped package
-- Packages `lean-spec` (CLI), `@leanspec/mcp` (MCP), `@leanspec/ui-components`, and `@leanspec/ui` are published automatically via GitHub Actions when a release is created
+**Important**:
+- `@leanspec/http-server` IS published to npm as a public scoped package (required dependency for `@leanspec/ui`, provides the API backend)
+- `@leanspec/ui` IS published to npm as a public scoped package
+- Packages `lean-spec` (CLI), `@leanspec/mcp` (MCP), `@leanspec/ui-components`, `@leanspec/http-server`, and `@leanspec/ui` are published automatically via GitHub Actions when a release is created
 - Platform-specific binary packages (e.g., `lean-spec-darwin-arm64`) are published separately via the rust-binaries workflow
