@@ -33,13 +33,13 @@ function getSessionTimeGroup(session: Session): TimeGroup {
   if (session.status === 'running' || session.status === 'pending') {
     return 'active';
   }
-  
+
   const sessionDate = dayjs(session.startedAt);
   const now = dayjs();
   const today = now.startOf('day');
   const yesterday = today.subtract(1, 'day');
   const sessionDateStart = sessionDate.startOf('day');
-  
+
   if (sessionDateStart.isSame(today)) return 'today';
   if (sessionDateStart.isSame(yesterday)) return 'yesterday';
   return 'older';
@@ -52,11 +52,11 @@ function groupSessionsByTime(sessions: Session[]): Record<TimeGroup, Session[]> 
     yesterday: [],
     older: [],
   };
-  
+
   sessions.forEach(session => {
     groups[getSessionTimeGroup(session)].push(session);
   });
-  
+
   return groups;
 }
 
@@ -399,18 +399,32 @@ export function SessionsPage() {
               )}
             />
           ) : (
-            <div className="space-y-2">
-              {visibleSessions.map((session) => (
-                <SessionListItem
-                  key={session.id}
-                  session={session}
-                  basePath={basePath}
-                  onStart={handleStart}
-                  onStop={handleStop}
-                  onPause={handlePause}
-                  onResume={handleResume}
-                />
-              ))}
+            <div className="space-y-6">
+              {(['active', 'today', 'yesterday', 'older'] as TimeGroup[]).map((group) => {
+                const grouped = groupSessionsByTime(visibleSessions)[group];
+                if (grouped.length === 0) return null;
+
+                return (
+                  <section key={group} className="space-y-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {t(`sessionsPage.groups.${group}`)} ({grouped.length})
+                    </h3>
+                    <div className="space-y-2">
+                      {grouped.map((session) => (
+                        <SessionListItem
+                          key={session.id}
+                          session={session}
+                          basePath={basePath}
+                          onStart={handleStart}
+                          onStop={handleStop}
+                          onPause={handlePause}
+                          onResume={handleResume}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
 
               {visibleSessions.length < filteredSessions.length && (
                 <div className="flex justify-center">
@@ -501,7 +515,7 @@ const SessionListItem = memo(function SessionListItem({
                 </Tooltip>
               </TooltipProvider>
               <div>
-                 <h3 className="font-medium line-clamp-2 leading-relaxed">{sessionTitle}</h3>
+                <h3 className="font-medium line-clamp-2 leading-relaxed">{sessionTitle}</h3>
               </div>
             </div>
             <div className="flex gap-2 items-center flex-shrink-0 flex-wrap justify-end">
@@ -524,19 +538,19 @@ const SessionListItem = memo(function SessionListItem({
 
           {/* New row: Spec chips */}
           <div className="mb-3 flex items-center gap-2 flex-wrap">
-             {(!session.specIds || session.specIds.length === 0) ? (
-                 <span className="text-xs text-muted-foreground italic">{t('sessionsPage.labels.noSpecs', 'No specs')}</span>
-             ) : (
-                 session.specIds.map(specId => (
-                     <Badge key={specId} variant="secondary" className="flex items-center gap-1 text-xs hover:bg-secondary/80 cursor-pointer" onClick={(e) => {
-                         e.stopPropagation();
-                         navigate(`${basePath}/specs/${specId}`);
-                     }}>
-                         <Hash className="h-3 w-3" />
-                         {specId}
-                     </Badge>
-                 ))
-             )}
+            {(!session.specIds || session.specIds.length === 0) ? (
+              <span className="text-xs text-muted-foreground italic">{t('sessionsPage.labels.noSpecs', 'No specs')}</span>
+            ) : (
+              session.specIds.map(specId => (
+                <Badge key={specId} variant="secondary" className="flex items-center gap-1 text-xs hover:bg-secondary/80 cursor-pointer" onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`${basePath}/specs/${specId}`);
+                }}>
+                  <Hash className="h-3 w-3" />
+                  {specId}
+                </Badge>
+              ))
+            )}
           </div>
 
           {/* Bottom row: metadata on left, action buttons on right */}
@@ -550,8 +564,8 @@ const SessionListItem = memo(function SessionListItem({
               {duration ? <SessionDurationBadge duration={duration} /> : null}
 
               <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={toggleLogs}>
-                 {logsOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
-                 Logs
+                {logsOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                Logs
               </Button>
             </div>
 
@@ -590,14 +604,14 @@ const SessionListItem = memo(function SessionListItem({
               </div>
             )}
           </div>
-          
+
           {/* Inline Logs */}
           {logsOpen && (
-              <div className="mt-4 border-t pt-4" onClick={(e) => e.stopPropagation()}>
-                 <div className="h-[300px] overflow-hidden rounded-md border">
-                    <SessionLogsPanel sessionId={session.id} />
-                 </div>
+            <div className="mt-4 border-t pt-4" onClick={(e) => e.stopPropagation()}>
+              <div className="h-[300px] overflow-hidden rounded-md border">
+                <SessionLogsPanel sessionId={session.id} onBack={() => setLogsOpen(false)} />
               </div>
+            </div>
           )}
 
         </div>

@@ -104,6 +104,7 @@
       "resume": "Resume",
       "archive": "Archive",
       "stop": "Stop",
+      "viewAll": "View all",
       "logs": "View Logs",
       "view": "View",
       "retry": "Retry",
