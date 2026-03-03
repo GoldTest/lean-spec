@@ -15,12 +15,29 @@ import {
   PromptInputTextarea,
 } from '@/library';
 import { useTranslation } from 'react-i18next';
-import type { Session, SessionMode, Spec } from '../../types/api';
+import type { Session, SessionMode, Spec, RunnerDefinition } from '../../types/api';
 import { api } from '../../lib/api';
 import { SpecContextTrigger, SpecContextChips } from '../spec-context-attachments';
+import { RunnerLogo } from '../library/ai-elements/runner-logo';
+import { sessionModeConfig } from '../../lib/session-utils';
 import { X } from 'lucide-react';
 
 const MODES: SessionMode[] = ['guided', 'autonomous']; // 'ralph' is deprecated
+
+/** Well-known models available per runner for quick selection */
+const RUNNER_MODELS: Record<string, string[]> = {
+  claude: ['claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-haiku-3-5-20241022'],
+  copilot: ['gpt-4o', 'claude-sonnet-4-20250514', 'o3-mini'],
+  codex: ['codex-mini-latest', 'o4-mini', 'o3'],
+  gemini: ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'],
+  aider: ['claude-sonnet-4-20250514', 'gpt-4o', 'deepseek-chat'],
+  cline: ['claude-sonnet-4-20250514', 'gpt-4o', 'deepseek-chat'],
+  opencode: ['claude-sonnet-4-20250514', 'gpt-4o', 'gemini-2.5-pro'],
+  cursor: ['claude-sonnet-4-20250514', 'gpt-4o', 'cursor-small'],
+  windsurf: ['claude-sonnet-4-20250514', 'gpt-4o'],
+  amp: ['claude-sonnet-4-20250514'],
+  kiro: ['claude-sonnet-4-20250514'],
+};
 
 interface SessionCreateDialogProps {
   open: boolean;
@@ -38,8 +55,9 @@ export function SessionCreateDialog({
   onCreated,
 }: SessionCreateDialogProps) {
   const { t } = useTranslation('common');
-  const [runners, setRunners] = useState<string[]>([]);
-  const [runner, setRunner] = useState('claude');
+  const [runnerDefs, setRunnerDefs] = useState<RunnerDefinition[]>([]);
+  const [runner, setRunner] = useState('');
+  const [model, setModel] = useState('');
   const [mode, setMode] = useState<SessionMode>('autonomous');
   const [selectedSpecIds, setSelectedSpecIds] = useState<string[]>(defaultSpecId ? [defaultSpecId] : []);
   const [promptTemplate, setPromptTemplate] = useState('');
@@ -50,6 +68,24 @@ export function SessionCreateDialog({
 
   const canCreate = Boolean(projectPath);
 
+  /** Available model suggestions for the currently selected runner */
+  const modelSuggestions = RUNNER_MODELS[runner] ?? [];
+
+  /** Get display label for a runner */
+  const getRunnerLabel = useCallback(
+    (runnerId: string) => {
+      const key = `sessions.runners.${runnerId}` as const;
+      const translated = t(key);
+      // If i18n returns the key itself, fall back to the runner definition name or the id
+      if (translated === key || translated === `sessions.runners.${runnerId}`) {
+        const def = runnerDefs.find((r) => r.id === runnerId);
+        return def?.name ?? runnerId;
+      }
+      return translated;
+    },
+    [t, runnerDefs],
+  );
+
   useEffect(() => {
     setSelectedSpecIds(defaultSpecId ? [defaultSpecId] : []);
   }, [defaultSpecId]);
@@ -59,10 +95,22 @@ export function SessionCreateDialog({
     setError(null);
     const loadRunners = async () => {
       try {
-        const available = await api.listAvailableRunners(projectPath ?? undefined);
-        setRunners(available.length ? available : ['claude', 'copilot', 'codex', 'opencode', 'aider', 'cline']);
+        const resp = await api.listRunners(projectPath ?? undefined, { skipValidation: true });
+        const defs = resp.runners.length
+          ? resp.runners
+          : (['claude', 'copilot', 'codex', 'opencode', 'aider', 'cline'] as const).map(
+              (id) => ({ id, args: [], env: {}, source: 'builtin' as const }),
+            );
+        setRunnerDefs(defs);
+        // Set the default runner: prefer server-configured default, else first available
+        const defaultId = resp.default ?? defs[0]?.id ?? 'claude';
+        setRunner((prev) => (prev && defs.some((d) => d.id === prev) ? prev : defaultId));
       } catch {
-        setRunners(['claude', 'copilot', 'codex', 'opencode', 'aider', 'cline']);
+        const fallback: RunnerDefinition[] = (['claude', 'copilot', 'codex', 'opencode', 'aider', 'cline'] as const).map(
+          (id) => ({ id, args: [], env: {}, source: 'builtin' as const }),
+        );
+        setRunnerDefs(fallback);
+        setRunner((prev) => prev || 'claude');
       }
     };
     const loadSpecs = async () => {
@@ -85,6 +133,11 @@ export function SessionCreateDialog({
     setTimeout(() => inputRef.current?.focus(), 50);
   }, [open]);
 
+  // Reset model when runner changes
+  useEffect(() => {
+    setModel('');
+  }, [runner]);
+
   const runCreate = useCallback(async () => {
     if (!projectPath) return;
     setCreating(true);
@@ -96,6 +149,7 @@ export function SessionCreateDialog({
         prompt: promptTemplate.trim() || null,
         runner,
         mode,
+        model: model || undefined,
       });
       // Start the runtime in the background — the server returns immediately
       // and the session transitions from Pending to Running asynchronously.
@@ -108,7 +162,7 @@ export function SessionCreateDialog({
     } finally {
       setCreating(false);
     }
-  }, [projectPath, selectedSpecIds, promptTemplate, runner, mode, onCreated, onOpenChange, t]);
+  }, [projectPath, selectedSpecIds, promptTemplate, runner, mode, model, onCreated, onOpenChange, t]);
 
   if (!open) {
     return null;
@@ -175,27 +229,60 @@ export function SessionCreateDialog({
 
                 <PromptInputSelect value={runner} onValueChange={setRunner}>
                   <PromptInputSelectTrigger className="h-8 w-auto rounded-full border border-border/70 px-3 py-1.5 text-xs">
-                    <PromptInputSelectValue placeholder={t('sessions.labels.runner')} />
+                    <span className="flex items-center gap-1.5">
+                      <RunnerLogo runnerId={runner} size={16} className="rounded-sm" />
+                      <PromptInputSelectValue placeholder={t('sessions.labels.runner')} />
+                    </span>
                   </PromptInputSelectTrigger>
                   <PromptInputSelectContent>
-                    {runners.map((runnerValue) => (
-                      <PromptInputSelectItem key={runnerValue} value={runnerValue}>
-                        {runnerValue}
+                    {runnerDefs.map((def) => (
+                      <PromptInputSelectItem key={def.id} value={def.id}>
+                        <span className="flex items-center gap-2">
+                          <RunnerLogo runnerId={def.id} size={16} className="rounded-sm" />
+                          {getRunnerLabel(def.id)}
+                        </span>
                       </PromptInputSelectItem>
                     ))}
                   </PromptInputSelectContent>
                 </PromptInputSelect>
 
+                {modelSuggestions.length > 0 && (
+                  <PromptInputSelect value={model} onValueChange={setModel}>
+                    <PromptInputSelectTrigger className="h-8 w-auto rounded-full border border-border/70 px-3 py-1.5 text-xs">
+                      <PromptInputSelectValue placeholder={t('sessions.labels.model')} />
+                    </PromptInputSelectTrigger>
+                    <PromptInputSelectContent>
+                      {modelSuggestions.map((m) => (
+                        <PromptInputSelectItem key={m} value={m}>
+                          {m}
+                        </PromptInputSelectItem>
+                      ))}
+                    </PromptInputSelectContent>
+                  </PromptInputSelect>
+                )}
+
                 <PromptInputSelect value={mode} onValueChange={(value) => setMode(value as SessionMode)}>
                   <PromptInputSelectTrigger className="h-8 w-auto rounded-full border border-border/70 px-3 py-1.5 text-xs">
-                    <PromptInputSelectValue placeholder={t('sessions.labels.mode')} />
+                    <span className="flex items-center gap-1.5">
+                      {(() => {
+                        const ModeIcon = sessionModeConfig[mode]?.icon;
+                        return ModeIcon ? <ModeIcon className="h-3.5 w-3.5" /> : null;
+                      })()}
+                      <PromptInputSelectValue placeholder={t('sessions.labels.mode')} />
+                    </span>
                   </PromptInputSelectTrigger>
                   <PromptInputSelectContent>
-                    {MODES.map((modeValue) => (
-                      <PromptInputSelectItem key={modeValue} value={modeValue}>
-                        {t(`sessions.modes.${modeValue}`)}
-                      </PromptInputSelectItem>
-                    ))}
+                    {MODES.map((modeValue) => {
+                      const ModeIcon = sessionModeConfig[modeValue]?.icon;
+                      return (
+                        <PromptInputSelectItem key={modeValue} value={modeValue}>
+                          <span className="flex items-center gap-2">
+                            {ModeIcon && <ModeIcon className="h-3.5 w-3.5" />}
+                            {t(`sessions.modes.${modeValue}`)}
+                          </span>
+                        </PromptInputSelectItem>
+                      );
+                    })}
                   </PromptInputSelectContent>
                 </PromptInputSelect>
               </div>

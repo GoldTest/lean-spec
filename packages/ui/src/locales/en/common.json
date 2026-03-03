@@ -118,6 +118,7 @@
     "labels": {
       "runner": "Runner",
       "mode": "Mode",
+      "model": "Model",
       "started": "Started",
       "ended": "Ended",
       "duration": "Duration",

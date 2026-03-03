@@ -416,6 +416,7 @@ export class HttpBackendAdapter implements BackendAdapter {
     prompt?: string | null;
     runner?: string;
     mode: SessionMode;
+    model?: string;
   }): Promise<Session> {
     // Normalize: if specIds not provided, fall back to specId for backward compat
     const specIds = payload.specIds ?? (payload.specId ? [payload.specId] : []);
@@ -427,6 +428,7 @@ export class HttpBackendAdapter implements BackendAdapter {
         prompt: payload.prompt ?? null,
         runner: payload.runner,
         mode: payload.mode,
+        model: payload.model ?? null,
       }),
     });
     return normalizeSession(session);

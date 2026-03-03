@@ -144,6 +144,7 @@ export interface BackendAdapter {
     prompt?: string | null;
     runner?: string;
     mode: SessionMode;
+    model?: string;
   }): Promise<Session>;
   startSession(sessionId: string): Promise<Session>;
   pauseSession(sessionId: string): Promise<Session>;

@@ -258,6 +258,7 @@ export class TauriBackendAdapter implements BackendAdapter {
     prompt?: string | null;
     runner?: string;
     mode: SessionMode;
+    model?: string;
   }): Promise<Session> {
     void payload;
     throw new Error('createSession is not implemented for the Tauri backend yet');
