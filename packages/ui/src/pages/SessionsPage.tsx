@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, memo } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { FilterX, RefreshCcw, FileQuestion, Play, Square, Plus, Pause, Search, Filter, Hash, X } from 'lucide-react';
+import { FilterX, RefreshCcw, FileQuestion, Play, Square, Plus, Pause, Search, Filter, Hash, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { Badge, Button, Card, CardContent, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/library';
 import { useTranslation } from 'react-i18next';
 import type { Session, SessionStatus, Spec } from '../types/api';
@@ -13,7 +13,9 @@ import { PageTransition } from '../components/shared/page-transition';
 import { PageContainer } from '../components/shared/page-container';
 import { sessionStatusConfig, formatSessionDuration, getRunnerDisplayName } from '../lib/session-utils';
 import { formatRelativeTime } from '../lib/date-utils';
+import dayjs from 'dayjs';
 import { SessionDurationBadge } from '../components/sessions/session-duration-badge';
+import { SessionLogsPanel } from '../components/sessions/session-logs-panel';
 import { SessionModeBadge } from '../components/sessions/session-mode-badge';
 import { SessionCreateDialog } from '../components/sessions/session-create-dialog';
 import { SearchableSelect } from '../components/searchable-select';
@@ -24,6 +26,39 @@ import { cn } from '@/library';
 const PAGE_SIZE = 20;
 
 type SortOption = 'started-desc' | 'started-asc' | 'duration-desc' | 'status';
+
+type TimeGroup = 'active' | 'today' | 'yesterday' | 'older';
+
+function getSessionTimeGroup(session: Session): TimeGroup {
+  if (session.status === 'running' || session.status === 'pending') {
+    return 'active';
+  }
+  
+  const sessionDate = dayjs(session.startedAt);
+  const now = dayjs();
+  const today = now.startOf('day');
+  const yesterday = today.subtract(1, 'day');
+  const sessionDateStart = sessionDate.startOf('day');
+  
+  if (sessionDateStart.isSame(today)) return 'today';
+  if (sessionDateStart.isSame(yesterday)) return 'yesterday';
+  return 'older';
+}
+
+function groupSessionsByTime(sessions: Session[]): Record<TimeGroup, Session[]> {
+  const groups: Record<TimeGroup, Session[]> = {
+    active: [],
+    today: [],
+    yesterday: [],
+    older: [],
+  };
+  
+  sessions.forEach(session => {
+    groups[getSessionTimeGroup(session)].push(session);
+  });
+  
+  return groups;
+}
 
 export function SessionsPage() {
   const { t } = useTranslation('common');
@@ -423,10 +458,10 @@ const SessionListItem = memo(function SessionListItem({
   const statusCfg = sessionStatusConfig[session.status];
   const StatusIcon = statusCfg.icon;
   const duration = formatSessionDuration(session);
+  const [logsOpen, setLogsOpen] = useState(false);
 
   // Use prompt as session title, falling back to spec IDs or session ID
   const sessionTitle = session.prompt
-    || (session.specIds?.length ? session.specIds.join(', ') : null)
     || session.id.slice(0, 8);
 
   const hasActionButtons = session.status === 'pending' || session.status === 'running' || session.status === 'paused';
@@ -435,6 +470,11 @@ const SessionListItem = memo(function SessionListItem({
     // Don't navigate if clicking on a button or link inside the item
     if ((e.target as HTMLElement).closest('button, a')) return;
     navigate(`${basePath}/sessions/${session.id}`);
+  };
+
+  const toggleLogs = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLogsOpen(prev => !prev);
   };
 
   return (
@@ -446,12 +486,12 @@ const SessionListItem = memo(function SessionListItem({
         <div className="w-8 h-full invisible flex items-center text-muted-foreground" />
         <div className="flex-1 p-4 pl-0">
           {/* Top row: runner logo + title on left, status + mode badges on right */}
-          <div className="flex items-start justify-between gap-4 mb-1">
-            <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <div className="flex items-start gap-2 min-w-0 pr-4">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="flex-shrink-0">
+                    <span className="flex-shrink-0 mt-0.5">
                       <RunnerLogo runnerId={session.runner} size={24} />
                     </span>
                   </TooltipTrigger>
@@ -460,14 +500,16 @@ const SessionListItem = memo(function SessionListItem({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <h3 className="font-medium truncate">{sessionTitle}</h3>
+              <div>
+                 <h3 className="font-medium line-clamp-2 leading-relaxed">{sessionTitle}</h3>
+              </div>
             </div>
             <div className="flex gap-2 items-center flex-shrink-0 flex-wrap justify-end">
               {/* Status badge */}
               <Badge
                 variant="outline"
                 className={cn(
-                  'flex items-center gap-1.5 w-fit border-transparent h-5 px-2 py-0.5 text-xs font-medium',
+                  'flex items-center gap-1.5 w-fit border-transparent h-6 px-2 py-0.5 text-xs font-medium',
                   statusCfg.className
                 )}
               >
@@ -480,38 +522,54 @@ const SessionListItem = memo(function SessionListItem({
             </div>
           </div>
 
+          {/* New row: Spec chips */}
+          <div className="mb-3 flex items-center gap-2 flex-wrap">
+             {(!session.specIds || session.specIds.length === 0) ? (
+                 <span className="text-xs text-muted-foreground italic">{t('sessionsPage.labels.noSpecs', 'No specs')}</span>
+             ) : (
+                 session.specIds.map(specId => (
+                     <Badge key={specId} variant="secondary" className="flex items-center gap-1 text-xs hover:bg-secondary/80 cursor-pointer" onClick={(e) => {
+                         e.stopPropagation();
+                         navigate(`${basePath}/specs/${specId}`);
+                     }}>
+                         <Hash className="h-3 w-3" />
+                         {specId}
+                     </Badge>
+                 ))
+             )}
+          </div>
+
           {/* Bottom row: metadata on left, action buttons on right */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 text-sm text-muted-foreground min-w-0">
-              {(session.specIds?.length ?? 0) > 0 && (
-                <span className="truncate flex items-center gap-0.5">
-                  <Hash className="inline h-3 w-3 shrink-0" />
-                  {session.specIds.join(', ')}
-                </span>
-              )}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-4 text-sm text-muted-foreground min-w-0">
               {session.startedAt && (
                 <span className="shrink-0 text-xs">
                   {formatRelativeTime(session.startedAt, i18n.language)}
                 </span>
               )}
-              {duration && <SessionDurationBadge duration={duration} />}
+              {duration ? <SessionDurationBadge duration={duration} /> : null}
+
+              <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={toggleLogs}>
+                 {logsOpen ? <ChevronDown className="h-3 w-3 mr-1" /> : <ChevronRight className="h-3 w-3 mr-1" />}
+                 Logs
+              </Button>
             </div>
 
             {hasActionButtons && (
               <div className="flex gap-2 items-center flex-shrink-0">
                 {session.status === 'pending' && (
-                  <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={() => void onStart(session.id)}>
+                  <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={(e) => { e.stopPropagation(); onStart(session.id); }}>
                     <Play className="h-3 w-3" />
                     {t('sessions.actions.start')}
                   </Button>
                 )}
                 {session.status === 'running' && (
                   <>
-                    <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={() => void onPause(session.id)}>
+                    <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={(e) => { e.stopPropagation(); onPause(session.id); }}>
                       <Pause className="h-3 w-3" />
                       {t('sessions.actions.pause')}
                     </Button>
-                    <Button size="sm" variant="destructive" className="gap-1 h-6 text-xs px-2" onClick={() => void onStop(session.id)}>
+                    <Button size="sm" variant="destructive" className="gap-1 h-6 text-xs px-2" onClick={(e) => { e.stopPropagation(); onStop(session.id); }}>
                       <Square className="h-3 w-3" />
                       {t('sessions.actions.stop')}
                     </Button>
@@ -519,11 +577,11 @@ const SessionListItem = memo(function SessionListItem({
                 )}
                 {session.status === 'paused' && (
                   <>
-                    <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={() => void onResume(session.id)}>
+                    <Button size="sm" variant="secondary" className="gap-1 h-6 text-xs px-2" onClick={(e) => { e.stopPropagation(); onResume(session.id); }}>
                       <Play className="h-3 w-3" />
                       {t('sessions.actions.resume')}
                     </Button>
-                    <Button size="sm" variant="destructive" className="gap-1 h-6 text-xs px-2" onClick={() => void onStop(session.id)}>
+                    <Button size="sm" variant="destructive" className="gap-1 h-6 text-xs px-2" onClick={(e) => { e.stopPropagation(); onStop(session.id); }}>
                       <Square className="h-3 w-3" />
                       {t('sessions.actions.stop')}
                     </Button>
@@ -532,6 +590,16 @@ const SessionListItem = memo(function SessionListItem({
               </div>
             )}
           </div>
+          
+          {/* Inline Logs */}
+          {logsOpen && (
+              <div className="mt-4 border-t pt-4" onClick={(e) => e.stopPropagation()}>
+                 <div className="h-[300px] overflow-hidden rounded-md border">
+                    <SessionLogsPanel sessionId={session.id} />
+                 </div>
+              </div>
+          )}
+
         </div>
       </div>
     </div>

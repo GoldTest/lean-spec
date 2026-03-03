@@ -325,7 +325,7 @@ export function SpecDetailPage() {
           applySpecPatch={applySpecPatch}
           onOpenTimeline={() => setTimelineDialogOpen(true)}
           onOpenRelationships={() => setRelationshipsDialogOpen(true)}
-          onOpenSessions={() => openDrawer(spec.specName)}
+          onOpenSessions={() => navigate(`/projects/${resolvedProjectId}/sessions?spec=${spec.specName}`)}
           onOpenMobile={() => setMobileOpen(true)}
           timelineDialogOpen={timelineDialogOpen}
           setTimelineDialogOpen={setTimelineDialogOpen}

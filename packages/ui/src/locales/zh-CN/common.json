@@ -199,6 +199,15 @@
       "emptyDescription": "创建新会话以开始跟踪 AI 运行情况。",
       "noResultsTitle": "没有匹配的会话",
       "noResultsDescription": "尝试调整筛选条件或搜索关键词。"
+    },
+    "groups": {
+      "active": "运行中",
+      "today": "今天",
+      "yesterday": "昨天",
+      "older": "更早"
+    },
+    "labels": {
+      "noSpecs": "无 Specs"
     }
   },
   "sessionDetail": {

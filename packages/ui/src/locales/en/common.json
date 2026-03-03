@@ -229,6 +229,15 @@
       "emptyDescription": "Create a new session to start tracking AI runs.",
       "noResultsTitle": "No matching sessions",
       "noResultsDescription": "Try adjusting your filters or search."
+    },
+    "groups": {
+      "active": "Active",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older"
+    },
+    "labels": {
+      "noSpecs": "No specs"
     }
   },
   "sessionDetail": {
