@@ -23,7 +23,7 @@ The session creation dialog has several UX issues with runner and model selectio
 1. Runner dropdown shows hardcoded fallback list instead of only available/validated runners
 2. No model configuration per runner — models and runners are disconnected systems
 3. The `InlineModelSelector` shows chat server models (OpenAI, Anthropic providers), not runner-compatible models
-4. Mode selector icons are duplicated (both `autonomous` and `ralph` use `Bot` icon)
+4. Deprecated `ralph` mode still present in `sessionModeConfig` (shares `Bot` icon with `autonomous`)
 
 ## Requirements
 
@@ -60,7 +60,10 @@ Runner CLIs have varying model listing capabilities:
 
 - [ ] Add `model_list_command` to runner schema for runners that support it
 - [ ] Implement backend endpoint `GET /api/runners/:id/models` that executes the listing command
-- [ ] Cache model list results (invalidate on runner config change)
+  - Sanitize and validate `model_list_command` — only allow commands matching the runner's own `command` binary to prevent command injection
+  - Apply a timeout (e.g., 10s) to prevent hanging on unresponsive CLIs
+  - Parse output defensively; treat unexpected formats as empty model list
+- [ ] Cache model list results in-memory with a 5-minute TTL, invalidated immediately on runner config change
 - [ ] For runners without model listing, allow manual model configuration in Settings
 - [ ] Add UI in Settings → Runners to trigger model discovery and display results
 
@@ -73,11 +76,19 @@ Runner CLIs have varying model listing capabilities:
 - [ ] If runner has no models configured, hide the model selector
 - [ ] Remove dependency on `useModelsRegistry` (chat models) from session creation
 
-### 5. Fix Duplicated Mode Icons
+### 5. Remove Deprecated `ralph` Mode
 
-- [ ] `sessionModeConfig` uses `Bot` icon for both `autonomous` and `ralph` modes
-- [ ] Assign distinct icons: keep `Bot` for `autonomous`, use a different icon for `ralph` (or remove `ralph` since it's deprecated)
-- [ ] Clean up `ralph` mode from `sessionModeConfig` if it's no longer selectable (already excluded from `MODES` array)
+- [ ] Remove `ralph` entry from `sessionModeConfig` in `session-utils.ts` (already excluded from `MODES` array, so it's dead code)
+- [ ] Remove any remaining `ralph` references in session creation UI components
+- [ ] Verify no backend code depends on `ralph` mode string
+
+## Implementation Strategy
+
+This spec covers multiple layers (schema, backend, UI). Recommended implementation order:
+
+1. **Quick wins first**: Requirements 1 (runner filtering) and 5 (remove `ralph`) — minimal risk, immediate UX improvement
+2. **Schema & backend**: Requirements 2 (model fields) and 3 (model listing endpoint) — foundational changes
+3. **UI integration**: Requirement 4 (runner-aware model selector) — depends on 2 & 3
 
 ## Non-Goals
 
@@ -108,5 +119,7 @@ Runner CLIs have varying model listing capabilities:
 - Each runner can have models configured in Settings → Runners
 - Session dialog model selector shows runner-specific models (not chat models)
 - Changing runner in dialog updates available models
-- Mode icons are visually distinct
+- `ralph` mode is fully removed from session config
 - Runners without model support gracefully hide the model selector
+- Model listing endpoint rejects commands that don't match the runner's own binary
+- Model list cache expires after 5 minutes or on config change

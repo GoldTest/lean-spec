@@ -688,22 +688,8 @@ fn decide_skill_install(options: &InitOptions) -> Result<bool, Box<dyn Error>> {
     Ok(confirm)
 }
 
-/// Maps runner IDs to skills.sh agent names
-fn runner_to_skills_agent(runner_id: &str) -> Option<&'static str> {
-    match runner_id {
-        "claude" => Some("claude-code"),
-        "copilot" => Some("github-copilot"),
-        "cursor" => Some("cursor"),
-        "gemini" => Some("gemini-cli"),
-        "codex" => Some("codex"),
-        "cline" => Some("cline"),
-        "continue" => Some("continue"),
-        "windsurf" => Some("windsurf"),
-        "aider" => Some("aider"),
-        "opencode" => Some("opencode"),
-        _ => None,
-    }
-}
+// Use the shared mapping from skill module
+use crate::commands::skill::runner_to_skills_agent;
 
 fn handle_skills_install(
     install_skills: bool,
@@ -737,7 +723,7 @@ fn handle_skills_install(
         Some(agents.as_slice())
     };
 
-    if let Err(err) = skill::install(agents_opt) {
+    if let Err(err) = skill::install(agents_opt, true) {
         println!("{} Failed to install agent skills: {}", "⚠".yellow(), err);
         println!("{} You can retry with: lean-spec skill install", "•".cyan());
     }
