@@ -137,8 +137,8 @@ function mapAcpRawToStreamEvent(method: string, params: unknown, fallbackTimesta
       type: 'acp_tool_call',
       timestamp: fallbackTimestamp,
       id: asString(updateObj.toolCallId ?? updateObj.id),
-      tool: asString(updateObj.title ?? updateObj.tool),
-      args: asRecord(updateObj.args ?? updateObj.rawInput),
+      tool: asString(updateObj.title ?? updateObj.toolName ?? updateObj.tool ?? updateObj.name),
+      args: asRecord(updateObj.args ?? updateObj.rawInput ?? updateObj.input ?? updateObj.arguments),
       status: asToolStatus(updateObj.status),
       result: extractResultFromUpdate(updateObj),
       rawContent: updateObj.content,
@@ -234,8 +234,8 @@ function parseDirectAcpEvent(payload: Record<string, unknown>): SessionStreamEve
       type: 'acp_tool_call',
       timestamp,
       id: asString(payload.id),
-      tool: asString(payload.tool),
-      args: asRecord(payload.args),
+      tool: asString(payload.toolName ?? payload.tool ?? payload.name),
+      args: asRecord(payload.args ?? payload.rawInput ?? payload.input ?? payload.arguments),
       status: asToolStatus(payload.status),
       result: payload.result ?? null,
       rawContent: payload.content,
@@ -345,28 +345,79 @@ export function parseSessionLog(log: SessionLog): SessionStreamEvent {
   };
 }
 
+/**
+ * Internal marker on message/thought events to track whether `done: true`
+ * was set by auto-close (vs explicitly by the stream). Auto-closed events
+ * can still accept future chunks from the same turn.
+ */
+interface AutoCloseMarker { _autoClosed?: boolean }
+
 export function appendStreamEvent(events: SessionStreamEvent[], next: SessionStreamEvent): SessionStreamEvent[] {
   const current = [...events];
   const last = current[current.length - 1];
 
-  if (next.type === 'acp_message' && last?.type === 'acp_message' && last.role === next.role && !last.done) {
-    current[current.length - 1] = {
-      ...last,
-      content: `${last.content}${next.content}`,
-      done: next.done,
-      timestamp: next.timestamp ?? last.timestamp,
-    };
-    return current;
+  // --- Message merging: search backwards for same-role message to merge with ---
+  if (next.type === 'acp_message') {
+    for (let i = current.length - 1; i >= 0; i--) {
+      const ev = current[i];
+      if (ev?.type === 'acp_message') {
+        if (ev.role === next.role && (!ev.done || (ev as AutoCloseMarker)._autoClosed)) {
+          const merged = {
+            ...ev,
+            content: `${ev.content}${next.content}`,
+            done: next.done,
+            timestamp: next.timestamp ?? ev.timestamp,
+          };
+          delete (merged as AutoCloseMarker)._autoClosed;
+          current[i] = merged;
+          return current;
+        }
+        // Different role or explicitly done → new turn
+        break;
+      }
+    }
   }
 
-  if (next.type === 'acp_thought' && last?.type === 'acp_thought' && !last.done) {
-    current[current.length - 1] = {
-      ...last,
-      content: `${last.content}${next.content}`,
-      done: next.done,
-      timestamp: next.timestamp ?? last.timestamp,
-    };
-    return current;
+  // --- Thought merging: search backwards for thought to merge with ---
+  if (next.type === 'acp_thought') {
+    for (let i = current.length - 1; i >= 0; i--) {
+      const ev = current[i];
+      if (ev?.type === 'acp_thought' && (!ev.done || (ev as AutoCloseMarker)._autoClosed)) {
+        const merged = {
+          ...ev,
+          content: `${ev.content}${next.content}`,
+          done: next.done,
+          timestamp: next.timestamp ?? ev.timestamp,
+        };
+        delete (merged as AutoCloseMarker)._autoClosed;
+        current[i] = merged;
+        return current;
+      }
+      // Stop at any message boundary (different conversation turn)
+      if (ev?.type === 'acp_message') break;
+    }
+  }
+
+  // Auto-close open thoughts when a different event type arrives
+  if (next.type !== 'acp_thought' && last?.type === 'acp_thought' && !last.done) {
+    current[current.length - 1] = { ...last, done: true };
+    (current[current.length - 1] as AutoCloseMarker)._autoClosed = true;
+  }
+
+  // Auto-close open messages when a different event type arrives
+  if (next.type !== 'acp_message' && last?.type === 'acp_message' && !last.done) {
+    current[current.length - 1] = { ...last, done: true };
+    (current[current.length - 1] as AutoCloseMarker)._autoClosed = true;
+  }
+
+  // On session complete, close all remaining open thoughts and messages
+  if (next.type === 'complete') {
+    for (let i = 0; i < current.length; i++) {
+      const ev = current[i];
+      if ((ev?.type === 'acp_thought' || ev?.type === 'acp_message') && !ev.done) {
+        current[i] = { ...ev, done: true };
+      }
+    }
   }
 
   if (next.type === 'acp_tool_call') {
@@ -401,6 +452,19 @@ export function appendStreamEvent(events: SessionStreamEvent[], next: SessionStr
 
   current.push(next);
   return current;
+}
+
+/** Close all remaining open thoughts/messages — call after replaying historical logs. */
+export function finalizeStreamEvents(events: SessionStreamEvent[]): SessionStreamEvent[] {
+  let mutated = false;
+  const result = events.map((ev) => {
+    if ((ev.type === 'acp_thought' || ev.type === 'acp_message') && !ev.done) {
+      mutated = true;
+      return { ...ev, done: true };
+    }
+    return ev;
+  });
+  return mutated ? result : events;
 }
 
 export function getAcpFilterType(event: SessionStreamEvent): AcpFilterType | null {

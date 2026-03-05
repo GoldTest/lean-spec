@@ -22,6 +22,7 @@ import {
 } from '@/library';
 import type { SessionStreamEvent } from '../../types/api';
 import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 import { cn } from '@/library';
 import { CollapsibleJsonLog } from './collapsible-json-log';
 
@@ -75,6 +76,18 @@ export function AcpConversation({
 }: AcpConversationProps & { className?: string }) {
   const { t } = useTranslation('common');
 
+  // Stable keys: per-type occurrence counters so keys don't shift on in-place merges
+  const eventKeys = useMemo(() => {
+    const counters: Record<string, number> = {};
+    return events.map((event) => {
+      if (event.type === 'acp_tool_call') return `acp-tool-${event.id}`;
+      if (event.type === 'acp_permission_request') return `acp-perm-${event.id}`;
+      const base = event.type;
+      counters[base] = (counters[base] ?? 0) + 1;
+      return `${base}-${counters[base]}`;
+    });
+  }, [events]);
+
   return (
     <Conversation className={cn("min-h-0 rounded-lg border border-border bg-muted/20 flex flex-col overflow-hidden", className)}>
       <ConversationContent className="gap-3 flex-1 overflow-y-auto p-4">
@@ -92,7 +105,7 @@ export function AcpConversation({
               case 'acp_message':
                 if (event.role === 'user') {
                   return (
-                    <Message key={`acp-message-${index}`} from="user">
+                    <Message key={eventKeys[index]} from="user">
                       <MessageContent>
                         <div className="flex items-baseline gap-1">
                           <span className="flex-1">{event.content}</span>
@@ -103,7 +116,7 @@ export function AcpConversation({
                   );
                 }
                 return (
-                  <Message key={`acp-message-${index}`} from="assistant">
+                  <Message key={eventKeys[index]} from="assistant">
                     <MessageContent>
                       <MessageResponse>{event.content}</MessageResponse>
                       {timestampEl}
@@ -113,7 +126,7 @@ export function AcpConversation({
 
               case 'acp_thought':
                 return (
-                  <Reasoning key={`acp-thought-${index}`} isStreaming={!event.done} defaultOpen>
+                  <Reasoning key={eventKeys[index]} isStreaming={!event.done} defaultOpen>
                     <ReasoningTrigger />
                     <ReasoningContent>{event.content}</ReasoningContent>
                   </Reasoning>
@@ -141,7 +154,7 @@ export function AcpConversation({
                 const completed = event.entries.filter((entry) => entry.status === 'done').length;
                 const total = event.entries.length;
                 return (
-                  <Plan key={`acp-plan-${index}`} isStreaming={!event.done} defaultOpen>
+                  <Plan key={eventKeys[index]} isStreaming={!event.done} defaultOpen>
                     <PlanHeader>
                       <PlanTitle>{t('sessions.labels.plan')}</PlanTitle>
                       <PlanAction>
@@ -192,14 +205,14 @@ export function AcpConversation({
 
               case 'acp_mode_update':
                 return (
-                  <div key={`acp-mode-${index}`} className="text-xs text-muted-foreground">
+                  <div key={eventKeys[index]} className="text-xs text-muted-foreground">
                     {t('sessions.labels.mode')}: {event.mode}
                   </div>
                 );
 
               case 'complete':
                 return (
-                  <div key={`acp-complete-${index}`} className="text-xs text-muted-foreground">
+                  <div key={eventKeys[index]} className="text-xs text-muted-foreground">
                     {t('sessions.labels.status')}: {event.status} ({event.duration_ms}ms)
                   </div>
                 );
@@ -213,7 +226,7 @@ export function AcpConversation({
                 if (isJson) {
                   return (
                     <CollapsibleJsonLog
-                      key={`acp-log-${index}`}
+                      key={eventKeys[index]}
                       timestamp={event.timestamp}
                       level={event.level}
                       rawMessage={event.message}
@@ -222,7 +235,7 @@ export function AcpConversation({
                 }
 
                 return (
-                  <div key={`acp-log-${index}`} className="font-mono text-xs whitespace-pre-wrap text-muted-foreground">
+                  <div key={eventKeys[index]} className="font-mono text-xs whitespace-pre-wrap text-muted-foreground">
                     [{event.timestamp}] {event.level.toUpperCase()} {event.message}
                   </div>
                 );

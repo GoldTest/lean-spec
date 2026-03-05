@@ -25,6 +25,7 @@ import { RunnerLogo } from '../components/library/ai-elements/runner-logo';
 import { SessionModeBadge } from '../components/sessions/session-mode-badge';
 import {
   appendStreamEvent,
+  finalizeStreamEvents,
   isAcpSession,
   parseSessionLog,
   parseStreamEventPayload,
@@ -75,7 +76,7 @@ export function SessionDetailPage() {
       setLogs(data);
       const nextStreamEvents = data
         .reduce<SessionStreamEvent[]>((acc, log) => appendStreamEvent(acc, parseSessionLog(log)), []);
-      setStreamEvents(nextStreamEvents);
+      setStreamEvents(finalizeStreamEvents(nextStreamEvents));
     } finally {
       setLogsLoading(false);
     }
@@ -110,6 +111,10 @@ export function SessionDetailPage() {
               },
             ]);
           }
+          if (streamEvent.type === 'complete') {
+            void loadSession();
+            void loadLogs();
+          }
         }
       } catch {
         // ignore malformed
@@ -117,7 +122,7 @@ export function SessionDetailPage() {
     };
 
     return () => ws.close();
-  }, [session]);
+  }, [session, loadSession, loadLogs]);
 
   useEffect(() => {
     const container = logRef.current;
