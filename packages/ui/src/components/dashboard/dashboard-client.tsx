@@ -64,7 +64,7 @@ export function DashboardClient({ specs, stats, projectColor, projectName, baseP
     })
     .slice(0, 10);
 
-  const statusCounts = stats.specsByStatus.reduce<Record<string, number>>((acc: Record<string, number>, entry: { status: string; count: number }) => {
+  const statusCounts = (stats.specsByStatus ?? []).reduce<Record<string, number>>((acc: Record<string, number>, entry: { status: string; count: number }) => {
     acc[entry.status] = entry.count;
     return acc;
   }, {});

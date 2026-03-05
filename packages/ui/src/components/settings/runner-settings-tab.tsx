@@ -22,6 +22,11 @@ import {
   DialogHeader,
   DialogTitle,
   Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Textarea,
   DropdownMenu,
   DropdownMenuContent,
@@ -642,6 +647,7 @@ export function RunnerSettingsTab() {
         <RunnerDialog
           runner={editingRunner}
           existingIds={runners.map((runner) => runner.id)}
+          projectPath={projectPath}
           onSave={handleSaveRunner}
           onCancel={() => {
             setShowDialog(false);
@@ -656,6 +662,7 @@ export function RunnerSettingsTab() {
 interface RunnerDialogProps {
   runner: RunnerDefinition | null;
   existingIds: string[];
+  projectPath?: string | null;
   onSave: (payload: {
     id: string;
     name?: string | null;
@@ -668,7 +675,7 @@ interface RunnerDialogProps {
   onCancel: () => void;
 }
 
-function RunnerDialog({ runner, existingIds, onSave, onCancel }: RunnerDialogProps) {
+function RunnerDialog({ runner, existingIds, projectPath, onSave, onCancel }: RunnerDialogProps) {
   const { t } = useTranslation('common');
   const isEditing = Boolean(runner);
   const [formData, setFormData] = useState({
@@ -685,6 +692,21 @@ function RunnerDialog({ runner, existingIds, onSave, onCancel }: RunnerDialogPro
       : '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+  const [modelsLoading, setModelsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!runner?.id || !runner.modelProviders?.length) return;
+    let cancelled = false;
+    setModelsLoading(true);
+    api.getRunnerModels(runner.id, projectPath ?? undefined)
+      .then((resp) => {
+        if (!cancelled) setAvailableModels(resp.models ?? []);
+      })
+      .catch(() => { /* best-effort */ })
+      .finally(() => { if (!cancelled) setModelsLoading(false); });
+    return () => { cancelled = true; };
+  }, [runner?.id, runner?.modelProviders, projectPath]);
 
   const validate = () => {
     const nextErrors: Record<string, string> = {};
@@ -806,12 +828,31 @@ function RunnerDialog({ runner, existingIds, onSave, onCancel }: RunnerDialogPro
 
           <div className="space-y-2">
             <Label htmlFor="runner-default-model">{t('settings.runners.fields.defaultModel')}</Label>
-            <Input
-              id="runner-default-model"
-              value={formData.model}
-              onChange={(event) => setFormData({ ...formData, model: event.target.value })}
-              placeholder={t('settings.runners.placeholders.defaultModel')}
-            />
+            {availableModels.length > 0 ? (
+              <Select
+                value={formData.model || undefined}
+                onValueChange={(value) => setFormData({ ...formData, model: value })}
+              >
+                <SelectTrigger id="runner-default-model">
+                  <SelectValue placeholder={t('settings.runners.placeholders.defaultModel')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableModels.map((modelId) => (
+                    <SelectItem key={modelId} value={modelId}>
+                      {modelId}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                id="runner-default-model"
+                value={formData.model}
+                onChange={(event) => setFormData({ ...formData, model: event.target.value })}
+                placeholder={modelsLoading ? t('settings.runners.validation.checking') : t('settings.runners.placeholders.defaultModel')}
+                disabled={modelsLoading}
+              />
+            )}
           </div>
 
           <div className="space-y-2">

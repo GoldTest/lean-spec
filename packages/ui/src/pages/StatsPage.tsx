@@ -47,17 +47,17 @@ export function StatsPage() {
   const statsQuery = useProjectStats(resolvedProjectId);
   const specsQuery = useSpecsList(resolvedProjectId);
   const stats = (statsQuery.data as Stats | undefined) ?? null;
-  const specs = (specsQuery.data as Spec[] | undefined) ?? [];
+  const specs = useMemo(() => (specsQuery.data as Spec[] | undefined) ?? [], [specsQuery.data]);
   const loading = statsQuery.isLoading || specsQuery.isLoading;
   const error = statsQuery.error || specsQuery.error ? t('statsPage.state.errorDescription') : null;
 
   // Prepare data for charts - must be before any conditional returns
-  const statusCounts = useMemo(() => stats?.specsByStatus.reduce<Record<string, number>>((acc: Record<string, number>, entry: { status: string; count: number }) => {
+  const statusCounts = useMemo(() => (stats?.specsByStatus ?? []).reduce<Record<string, number>>((acc: Record<string, number>, entry: { status: string; count: number }) => {
     acc[entry.status] = entry.count;
     return acc;
-  }, {}) || {}, [stats?.specsByStatus]);
+  }, {}), [stats?.specsByStatus]);
 
-  const statusData = useMemo(() => stats?.specsByStatus.map(({ status, count }: { status: string; count: number }) => ({
+  const statusData = useMemo(() => (stats?.specsByStatus ?? []).map(({ status, count }: { status: string; count: number }) => ({
     name: t(`status.${status}`, { defaultValue: status }),
     value: count,
     fill: STATUS_COLORS[status as keyof typeof STATUS_COLORS] || '#6B7280',

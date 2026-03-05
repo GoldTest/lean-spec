@@ -111,9 +111,10 @@ impl SpecLoader {
         let cache = spec_cache()
             .read()
             .expect("spec cache lock poisoned while reading relationship index");
-        let directory = cache
-            .get(&self.specs_dir)
-            .ok_or_else(|| LoadError::SpecsDirNotFound(self.specs_dir.clone()))?;
+        let directory = match cache.get(&self.specs_dir) {
+            Some(dir) => dir,
+            None => return Ok(SpecRelationshipIndex::default()),
+        };
 
         Ok(directory.relationship_index.clone())
     }
@@ -165,7 +166,7 @@ impl SpecLoader {
 
     fn load_all_internal(&self, include_content: bool) -> Result<Vec<SpecInfo>, LoadError> {
         if !self.specs_dir.exists() {
-            return Err(LoadError::SpecsDirNotFound(self.specs_dir.clone()));
+            return Ok(vec![]);
         }
 
         let readme_paths: Vec<PathBuf> = WalkDir::new(&self.specs_dir)

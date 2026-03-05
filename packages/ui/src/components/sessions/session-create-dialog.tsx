@@ -246,28 +246,30 @@ export function SessionCreateDialog({
                   triggerLabel={t('sessions.labels.attachSpec')}
                 />
 
-                <PromptInputSelect value={runner} onValueChange={setRunner}>
-                  <PromptInputSelectTrigger className="h-8 w-auto rounded-full border border-border/70 px-3 py-1.5 text-xs">
-                    <span className="flex items-center gap-1.5">
-                      <PromptInputSelectValue placeholder={t('sessions.labels.runner')} />
-                    </span>
-                  </PromptInputSelectTrigger>
-                  <PromptInputSelectContent>
-                    {runnerDefs.map((def) => (
-                      <PromptInputSelectItem key={def.id} value={def.id}>
-                        <span className="flex items-center gap-2">
-                          <RunnerLogo runnerId={def.id} size={16} className="rounded-sm" />
-                          {getRunnerLabel(def.id)}
-                          {def.available !== true && (
-                            <Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">
-                              {t('settings.runners.validation.checking')}
-                            </Badge>
-                          )}
-                        </span>
-                      </PromptInputSelectItem>
-                    ))}
-                  </PromptInputSelectContent>
-                </PromptInputSelect>
+                {runnerDefs.length > 0 && (
+                  <PromptInputSelect value={runner} onValueChange={setRunner}>
+                    <PromptInputSelectTrigger className="h-8 w-auto rounded-full border border-border/70 px-3 py-1.5 text-xs">
+                      <span className="flex items-center gap-1.5">
+                        <PromptInputSelectValue placeholder={t('sessions.labels.runner')} />
+                      </span>
+                    </PromptInputSelectTrigger>
+                    <PromptInputSelectContent>
+                      {runnerDefs.map((def) => (
+                        <PromptInputSelectItem key={def.id} value={def.id}>
+                          <span className="flex items-center gap-2">
+                            <RunnerLogo runnerId={def.id} size={16} className="rounded-sm" />
+                            {getRunnerLabel(def.id)}
+                            {def.available !== true && (
+                              <Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">
+                                {t('settings.runners.validation.checking')}
+                              </Badge>
+                            )}
+                          </span>
+                        </PromptInputSelectItem>
+                      ))}
+                    </PromptInputSelectContent>
+                  </PromptInputSelect>
+                )}
 
                 {runnerModels.length > 0 && (
                   <PromptInputSelect value={model} onValueChange={handleModelChange}>
