@@ -32,6 +32,8 @@ import {
 } from '../lib/session-stream';
 import { useSessionDetailLayoutContext } from '../components/session-detail-layout.context';
 
+const ACTIVE_SESSION_STATUSES = new Set<Session['status']>(['pending', 'running', 'paused']);
+
 export function SessionDetailPage() {
   const { t } = useTranslation('common');
   const { sessionId, projectId } = useParams<{ sessionId: string; projectId: string }>();
@@ -51,12 +53,13 @@ export function SessionDetailPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'messages' | 'verbose'>('messages');
   const [copySuccess, setCopySuccess] = useState(false);
+  const [durationNowMs, setDurationNowMs] = useState<number>(() => Date.now());
   const logRef = useRef<HTMLDivElement>(null);
   const { setMobileOpen } = useSessionDetailLayoutContext();
 
-  const loadSession = useCallback(async () => {
+  const loadSession = useCallback(async (silent = false) => {
     if (!sessionId || !projectReady || projectLoading) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     try {
       const data = await api.getSession(sessionId);
       setSession(data);
@@ -64,13 +67,13 @@ export function SessionDetailPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : t('sessions.errors.load'));
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [projectLoading, projectReady, sessionId, t]);
 
-  const loadLogs = useCallback(async () => {
+  const loadLogs = useCallback(async (silent = false) => {
     if (!sessionId || !projectReady || projectLoading) return;
-    setLogsLoading(true);
+    if (!silent) setLogsLoading(true);
     try {
       const data = await api.getSessionLogs(sessionId);
       setLogs(data);
@@ -78,7 +81,7 @@ export function SessionDetailPage() {
         .reduce<SessionStreamEvent[]>((acc, log) => appendStreamEvent(acc, parseSessionLog(log)), []);
       setStreamEvents(finalizeStreamEvents(nextStreamEvents));
     } finally {
-      setLogsLoading(false);
+      if (!silent) setLogsLoading(false);
     }
   }, [projectLoading, projectReady, sessionId]);
 
@@ -88,7 +91,7 @@ export function SessionDetailPage() {
   }, [loadSession, loadLogs]);
 
   useEffect(() => {
-    if (!session || session.status !== 'running') return;
+    if (!session || !ACTIVE_SESSION_STATUSES.has(session.status)) return;
 
     const base = import.meta.env.VITE_API_URL || window.location.origin;
     const wsUrl = base.replace(/^http/, 'ws') + `/api/sessions/${session.id}/stream`;
@@ -112,8 +115,8 @@ export function SessionDetailPage() {
             ]);
           }
           if (streamEvent.type === 'complete') {
-            void loadSession();
-            void loadLogs();
+            void loadSession(true);
+            void loadLogs(true);
           }
         }
       } catch {
@@ -123,6 +126,27 @@ export function SessionDetailPage() {
 
     return () => ws.close();
   }, [session, loadSession, loadLogs]);
+
+  useEffect(() => {
+    if (!session || !ACTIVE_SESSION_STATUSES.has(session.status)) return;
+
+    const intervalId = window.setInterval(() => {
+      void loadSession(true);
+      void loadLogs(true);
+    }, 2000);
+
+    return () => window.clearInterval(intervalId);
+  }, [loadLogs, loadSession, session]);
+
+  useEffect(() => {
+    if (!session || !ACTIVE_SESSION_STATUSES.has(session.status)) return;
+
+    const intervalId = window.setInterval(() => {
+      setDurationNowMs(Date.now());
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [session]);
 
   useEffect(() => {
     const container = logRef.current;
@@ -181,7 +205,7 @@ export function SessionDetailPage() {
     });
   }, [isAcp, searchQuery, streamEvents, showHeartbeatLogs, viewMode]);
 
-  const durationLabel = session ? formatSessionDuration(session) : null;
+  const durationLabel = session ? formatSessionDuration(session, durationNowMs) : null;
   const tokenLabel = session ? formatTokenCount(session.tokenCount) : null;
   const costEstimate = session ? estimateSessionCost(session.tokenCount) : null;
 
