@@ -7,7 +7,7 @@
 
 use crate::error::{CoreError, CoreResult};
 use crate::sessions::database::SessionDatabase;
-use crate::sessions::runner::RunnerRegistry;
+use crate::sessions::runner::{RunnerProtocol, RunnerRegistry};
 use crate::sessions::types::*;
 use crate::spec_ops::SpecLoader;
 use crate::types::LeanSpecConfig;
@@ -84,7 +84,7 @@ pub struct ArchiveOptions {
 /// Build a context prompt for the AI runner by loading spec content and combining
 /// it with the user's explicit prompt. Returns `None` if there is neither spec
 /// content nor an explicit prompt.
-fn build_context_prompt(
+pub fn build_context_prompt(
     project_path: &str,
     spec_ids: &[String],
     user_prompt: Option<&str>,
@@ -165,6 +165,21 @@ impl SessionManager {
         runner: Option<String>,
         mode: SessionMode,
     ) -> CoreResult<Session> {
+        self.create_session_with_options(project_path, spec_ids, prompt, runner, mode, None, None)
+            .await
+    }
+
+    /// Create a new session with execution overrides (does not start it)
+    pub async fn create_session_with_options(
+        &self,
+        project_path: String,
+        spec_ids: Vec<String>,
+        prompt: Option<String>,
+        runner: Option<String>,
+        mode: SessionMode,
+        model_override: Option<String>,
+        protocol_override: Option<RunnerProtocol>,
+    ) -> CoreResult<Session> {
         let registry = RunnerRegistry::load(PathBuf::from(&project_path).as_path())?;
 
         let runner_id = match runner {
@@ -198,13 +213,16 @@ impl SessionManager {
                 runner_id
             )));
         }
+        let protocol = infer_runner_protocol(runner, protocol_override)?;
 
         let session_id = Uuid::new_v4().to_string();
         let mut session = Session::new(session_id, project_path, spec_ids, prompt, runner_id, mode);
-        session.metadata.insert(
-            "protocol".to_string(),
-            infer_runner_protocol(&session.runner).to_string(),
-        );
+        session
+            .metadata
+            .insert("protocol".to_string(), protocol.to_string());
+        if let Some(model) = model_override.filter(|value| !value.trim().is_empty()) {
+            session.metadata.insert("model".to_string(), model);
+        }
 
         self.db.insert_session(&session)?;
 
@@ -232,8 +250,13 @@ impl SessionManager {
             CoreError::ConfigError(format!("Runner not available: {}", session.runner))
         })?;
         runner.validate_command()?;
-
-        let is_acp = is_acp_runner(&session.runner);
+        let protocol = session
+            .metadata
+            .get("protocol")
+            .map(|value| value.parse::<RunnerProtocol>())
+            .transpose()?
+            .unwrap_or(infer_runner_protocol(runner, None)?);
+        let is_acp = protocol == RunnerProtocol::Acp;
 
         // Build config
         let mut env_vars = HashMap::new();
@@ -265,6 +288,20 @@ impl SessionManager {
             }
         }
 
+        let selected_model = session
+            .metadata
+            .get("model")
+            .cloned()
+            .or_else(|| runner.model.clone());
+        let mut runner_args = if is_acp {
+            vec!["--acp".to_string()]
+        } else {
+            Vec::new()
+        };
+        if let Some(model) = selected_model {
+            runner_args.extend(runner.build_model_args(&model)?);
+        }
+
         let config = SessionConfig {
             project_path: session.project_path.clone(),
             spec_ids: session.spec_ids.clone(),
@@ -278,11 +315,7 @@ impl SessionManager {
             max_iterations: None,
             working_dir: Some(session.project_path.clone()),
             env_vars,
-            runner_args: if is_acp {
-                vec!["--acp".to_string()]
-            } else {
-                Vec::new()
-            },
+            runner_args,
         };
 
         // Build command
@@ -1241,16 +1274,11 @@ impl SessionManager {
     }
 }
 
-fn infer_runner_protocol(runner_id: &str) -> &'static str {
-    if is_acp_runner(runner_id) {
-        "acp"
-    } else {
-        "subprocess"
-    }
-}
-
-fn is_acp_runner(runner_id: &str) -> bool {
-    matches!(runner_id, "copilot" | "codex")
+fn infer_runner_protocol(
+    runner: &crate::sessions::runner::RunnerDefinition,
+    override_protocol: Option<RunnerProtocol>,
+) -> CoreResult<RunnerProtocol> {
+    runner.resolve_protocol(override_protocol)
 }
 
 fn build_acp_prompt_content(

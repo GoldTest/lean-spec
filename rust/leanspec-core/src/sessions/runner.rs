@@ -37,6 +37,10 @@ pub struct RunnerConfig {
     /// `prompt_flag` to `"-"` to suppress prompt injection entirely.
     #[serde(default)]
     pub prompt_flag: Option<String>,
+    protocol: None,
+    /// Optional execution protocol override. Defaults to shell when omitted.
+    #[serde(default)]
+    pub protocol: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -67,6 +71,45 @@ pub struct RunnerDefinition {
     /// - `Some("-")` — suppress prompt injection (runner doesn't accept a prompt arg).
     /// - `None` — append the prompt as a positional argument.
     pub prompt_flag: Option<String>,
+    protocol: None,
+    /// Optional execution protocol override (`acp` or `shell`). Defaults to shell.
+    pub protocol: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RunnerProtocol {
+    Acp,
+    Shell,
+}
+
+impl RunnerProtocol {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Acp => "acp",
+            Self::Shell => "shell",
+        }
+    }
+}
+
+impl std::fmt::Display for RunnerProtocol {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::str::FromStr for RunnerProtocol {
+    type Err = CoreError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        match value.trim().to_lowercase().as_str() {
+            "acp" => Ok(Self::Acp),
+            "shell" | "subprocess" => Ok(Self::Shell),
+            other => Err(CoreError::ConfigError(format!(
+                "Unknown runner protocol: {}",
+                other
+            ))),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, TS)]
@@ -140,6 +183,77 @@ impl RunnerDefinition {
         cmd.stderr(Stdio::piped());
 
         Ok(cmd)
+    }
+
+    pub fn command_preview(&self, config: &SessionConfig) -> String {
+        let mut parts = Vec::new();
+
+        if let Some(command) = &self.command {
+            parts.push(shell_escape(command));
+        } else {
+            parts.push(shell_escape(&self.id));
+        }
+
+        for arg in &self.args {
+            parts.push(shell_escape(arg));
+        }
+
+        for arg in &config.runner_args {
+            parts.push(shell_escape(arg));
+        }
+
+        if let Some(prompt) = &config.prompt {
+            match self.prompt_flag.as_deref() {
+                Some("-") => {}
+                Some(flag) => {
+                    parts.push(shell_escape(flag));
+                    parts.push(shell_escape(prompt));
+                }
+                None => parts.push(shell_escape(prompt)),
+            }
+        }
+
+        parts.join(" ")
+    }
+
+    pub fn resolve_protocol(
+        &self,
+        override_protocol: Option<RunnerProtocol>,
+    ) -> CoreResult<RunnerProtocol> {
+        if let Some(protocol) = override_protocol {
+            return Ok(protocol);
+        }
+
+        match self.protocol.as_deref() {
+            Some(value) => value.parse(),
+            None => Ok(RunnerProtocol::Shell),
+        }
+    }
+
+    pub fn build_model_args(&self, model: &str) -> CoreResult<Vec<String>> {
+        let model = model.trim();
+        if model.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        if self.args.iter().any(|arg| arg == "-m") || self.id == "codex" {
+            return Ok(vec!["-m".to_string(), model.to_string()]);
+        }
+
+        if self.args.iter().any(|arg| arg == "--model")
+            || self.model_providers.is_some()
+            || matches!(
+                self.id.as_str(),
+                "claude" | "copilot" | "aider" | "gemini" | "opencode"
+            )
+        {
+            return Ok(vec!["--model".to_string(), model.to_string()]);
+        }
+
+        Err(CoreError::ConfigError(format!(
+            "Runner '{}' does not advertise model override support",
+            self.id
+        )))
     }
 
     pub fn validate_command(&self) -> CoreResult<()> {
@@ -230,6 +344,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: Some("CLAUDE.md".to_string()),
                 prompt_flag: Some("--print".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -250,6 +365,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("--prompt".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -270,6 +386,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -294,6 +411,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -321,6 +439,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("--message".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -341,6 +460,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -361,6 +481,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: Some("GEMINI.md".to_string()),
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -381,6 +502,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -401,6 +523,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -421,6 +544,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -441,6 +565,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -461,6 +586,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -484,6 +610,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -504,6 +631,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -524,6 +652,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -544,6 +673,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -567,6 +697,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -587,6 +718,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -607,6 +739,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -627,6 +760,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -647,6 +781,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: None,
+                protocol: None,
             },
         );
         runners.insert(
@@ -667,6 +802,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -687,6 +823,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -707,6 +844,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
         runners.insert(
@@ -727,6 +865,7 @@ impl RunnerRegistry {
                 }),
                 symlink_file: None,
                 prompt_flag: Some("-".to_string()),
+                protocol: None,
             },
         );
 
@@ -864,6 +1003,7 @@ impl RunnerRegistry {
                     detection: override_config.detection,
                     symlink_file: override_config.symlink_file,
                     prompt_flag: override_config.prompt_flag,
+                    protocol: override_config.protocol,
                 };
                 self.runners.insert(id, definition);
             }
@@ -904,6 +1044,9 @@ fn merge_runner(mut base: RunnerDefinition, override_config: RunnerConfig) -> Ru
     }
     if let Some(prompt_flag) = override_config.prompt_flag {
         base.prompt_flag = Some(prompt_flag);
+    }
+    if let Some(protocol) = override_config.protocol {
+        base.protocol = Some(protocol);
     }
     base
 }
@@ -1066,6 +1209,21 @@ fn extension_installed(home: Option<&Path>, extension_prefix: &str) -> bool {
 
 /// Extract version number from command output.
 /// Handles common formats like "vX.Y.Z", "X.Y.Z", "version X.Y.Z", etc.
+fn shell_escape(value: &str) -> String {
+    if value.is_empty() {
+        return "''".to_string();
+    }
+
+    if value
+        .chars()
+        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '/' | '_' | '-' | '.' | ':' | '@' | '='))
+    {
+        return value.to_string();
+    }
+
+    format!("'{}'", value.replace('\'', "'\\''"))
+}
+
 fn extract_version(text: &str) -> Option<String> {
     // Common patterns for version strings
     let version_patterns = [
@@ -1134,6 +1292,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
 
         let override_config = RunnerConfig {
@@ -1146,6 +1305,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
 
         let merged = merge_runner(base, override_config);
@@ -1214,6 +1374,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
         let models = resolve_runner_models(&copilot, &registry);
         // github-copilot provider should have tool-call capable models
@@ -1241,6 +1402,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
         let models = resolve_runner_models(&runner, &registry);
         assert!(
@@ -1265,6 +1427,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
         let models = resolve_runner_models(&runner, &registry);
         assert!(
@@ -1289,6 +1452,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
         let models = resolve_runner_models(&runner, &registry);
         assert!(
@@ -1318,6 +1482,7 @@ mod tests {
             detection: None,
             symlink_file: None,
             prompt_flag: None,
+            protocol: None,
         };
         let models = resolve_runner_models(&runner, &registry);
         assert!(
