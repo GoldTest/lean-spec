@@ -456,15 +456,14 @@ impl GitWorktreeManager {
                     result.removed_worktrees += 1;
                 }
 
-                if !matches!(session.status, WorktreeStatus::Conflict) {
-                    if git_run_allow_failure(
+                if !matches!(session.status, WorktreeStatus::Conflict)
+                    && git_run_allow_failure(
                         &self.repo_root,
                         &["branch", "-D", &session.branch_name],
                     )?
                     .success
-                    {
-                        result.removed_branches += 1;
-                    }
+                {
+                    result.removed_branches += 1;
                 }
 
                 result.pruned_entries += 1;
@@ -580,11 +579,10 @@ fn short_session_id(session_id: &str) -> String {
 
 fn repo_slug(repo_root: &Path) -> String {
     sanitize_branch_component(
-        &repo_root
+        repo_root
             .file_name()
             .and_then(|value| value.to_str())
-            .unwrap_or("project")
-            .to_string(),
+            .unwrap_or("project"),
     )
 }
 
