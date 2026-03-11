@@ -16,10 +16,57 @@ on:
         default: false
         type: boolean
 
+env:
+  IMAGE: ghcr.io/codervisor/leanspec
+
 jobs:
-  docker:
-    name: Build and push Docker image
+  # ── Lightweight job to compute shared config ─────────────────────────
+  config:
+    name: Resolve build config
     runs-on: ubuntu-latest
+    outputs:
+      npm_tag: ${{ steps.cfg.outputs.npm_tag }}
+      is_release: ${{ steps.cfg.outputs.is_release }}
+      version: ${{ steps.ver.outputs.value }}
+      push: ${{ steps.cfg.outputs.push }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine build config
+        id: cfg
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "npm_tag=latest"   >> "$GITHUB_OUTPUT"
+            echo "is_release=true"  >> "$GITHUB_OUTPUT"
+            echo "push=true"        >> "$GITHUB_OUTPUT"
+          elif [ "${{ inputs.tag }}" = "latest" ]; then
+            echo "npm_tag=latest"   >> "$GITHUB_OUTPUT"
+            echo "is_release=true"  >> "$GITHUB_OUTPUT"
+            echo "push=${{ !inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "npm_tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+            echo "push=${{ !inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract version
+        id: ver
+        run: echo "value=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+
+  # ── Native builds on each architecture ───────────────────────────────
+  build:
+    name: Build (${{ matrix.arch }})
+    needs: config
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+            platform: linux/amd64
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
       packages: write
@@ -27,23 +74,55 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine build config
-        id: config
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
-            echo "is_release=true" >> "$GITHUB_OUTPUT"
-          elif [ "${{ inputs.tag }}" = "latest" ]; then
-            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
-            echo "is_release=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "npm_tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-            echo "is_release=false" >> "$GITHUB_OUTPUT"
-          fi
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Extract version from package.json
-        id: version
-        run: echo "value=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          platforms: ${{ matrix.platform }}
+          build-args: NPM_TAG=${{ needs.config.outputs.npm_tag }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=${{ needs.config.outputs.push }}
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-${{ matrix.arch }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  # ── Merge into a single multi-arch manifest ──────────────────────────
+  merge:
+    name: Create multi-arch manifest
+    needs: [config, build]
+    if: needs.config.outputs.push == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: digest-*
+          merge-multiple: true
 
       - uses: docker/setup-buildx-action@v3
 
@@ -55,44 +134,39 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker metadata (release)
-        if: steps.config.outputs.is_release == 'true'
+        if: needs.config.outputs.is_release == 'true'
         uses: docker/metadata-action@v5
         id: meta-release
         with:
-          images: ghcr.io/codervisor/leanspec
+          images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=${{ steps.version.outputs.value }}
+            type=raw,value=${{ needs.config.outputs.version }}
             type=raw,value=latest
 
       - name: Docker metadata (dev)
-        if: steps.config.outputs.is_release == 'false'
+        if: needs.config.outputs.is_release == 'false'
         uses: docker/metadata-action@v5
         id: meta-dev
         with:
-          images: ghcr.io/codervisor/leanspec
+          images: ${{ env.IMAGE }}
           tags: |
-            type=raw,value=${{ steps.config.outputs.npm_tag }}
+            type=raw,value=${{ needs.config.outputs.npm_tag }}
 
-      - name: Build and push (release)
-        if: steps.config.outputs.is_release == 'true'
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker
-          push: ${{ github.event_name == 'release' || !inputs.dry_run }}
-          tags: ${{ steps.meta-release.outputs.tags }}
-          labels: ${{ steps.meta-release.outputs.labels }}
-          build-args: NPM_TAG=latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Create manifest and push
+        run: |
+          if [ "${{ needs.config.outputs.is_release }}" = "true" ]; then
+            TAGS_JSON='${{ steps.meta-release.outputs.json }}'
+          else
+            TAGS_JSON='${{ steps.meta-dev.outputs.json }}'
+          fi
+          docker buildx imagetools create \
+            $(echo "$TAGS_JSON" | jq -cr '.tags | map("-t " + .) | join(" ")') \
+            $(printf '${{ env.IMAGE }}@sha256:%s ' $(ls /tmp/digests/))
 
-      - name: Build and push (dev)
-        if: steps.config.outputs.is_release == 'false'
-        uses: docker/build-push-action@v6
-        with:
-          context: ./docker
-          push: ${{ !inputs.dry_run }}
-          tags: ${{ steps.meta-dev.outputs.tags }}
-          labels: ${{ steps.meta-dev.outputs.labels }}
-          build-args: NPM_TAG=${{ steps.config.outputs.npm_tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Inspect image
+        run: |
+          if [ "${{ needs.config.outputs.is_release }}" = "true" ]; then
+            docker buildx imagetools inspect ${{ env.IMAGE }}:${{ needs.config.outputs.version }}
+          else
+            docker buildx imagetools inspect ${{ env.IMAGE }}:${{ needs.config.outputs.npm_tag }}
+          fi
