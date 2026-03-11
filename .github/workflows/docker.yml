@@ -63,9 +63,11 @@ jobs:
           - arch: amd64
             runner: ubuntu-latest
             platform: linux/amd64
+            platform_pkg: http-linux-x64
           - arch: arm64
             runner: ubuntu-24.04-arm
             platform: linux/arm64
+            platform_pkg: http-linux-arm64
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -89,7 +91,9 @@ jobs:
         with:
           context: ./docker
           platforms: ${{ matrix.platform }}
-          build-args: NPM_TAG=${{ needs.config.outputs.npm_tag }}
+          build-args: |
+            NPM_TAG=${{ needs.config.outputs.npm_tag }}
+            PLATFORM_PKG=${{ matrix.platform_pkg }}
           outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=${{ needs.config.outputs.push }}
 
       - name: Export digest
