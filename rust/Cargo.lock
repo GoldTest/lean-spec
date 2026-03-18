@@ -1823,6 +1823,7 @@ dependencies = [
  "anthropic",
  "async-openai",
  "async-trait",
+ "base64 0.22.1",
  "chrono",
  "dirs",
  "flate2",
