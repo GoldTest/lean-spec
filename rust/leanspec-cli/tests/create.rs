@@ -329,7 +329,6 @@ fn test_create_file_takes_precedence_over_content() {
 }
 
 #[test]
-#[ignore = "--description option not implemented in Rust CLI yet"]
 fn test_create_content_takes_precedence_over_description() {
     let ctx = TestContext::new();
     let cwd = ctx.path();
@@ -364,7 +363,6 @@ fn test_create_content_takes_precedence_over_description() {
 }
 
 #[test]
-#[ignore = "--description option not implemented in Rust CLI yet"]
 fn test_create_with_description_when_no_content() {
     let ctx = TestContext::new();
     let cwd = ctx.path();

@@ -35,6 +35,7 @@ pub struct CreateParams {
     pub content: Option<String>,
     pub file: Option<String>,
     pub assignee: Option<String>,
+    pub description: Option<String>,
 }
 
 /// Strip a leading numeric prefix like "006-" from a spec name.
@@ -65,6 +66,7 @@ pub fn run(params: CreateParams) -> Result<(), Box<dyn Error>> {
     let content_override = params.content;
     let file_override = params.file;
     let assignee = params.assignee;
+    let description = params.description;
     let has_content_source = content_override.is_some() || file_override.is_some();
 
     // 1. Find project root and load config
@@ -141,13 +143,25 @@ pub fn run(params: CreateParams) -> Result<(), Box<dyn Error>> {
             .load(template.as_deref())
             .map_err(|e| format!("Failed to load template: {}", e))?;
 
-        let content = apply_variables(
+        let mut content = apply_variables(
             &template_content,
             &title,
             &resolved_status,
             priority,
             &tags_vec,
         )?;
+
+        // Inject --description into the template body after the title heading
+        if let Some(desc) = &description {
+            if let Some(pos) = content.find("\n\n## ") {
+                // Insert description between title and first section
+                content.insert_str(pos + 1, &format!("\n{}\n", desc));
+            } else if let Some(pos) = content.find("\n\n") {
+                // Insert after first blank line (after title)
+                content.insert_str(pos + 1, &format!("\n{}\n", desc));
+            }
+        }
+
         apply_relationships(content, parent.as_deref(), &depends_on)?
     };
 
