@@ -166,6 +166,22 @@ pub(crate) enum Commands {
         /// Spec(s) this new spec depends on
         #[arg(long = "depends-on", num_args = 1..)]
         depends_on: Vec<String>,
+
+        /// Full markdown content for the spec body (may include frontmatter)
+        #[arg(long, allow_hyphen_values = true)]
+        content: Option<String>,
+
+        /// Read spec content from a file path (takes precedence over --content)
+        #[arg(short, long)]
+        file: Option<String>,
+
+        /// Assignee for the spec
+        #[arg(short, long)]
+        assignee: Option<String>,
+
+        /// Short description (inserted into template body under the title)
+        #[arg(long)]
+        description: Option<String>,
     },
 
     /// List example projects
@@ -206,6 +222,12 @@ pub(crate) enum Commands {
         /// Show file sizes
         #[arg(short, long)]
         size: bool,
+    },
+
+    /// Manage GitHub repository integration
+    GitHub {
+        #[command(subcommand)]
+        action: GitHubSubcommand,
     },
 
     /// Show timeline with dependencies
@@ -268,13 +290,6 @@ pub(crate) enum Commands {
         /// Skip skill installation entirely
         #[arg(long)]
         no_skill: bool,
-    },
-
-    /// Manage agent skills via skills.sh
-    Skill {
-        /// Action: install, update, list
-        #[arg(default_value = "help")]
-        action: String,
     },
 
     /// Run a configured runner from the current project
@@ -573,6 +588,10 @@ pub(crate) enum Commands {
         /// Skip completion verification or stage skipping guard (draft -> in-progress/complete)
         #[arg(short, long)]
         force: bool,
+
+        /// Expected content hash for optimistic concurrency (fails if content changed)
+        #[arg(long = "expected-hash")]
+        expected_hash: Option<String>,
     },
 
     /// Validate specs for issues
@@ -613,6 +632,48 @@ pub(crate) enum Commands {
     Runner {
         #[command(subcommand)]
         action: RunnerSubcommand,
+    },
+}
+
+#[derive(Subcommand)]
+pub(crate) enum GitHubSubcommand {
+    /// Detect specs in a GitHub repository
+    Detect {
+        /// Repository (owner/repo or GitHub URL)
+        repo: String,
+
+        /// Branch to check (default: repo's default branch)
+        #[arg(short, long)]
+        branch: Option<String>,
+
+        /// GitHub token (default: GITHUB_TOKEN env var)
+        #[arg(long)]
+        token: Option<String>,
+    },
+
+    /// Import a GitHub repo as a LeanSpec project
+    Import {
+        /// Repository (owner/repo or GitHub URL)
+        repo: String,
+
+        /// Branch to track (default: repo's default branch)
+        #[arg(short, long)]
+        branch: Option<String>,
+
+        /// Display name for the project
+        #[arg(short, long)]
+        name: Option<String>,
+
+        /// GitHub token (default: GITHUB_TOKEN env var)
+        #[arg(long)]
+        token: Option<String>,
+    },
+
+    /// List your GitHub repositories
+    Repos {
+        /// GitHub token (default: GITHUB_TOKEN env var)
+        #[arg(long)]
+        token: Option<String>,
     },
 }
 

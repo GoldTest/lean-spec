@@ -7,7 +7,7 @@ use clap::Parser;
 use colored::Colorize;
 use std::process::ExitCode;
 
-use crate::cli_args::{Cli, Commands, RunnerSubcommand, SessionSubcommand};
+use crate::cli_args::{Cli, Commands, GitHubSubcommand, RunnerSubcommand, SessionSubcommand};
 
 fn main() -> ExitCode {
     let cli = Cli::parse();
@@ -70,6 +70,10 @@ fn main() -> ExitCode {
             tags,
             parent,
             depends_on,
+            content,
+            file,
+            assignee,
+            description,
         } => commands::create::run(commands::create::CreateParams {
             specs_dir: specs_dir.clone(),
             name,
@@ -80,6 +84,10 @@ fn main() -> ExitCode {
             tags,
             parent,
             depends_on,
+            content,
+            file,
+            assignee,
+            description,
         }),
         Commands::Rel {
             args,
@@ -105,6 +113,33 @@ fn main() -> ExitCode {
         } => commands::deps::run(&specs_dir, &spec, depth, upstream, downstream, &cli.output),
         Commands::Files { spec, size } => {
             commands::files::run(&specs_dir, &spec, size, &cli.output)
+        }
+        Commands::GitHub { action } => {
+            use commands::github::GitHubCommand as Cmd;
+            let cmd = match action {
+                GitHubSubcommand::Detect {
+                    repo,
+                    branch,
+                    token,
+                } => Cmd::Detect {
+                    repo,
+                    branch,
+                    token,
+                },
+                GitHubSubcommand::Import {
+                    repo,
+                    branch,
+                    name,
+                    token,
+                } => Cmd::Import {
+                    repo,
+                    branch,
+                    name,
+                    token,
+                },
+                GitHubSubcommand::Repos { token } => Cmd::Repos { token },
+            };
+            commands::github::run(cmd, &cli.output)
         }
         Commands::Gantt { status } => commands::gantt::run(&specs_dir, status, &cli.output),
         Commands::Init {
@@ -139,7 +174,6 @@ fn main() -> ExitCode {
                 no_skill,
             },
         ),
-        Commands::Skill { action } => commands::skill::run(&action),
         Commands::Run {
             prompt,
             spec,
@@ -260,6 +294,7 @@ fn main() -> ExitCode {
             prepend,
             content,
             force,
+            expected_hash,
         } => commands::update::run(
             &specs_dir,
             &specs,
@@ -279,6 +314,7 @@ fn main() -> ExitCode {
             prepend,
             content,
             force,
+            expected_hash,
         ),
         Commands::Validate {
             spec,

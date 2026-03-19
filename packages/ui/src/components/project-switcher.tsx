@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { ChevronsUpDown, Plus, Star, Settings, Loader2, Check } from 'lucide-react';
+import { ChevronsUpDown, Github, Plus, Star, Settings, Loader2, Check } from 'lucide-react';
 import { Button, cn } from '@/library';
 import {
   Command,
@@ -23,6 +23,7 @@ import {
 import { Skeleton } from '@/library';
 import { useCurrentProject, useProjectMutations, useProjects } from '../hooks/useProjectQuery';
 import { CreateProjectDialog } from './projects/create-project-dialog';
+import { GitHubImportDialog } from './projects/github-import-dialog';
 import { ProjectAvatar } from './shared/project-avatar';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -42,6 +43,7 @@ export function ProjectSwitcher({ collapsed }: ProjectSwitcherProps) {
 
   const [open, setOpen] = useState(false);
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
+  const [showGithubImportDialog, setShowGithubImportDialog] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
 
   // Show skeleton during initial load
@@ -97,6 +99,10 @@ export function ProjectSwitcher({ collapsed }: ProjectSwitcherProps) {
       <CreateProjectDialog
         open={showNewProjectDialog}
         onOpenChange={setShowNewProjectDialog}
+      />
+      <GitHubImportDialog
+        open={showGithubImportDialog}
+        onOpenChange={setShowGithubImportDialog}
       />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -196,6 +202,18 @@ export function ProjectSwitcher({ collapsed }: ProjectSwitcherProps) {
                   <div className="flex items-center gap-2">
                     <Plus className="h-4 w-4" />
                     <span>{t('projects.createProject')}</span>
+                  </div>
+                </CommandItem>
+                <CommandItem
+                  className="cursor-pointer"
+                  onSelect={() => {
+                    setOpen(false);
+                    setShowGithubImportDialog(true);
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <Github className="h-4 w-4" />
+                    <span>Import from GitHub</span>
                   </div>
                 </CommandItem>
                 <CommandItem

@@ -4,6 +4,7 @@ import {
   Check,
   CheckCircle2,
   FolderOpen,
+  Github,
   MoreVertical,
   Pencil,
   Plus,
@@ -20,6 +21,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { CreateProjectDialog } from '../components/projects/create-project-dialog';
+import { GitHubImportDialog } from '../components/projects/github-import-dialog';
 import { ProjectAvatar, getColorForName } from '../components/shared/project-avatar';
 import { ColorPicker } from '../components/shared/color-picker';
 import { PageHeader } from '../components/shared/page-header';
@@ -52,6 +54,7 @@ export function ProjectsPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isGithubImportOpen, setIsGithubImportOpen] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [validationStates, setValidationStates] = useState<Record<string, ProjectValidationState>>({});
@@ -234,10 +237,16 @@ export function ProjectsPage() {
               ? t('projectsPage.machineDescription', { machine: currentMachine?.label || '' })
               : (t('projectsPage.description') || t('projects.description'))}
             actions={!machineModeEnabled ? (
-              <Button onClick={() => setIsCreateDialogOpen(true)} size="lg" className="shadow-sm">
-                <Plus className="mr-2 h-4 w-4" />
-                {t('projects.newProject')}
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setIsGithubImportOpen(true)} size="lg" className="shadow-sm">
+                  <Github className="mr-2 h-4 w-4" />
+                  Import from GitHub
+                </Button>
+                <Button onClick={() => setIsCreateDialogOpen(true)} size="lg" className="shadow-sm">
+                  <Plus className="mr-2 h-4 w-4" />
+                  {t('projects.newProject')}
+                </Button>
+              </div>
             ) : undefined}
           />
 
@@ -437,6 +446,7 @@ export function ProjectsPage() {
         </div>
 
         <CreateProjectDialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen} />
+        <GitHubImportDialog open={isGithubImportOpen} onOpenChange={setIsGithubImportOpen} />
       </PageContainer>
     </div>
   );

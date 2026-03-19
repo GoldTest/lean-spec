@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish
 
 on:
   workflow_dispatch:
@@ -430,3 +430,14 @@ jobs:
           echo ""
           echo "Users can now install with:"
           echo "  npm install -g lean-spec"
+
+  # Step 4: Build and publish Docker image (AFTER npm packages are live)
+  docker:
+    needs: publish-main
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.dry_run }}
+    uses: ./.github/workflows/docker.yml
+    with:
+      npm_tag: ${{ (github.event_name == 'workflow_dispatch' && inputs.dev) && 'dev' || 'latest' }}
+    permissions:
+      contents: read
+      packages: write

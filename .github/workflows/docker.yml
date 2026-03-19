@@ -1,14 +1,25 @@
-name: Publish Docker Image
+name: Publish Docker
 
 on:
-  release:
-    types: [published]
+  # Called by publish.yml after npm packages are published
+  workflow_call:
+    inputs:
+      npm_tag:
+        description: 'npm dist-tag to pull (latest or dev)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Build without pushing'
+        required: false
+        default: false
+        type: boolean
+  # Standalone trigger for rebuilding Docker without re-publishing npm
   workflow_dispatch:
     inputs:
-      tag:
+      npm_tag:
         description: 'npm dist-tag to pull (latest or dev)'
         required: false
-        default: 'dev'
+        default: 'latest'
         type: string
       dry_run:
         description: 'Build without pushing'
@@ -35,18 +46,21 @@ jobs:
       - name: Determine build config
         id: cfg
         run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
+          NPM_TAG="${{ inputs.npm_tag }}"
+          DRY_RUN="${{ inputs.dry_run }}"
+
+          if [ "$NPM_TAG" = "latest" ]; then
             echo "npm_tag=latest"   >> "$GITHUB_OUTPUT"
             echo "is_release=true"  >> "$GITHUB_OUTPUT"
-            echo "push=true"        >> "$GITHUB_OUTPUT"
-          elif [ "${{ inputs.tag }}" = "latest" ]; then
-            echo "npm_tag=latest"   >> "$GITHUB_OUTPUT"
-            echo "is_release=true"  >> "$GITHUB_OUTPUT"
-            echo "push=${{ !inputs.dry_run }}" >> "$GITHUB_OUTPUT"
           else
-            echo "npm_tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+            echo "npm_tag=$NPM_TAG" >> "$GITHUB_OUTPUT"
             echo "is_release=false" >> "$GITHUB_OUTPUT"
-            echo "push=${{ !inputs.dry_run }}" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "push=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "push=true"  >> "$GITHUB_OUTPUT"
           fi
 
       - name: Extract version
