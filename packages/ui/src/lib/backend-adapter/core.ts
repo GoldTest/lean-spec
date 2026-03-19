@@ -32,6 +32,9 @@ import type {
   RunnerScope,
   RunnerValidateResponse,
   RunnerVersionResponse,
+  GitHubRepo,
+  GitHubDetectResult,
+  GitHubImportResult,
 } from '../../types/api';
 import type { ChatConfig } from '../../types/chat-config';
 import type { ModelsRegistryResponse } from '../../types/models-registry';
@@ -216,6 +219,12 @@ export interface BackendAdapter {
   getProjectFiles(projectId: string, path?: string): Promise<FileListResponse>;
   getProjectFile(projectId: string, path: string): Promise<FileContentResponse>;
   searchProjectFiles(projectId: string, query: string, limit?: number): Promise<FileSearchResponse>;
+
+  // GitHub integration
+  listGithubRepos(): Promise<GitHubRepo[]>;
+  detectGithubSpecs(repo: string, branch?: string, token?: string): Promise<GitHubDetectResult | null>;
+  importGithubRepo(repo: string, opts?: { branch?: string; specsPath?: string; name?: string; token?: string }): Promise<GitHubImportResult>;
+  syncGithubProject(projectId: string): Promise<{ projectId: string; syncedSpecs: number }>;
 }
 
 export type {
@@ -254,4 +263,7 @@ export type {
   FileSearchResponse,
   SpecSearchFilters,
   SpecSearchResponse,
+  GitHubRepo,
+  GitHubDetectResult,
+  GitHubImportResult,
 };

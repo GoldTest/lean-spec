@@ -37,7 +37,45 @@ import type {
   RunnerVersionResponse,
   ChatConfig,
   ModelsRegistryResponse,
+  GitHubRepo,
+  GitHubDetectResult,
+  GitHubImportResult,
 } from './core';
+
+interface RawGitHubRepo {
+  full_name: string;
+  description?: string | null;
+  default_branch: string;
+  private: boolean;
+  html_url: string;
+}
+
+interface RawGitHubDetectResult {
+  repo: string;
+  branch: string;
+  specs_dir: string;
+  spec_count: number;
+  specs: GitHubDetectResult['specs'];
+}
+
+type RawGitHubImportResult = {
+  projectId: string;
+  projectName: string;
+  repo: string;
+  branch: string;
+  specsPath: string;
+  syncedSpecs: number;
+};
+
+function normalizeGitHubRepo(r: RawGitHubRepo): GitHubRepo {
+  return {
+    fullName: r.full_name,
+    description: r.description,
+    defaultBranch: r.default_branch,
+    private: r.private,
+    htmlUrl: r.html_url,
+  };
+}
 
 type RawSession = Session & {
   project_path?: string;
@@ -689,5 +727,48 @@ export class HttpBackendAdapter implements BackendAdapter {
     return this.fetchAPI<FileSearchResponse>(
       `/api/projects/${encodeURIComponent(projectId)}/files/search?${params.toString()}`
     );
+  }
+
+  async listGithubRepos(): Promise<GitHubRepo[]> {
+    const data = await this.fetchAPI<{ repos: RawGitHubRepo[] }>('/api/github/repos');
+    return data.repos.map(normalizeGitHubRepo);
+  }
+
+  async detectGithubSpecs(repo: string, branch?: string, token?: string): Promise<GitHubDetectResult | null> {
+    const data = await this.fetchAPI<{ result: RawGitHubDetectResult | null }>('/api/github/detect', {
+      method: 'POST',
+      body: JSON.stringify({ repo, branch, token }),
+    });
+    if (!data.result) return null;
+    return {
+      repo: data.result.repo,
+      branch: data.result.branch,
+      specsDir: data.result.specs_dir,
+      specCount: data.result.spec_count,
+      specs: data.result.specs,
+    };
+  }
+
+  async importGithubRepo(repo: string, opts?: { branch?: string; specsPath?: string; name?: string; token?: string }): Promise<GitHubImportResult> {
+    const data = await this.fetchAPI<RawGitHubImportResult>('/api/github/import', {
+      method: 'POST',
+      body: JSON.stringify({ repo, branch: opts?.branch, specs_path: opts?.specsPath, name: opts?.name, token: opts?.token }),
+    });
+    return {
+      projectId: data.projectId,
+      projectName: data.projectName,
+      repo: data.repo,
+      branch: data.branch,
+      specsPath: data.specsPath,
+      syncedSpecs: data.syncedSpecs,
+    };
+  }
+
+  async syncGithubProject(projectId: string): Promise<{ projectId: string; syncedSpecs: number }> {
+    const data = await this.fetchAPI<{ projectId: string; syncedSpecs: number }>(
+      `/api/github/sync/${encodeURIComponent(projectId)}`,
+      { method: 'POST' }
+    );
+    return data;
   }
 }

@@ -243,6 +243,38 @@ export interface ProjectsResponse {
   favoriteProjects?: string[];
 }
 
+export interface GitHubRepo {
+  fullName: string;
+  description?: string | null;
+  defaultBranch: string;
+  private: boolean;
+  htmlUrl: string;
+}
+
+export interface DetectedSpec {
+  path: string;
+  title?: string | null;
+  status?: string | null;
+  priority?: string | null;
+}
+
+export interface GitHubDetectResult {
+  repo: string;
+  branch: string;
+  specsDir: string;
+  specCount: number;
+  specs: DetectedSpec[];
+}
+
+export interface GitHubImportResult {
+  projectId: string;
+  projectName: string;
+  repo: string;
+  branch: string;
+  specsPath: string;
+  syncedSpecs: number;
+}
+
 export interface ProjectValidationResult {
   isValid: boolean;
   error?: string | null;
