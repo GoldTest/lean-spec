@@ -1,6 +1,7 @@
 //! App struct, state machine, and data management for the TUI.
 
 use leanspec_core::{search_specs, DependencyGraph, SpecInfo, SpecLoader, SpecStats, SpecStatus};
+use ratatui::layout::Rect;
 use std::error::Error;
 
 /// Which mode the app is in (affects keybinding dispatch).
@@ -73,6 +74,14 @@ pub struct App {
     // Search
     pub search_query: String,
     pub search_results: Vec<usize>,
+
+    // Layout / sidebar state
+    pub sidebar_width_pct: u16,
+    pub sidebar_collapsed: bool,
+    pub drag_resize: bool,
+    pub layout_left: Rect,
+    pub layout_right: Rect,
+    pub last_frame_width: u16,
 }
 
 impl App {
@@ -102,6 +111,12 @@ impl App {
             detail_scroll: 0,
             search_query: String::new(),
             search_results: Vec::new(),
+            sidebar_width_pct: 30,
+            sidebar_collapsed: false,
+            drag_resize: false,
+            layout_left: Rect::default(),
+            layout_right: Rect::default(),
+            last_frame_width: 0,
         };
 
         app.rebuild_board_groups();
@@ -317,6 +332,71 @@ impl App {
         self.exit_search();
     }
 
+    // -- Sidebar width / collapse --
+
+    pub fn sidebar_widen(&mut self) {
+        self.sidebar_width_pct = (self.sidebar_width_pct + 5).min(60);
+    }
+
+    pub fn sidebar_narrow(&mut self) {
+        self.sidebar_width_pct = self.sidebar_width_pct.saturating_sub(5).max(15);
+    }
+
+    pub fn sidebar_toggle_collapse(&mut self) {
+        self.sidebar_collapsed = !self.sidebar_collapsed;
+    }
+
+    /// Select a spec in the sidebar by clicking at a terminal row.
+    pub fn click_sidebar(&mut self, row: u16) {
+        self.focus = FocusPane::Left;
+        match self.primary_view {
+            PrimaryView::List => {
+                let content_row = row.saturating_sub(self.layout_left.y).saturating_sub(1);
+                let item_row = content_row.saturating_sub(2) as usize;
+                let visible_rows = self.layout_left.height.saturating_sub(4) as usize;
+                let offset = if self.list_selected >= visible_rows {
+                    self.list_selected - visible_rows + 1
+                } else {
+                    0
+                };
+                let new_idx = offset + item_row;
+                if new_idx < self.filtered_specs.len() {
+                    self.list_selected = new_idx;
+                    self.load_selected_detail();
+                }
+            }
+            PrimaryView::Board => {
+                // Iterate groups counting rows to find which spec was clicked
+                let mut current_row = self.layout_left.y + 1; // inside border
+                'outer: for (gi, group) in self.board_groups.iter().enumerate() {
+                    // Group header row
+                    current_row += 1;
+                    // Item rows
+                    for (ii, _) in group.indices.iter().enumerate() {
+                        if row == current_row {
+                            self.board_group_idx = gi;
+                            self.board_item_idx = ii;
+                            self.load_selected_detail();
+                            break 'outer;
+                        }
+                        current_row += 1;
+                    }
+                    // Blank line between groups
+                    current_row += 1;
+                }
+            }
+        }
+    }
+
+    /// Update sidebar width based on a mouse drag to column `col`.
+    pub fn resize_drag_to(&mut self, col: u16) {
+        if self.last_frame_width == 0 {
+            return;
+        }
+        let new_pct = (col as u32 * 100 / self.last_frame_width as u32) as u16;
+        self.sidebar_width_pct = new_pct.clamp(15, 60);
+    }
+
     fn update_search_results(&mut self) {
         if self.search_query.is_empty() {
             self.search_results.clear();
@@ -351,6 +431,12 @@ impl App {
             detail_scroll: 0,
             search_query: String::new(),
             search_results: Vec::new(),
+            sidebar_width_pct: 30,
+            sidebar_collapsed: false,
+            drag_resize: false,
+            layout_left: Rect::default(),
+            layout_right: Rect::default(),
+            last_frame_width: 0,
         }
     }
 }
@@ -504,6 +590,70 @@ mod tests {
         assert_eq!(app.detail_scroll, 0);
         app.scroll_detail_up();
         assert_eq!(app.detail_scroll, 0); // doesn't go negative
+    }
+
+    #[test]
+    fn test_sidebar_widen_narrow() {
+        let mut app = make_test_app();
+        assert_eq!(app.sidebar_width_pct, 30);
+
+        app.sidebar_widen();
+        assert_eq!(app.sidebar_width_pct, 35);
+
+        app.sidebar_widen();
+        app.sidebar_widen();
+        app.sidebar_widen();
+        app.sidebar_widen();
+        app.sidebar_widen(); // would be 60
+        assert_eq!(app.sidebar_width_pct, 60);
+
+        app.sidebar_widen(); // capped at 60
+        assert_eq!(app.sidebar_width_pct, 60);
+
+        app.sidebar_narrow();
+        assert_eq!(app.sidebar_width_pct, 55);
+
+        // Narrow to minimum
+        for _ in 0..20 {
+            app.sidebar_narrow();
+        }
+        assert_eq!(app.sidebar_width_pct, 15);
+    }
+
+    #[test]
+    fn test_sidebar_toggle_collapse() {
+        let mut app = make_test_app();
+        assert!(!app.sidebar_collapsed);
+
+        app.sidebar_toggle_collapse();
+        assert!(app.sidebar_collapsed);
+
+        app.sidebar_toggle_collapse();
+        assert!(!app.sidebar_collapsed);
+    }
+
+    #[test]
+    fn test_resize_drag_to() {
+        let mut app = make_test_app();
+        app.last_frame_width = 100;
+
+        app.resize_drag_to(30);
+        assert_eq!(app.sidebar_width_pct, 30);
+
+        app.resize_drag_to(5); // below minimum, clamped to 15
+        assert_eq!(app.sidebar_width_pct, 15);
+
+        app.resize_drag_to(70); // above maximum, clamped to 60
+        assert_eq!(app.sidebar_width_pct, 60);
+    }
+
+    #[test]
+    fn test_resize_drag_zero_width_noop() {
+        let mut app = make_test_app();
+        app.last_frame_width = 0;
+        app.sidebar_width_pct = 30;
+        app.resize_drag_to(50);
+        assert_eq!(app.sidebar_width_pct, 30); // unchanged
     }
 
     #[test]

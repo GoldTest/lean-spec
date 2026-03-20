@@ -11,6 +11,7 @@ use ratatui::{
 use leanspec_core::SpecInfo;
 
 use super::app::{App, DetailMode, FocusPane};
+use super::markdown;
 use super::theme;
 
 pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
@@ -48,51 +49,80 @@ fn render_spec_detail(area: Rect, buf: &mut Buffer, spec: &SpecInfo, app: &App) 
     let chunks = Layout::vertical([Constraint::Length(6), Constraint::Min(1)]).split(area);
 
     // Metadata header
-    render_metadata(chunks[0], buf, spec);
+    render_metadata(chunks[0], buf, spec, app);
 
     // Content body (scrollable)
     render_content(chunks[1], buf, spec, app.detail_scroll);
 }
 
-fn render_metadata(area: Rect, buf: &mut Buffer, spec: &SpecInfo) {
+fn render_metadata(area: Rect, buf: &mut Buffer, spec: &SpecInfo, app: &App) {
     let status_style = theme::status_style(&spec.frontmatter.status);
     let status_sym = theme::status_symbol(&spec.frontmatter.status);
     let status_label = spec.frontmatter.status_label();
 
+    let priority_sym = theme::priority_symbol(spec.frontmatter.priority.as_ref());
     let priority_str = spec
         .frontmatter
         .priority
         .map(|p| p.to_string())
         .unwrap_or_else(|| "-".to_string());
 
+    // Dependency counts
+    let (dep_count, req_count) = app
+        .dep_graph
+        .get_complete_graph(&spec.path)
+        .map(|g| (g.depends_on.len(), g.required_by.len()))
+        .unwrap_or((0, 0));
+
+    let deps_str = if dep_count > 0 || req_count > 0 {
+        format!("  deps:{} req:{}", dep_count, req_count)
+    } else {
+        String::new()
+    };
+
+    // Tags as chips
     let tags_str = if spec.frontmatter.tags.is_empty() {
         "-".to_string()
     } else {
-        spec.frontmatter.tags.join(", ")
+        spec.frontmatter
+            .tags
+            .iter()
+            .map(|t| format!("[{}]", t))
+            .collect::<Vec<_>>()
+            .join(" ")
     };
 
-    let assignee_str = spec.frontmatter.assignee.as_deref().unwrap_or("-");
+    // Dates
+    let created_str = spec.frontmatter.created.as_str();
+    let updated_str = spec.frontmatter.updated.as_deref().unwrap_or("-");
 
     let lines = vec![
-        Line::from(vec![Span::styled(&spec.title, theme::title_style())]),
-        Line::from(vec![Span::styled(
-            format!(" {}", spec.path),
-            theme::dimmed_style(),
-        )]),
+        Line::from(vec![Span::styled(spec.title.clone(), theme::title_style())]),
+        Line::from(vec![
+            Span::styled(format!(" {}", spec.path), theme::dimmed_style()),
+            Span::styled(deps_str, theme::dimmed_style()),
+        ]),
         Line::from(vec![
             Span::raw(" Status: "),
             Span::styled(format!("{} {}", status_sym, status_label), status_style),
             Span::raw("  Priority: "),
-            Span::raw(&priority_str),
-            Span::raw("  Assignee: "),
-            Span::raw(assignee_str),
+            Span::styled(
+                format!("{} {}", priority_sym, priority_str),
+                Style::default(),
+            ),
+        ]),
+        Line::from(vec![
+            Span::raw(" Created: "),
+            Span::styled(created_str.to_string(), theme::dimmed_style()),
+            Span::raw("  Updated: "),
+            Span::styled(updated_str.to_string(), theme::dimmed_style()),
         ]),
         Line::from(vec![
             Span::raw(" Tags: "),
-            Span::styled(&tags_str, theme::dimmed_style()),
+            Span::styled(tags_str, theme::dimmed_style()),
         ]),
         Line::styled(
-            " ".to_string() + &"-".repeat(area.width.saturating_sub(2) as usize),
+            " ".to_string() + &"─".repeat(area.width.saturating_sub(2) as usize),
             theme::dimmed_style(),
         ),
     ];
@@ -102,12 +132,7 @@ fn render_metadata(area: Rect, buf: &mut Buffer, spec: &SpecInfo) {
 }
 
 fn render_content(area: Rect, buf: &mut Buffer, spec: &SpecInfo, scroll: u16) {
-    let content = &spec.content;
-    let lines: Vec<Line> = content
-        .lines()
-        .map(|l| Line::from(format!(" {}", l)))
-        .collect();
-
+    let lines = markdown::render_markdown(&spec.content, area.width);
     let paragraph = Paragraph::new(lines)
         .wrap(Wrap { trim: false })
         .scroll((scroll, 0));

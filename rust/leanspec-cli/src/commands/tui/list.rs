@@ -69,19 +69,33 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
 
         let status_sym = theme::status_symbol(&spec.frontmatter.status);
         let priority_sym = theme::priority_symbol(spec.frontmatter.priority.as_ref());
-        let path = if spec.path.len() > 28 {
-            format!("{:<28}..", &spec.path[..28])
+        let path = if spec.path.chars().count() > 28 {
+            let truncated: String = spec.path.chars().take(28).collect();
+            format!("{}..", truncated)
         } else {
             format!("{:<30}", spec.path)
         };
-        let title = if spec.title.len() > 30 {
-            format!("{}...", &spec.title[..27])
+        let title = if spec.title.chars().count() > 30 {
+            let truncated: String = spec.title.chars().take(27).collect();
+            format!("{}...", truncated)
         } else {
             spec.title.clone()
         };
+        let dep_count = app
+            .dep_graph
+            .get_complete_graph(&spec.path)
+            .map_or(0, |g| g.depends_on.len());
+        let dep_str = if dep_count > 0 {
+            format!(" d:{}", dep_count)
+        } else {
+            String::new()
+        };
 
         lines.push(Line::styled(
-            format!(" {} {} {} {}", status_sym, priority_sym, path, title),
+            format!(
+                " {} {} {} {}{}",
+                status_sym, priority_sym, path, title, dep_str
+            ),
             style,
         ));
     }

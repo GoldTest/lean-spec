@@ -51,7 +51,11 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
             };
 
             let pri = theme::priority_symbol(spec.frontmatter.priority.as_ref());
-            let line = format_spec_line(pri, spec);
+            let dep_count = app
+                .dep_graph
+                .get_complete_graph(&spec.path)
+                .map_or(0, |g| g.depends_on.len());
+            let line = format_spec_line(pri, spec, dep_count);
             lines.push(Line::styled(line, style));
         }
 
@@ -67,13 +71,19 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
     paragraph.render(inner, buf);
 }
 
-fn format_spec_line(priority: &str, spec: &SpecInfo) -> String {
-    let title = if spec.title.len() > 40 {
-        format!("{}...", &spec.title[..37])
+fn format_spec_line(priority: &str, spec: &SpecInfo, dep_count: usize) -> String {
+    let title = if spec.title.chars().count() > 36 {
+        let truncated: String = spec.title.chars().take(33).collect();
+        format!("{}...", truncated)
     } else {
         spec.title.clone()
     };
-    format!("  {} {} {}", priority, spec.path, title)
+    let dep_str = if dep_count > 0 {
+        format!(" deps:{}", dep_count)
+    } else {
+        String::new()
+    };
+    format!("  {} {} {}{}", priority, spec.path, title, dep_str)
 }
 
 #[cfg(test)]

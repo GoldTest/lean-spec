@@ -37,10 +37,10 @@ pub fn status_style(status: &SpecStatus) -> Style {
 
 pub fn priority_symbol(priority: Option<&SpecPriority>) -> &'static str {
     match priority {
-        Some(SpecPriority::Critical) => "!",
-        Some(SpecPriority::High) => "^",
-        Some(SpecPriority::Medium) => "-",
-        Some(SpecPriority::Low) => ".",
+        Some(SpecPriority::Critical) => "↑",
+        Some(SpecPriority::High) => "▲",
+        Some(SpecPriority::Medium) => "—",
+        Some(SpecPriority::Low) => "▽",
         None => " ",
     }
 }
@@ -94,10 +94,10 @@ mod tests {
 
     #[test]
     fn test_priority_symbols() {
-        assert_eq!(priority_symbol(Some(&SpecPriority::Critical)), "!");
-        assert_eq!(priority_symbol(Some(&SpecPriority::High)), "^");
-        assert_eq!(priority_symbol(Some(&SpecPriority::Medium)), "-");
-        assert_eq!(priority_symbol(Some(&SpecPriority::Low)), ".");
+        assert_eq!(priority_symbol(Some(&SpecPriority::Critical)), "↑");
+        assert_eq!(priority_symbol(Some(&SpecPriority::High)), "▲");
+        assert_eq!(priority_symbol(Some(&SpecPriority::Medium)), "—");
+        assert_eq!(priority_symbol(Some(&SpecPriority::Low)), "▽");
         assert_eq!(priority_symbol(None), " ");
     }
 }

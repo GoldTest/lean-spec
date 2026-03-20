@@ -1,6 +1,6 @@
 //! Mode-based input dispatch for keybindings.
 
-use ratatui::crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
+use ratatui::crossterm::event::{KeyCode, KeyEvent, KeyModifiers, MouseEvent};
 
 use super::app::{App, AppMode, FocusPane};
 
@@ -45,7 +45,63 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
         KeyCode::Char('d') => app.toggle_detail_mode(),
         KeyCode::Char('/') => app.enter_search(),
         KeyCode::Char('?') => app.enter_help(),
+        KeyCode::Char('[') => app.sidebar_narrow(),
+        KeyCode::Char(']') => app.sidebar_widen(),
+        KeyCode::Char('\\') => app.sidebar_toggle_collapse(),
         KeyCode::Esc => app.focus_left(),
+        _ => {}
+    }
+}
+
+/// Handle mouse events.
+pub fn handle_mouse(app: &mut App, mouse: MouseEvent) {
+    use ratatui::crossterm::event::{MouseButton, MouseEventKind};
+    match mouse.kind {
+        MouseEventKind::ScrollDown => {
+            if app.focus == FocusPane::Right {
+                app.scroll_detail_down();
+            } else {
+                app.move_down();
+            }
+        }
+        MouseEventKind::ScrollUp => {
+            if app.focus == FocusPane::Right {
+                app.scroll_detail_up();
+            } else {
+                app.move_up();
+            }
+        }
+        MouseEventKind::Down(MouseButton::Left) => {
+            let col = mouse.column;
+            let row = mouse.row;
+            // Check if near split boundary (drag handle)
+            let split_col = if app.last_frame_width > 0 {
+                (app.last_frame_width as u32 * app.sidebar_width_pct as u32 / 100) as u16
+            } else {
+                0
+            };
+            if !app.sidebar_collapsed
+                && app.last_frame_width > 0
+                && (col == split_col || col == split_col.saturating_sub(1) || col == split_col + 1)
+            {
+                app.drag_resize = true;
+            } else if !app.sidebar_collapsed
+                && app.layout_left.width > 0
+                && col < app.layout_left.x + app.layout_left.width
+            {
+                app.click_sidebar(row);
+            } else if col >= app.layout_right.x {
+                app.focus = FocusPane::Right;
+            }
+        }
+        MouseEventKind::Up(MouseButton::Left) => {
+            app.drag_resize = false;
+        }
+        MouseEventKind::Drag(MouseButton::Left) => {
+            if app.drag_resize {
+                app.resize_drag_to(mouse.column);
+            }
+        }
         _ => {}
     }
 }
@@ -144,6 +200,30 @@ mod tests {
 
         handle_key(&mut app, key(KeyCode::Char('h')));
         assert_eq!(app.focus, FocusPane::Left);
+    }
+
+    #[test]
+    fn test_bracket_keys_resize_sidebar() {
+        let mut app = make_test_app();
+        assert_eq!(app.sidebar_width_pct, 30);
+
+        handle_key(&mut app, key(KeyCode::Char(']')));
+        assert_eq!(app.sidebar_width_pct, 35);
+
+        handle_key(&mut app, key(KeyCode::Char('[')));
+        assert_eq!(app.sidebar_width_pct, 30);
+    }
+
+    #[test]
+    fn test_backslash_toggles_sidebar_collapse() {
+        let mut app = make_test_app();
+        assert!(!app.sidebar_collapsed);
+
+        handle_key(&mut app, key(KeyCode::Char('\\')));
+        assert!(app.sidebar_collapsed);
+
+        handle_key(&mut app, key(KeyCode::Char('\\')));
+        assert!(!app.sidebar_collapsed);
     }
 
     #[test]

@@ -10,6 +10,7 @@ mod detail;
 mod help;
 mod keybindings;
 mod list;
+mod markdown;
 mod search;
 mod theme;
 
@@ -17,6 +18,8 @@ use std::error::Error;
 
 use ratatui::{
     crossterm::event::{self, Event},
+    crossterm::event::{DisableMouseCapture, EnableMouseCapture},
+    crossterm::execute,
     layout::{Constraint, Layout, Rect},
     DefaultTerminal, Frame,
 };
@@ -44,7 +47,9 @@ pub fn run(specs_dir: &str, view: &str) -> Result<(), Box<dyn Error>> {
     }));
 
     let mut terminal = ratatui::init();
+    execute!(std::io::stdout(), EnableMouseCapture)?;
     let result = run_event_loop(&mut terminal, &mut app);
+    execute!(std::io::stdout(), DisableMouseCapture).ok();
     ratatui::restore();
     result
 }
@@ -57,14 +62,16 @@ fn run_event_loop(terminal: &mut DefaultTerminal, app: &mut App) -> Result<(), B
             break;
         }
 
-        if let Event::Key(key) = event::read()? {
-            keybindings::handle_key(app, key);
+        match event::read()? {
+            Event::Key(key) => keybindings::handle_key(app, key),
+            Event::Mouse(mouse) => keybindings::handle_mouse(app, mouse),
+            _ => {}
         }
     }
     Ok(())
 }
 
-fn draw(frame: &mut Frame, app: &App) {
+fn draw(frame: &mut Frame, app: &mut App) {
     let area = frame.area();
 
     // Main layout: content + status bar
@@ -90,14 +97,24 @@ fn draw(frame: &mut Frame, app: &App) {
     }
 }
 
-fn draw_split_pane(frame: &mut Frame, area: Rect, app: &App) {
-    let chunks =
-        Layout::horizontal([Constraint::Percentage(45), Constraint::Percentage(55)]).split(area);
+fn draw_split_pane(frame: &mut Frame, area: Rect, app: &mut App) {
+    app.last_frame_width = area.width;
+
+    let left_constraint = if app.sidebar_collapsed {
+        Constraint::Length(0)
+    } else {
+        Constraint::Percentage(app.sidebar_width_pct)
+    };
+    let chunks = Layout::horizontal([left_constraint, Constraint::Min(1)]).split(area);
+    app.layout_left = chunks[0];
+    app.layout_right = chunks[1];
 
     // Left pane: Board or List
-    match app.primary_view {
-        PrimaryView::Board => board::render(chunks[0], frame.buffer_mut(), app),
-        PrimaryView::List => list::render(chunks[0], frame.buffer_mut(), app),
+    if !app.sidebar_collapsed {
+        match app.primary_view {
+            PrimaryView::Board => board::render(chunks[0], frame.buffer_mut(), app),
+            PrimaryView::List => list::render(chunks[0], frame.buffer_mut(), app),
+        }
     }
 
     // Right pane: Detail or Dependencies
@@ -107,7 +124,11 @@ fn draw_split_pane(frame: &mut Frame, area: Rect, app: &App) {
     }
 }
 
-fn draw_single_pane(frame: &mut Frame, area: Rect, app: &App) {
+fn draw_single_pane(frame: &mut Frame, area: Rect, app: &mut App) {
+    app.last_frame_width = area.width;
+    app.layout_left = area;
+    app.layout_right = area;
+
     match app.focus {
         app::FocusPane::Left => match app.primary_view {
             PrimaryView::Board => board::render(area, frame.buffer_mut(), app),
@@ -141,6 +162,13 @@ fn draw_status_bar(frame: &mut Frame, area: Rect, app: &App) {
 
     let completion = app.stats.completion_percentage();
 
+    // Selected spec path
+    let selected_path = app
+        .selected_detail
+        .as_ref()
+        .map(|s| format!(" {} ", s.path))
+        .unwrap_or_default();
+
     let status_line = Line::from(vec![
         Span::styled(format!(" {} ", mode_str), theme::highlight_style()),
         Span::styled(
@@ -151,8 +179,9 @@ fn draw_status_bar(frame: &mut Frame, area: Rect, app: &App) {
             format!(" {} specs | {:.0}% complete ", app.stats.total, completion),
             theme::status_bar_style(),
         ),
+        Span::styled(selected_path, theme::status_bar_style()),
         Span::styled(
-            " q:quit  /:search  ?:help  1/2:view  d:deps ",
+            " q:quit  /:search  ?:help  1/2:view  d:deps  [/]:sidebar  \\:collapse ",
             theme::status_bar_style(),
         ),
     ]);

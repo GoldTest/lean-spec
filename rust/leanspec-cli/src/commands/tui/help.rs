@@ -23,6 +23,15 @@ const HELP_LINES: &[(&str, &str)] = &[
     ("  2", "List view"),
     ("  d", "Toggle dependencies view"),
     ("", ""),
+    ("Sidebar", ""),
+    ("  [ / ]", "Narrow / widen sidebar"),
+    ("  \\", "Toggle sidebar collapse"),
+    ("", ""),
+    ("Mouse", ""),
+    ("  Click sidebar", "Select spec"),
+    ("  Scroll", "Navigate list / scroll detail"),
+    ("  Drag split", "Resize sidebar"),
+    ("", ""),
     ("Overlays", ""),
     ("  /", "Open search"),
     ("  ?", "Show this help"),
@@ -81,7 +90,7 @@ mod tests {
 
     #[test]
     fn test_help_overlay_contains_keybindings() {
-        let backend = TestBackend::new(60, 30);
+        let backend = TestBackend::new(60, 40);
         let mut terminal = Terminal::new(backend).unwrap();
 
         terminal
