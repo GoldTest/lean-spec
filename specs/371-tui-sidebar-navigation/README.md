@@ -1,14 +1,21 @@
 ---
-status: planned
-created: '2026-03-20'
-tags:
-  - cli
-  - tui
-  - ux
-  - rust
-  - ratatui
+status: complete
+created: 2026-03-20
 priority: high
-created_at: '2026-03-20T10:00:00.000000+00:00'
+tags:
+- cli
+- tui
+- ux
+- rust
+- ratatui
+created_at: 2026-03-20T10:00:00Z
+updated_at: 2026-03-23T09:30:33.492093709Z
+completed_at: 2026-03-23T09:30:33.492093709Z
+transitions:
+- status: in-progress
+  at: 2026-03-23T09:15:43.374716043Z
+- status: complete
+  at: 2026-03-23T09:30:33.492093709Z
 ---
 
 # TUI Sidebar Navigation & Scroll Improvements
@@ -109,19 +116,19 @@ Key insight: crossterm's `enable_mouse_capture()` already captures mouse events.
 
 ## Plan
 
-- [ ] Add `SortOption` enum and `FilterState` struct to `app.rs`
-- [ ] Implement sort logic — apply sort to `filtered_specs` after filtering
-- [ ] Implement filter popup widget (`tui/filter.rs`) with status/priority/tag multi-select
-- [ ] Add sort indicator and active filter chips to sidebar header
-- [ ] Build tree data structure from spec parent relationships in `app.rs`
-- [ ] Implement tree view renderer in `list.rs` with expand/collapse, indentation, and tree lines
-- [ ] Add `t` keybinding to toggle tree view; `z`/`Z` for collapse/expand all
-- [ ] Add `theme::inactive_selected_style()` for dimmed highlight
-- [ ] Update `list.rs` and `board.rs` to use inactive style when `focus == Right`
-- [ ] Clamp detail scroll to `[0, max_scroll]` in `detail.rs`
-- [ ] Clamp sidebar selection at boundaries in `keybindings.rs`
-- [ ] Ensure all mouse scroll events are consumed (no fallthrough)
-- [ ] Add `PageUp`/`PageDown`/`Home`/`End` with boundary clamping
+- [x] Add `SortOption` enum and `FilterState` struct to `app.rs`
+- [x] Implement sort logic — apply sort to `filtered_specs` after filtering
+- [x] Implement filter popup widget (`tui/filter.rs`) with status/priority multi-select
+- [x] Add sort indicator and active filter chips to sidebar header
+- [x] Build tree data structure from spec parent relationships in `app.rs`
+- [x] Implement tree view renderer in `list.rs` with expand/collapse, indentation, and tree lines
+- [x] Add `t` keybinding to toggle tree view; `z`/`Z` for collapse/expand all
+- [x] Add `theme::inactive_selected_style()` for dimmed highlight
+- [x] Update `list.rs` and `board.rs` to use inactive style when `focus == Right`
+- [x] Clamp detail scroll to `[0, max_scroll]` in `detail.rs`
+- [x] Clamp sidebar selection at boundaries in `keybindings.rs`
+- [x] Ensure all mouse scroll events are consumed (no fallthrough)
+- [x] Add `PageUp`/`PageDown`/`Home`/`End` with boundary clamping
 
 ## Non-Goals
 
@@ -132,14 +139,14 @@ Key insight: crossterm's `enable_mouse_capture()` already captures mouse events.
 
 ## Test
 
-- [ ] `s` key cycles through sort options; sidebar re-sorts immediately
-- [ ] `f` key opens filter popup; selecting status/priority/tag filters the list
-- [ ] `F` clears all active filters
-- [ ] `t` toggles tree view; parent specs show `▼`/`▶` with correct nesting
-- [ ] Expand/collapse works on parent nodes; `z`/`Z` collapse/expand all
-- [ ] Tree view respects active filters (matched descendants keep ancestor chain visible)
-- [ ] Sidebar highlight persists (dimmed) when focus moves to detail pane
-- [ ] Scrolling past the end of detail pane does NOT scroll tmux scrollback
-- [ ] Scrolling past the first/last sidebar item does NOT propagate to tmux
-- [ ] `PageUp`/`PageDown`/`Home`/`End` work and clamp at boundaries
-- [ ] Sort + filter + tree view compose correctly (e.g. sort by priority in tree mode with status filter)
+- [x] `s` key cycles through sort options; sidebar re-sorts immediately
+- [x] `f` key opens filter popup; selecting status/priority filters the list
+- [x] `F` clears all active filters
+- [x] `t` toggles tree view; parent specs show `▼`/`▶` with correct nesting
+- [x] Expand/collapse works on parent nodes; `z`/`Z` collapse/expand all
+- [x] Tree view respects active filters (matched descendants keep ancestor chain visible)
+- [x] Sidebar highlight persists (dimmed) when focus moves to detail pane
+- [x] Scrolling past the end of detail pane does NOT scroll tmux scrollback
+- [x] Scrolling past the first/last sidebar item does NOT propagate to tmux
+- [x] `PageUp`/`PageDown`/`Home`/`End` work and clamp at boundaries
+- [x] Sort + filter + tree view compose correctly (e.g. sort by priority in tree mode with status filter)

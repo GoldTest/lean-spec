@@ -1,7 +1,10 @@
 //! App struct, state machine, and data management for the TUI.
 
-use leanspec_core::{search_specs, DependencyGraph, SpecInfo, SpecLoader, SpecStats, SpecStatus};
+use leanspec_core::{
+    search_specs, DependencyGraph, SpecInfo, SpecLoader, SpecPriority, SpecStats, SpecStatus,
+};
 use ratatui::layout::Rect;
+use std::collections::HashSet;
 use std::error::Error;
 
 /// Which mode the app is in (affects keybinding dispatch).
@@ -10,6 +13,97 @@ pub enum AppMode {
     Normal,
     Search,
     Help,
+    Filter,
+}
+
+/// Sort order for the spec list.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum SortOption {
+    #[default]
+    IdDesc,
+    IdAsc,
+    PriorityDesc,
+    TitleAsc,
+    UpdatedDesc,
+}
+
+impl SortOption {
+    pub fn label(self) -> &'static str {
+        match self {
+            SortOption::IdDesc => "ID ↓",
+            SortOption::IdAsc => "ID ↑",
+            SortOption::PriorityDesc => "Priority ↓",
+            SortOption::TitleAsc => "Title A-Z",
+            SortOption::UpdatedDesc => "Updated ↓",
+        }
+    }
+
+    pub fn next(self) -> SortOption {
+        match self {
+            SortOption::IdDesc => SortOption::IdAsc,
+            SortOption::IdAsc => SortOption::PriorityDesc,
+            SortOption::PriorityDesc => SortOption::TitleAsc,
+            SortOption::TitleAsc => SortOption::UpdatedDesc,
+            SortOption::UpdatedDesc => SortOption::IdDesc,
+        }
+    }
+}
+
+/// Active filter state for the spec list.
+#[derive(Debug, Clone, Default)]
+pub struct FilterState {
+    pub statuses: Vec<SpecStatus>,
+    pub priorities: Vec<SpecPriority>,
+    pub tags: Vec<String>,
+}
+
+impl FilterState {
+    pub fn is_empty(&self) -> bool {
+        self.statuses.is_empty() && self.priorities.is_empty() && self.tags.is_empty()
+    }
+
+    pub fn matches(&self, spec: &SpecInfo) -> bool {
+        if !self.statuses.is_empty() && !self.statuses.contains(&spec.frontmatter.status) {
+            return false;
+        }
+        if !self.priorities.is_empty() {
+            match spec.frontmatter.priority {
+                Some(ref p) if !self.priorities.contains(p) => return false,
+                None => return false,
+                _ => {}
+            }
+        }
+        if !self.tags.is_empty() && !self.tags.iter().any(|t| spec.frontmatter.tags.contains(t)) {
+            return false;
+        }
+        true
+    }
+}
+
+/// Ordered statuses shown in the filter popup.
+pub const FILTER_STATUSES: &[SpecStatus] = &[
+    SpecStatus::InProgress,
+    SpecStatus::Planned,
+    SpecStatus::Draft,
+    SpecStatus::Complete,
+    SpecStatus::Archived,
+];
+
+/// Ordered priorities shown in the filter popup.
+pub const FILTER_PRIORITIES: &[SpecPriority] = &[
+    SpecPriority::Critical,
+    SpecPriority::High,
+    SpecPriority::Medium,
+    SpecPriority::Low,
+];
+
+/// One row in the tree view of the list pane.
+#[derive(Debug, Clone)]
+pub struct TreeRow {
+    pub spec_idx: usize,
+    pub depth: usize,
+    pub has_children: bool,
+    pub is_collapsed: bool,
 }
 
 /// Which view is shown in the left pane.
@@ -70,6 +164,8 @@ pub struct App {
 
     // Detail scroll
     pub detail_scroll: u16,
+    /// Upper bound for detail_scroll estimated from content line count.
+    pub detail_content_lines: u16,
 
     // Search
     pub search_query: String,
@@ -82,6 +178,27 @@ pub struct App {
     pub layout_left: Rect,
     pub layout_right: Rect,
     pub last_frame_width: u16,
+
+    // Sort & filter
+    pub sort_option: SortOption,
+    pub filter: FilterState,
+    /// Cursor position in the filter popup (0..FILTER_STATUSES.len() = status, then priorities).
+    pub filter_cursor: usize,
+
+    // Tree view
+    pub tree_mode: bool,
+    pub tree_collapsed: HashSet<String>,
+    pub tree_rows: Vec<TreeRow>,
+}
+
+fn priority_sort_key(p: Option<SpecPriority>) -> u8 {
+    match p {
+        Some(SpecPriority::Critical) => 0,
+        Some(SpecPriority::High) => 1,
+        Some(SpecPriority::Medium) => 2,
+        Some(SpecPriority::Low) => 3,
+        None => 4,
+    }
 }
 
 impl App {
@@ -90,11 +207,10 @@ impl App {
         let specs = loader.load_all_metadata()?;
         let dep_graph = DependencyGraph::new(&specs);
         let stats = SpecStats::compute(&specs);
-        let filtered_specs: Vec<usize> = (0..specs.len()).collect();
 
         let mut app = Self {
+            filtered_specs: (0..specs.len()).collect(),
             specs,
-            filtered_specs,
             selected_detail: None,
             board_groups: Vec::new(),
             dep_graph,
@@ -109,6 +225,7 @@ impl App {
             board_item_idx: 0,
             list_selected: 0,
             detail_scroll: 0,
+            detail_content_lines: u16::MAX,
             search_query: String::new(),
             search_results: Vec::new(),
             sidebar_width_pct: 30,
@@ -117,16 +234,66 @@ impl App {
             layout_left: Rect::default(),
             layout_right: Rect::default(),
             last_frame_width: 0,
+            sort_option: SortOption::default(),
+            filter: FilterState::default(),
+            filter_cursor: 0,
+            tree_mode: false,
+            tree_collapsed: HashSet::new(),
+            tree_rows: Vec::new(),
         };
 
-        app.rebuild_board_groups();
+        app.apply_filter_and_sort();
         app.load_selected_detail();
 
         Ok(app)
     }
 
-    /// Rebuild board groups from filtered specs.
-    pub fn rebuild_board_groups(&mut self) {
+    /// Apply current filter + sort to rebuild `filtered_specs`, board groups, and tree rows.
+    pub fn apply_filter_and_sort(&mut self) {
+        // 1. Filter
+        self.filtered_specs = (0..self.specs.len())
+            .filter(|&i| self.filter.matches(&self.specs[i]))
+            .collect();
+
+        // 2. Sort
+        let specs = &self.specs;
+        let sort = self.sort_option;
+        self.filtered_specs.sort_by(|&a, &b| {
+            let sa = &specs[a];
+            let sb = &specs[b];
+            match sort {
+                SortOption::IdDesc => sb.number().cmp(&sa.number()),
+                SortOption::IdAsc => sa.number().cmp(&sb.number()),
+                SortOption::PriorityDesc => priority_sort_key(sb.frontmatter.priority)
+                    .cmp(&priority_sort_key(sa.frontmatter.priority)),
+                SortOption::TitleAsc => sa.title.to_lowercase().cmp(&sb.title.to_lowercase()),
+                SortOption::UpdatedDesc => {
+                    let ta = sa.frontmatter.updated_at.or(sa.frontmatter.created_at);
+                    let tb = sb.frontmatter.updated_at.or(sb.frontmatter.created_at);
+                    tb.cmp(&ta)
+                }
+            }
+        });
+
+        // 3. Rebuild board groups
+        self.rebuild_board_groups_from_filtered();
+
+        // 4. Rebuild tree rows
+        self.rebuild_tree_rows();
+
+        // 5. Clamp navigation indices
+        let max_group = self.board_groups.len().saturating_sub(1);
+        self.board_group_idx = self.board_group_idx.min(max_group);
+        if let Some(group) = self.board_groups.get(self.board_group_idx) {
+            self.board_item_idx = self
+                .board_item_idx
+                .min(group.indices.len().saturating_sub(1));
+        }
+        let max_list = self.visible_list_len().saturating_sub(1);
+        self.list_selected = self.list_selected.min(max_list);
+    }
+
+    fn rebuild_board_groups_from_filtered(&mut self) {
         let statuses = [
             (SpecStatus::InProgress, "In Progress"),
             (SpecStatus::Planned, "Planned"),
@@ -157,6 +324,195 @@ impl App {
             .collect();
     }
 
+    /// Rebuild tree_rows from filtered_specs and parent relationships.
+    pub fn rebuild_tree_rows(&mut self) {
+        // Build a path → index map for the filtered set
+        let path_to_idx: std::collections::HashMap<&str, usize> = self
+            .filtered_specs
+            .iter()
+            .map(|&i| (self.specs[i].path.as_str(), i))
+            .collect();
+
+        let mut children_map: std::collections::HashMap<String, Vec<usize>> =
+            std::collections::HashMap::new();
+        let mut root_indices: Vec<usize> = Vec::new();
+
+        for &i in &self.filtered_specs {
+            let spec = &self.specs[i];
+            if let Some(parent_path) = spec.frontmatter.parent.as_deref() {
+                if path_to_idx.contains_key(parent_path) {
+                    children_map
+                        .entry(parent_path.to_string())
+                        .or_default()
+                        .push(i);
+                    continue;
+                }
+            }
+            root_indices.push(i);
+        }
+
+        // DFS traversal to build tree_rows
+        let mut rows: Vec<TreeRow> = Vec::new();
+        for root_idx in root_indices {
+            Self::dfs_tree(
+                root_idx,
+                0,
+                &self.specs,
+                &children_map,
+                &self.tree_collapsed,
+                &mut rows,
+            );
+        }
+        self.tree_rows = rows;
+    }
+
+    fn dfs_tree(
+        spec_idx: usize,
+        depth: usize,
+        specs: &[SpecInfo],
+        children_map: &std::collections::HashMap<String, Vec<usize>>,
+        collapsed: &HashSet<String>,
+        rows: &mut Vec<TreeRow>,
+    ) {
+        let path = &specs[spec_idx].path;
+        let children = children_map
+            .get(path)
+            .map_or(&[] as &[usize], |v| v.as_slice());
+        let has_children = !children.is_empty();
+        let is_collapsed = collapsed.contains(path);
+
+        rows.push(TreeRow {
+            spec_idx,
+            depth,
+            has_children,
+            is_collapsed,
+        });
+
+        if !is_collapsed {
+            for &child_idx in children {
+                Self::dfs_tree(child_idx, depth + 1, specs, children_map, collapsed, rows);
+            }
+        }
+    }
+
+    /// Length of the visible list (flat or tree).
+    fn visible_list_len(&self) -> usize {
+        if self.tree_mode {
+            self.tree_rows.len()
+        } else {
+            self.filtered_specs.len()
+        }
+    }
+
+    // -- Sort & filter --
+
+    pub fn cycle_sort(&mut self) {
+        self.sort_option = self.sort_option.next();
+        self.apply_filter_and_sort();
+        self.load_selected_detail();
+    }
+
+    pub fn open_filter(&mut self) {
+        self.mode = AppMode::Filter;
+    }
+
+    pub fn close_filter(&mut self) {
+        self.mode = AppMode::Normal;
+        self.apply_filter_and_sort();
+        self.load_selected_detail();
+    }
+
+    pub fn clear_filters(&mut self) {
+        self.filter = FilterState::default();
+        self.apply_filter_and_sort();
+        self.load_selected_detail();
+    }
+
+    /// Move cursor down in the filter popup.
+    pub fn filter_cursor_down(&mut self) {
+        let total = FILTER_STATUSES.len() + FILTER_PRIORITIES.len();
+        if self.filter_cursor + 1 < total {
+            self.filter_cursor += 1;
+        }
+    }
+
+    /// Move cursor up in the filter popup.
+    pub fn filter_cursor_up(&mut self) {
+        self.filter_cursor = self.filter_cursor.saturating_sub(1);
+    }
+
+    /// Toggle the item at the current filter cursor position.
+    pub fn filter_toggle_current(&mut self) {
+        let n_statuses = FILTER_STATUSES.len();
+        if self.filter_cursor < n_statuses {
+            let status = FILTER_STATUSES[self.filter_cursor];
+            if let Some(pos) = self.filter.statuses.iter().position(|&s| s == status) {
+                self.filter.statuses.remove(pos);
+            } else {
+                self.filter.statuses.push(status);
+            }
+        } else {
+            let pri_idx = self.filter_cursor - n_statuses;
+            if let Some(&priority) = FILTER_PRIORITIES.get(pri_idx) {
+                if let Some(pos) = self.filter.priorities.iter().position(|&p| p == priority) {
+                    self.filter.priorities.remove(pos);
+                } else {
+                    self.filter.priorities.push(priority);
+                }
+            }
+        }
+    }
+
+    // -- Tree view --
+
+    pub fn toggle_tree(&mut self) {
+        self.tree_mode = !self.tree_mode;
+        self.list_selected = 0;
+        self.load_selected_detail();
+    }
+
+    pub fn collapse_all(&mut self) {
+        // Collect paths of all specs that have children in the filtered set
+        let children_parents: HashSet<String> = self
+            .filtered_specs
+            .iter()
+            .filter_map(|&i| self.specs[i].frontmatter.parent.clone())
+            .collect();
+        for path in children_parents {
+            self.tree_collapsed.insert(path);
+        }
+        self.rebuild_tree_rows();
+        self.list_selected = self
+            .list_selected
+            .min(self.tree_rows.len().saturating_sub(1));
+    }
+
+    pub fn expand_all(&mut self) {
+        self.tree_collapsed.clear();
+        self.rebuild_tree_rows();
+    }
+
+    pub fn toggle_current_tree_node(&mut self) {
+        if !self.tree_mode {
+            return;
+        }
+        if let Some(row) = self.tree_rows.get(self.list_selected) {
+            if !row.has_children {
+                return;
+            }
+            let path = self.specs[row.spec_idx].path.clone();
+            if self.tree_collapsed.contains(&path) {
+                self.tree_collapsed.remove(&path);
+            } else {
+                self.tree_collapsed.insert(path);
+            }
+            self.rebuild_tree_rows();
+            self.list_selected = self
+                .list_selected
+                .min(self.tree_rows.len().saturating_sub(1));
+        }
+    }
+
     /// Get the currently selected spec index based on the active view.
     pub fn selected_spec_index(&self) -> Option<usize> {
         match self.primary_view {
@@ -164,7 +520,13 @@ impl App {
                 let group = self.board_groups.get(self.board_group_idx)?;
                 group.indices.get(self.board_item_idx).copied()
             }
-            PrimaryView::List => self.filtered_specs.get(self.list_selected).copied(),
+            PrimaryView::List => {
+                if self.tree_mode {
+                    self.tree_rows.get(self.list_selected).map(|r| r.spec_idx)
+                } else {
+                    self.filtered_specs.get(self.list_selected).copied()
+                }
+            }
         }
     }
 
@@ -177,12 +539,15 @@ impl App {
             };
             let path = &spec.path;
             if let Ok(Some(full)) = self.loader.load(path) {
+                self.detail_content_lines = full.content.lines().count() as u16;
                 self.selected_detail = Some(full);
             } else {
                 self.selected_detail = None;
+                self.detail_content_lines = u16::MAX;
             }
         } else {
             self.selected_detail = None;
+            self.detail_content_lines = u16::MAX;
         }
         self.detail_scroll = 0;
     }
@@ -199,7 +564,8 @@ impl App {
                 }
             }
             PrimaryView::List => {
-                if self.list_selected + 1 < self.filtered_specs.len() {
+                let max = self.visible_list_len().saturating_sub(1);
+                if self.list_selected < max {
                     self.list_selected += 1;
                 }
             }
@@ -214,6 +580,64 @@ impl App {
             }
             PrimaryView::List => {
                 self.list_selected = self.list_selected.saturating_sub(1);
+            }
+        }
+        self.load_selected_detail();
+    }
+
+    /// Jump to the first item.
+    pub fn move_first(&mut self) {
+        match self.primary_view {
+            PrimaryView::Board => {
+                self.board_item_idx = 0;
+            }
+            PrimaryView::List => {
+                self.list_selected = 0;
+            }
+        }
+        self.load_selected_detail();
+    }
+
+    /// Jump to the last item.
+    pub fn move_last(&mut self) {
+        match self.primary_view {
+            PrimaryView::Board => {
+                if let Some(group) = self.board_groups.get(self.board_group_idx) {
+                    self.board_item_idx = group.indices.len().saturating_sub(1);
+                }
+            }
+            PrimaryView::List => {
+                self.list_selected = self.visible_list_len().saturating_sub(1);
+            }
+        }
+        self.load_selected_detail();
+    }
+
+    /// Move down by page_size rows.
+    pub fn page_down(&mut self, page_size: usize) {
+        match self.primary_view {
+            PrimaryView::Board => {
+                if let Some(group) = self.board_groups.get(self.board_group_idx) {
+                    self.board_item_idx = (self.board_item_idx + page_size)
+                        .min(group.indices.len().saturating_sub(1));
+                }
+            }
+            PrimaryView::List => {
+                let max = self.visible_list_len().saturating_sub(1);
+                self.list_selected = (self.list_selected + page_size).min(max);
+            }
+        }
+        self.load_selected_detail();
+    }
+
+    /// Move up by page_size rows.
+    pub fn page_up(&mut self, page_size: usize) {
+        match self.primary_view {
+            PrimaryView::Board => {
+                self.board_item_idx = self.board_item_idx.saturating_sub(page_size);
+            }
+            PrimaryView::List => {
+                self.list_selected = self.list_selected.saturating_sub(page_size);
             }
         }
         self.load_selected_detail();
@@ -240,7 +664,9 @@ impl App {
     }
 
     pub fn scroll_detail_down(&mut self) {
-        self.detail_scroll = self.detail_scroll.saturating_add(1);
+        if self.detail_scroll < self.detail_content_lines {
+            self.detail_scroll = self.detail_scroll.saturating_add(1);
+        }
     }
 
     pub fn scroll_detail_up(&mut self) {
@@ -429,6 +855,7 @@ impl App {
             board_item_idx: 0,
             list_selected: 0,
             detail_scroll: 0,
+            detail_content_lines: u16::MAX,
             search_query: String::new(),
             search_results: Vec::new(),
             sidebar_width_pct: 30,
@@ -437,6 +864,12 @@ impl App {
             layout_left: Rect::default(),
             layout_right: Rect::default(),
             last_frame_width: 0,
+            sort_option: SortOption::default(),
+            filter: FilterState::default(),
+            filter_cursor: 0,
+            tree_mode: false,
+            tree_collapsed: HashSet::new(),
+            tree_rows: Vec::new(),
         }
     }
 }

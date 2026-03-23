@@ -13,15 +13,26 @@ use super::theme;
 const HELP_LINES: &[(&str, &str)] = &[
     ("Navigation", ""),
     ("  j / k", "Move down / up"),
+    ("  g / G", "Jump to first / last"),
+    ("  PgUp / PgDn", "Page up / down"),
     ("  h / l", "Focus left / right pane"),
     ("  Tab", "Next board group"),
     ("  Shift+Tab", "Previous board group"),
-    ("  Enter", "Select / open detail"),
+    ("  Enter / Space", "Select or expand/collapse tree node"),
     ("", ""),
     ("Views", ""),
     ("  1", "Board view"),
     ("  2", "List view"),
     ("  d", "Toggle dependencies view"),
+    ("", ""),
+    ("Sort & Filter", ""),
+    ("  s", "Cycle sort order"),
+    ("  f", "Open filter popup"),
+    ("  F", "Clear all filters"),
+    ("", ""),
+    ("Tree View", ""),
+    ("  t", "Toggle tree / flat mode"),
+    ("  z / Z", "Collapse all / expand all"),
     ("", ""),
     ("Sidebar", ""),
     ("  [ / ]", "Narrow / widen sidebar"),
@@ -90,7 +101,7 @@ mod tests {
 
     #[test]
     fn test_help_overlay_contains_keybindings() {
-        let backend = TestBackend::new(60, 40);
+        let backend = TestBackend::new(60, 55);
         let mut terminal = Terminal::new(backend).unwrap();
 
         terminal

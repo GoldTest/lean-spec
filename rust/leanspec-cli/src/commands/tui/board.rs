@@ -42,10 +42,12 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         // Items in group
         for (ii, &spec_idx) in group.indices.iter().enumerate() {
             let spec = &app.specs[spec_idx];
-            let is_selected = is_focused && gi == app.board_group_idx && ii == app.board_item_idx;
+            let is_current = gi == app.board_group_idx && ii == app.board_item_idx;
 
-            let style = if is_selected {
+            let style = if is_current && is_focused {
                 theme::selected_style()
+            } else if is_current {
+                theme::inactive_selected_style()
             } else {
                 Style::default()
             };
@@ -67,8 +69,31 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         lines.push(Line::styled("  No specs found", theme::dimmed_style()));
     }
 
-    let paragraph = Paragraph::new(lines);
+    // Compute scroll offset to keep the selected item visible
+    let scroll = compute_scroll(app, inner.height as usize);
+    let paragraph = Paragraph::new(lines).scroll((scroll as u16, 0));
     paragraph.render(inner, buf);
+}
+
+/// Return the scroll offset (in lines) needed to keep the selected board item visible.
+fn compute_scroll(app: &App, visible_height: usize) -> usize {
+    let mut selected_row: usize = 0;
+    let mut found = false;
+    'outer: for (gi, group) in app.board_groups.iter().enumerate() {
+        selected_row += 1; // group header
+        for ii in 0..group.indices.len() {
+            if gi == app.board_group_idx && ii == app.board_item_idx {
+                found = true;
+                break 'outer;
+            }
+            selected_row += 1;
+        }
+        selected_row += 1; // blank line
+    }
+    if !found || visible_height == 0 {
+        return 0;
+    }
+    selected_row.saturating_sub(visible_height.saturating_sub(1))
 }
 
 fn format_spec_line(priority: &str, spec: &SpecInfo, dep_count: usize) -> String {

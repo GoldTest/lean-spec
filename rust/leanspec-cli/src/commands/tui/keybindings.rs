@@ -10,10 +10,13 @@ pub fn handle_key(app: &mut App, key: KeyEvent) {
         AppMode::Normal => handle_normal(app, key),
         AppMode::Search => handle_search(app, key),
         AppMode::Help => handle_help(app, key),
+        AppMode::Filter => handle_filter(app, key),
     }
 }
 
 fn handle_normal(app: &mut App, key: KeyEvent) {
+    let page_size = (app.layout_left.height.saturating_sub(4) as usize).max(5);
+
     match key.code {
         KeyCode::Char('q') => app.should_quit = true,
         KeyCode::Char('j') | KeyCode::Down => {
@@ -30,8 +33,58 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
                 app.move_up();
             }
         }
+        KeyCode::Char('g') | KeyCode::Home => {
+            if app.focus == FocusPane::Right {
+                app.detail_scroll = 0;
+            } else {
+                app.move_first();
+            }
+        }
+        KeyCode::Char('G') | KeyCode::End => {
+            if app.focus == FocusPane::Right {
+                app.detail_scroll = app.detail_scroll.saturating_add(999);
+            } else {
+                app.move_last();
+            }
+        }
+        KeyCode::PageDown => {
+            if app.focus == FocusPane::Right {
+                for _ in 0..page_size {
+                    app.scroll_detail_down();
+                }
+            } else {
+                app.page_down(page_size);
+            }
+        }
+        KeyCode::PageUp => {
+            if app.focus == FocusPane::Right {
+                for _ in 0..page_size {
+                    app.scroll_detail_up();
+                }
+            } else {
+                app.page_up(page_size);
+            }
+        }
         KeyCode::Char('h') | KeyCode::Left => app.focus_left(),
-        KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => app.focus_right(),
+        KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
+            if app.tree_mode && app.focus == FocusPane::Left {
+                // Enter on a parent node in tree mode toggles expand/collapse
+                let is_parent = app
+                    .tree_rows
+                    .get(app.list_selected)
+                    .map_or(false, |r| r.has_children);
+                if is_parent {
+                    app.toggle_current_tree_node();
+                    return;
+                }
+            }
+            app.focus_right();
+        }
+        KeyCode::Char(' ') => {
+            if app.tree_mode && app.focus == FocusPane::Left {
+                app.toggle_current_tree_node();
+            }
+        }
         KeyCode::Tab => {
             if key.modifiers.contains(KeyModifiers::SHIFT) {
                 app.prev_group();
@@ -48,6 +101,12 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
         KeyCode::Char('[') => app.sidebar_narrow(),
         KeyCode::Char(']') => app.sidebar_widen(),
         KeyCode::Char('\\') => app.sidebar_toggle_collapse(),
+        KeyCode::Char('s') => app.cycle_sort(),
+        KeyCode::Char('f') => app.open_filter(),
+        KeyCode::Char('F') => app.clear_filters(),
+        KeyCode::Char('t') => app.toggle_tree(),
+        KeyCode::Char('z') => app.collapse_all(),
+        KeyCode::Char('Z') => app.expand_all(),
         KeyCode::Esc => app.focus_left(),
         _ => {}
     }
@@ -56,6 +115,7 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
 /// Handle mouse events.
 pub fn handle_mouse(app: &mut App, mouse: MouseEvent) {
     use ratatui::crossterm::event::{MouseButton, MouseEventKind};
+    // Always consume scroll events — never let them propagate to the outer terminal.
     match mouse.kind {
         MouseEventKind::ScrollDown => {
             if app.focus == FocusPane::Right {
@@ -123,6 +183,20 @@ fn handle_help(app: &mut App, key: KeyEvent) {
     }
 }
 
+fn handle_filter(app: &mut App, key: KeyEvent) {
+    match key.code {
+        KeyCode::Esc => app.close_filter(),
+        KeyCode::Char('j') | KeyCode::Down => app.filter_cursor_down(),
+        KeyCode::Char('k') | KeyCode::Up => app.filter_cursor_up(),
+        KeyCode::Char(' ') | KeyCode::Enter => app.filter_toggle_current(),
+        KeyCode::Char('F') => {
+            app.clear_filters();
+            app.mode = super::app::AppMode::Filter; // stay in filter popup
+        }
+        _ => {}
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::app::{AppMode, DetailMode, FocusPane, PrimaryView};
@@ -158,6 +232,13 @@ mod tests {
     }
 
     #[test]
+    fn test_f_enters_filter() {
+        let mut app = make_test_app();
+        handle_key(&mut app, key(KeyCode::Char('f')));
+        assert_eq!(app.mode, AppMode::Filter);
+    }
+
+    #[test]
     fn test_esc_in_search_returns_to_normal() {
         let mut app = make_test_app();
         app.mode = AppMode::Search;
@@ -169,6 +250,14 @@ mod tests {
     fn test_esc_in_help_returns_to_normal() {
         let mut app = make_test_app();
         app.mode = AppMode::Help;
+        handle_key(&mut app, key(KeyCode::Esc));
+        assert_eq!(app.mode, AppMode::Normal);
+    }
+
+    #[test]
+    fn test_esc_in_filter_returns_to_normal() {
+        let mut app = make_test_app();
+        app.mode = AppMode::Filter;
         handle_key(&mut app, key(KeyCode::Esc));
         assert_eq!(app.mode, AppMode::Normal);
     }
@@ -227,6 +316,45 @@ mod tests {
     }
 
     #[test]
+    fn test_s_cycles_sort() {
+        use super::super::app::SortOption;
+        let mut app = make_test_app();
+        assert_eq!(app.sort_option, SortOption::IdDesc);
+
+        handle_key(&mut app, key(KeyCode::Char('s')));
+        assert_eq!(app.sort_option, SortOption::IdAsc);
+
+        handle_key(&mut app, key(KeyCode::Char('s')));
+        assert_eq!(app.sort_option, SortOption::PriorityDesc);
+    }
+
+    #[test]
+    fn test_t_toggles_tree() {
+        let mut app = make_test_app();
+        assert!(!app.tree_mode);
+
+        handle_key(&mut app, key(KeyCode::Char('t')));
+        assert!(app.tree_mode);
+
+        handle_key(&mut app, key(KeyCode::Char('t')));
+        assert!(!app.tree_mode);
+    }
+
+    #[test]
+    fn test_home_end_list() {
+        let mut app = make_test_app();
+        app.set_list_view();
+        app.filtered_specs = vec![0, 1, 2, 3, 4];
+        app.list_selected = 2;
+
+        handle_key(&mut app, key(KeyCode::Home));
+        assert_eq!(app.list_selected, 0);
+
+        handle_key(&mut app, key(KeyCode::End));
+        assert_eq!(app.list_selected, 4);
+    }
+
+    #[test]
     fn test_search_mode_typing() {
         let mut app = make_test_app();
         app.mode = AppMode::Search;
@@ -238,5 +366,18 @@ mod tests {
 
         handle_key(&mut app, key(KeyCode::Backspace));
         assert_eq!(app.search_query, "te");
+    }
+
+    #[test]
+    fn test_filter_j_k_moves_cursor() {
+        let mut app = make_test_app();
+        app.mode = AppMode::Filter;
+        assert_eq!(app.filter_cursor, 0);
+
+        handle_key(&mut app, key(KeyCode::Char('j')));
+        assert_eq!(app.filter_cursor, 1);
+
+        handle_key(&mut app, key(KeyCode::Char('k')));
+        assert_eq!(app.filter_cursor, 0);
     }
 }

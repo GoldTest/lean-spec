@@ -58,6 +58,11 @@ pub fn selected_style() -> Style {
         .add_modifier(Modifier::BOLD)
 }
 
+/// Dimmed selection style for when the sidebar is not focused but still shows which spec is active.
+pub fn inactive_selected_style() -> Style {
+    Style::default().bg(Color::DarkGray)
+}
+
 pub fn header_style() -> Style {
     Style::default()
         .fg(Color::White)

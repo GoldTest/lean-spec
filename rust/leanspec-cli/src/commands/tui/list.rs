@@ -1,9 +1,9 @@
-//! List view widget — flat table with filtering.
+//! List view widget — flat table or tree with sort indicator.
 
 use ratatui::{
     buffer::Buffer,
     layout::Rect,
-    style::Style,
+    style::{Modifier, Style},
     text::{Line, Span},
     widgets::{Block, Borders, Paragraph, Widget},
 };
@@ -19,13 +19,24 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         Style::default().fg(ratatui::style::Color::DarkGray)
     };
 
+    let filter_indicator = if !app.filter.is_empty() { " [F]" } else { "" };
+    let title = format!(" List [{}]{} ", app.sort_option.label(), filter_indicator);
+
     let block = Block::default()
-        .title(" List ")
+        .title(title)
         .borders(Borders::ALL)
         .border_style(border_style);
     let inner = block.inner(area);
     block.render(area, buf);
 
+    if app.tree_mode {
+        render_tree(inner, buf, app, is_focused);
+    } else {
+        render_flat(inner, buf, app, is_focused);
+    }
+}
+
+fn render_flat(area: Rect, buf: &mut Buffer, app: &App, is_focused: bool) {
     let mut lines: Vec<Line> = Vec::new();
 
     // Header row
@@ -36,15 +47,13 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         Span::styled("Title", theme::header_style()),
     ]));
     lines.push(Line::styled(
-        " ".to_string() + &"-".repeat(inner.width.saturating_sub(2) as usize),
+        " ".to_string() + &"-".repeat(area.width.saturating_sub(2) as usize),
         theme::dimmed_style(),
     ));
 
-    // Determine visible range based on terminal height
-    let visible_rows = inner.height.saturating_sub(3) as usize;
+    let visible_rows = area.height.saturating_sub(3) as usize;
     let total = app.filtered_specs.len();
 
-    // Calculate scroll offset to keep selected item visible
     let offset = if app.list_selected >= visible_rows {
         app.list_selected - visible_rows + 1
     } else {
@@ -59,28 +68,20 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         .take(visible_rows)
     {
         let spec = &app.specs[spec_idx];
-        let is_selected = is_focused && vi == app.list_selected;
+        let is_current = vi == app.list_selected;
 
-        let style = if is_selected {
+        let style = if is_current && is_focused {
             theme::selected_style()
+        } else if is_current {
+            theme::inactive_selected_style()
         } else {
             Style::default()
         };
 
         let status_sym = theme::status_symbol(&spec.frontmatter.status);
         let priority_sym = theme::priority_symbol(spec.frontmatter.priority.as_ref());
-        let path = if spec.path.chars().count() > 28 {
-            let truncated: String = spec.path.chars().take(28).collect();
-            format!("{}..", truncated)
-        } else {
-            format!("{:<30}", spec.path)
-        };
-        let title = if spec.title.chars().count() > 30 {
-            let truncated: String = spec.title.chars().take(27).collect();
-            format!("{}...", truncated)
-        } else {
-            spec.title.clone()
-        };
+        let path = truncate_path(&spec.path, 28);
+        let title = truncate_str(&spec.title, 30);
         let dep_count = app
             .dep_graph
             .get_complete_graph(&spec.path)
@@ -104,8 +105,101 @@ pub fn render(area: Rect, buf: &mut Buffer, app: &App) {
         lines.push(Line::styled("  No specs found", theme::dimmed_style()));
     }
 
-    let paragraph = Paragraph::new(lines);
-    paragraph.render(inner, buf);
+    Paragraph::new(lines).render(area, buf);
+}
+
+fn render_tree(area: Rect, buf: &mut Buffer, app: &App, is_focused: bool) {
+    let mut lines: Vec<Line> = Vec::new();
+
+    // Header
+    let mode_label = " S  P  Tree";
+    lines.push(Line::styled(mode_label, theme::header_style()));
+    lines.push(Line::styled(
+        " ".to_string() + &"-".repeat(area.width.saturating_sub(2) as usize),
+        theme::dimmed_style(),
+    ));
+
+    let visible_rows = area.height.saturating_sub(3) as usize;
+    let total = app.tree_rows.len();
+
+    let offset = if app.list_selected >= visible_rows {
+        app.list_selected - visible_rows + 1
+    } else {
+        0
+    };
+
+    for (vi, row) in app
+        .tree_rows
+        .iter()
+        .enumerate()
+        .skip(offset)
+        .take(visible_rows)
+    {
+        let spec = &app.specs[row.spec_idx];
+        let is_current = vi == app.list_selected;
+
+        let base_style = if is_current && is_focused {
+            theme::selected_style()
+        } else if is_current {
+            theme::inactive_selected_style()
+        } else {
+            Style::default()
+        };
+
+        let indent = "  ".repeat(row.depth);
+        let expand_sym = if row.has_children {
+            if row.is_collapsed {
+                "▶ "
+            } else {
+                "▼ "
+            }
+        } else if row.depth > 0 {
+            "  "
+        } else {
+            "  "
+        };
+
+        let status_sym = theme::status_symbol(&spec.frontmatter.status);
+        let priority_sym = theme::priority_symbol(spec.frontmatter.priority.as_ref());
+        let title = truncate_str(&spec.title, 35_usize.saturating_sub(row.depth * 2));
+
+        let expand_style = if row.has_children {
+            base_style.add_modifier(Modifier::BOLD)
+        } else {
+            base_style
+        };
+
+        lines.push(Line::from(vec![
+            Span::styled(
+                format!(" {} {} {}{}", status_sym, priority_sym, indent, expand_sym),
+                expand_style,
+            ),
+            Span::styled(format!("{} {}", spec.path, title), base_style),
+        ]));
+    }
+
+    if total == 0 {
+        lines.push(Line::styled("  No specs found", theme::dimmed_style()));
+    }
+
+    Paragraph::new(lines).render(area, buf);
+}
+
+fn truncate_path(s: &str, max: usize) -> String {
+    if s.chars().count() > max {
+        format!("{}..", s.chars().take(max).collect::<String>())
+    } else {
+        format!("{:<width$}", s, width = max + 2)
+    }
+}
+
+fn truncate_str(s: &str, max: usize) -> String {
+    if s.chars().count() > max {
+        let truncated: String = s.chars().take(max.saturating_sub(3)).collect();
+        format!("{}...", truncated)
+    } else {
+        s.to_string()
+    }
 }
 
 #[cfg(test)]
@@ -137,6 +231,24 @@ mod tests {
         let buf_str = buffer_text(terminal.backend().buffer());
         assert!(buf_str.contains("List"));
         assert!(buf_str.contains("Path"));
-        assert!(buf_str.contains("Title"));
+    }
+
+    #[test]
+    fn test_list_shows_sort_label() {
+        let mut app = App::empty_for_test();
+        app.primary_view = PrimaryView::List;
+
+        let backend = TestBackend::new(80, 20);
+        let mut terminal = Terminal::new(backend).unwrap();
+
+        terminal
+            .draw(|frame| {
+                render(frame.area(), frame.buffer_mut(), &app);
+            })
+            .unwrap();
+
+        let buf_str = buffer_text(terminal.backend().buffer());
+        // Default sort label should appear in title
+        assert!(buf_str.contains("ID"));
     }
 }

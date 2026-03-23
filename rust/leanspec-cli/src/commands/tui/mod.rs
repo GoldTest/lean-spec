@@ -7,6 +7,7 @@ mod app;
 mod board;
 mod deps;
 mod detail;
+mod filter;
 mod help;
 mod keybindings;
 mod list;
@@ -93,6 +94,7 @@ fn draw(frame: &mut Frame, app: &mut App) {
     match app.mode {
         AppMode::Search => search::render(area, frame.buffer_mut(), app),
         AppMode::Help => help::render(area, frame.buffer_mut()),
+        AppMode::Filter => filter::render(area, frame.buffer_mut(), app),
         AppMode::Normal => {}
     }
 }
@@ -148,6 +150,7 @@ fn draw_status_bar(frame: &mut Frame, area: Rect, app: &App) {
         AppMode::Normal => "NORMAL",
         AppMode::Search => "SEARCH",
         AppMode::Help => "HELP",
+        AppMode::Filter => "FILTER",
     };
 
     let view_str = match app.primary_view {
@@ -181,7 +184,7 @@ fn draw_status_bar(frame: &mut Frame, area: Rect, app: &App) {
         ),
         Span::styled(selected_path, theme::status_bar_style()),
         Span::styled(
-            " q:quit  /:search  ?:help  1/2:view  d:deps  [/]:sidebar  \\:collapse ",
+            " q:quit  /:search  ?:help  1/2:view  s:sort  f:filter  t:tree  d:deps  [/]:sidebar ",
             theme::status_bar_style(),
         ),
     ]);
