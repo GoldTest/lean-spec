@@ -72,7 +72,7 @@ fn handle_normal(app: &mut App, key: KeyEvent) {
                 let is_parent = app
                     .tree_rows
                     .get(app.list_selected)
-                    .map_or(false, |r| r.has_children);
+                    .is_some_and(|r| r.has_children);
                 if is_parent {
                     app.toggle_current_tree_node();
                     return;

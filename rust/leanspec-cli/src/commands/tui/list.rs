@@ -153,8 +153,6 @@ fn render_tree(area: Rect, buf: &mut Buffer, app: &App, is_focused: bool) {
             } else {
                 "▼ "
             }
-        } else if row.depth > 0 {
-            "  "
         } else {
             "  "
         };
