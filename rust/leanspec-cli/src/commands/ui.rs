@@ -188,10 +188,12 @@ fn build_ui_command(
             "yarn".to_string(),
             [vec!["dlx".to_string()], ui_args].concat(),
         ),
-        _ => (
-            "npx".to_string(),
-            [vec!["--yes".to_string()], ui_args].concat(),
-        ),
+        _ => {
+            // npm v10 removed npx; prefer npm exec with package pinning.
+            let mut npm_args = vec!["exec".to_string(), "--yes".to_string(), "--package=@leanspec/ui".to_string(), "--".to_string()];
+            npm_args.extend(ui_args);
+            ("npm".to_string(), npm_args)
+        }
     }
 }
 
@@ -205,3 +207,30 @@ fn open_url(url: &str) {
     #[cfg(target_os = "windows")]
     let _ = Command::new("cmd").args(["/C", "start", url]).spawn();
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::Path;
+
+    #[test]
+    fn test_build_ui_command_npm_exec() {
+        let (cmd, args) = build_ui_command("npm", Path::new("/tmp/project"), "3000", false);
+        assert_eq!(cmd, "npm");
+        assert_eq!(args[0], "exec");
+        assert_eq!(args[1], "--yes");
+        assert_eq!(args[2], "--package=@leanspec/ui");
+        assert_eq!(args[3], "--");
+        assert!(args.contains(&"@leanspec/ui".to_string()));
+        assert!(args.contains(&"--project".to_string()));
+    }
+
+    #[test]
+    fn test_build_ui_command_pnpm() {
+        let (cmd, args) = build_ui_command("pnpm", Path::new("/tmp/project"), "3000", true);
+        assert_eq!(cmd, "pnpm");
+        assert_eq!(args[0], "dlx");
+        assert!(args.contains(&"@leanspec/ui".to_string()));
+    }
+}
+

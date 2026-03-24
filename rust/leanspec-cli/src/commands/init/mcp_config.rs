@@ -195,8 +195,8 @@ fn write_mcp_config(
 
 fn build_mcp_entry() -> Value {
     json!({
-        "command": "npx",
-        "args": ["-y", "@leanspec/mcp"]
+        "command": "npm",
+        "args": ["exec", "--yes", "--package=@leanspec/mcp", "--"]
     })
 }
 

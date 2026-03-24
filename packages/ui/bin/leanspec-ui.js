@@ -119,15 +119,31 @@ let httpServerProcess;
 console.log('🚀 Starting LeanSpec HTTP server...');
 const args = process.argv.slice(2);
 
-httpServerProcess = spawn('node', [httpServerPath, ...args], {
+// Validate httpServerPath before spawning
+if (!httpServerPath || !existsSync(httpServerPath)) {
+  console.error('Error: HTTP server script not found at:', httpServerPath);
+  console.error('');
+  console.error('This usually means @leanspec/http-server was not installed correctly.');
+  console.error('');
+  console.error('Try reinstalling:');
+  console.error('  npm install -g @leanspec/http-server@latest');
+  process.exit(1);
+}
+
+// Use process.execPath to ensure Node.js is found correctly on all platforms
+httpServerProcess = spawn(process.execPath, [httpServerPath, ...args], {
   stdio: 'inherit',
   env: { ...process.env, LEANSPEC_UI_DIST: DIST_DIR }
 });
 
 httpServerProcess.on('error', (err) => {
   console.error('Failed to start HTTP server:', err.message);
-  console.error('\nThe UI requires @leanspec/http-server to function.');
-  console.error('Install it with: npm install @leanspec/http-server');
+  console.error('');
+  console.error('This usually means the HTTP server binary could not be found.');
+  console.error('Error code:', err.code);
+  console.error('');
+  console.error('Try reinstalling:');
+  console.error('  npm install -g @leanspec/http-server@latest');
   process.exit(1);
 });
 

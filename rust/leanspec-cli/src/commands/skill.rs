@@ -51,14 +51,30 @@ pub fn install(agents: Option<&[String]>, skip_confirm: bool) -> Result<(), Box<
 }
 
 fn run_npx(args: &[&str]) -> Result<(), Box<dyn Error>> {
-    let status = Command::new("npx")
-        .args(args)
-        .status()
-        .map_err(|err| format!("Failed to run npx (is Node.js installed?): {err}"))?;
+    match Command::new("npx").args(args).status() {
+        Ok(status) if status.success() => return Ok(()),
+        Ok(status) => {
+            return Err(format!("npx {} exited with {status}", args.join(" ")).into());
+        }
+        Err(err) => {
+            // npm v10 removed npx; fallback to npm exec with the same args
+            if err.kind() == std::io::ErrorKind::NotFound {
+                let mut npm_args = vec!["exec".to_string(), "--yes".to_string()];
+                // `npx foo --bar` becomes `npm exec --yes -- foo --bar`
+                npm_args.push("--".to_string());
+                npm_args.extend(args.iter().map(|s| s.to_string()));
 
-    if status.success() {
-        Ok(())
-    } else {
-        Err(format!("npx {} exited with {status}", args.join(" ")).into())
+                let status = Command::new("npm")
+                    .args(&npm_args)
+                    .status()
+                    .map_err(|err| format!("Failed to run npm exec (is Node.js installed?): {err}"))?;
+
+                if status.success() {
+                    return Ok(());
+                }
+                return Err(format!("npm exec {} exited with {status}", args.join(" ")).into());
+            }
+            return Err(format!("Failed to run npx (is Node.js installed?): {err}").into());
+        }
     }
 }

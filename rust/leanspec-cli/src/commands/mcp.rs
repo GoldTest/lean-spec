@@ -95,10 +95,11 @@ fn build_mcp_command(package_manager: &str, specs_dir: &str) -> (String, Vec<Str
             "yarn".to_string(),
             [vec!["dlx".to_string()], mcp_args].concat(),
         ),
-        _ => (
-            "npx".to_string(),
-            [vec!["--yes".to_string()], mcp_args].concat(),
-        ),
+        _ => {
+            let mut npm_args = vec!["exec".to_string(), "--yes".to_string(), "--package=@leanspec/mcp".to_string(), "--".to_string()];
+            npm_args.extend(mcp_args);
+            ("npm".to_string(), npm_args)
+        }
     }
 }
 
@@ -171,3 +172,28 @@ fn is_command_available(command: &str) -> bool {
             .unwrap_or(false)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_build_mcp_command_npm_exec() {
+        let (cmd, args) = build_mcp_command("npm", "");
+        assert_eq!(cmd, "npm");
+        assert_eq!(args[0], "exec");
+        assert_eq!(args[1], "--yes");
+        assert_eq!(args[2], "--package=@leanspec/mcp");
+        assert_eq!(args[3], "--");
+        assert!(args.contains(&"@leanspec/mcp".to_string()));
+    }
+
+    #[test]
+    fn test_build_mcp_command_pnpm() {
+        let (cmd, args) = build_mcp_command("pnpm", "./specs");
+        assert_eq!(cmd, "pnpm");
+        assert_eq!(args[0], "dlx");
+        assert!(args.contains(&"@leanspec/mcp".to_string()));
+    }
+}
+
