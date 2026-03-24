@@ -24,13 +24,14 @@ pub async fn github_detect_specs(
         )
     })?;
 
-    let client = make_client(body.token.as_deref());
-
-    let result =
-        tokio::task::spawn_blocking(move || client.detect_specs(&repo_ref, body.branch.as_deref()))
-            .await
-            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
-            .map_err(|e| (StatusCode::BAD_GATEWAY, e.to_string()))?;
+    let token = body.token.clone();
+    let result = tokio::task::spawn_blocking(move || {
+        let client = make_client(token.as_deref());
+        client.detect_specs(&repo_ref, body.branch.as_deref())
+    })
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+    .map_err(|e| (StatusCode::BAD_GATEWAY, e.to_string()))?;
 
     Ok(Json(DetectResponse { result }))
 }
@@ -38,13 +39,17 @@ pub async fn github_detect_specs(
 /// GET /api/github/repos - List repos accessible to the authenticated user
 pub async fn github_list_repos(
     State(_state): State<AppState>,
+    headers: axum::http::HeaderMap,
 ) -> Result<Json<ListReposResponse>, (StatusCode, String)> {
-    let client = make_client(None);
+    let token = extract_token(&headers);
 
-    let repos = tokio::task::spawn_blocking(move || client.list_user_repos(30))
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
-        .map_err(|e| (StatusCode::BAD_GATEWAY, e.to_string()))?;
+    let repos = tokio::task::spawn_blocking(move || {
+        let client = make_client(token.as_deref());
+        client.list_user_repos(30)
+    })
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+    .map_err(|e| (StatusCode::BAD_GATEWAY, e.to_string()))?;
 
     Ok(Json(ListReposResponse { repos }))
 }
@@ -61,16 +66,17 @@ pub async fn github_import_repo(
         )
     })?;
 
-    let client = make_client(body.token.as_deref());
-
     // Detect specs first if no specs_path provided
+    let token = body.token.clone();
     let (branch, specs_path) =
         if let (Some(branch), Some(path)) = (body.branch.as_deref(), body.specs_path.as_deref()) {
             (branch.to_string(), path.to_string())
         } else {
             let repo_ref_clone = repo_ref.clone();
             let branch_clone = body.branch.clone();
+            let token_clone = token.clone();
             let detection = tokio::task::spawn_blocking(move || {
+                let client = make_client(token_clone.as_deref());
                 client.detect_specs(&repo_ref_clone, branch_clone.as_deref())
             })
             .await
@@ -100,14 +106,14 @@ pub async fn github_import_repo(
         .map_err(|e| (StatusCode::CONFLICT, e.to_string()))?;
 
     // Sync specs from GitHub into the local cache
-    let client2 = make_client(body.token.as_deref());
     let repo_ref2 = repo_ref.clone();
     let branch2 = branch.clone();
     let specs_path2 = specs_path.clone();
     let specs_dir = project.specs_dir.clone();
 
     let synced = tokio::task::spawn_blocking(move || {
-        sync_specs_to_cache(&client2, &repo_ref2, &branch2, &specs_path2, &specs_dir)
+        let client = make_client(token.as_deref());
+        sync_specs_to_cache(&client, &repo_ref2, &branch2, &specs_path2, &specs_dir)
     })
     .await
     .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
@@ -126,6 +132,7 @@ pub async fn github_import_repo(
 /// POST /api/github/sync/{id} - Sync specs from GitHub for a project
 pub async fn github_sync_project(
     State(state): State<AppState>,
+    headers: axum::http::HeaderMap,
     axum::extract::Path(project_id): axum::extract::Path<String>,
 ) -> Result<Json<SyncResponse>, (StatusCode, String)> {
     let registry = state.registry.read().await;
@@ -140,7 +147,6 @@ pub async fn github_sync_project(
         )
     })?;
 
-    let client = make_client(None);
     let repo_ref = RepoRef::parse(&github_config.repo).ok_or_else(|| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -148,6 +154,7 @@ pub async fn github_sync_project(
         )
     })?;
 
+    let token = extract_token(&headers);
     let branch = github_config.branch.clone();
     let specs_path = github_config.specs_path.clone();
     let specs_dir = project.specs_dir.clone();
@@ -155,6 +162,7 @@ pub async fn github_sync_project(
     drop(registry);
 
     let synced = tokio::task::spawn_blocking(move || {
+        let client = make_client(token.as_deref());
         sync_specs_to_cache(&client, &repo_ref, &branch, &specs_path, &specs_dir)
     })
     .await
@@ -204,6 +212,21 @@ fn sync_specs_to_cache(
     }
 
     Ok(synced)
+}
+
+/// Extract a GitHub token from request headers (`X-GitHub-Token` or `Authorization: Bearer`).
+fn extract_token(headers: &axum::http::HeaderMap) -> Option<String> {
+    if let Some(val) = headers.get("X-GitHub-Token") {
+        return val.to_str().ok().map(|s| s.to_string());
+    }
+    if let Some(val) = headers.get(axum::http::header::AUTHORIZATION) {
+        if let Ok(s) = val.to_str() {
+            if let Some(token) = s.strip_prefix("Bearer ") {
+                return Some(token.to_string());
+            }
+        }
+    }
+    None
 }
 
 fn make_client(token: Option<&str>) -> GitHubClient {
