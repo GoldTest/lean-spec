@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **TUI Theme Overhaul** — Modern theme with Unicode symbols and RGB color palette
 - **Configurable Project Sources** — Local and GitHub project sources via capabilities endpoint
 - **GitHub Tab in Create Dialog** — New UI entry point for importing GitHub projects on mobile
+- **Commons Clause Licensing** — Adds Commons Clause v1.0 to the MIT license to prevent unauthorized resale
+  - Updates `LICENSE` with the Commons Clause condition
+  - Updates `package.json` and `Cargo.toml` to use `MIT AND Commons-Clause-1.0`
+  - Updates `README.md` with a prominent restrictive license badge
 
 ### Changed
 - **Default TUI View** — Default view changed from Board to List
