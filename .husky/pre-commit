@@ -1,18 +1,22 @@
 #!/bin/sh
 # Format Rust code before commit (fast operation)
-echo "🎨 Formatting Rust code..."
-cd rust && cargo fmt --all
-
-if [ $? -ne 0 ]; then
-  echo "❌ Rust formatting failed!"
-  exit 1
+if command -v cargo >/dev/null 2>&1; then
+  echo "🎨 Formatting Rust code..."
+  cd rust && cargo fmt --all
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ Rust formatting failed!"
+    exit 1
+  fi
+  
+  echo "✅ Rust code formatted!"
+  
+  # Stage any Rust files that were formatted
+  git add -u "*.rs" 2>/dev/null || true
+  cd ..
+else
+  echo "⚠️ cargo not found, skipping Rust formatting."
 fi
-
-# Stage any Rust files that were formatted
-git add -u "*.rs" 2>/dev/null || true
-cd ..
-
-echo "✅ Rust code formatted!"
 
 # Check that pnpm-lock.yaml doesn't contain platform-specific binaries
 # These are generated locally and should not be committed
