@@ -1,5 +1,5 @@
 ---
-status: draft
+status: in-progress
 created: 2026-03-30
 priority: critical
 tags:
@@ -8,18 +8,18 @@ tags:
 - branding
 - harnspec
 created_at: 2026-03-30T23:51:00Z
-updated_at: 2026-03-30T23:51:00Z
+updated_at: 2026-04-01T13:46:00Z
 ---
 
 # HarnSpec Migration and Repository Transfer
 
 ## Overview
 
-Following the rebranding initiative (Spec 381), this spec outlines the technical steps to complete the migration of the codebase to the new `harnspec` identity and transfer the repository to the `harnspec` organization on GitHub.
+Following the branding reconstruction (Spec 381), this spec outlines the technical steps to complete the migration of the codebase to the new `harnspec` identity and transfer the repository to the `harnspec` organization on GitHub.
 
-## Problem
+## Current Status
 
-The project is currently named `harnspec` and hosted at `https://github.com/codervisor/harnspec` (or similar). To fully embrace the new identity, the repository needs to be moved to `https://github.com/harnspec/harnspec` and all local configuration must reflect this change.
+The core renaming of package names and project structure has been completed as part of Spec 381. The main focus of this spec is now the repository transfer to the `harnspec` GitHub organization and final URL cleanup.
 
 ## Proposed Changes
 
@@ -27,32 +27,25 @@ The project is currently named `harnspec` and hosted at `https://github.com/code
 
 - Update git remote origin to `https://github.com/harnspec/harnspec.git`.
 - Push the current state of the project to the new repository.
+- Coordinate with the team to ensure the `harnspec` organization is ready.
 
-### 2. Branding and Naming
+### 2. Branding and Naming (Final Polish)
 
-- Rename the root project from `harnspec` to `harnspec` in `package.json`.
-- Update all internal package names and references from `@leanspec` to `@harnspec`.
-- Update all references to `harnspec` in documentation, comments, and configuration files.
+- [x] Rename the root project to `harnspec` in `package.json`.
+- [x] Update internal package names from `@leanspec` to `@harnspec`.
+- [ ] Update all repository URL references from `codervisor/harnspec` to `harnspec/harnspec` in `package.json`, `Cargo.toml`, and documentation.
+- [ ] Update `homepage` and `bugs` URLs in all packages.
 
 ### 3. CI/CD Adjustments
 
 - Update GitHub Actions workflows to point to the new repository and organization.
-- Update any secrets or environment variables required for the new organization.
+- Update environment variables/secrets for the new organization (e.g., NPM_TOKEN if needed).
 
 ## Technical Details
 
-### `package.json` Updates
+### URL Updates
 
-```json
-{
-  "name": "harnspec",
-  ...
-  "scripts": {
-    "cli": "node bin/harnspec.js",
-    ...
-  }
-}
-```
+Change: `https://github.com/codervisor/harnspec` -> `https://github.com/harnspec/harnspec`
 
 ### Git Commands
 
@@ -64,6 +57,7 @@ git push -u origin main
 ## Acceptance Criteria
 
 - [ ] Repository is successfully pushed to `https://github.com/harnspec/harnspec`.
-- [ ] Root `package.json` reflects the name `harnspec`.
-- [ ] `pnpm install` works after renaming.
-- [ ] CLI can be invoked using the new command (if applicable).
+- [x] Root `package.json` reflects the name `harnspec`.
+- [x] `pnpm install` works with the new package names.
+- [ ] All repository references in `package.json` and `Cargo.toml` point to the `harnspec` organization.
+- [ ] GitHub Actions successfully run in the new repository.

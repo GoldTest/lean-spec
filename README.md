@@ -1,11 +1,11 @@
 # HarnSpec
 
 <p align="center">
-  <img src="https://github.com/codervisor/harnspec-docs/blob/main/static/img/logo-with-bg.svg" alt="HarnSpec Logo" width="120" height="120">
+  <img src="https://github.com/harnspec/harnspec-docs/blob/main/static/img/logo-with-bg.svg" alt="HarnSpec Logo" width="120" height="120">
 </p>
 
 <p align="center">
-  <a href="https://github.com/codervisor/harnspec/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/codervisor/harnspec/ci.yml?branch=main" alt="CI Status"></a>
+  <a href="https://github.com/harnspec/harnspec/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/harnspec/harnspec/ci.yml?branch=main" alt="CI Status"></a>
   <a href="https://www.npmjs.com/package/harnspec"><img src="https://img.shields.io/npm/v/harnspec.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/harnspec"><img src="https://img.shields.io/npm/dm/harnspec.svg" alt="npm downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT%20with%20Commons%20Clause-red.svg" alt="License"></a>

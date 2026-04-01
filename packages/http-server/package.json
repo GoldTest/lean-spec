@@ -21,12 +21,11 @@
   "license": "MIT AND Commons-Clause-1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/harnspec.git",
-    "directory": "packages/http-server"
+    "url": "https://github.com/harnspec/harnspec.git"
   },
   "homepage": "https://harnspec.dev",
   "bugs": {
-    "url": "https://github.com/codervisor/harnspec/issues"
+    "url": "https://github.com/harnspec/harnspec/issues"
   },
   "files": [
     "bin/",

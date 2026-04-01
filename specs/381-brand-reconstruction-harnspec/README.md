@@ -1,5 +1,5 @@
 ---
-status: draft
+status: completed
 created: 2026-03-30
 priority: critical
 tags:
@@ -7,7 +7,7 @@ tags:
 - rebranding
 - project-management
 created_at: 2026-03-30T22:10:00Z
-updated_at: 2026-03-30T22:10:00Z
+updated_at: 2026-04-01T13:45:00Z
 ---
 
 # Brand Reconstruction: HarnSpec
@@ -62,7 +62,7 @@ The original "LeanSpec" name and its associated vision (as outlined in Spec 380)
 
 ### Acceptance Criteria
 
-- [ ] `harnspec --help` works correctly with the new name.
-- [ ] All packages publishable under `@harnspec` scope.
-- [ ] Documentation site correctly displays "HarnSpec" branding.
-- [ ] All tests pass after renaming.
+- [x] `harnspec --help` works correctly with the new name.
+- [x] All packages publishable under `@harnspec` scope.
+- [x] Documentation site correctly displays "HarnSpec" branding.
+- [x] All tests pass after renaming.
