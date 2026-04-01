@@ -29,7 +29,7 @@ updated_at: 2026-02-04T03:26:07.163915Z
 
 > **Status**: 🗓️ Planned · **Priority**: Critical · **Created**: 2025-12-12 · **Tags**: architecture, ai-agents, desktop, orchestration, sdd-lifecycle, agent-relay, devlog
 
-**Project**: lean-spec
+**Project**: harnspec
 
 ## Overview
 
@@ -42,18 +42,21 @@ updated_at: 2026-02-04T03:26:07.163915Z
 ### Why This Matters
 
 **Problem with Memory-Only Positioning**:
+
 - ❌ Fragmented UX: Users must context-switch between LeanSpec (specs), agent-relay (execution), Devlog (observability)
 - ❌ Unclear product identity: "Just a spec storage tool?" vs complete AI development platform
 - ❌ Desktop app underutilized: Beautiful GUI but only shows specs, doesn't trigger actions
 - ❌ Missing SDD lifecycle integration: No clear path from spec → implementation → validation
 
 **Opportunity with Desktop App**:
+
 - ✅ Native GUI for triggering AI coding sessions (one-click spec implementation)
 - ✅ Visual workflow: Create spec → Implement spec → Validate spec → Complete
 - ✅ Real-time session monitoring in desktop app
 - ✅ Multi-project AI orchestration hub
 
 **The Codervisor Platform Vision**:
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    CODERVISOR PLATFORM                          │
@@ -75,6 +78,7 @@ updated_at: 2026-02-04T03:26:07.163915Z
 ```
 
 **LeanSpec becomes the orchestration frontend**, not just memory:
+
 - **Desktop app** = Control center for AI coding sessions
 - **CLI** = Programmatic interface for automation
 - **MCP** = AI-to-AI orchestration
@@ -120,6 +124,7 @@ updated_at: 2026-02-04T03:26:07.163915Z
 See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integration patterns.
 
 **Key Components**:
+
 1. Desktop UI for session orchestration
 2. agent-relay integration for AI execution
 3. Devlog integration for telemetry
@@ -129,6 +134,7 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integratio
 ## Plan
 
 ### Phase 1: Foundation Enhancement (Week 1-2)
+
 - [x] Create spec 168 (this document)
 - [x] Add competitive landscape analysis
 - [x] Clarify LeanSpec-native UX approach (build on existing desktop + chatbot)
@@ -138,6 +144,7 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integratio
 - [ ] Add `--max-iterations <n>` flag support
 
 ### Phase 2: Desktop Orchestration UI (Week 3-4) 🎯
+
 **Goal**: Enhance existing LeanSpec Desktop with orchestration capabilities
 
 - [ ] **Enhanced Spec Detail View**
@@ -165,30 +172,35 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integratio
   - [ ] Error state handling with actionable feedback
 
 ### Phase 3: Agent-Relay Integration (Week 5-6)
+
 - [ ] Implement agent-relay client library
 - [ ] Session manager with persistence
 - [ ] WebSocket connection for real-time updates
 - [ ] Graceful fallback to basic dispatch if agent-relay unavailable
 
 ### Phase 4: Validation System (Week 7-8)
+
 - [ ] Integrate with Ralph mode critic (spec 171)
 - [ ] Test runner integration (npm test, pytest, cargo test)
 - [ ] Spec verification checks
 - [ ] Validation results UI with actionable feedback
 
 ### Phase 5: Devlog Integration (Week 9-10)
+
 - [ ] Telemetry client for session logging
 - [ ] Metrics dashboard: completion rates, iteration counts, token usage
 - [ ] Session history and replay
 - [ ] Analytics views for team performance
 
 ### Phase 6: Polish & Launch (Week 11-12)
+
 - [ ] Performance optimization (streaming, rendering)
 - [ ] Error handling and recovery
 - [ ] Documentation and video tutorials
 - [ ] Release v0.5.0-orchestration
 
 **Success Metrics**:
+
 - Can dispatch spec to agent from Desktop in <3 clicks
 - Real-time output appears within 500ms
 - Session state persists across app restarts
@@ -198,18 +210,21 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integratio
 ## Test
 
 ### Integration Tests
+
 - [ ] Full SDD lifecycle (create → implement → validate → complete)
 - [ ] agent-relay integration works correctly
 - [ ] Devlog telemetry captured correctly
 - [ ] Desktop UI updates in real-time
 
 ### User Experience Tests
+
 - [ ] Guided mode (pause between phases)
 - [ ] Autonomous mode (run all phases)
 - [ ] Multi-project session isolation
 - [ ] Error handling and recovery
 
 ### Performance Tests
+
 - [ ] Desktop app responsive during sessions
 - [ ] Output streaming without lag
 - [ ] Multiple simultaneous sessions
@@ -222,6 +237,7 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture, UI flows, and integratio
 **1. LeanSpec as Frontend, agent-relay as Backend**
 
 This is the critical repositioning:
+
 - **LeanSpec Desktop** = User-facing orchestration interface
 - **agent-relay** = Headless execution engine
 - **Devlog** = Observability and analytics layer
@@ -263,11 +279,13 @@ Spec 159 established separation of concerns at the **implementation level**. Thi
 #### Strategic Differentiation
 
 **Vibe-Kanban**: Task-centric kanban board for agent switching
+
 - Focus: Visual task board with drag-and-drop, multi-agent orchestration
 - Workflow: Create task → Assign agent → Monitor via terminal → Manual completion
 - Value: Better UX for managing multiple agents than CLI-only tools
 
 **LeanSpec**: Spec-driven orchestration with autonomous quality loops
+
 - Focus: Spec lifecycle automation with built-in validation
 - Workflow: Design spec → Auto-implement → Auto-validate → Auto-complete
 - Value: End-to-end SDD methodology + autonomous quality loops + existing UI foundation
@@ -275,22 +293,26 @@ Spec 159 established separation of concerns at the **implementation level**. Thi
 #### Why LeanSpec's Approach is Different
 
 **1. Build on Existing Strengths**
+
 - ✅ Already have desktop app (spec 148) with native GUI
 - ✅ Already have spec detail views, metadata editing
 - ✅ Already have chatbot (spec 94) for conversational interface
 - ❌ Don't need to replicate kanban boards - specs already organized by status
 
 **2. Spec-Centric vs Task-Centric**
+
 - **Vibe-Kanban**: Tasks are the unit of work (kanban cards)
 - **LeanSpec**: Specs are the unit of work (design documents)
 - **Advantage**: Specs contain requirements, validation criteria, and context - tasks don't
 
 **3. Conversational + Visual**
+
 - **Vibe-Kanban**: Pure visual interface (click buttons, drag cards)
 - **LeanSpec**: Hybrid interface (visual spec browsing + AI chat orchestration)
 - **Advantage**: "Implement this spec with Claude" in chat is faster than 5 UI clicks
 
 **4. Autonomous Quality Loops**
+
 - **Vibe-Kanban**: Manual supervision, no validation
 - **LeanSpec**: Ralph mode (spec 171) + critic/validator iterates until quality achieved
 - **Advantage**: Set it and forget it, agent self-corrects until tests pass
@@ -313,25 +335,30 @@ Spec 159 established separation of concerns at the **implementation level**. Thi
 **LeanSpec positioning**: "AI orchestration platform for spec-driven development" (methodology + automation)
 
 **Not competing directly** - Serving different needs:
+
 - Vibe-Kanban = Visual task board for agent juggling
 - LeanSpec = Spec-driven development with AI assistance
 
 **Target Users**:
+
 - **Vibe-Kanban**: Individual developers switching between multiple agents
 - **LeanSpec**: Teams practicing SDD with automated quality assurance
 
 ### Related Specs
 
 **Foundation**:
+
 - **159-leanspec-memory-layer-architecture**: Separation of concerns
 - **148-leanspec-desktop-app**: Native GUI platform
 - **123-ai-coding-agent-integration**: Current agent dispatch
 - **158-persistent-agent-sessions**: Session concepts (in agent-relay)
 
 **Infrastructure**:
+
 - **agent-relay** (separate repo): Execution engine
 - **Devlog** (separate repo): Observability platform
 
 **Adjacent**:
+
 - **136-growth-marketing-strategy-v2**: Platform positioning
 - **118-parallel-spec-implementation**: Multi-spec workflows

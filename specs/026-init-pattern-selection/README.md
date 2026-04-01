@@ -19,12 +19,11 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: ux, init, v0.2.0
 
-
-> Let users choose folder pattern during `lean-spec init`
+> Let users choose folder pattern during `harnspec init`
 
 ## Overview
 
-Currently when running `lean-spec init`, users can only choose a template (minimal/standard/enterprise). The folder pattern is set by the template and users must manually edit `.lean-spec/config.json` to change it.
+Currently when running `harnspec init`, users can only choose a template (minimal/standard/enterprise). The folder pattern is set by the template and users must manually edit `.harnspec/config.json` to change it.
 
 **Issue:** No way to choose folder pattern during initialization.
 
@@ -32,13 +31,15 @@ Currently when running `lean-spec init`, users can only choose a template (minim
 
 ## Design
 
-Enhance the `lean-spec init` wizard to offer pattern choices:
+Enhance the `harnspec init` wizard to offer pattern choices:
 
 **Current flow:**
+
 1. Choose template (minimal/standard/enterprise)
 2. Confirm → Done
 
 **New flow:**
+
 1. Choose template (minimal/standard/enterprise)
 2. Choose folder pattern:
    - `{YYYYMMDD}/{NNN}-{name}/` (Date-grouped - recommended for teams)
@@ -48,8 +49,9 @@ Enhance the `lean-spec init` wizard to offer pattern choices:
 3. Confirm → Done
 
 **UI mockup:**
+
 ```bash
-$ lean-spec init
+$ harnspec init
 
 ? Select a template:
   ❯ standard
@@ -64,6 +66,7 @@ $ lean-spec init
 ```
 
 **Implementation:**
+
 - Add pattern selection prompt to `init.ts`
 - Override template's `folderPattern` in generated config
 - Provide sensible descriptions for each pattern
@@ -80,6 +83,7 @@ $ lean-spec init
 - [ ] Add tests for pattern selection
 
 **Implementation Notes:**
+
 - Straightforward UX enhancement to init flow
 - Improves onboarding by eliminating manual config edits
 - Part of spec 043 launch preparation
@@ -87,6 +91,7 @@ $ lean-spec init
 - No blocking dependencies
 
 **Testing Priority:**
+
 - Pattern selection UI is intuitive
 - Selected pattern correctly overrides template default
 - Custom pattern validation works

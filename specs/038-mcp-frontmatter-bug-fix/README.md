@@ -18,7 +18,7 @@ transitions:
 
 > **Status**: 📦 Archived · **Priority**: High · **Created**: 2025-11-04 · **Tags**: bug, mcp, frontmatter
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -26,11 +26,13 @@ transitions:
 The MCP server's `specToData` function incorrectly accesses frontmatter properties directly on the `SpecInfo` object (e.g., `spec.status`) instead of through the `frontmatter` property (e.g., `spec.frontmatter.status`).
 
 **Impact:**
-- `lean-spec_board` command crashes with "Cannot read properties of undefined"
-- `lean-spec_stats` shows all specs with `undefined` status
+
+- `harnspec_board` command crashes with "Cannot read properties of undefined"
+- `harnspec_stats` shows all specs with `undefined` status
 - All frontmatter fields (status, priority, tags, etc.) are not populated in MCP responses
 
 **Root cause:** `SpecInfo` type has structure:
+
 ```typescript
 {
   path: string;
@@ -69,6 +71,7 @@ function specToData(spec: any): SpecData {
 ```
 
 **Additional fixes needed:**
+
 - `getBoardData()` - accesses `spec.status` directly (line ~215)
 - `getStatsData()` - accesses `spec.status`, `spec.priority`, `spec.tags` directly (lines ~188-201)
 
@@ -89,15 +92,16 @@ These need to use `spec.frontmatter.*` as well.
 
 Verify all MCP commands work correctly:
 
-- [ ] `lean-spec_list` returns specs with correct status/priority/tags
-- [ ] `lean-spec_board` successfully groups specs by status columns
-- [ ] `lean-spec_stats` shows correct counts by status/priority/tags
-- [ ] `lean-spec_search` includes proper metadata in results
-- [ ] `lean-spec_read` shows correct frontmatter in spec data
+- [ ] `harnspec_list` returns specs with correct status/priority/tags
+- [ ] `harnspec_board` successfully groups specs by status columns
+- [ ] `harnspec_stats` shows correct counts by status/priority/tags
+- [ ] `harnspec_search` includes proper metadata in results
+- [ ] `harnspec_read` shows correct frontmatter in spec data
 - [ ] No "undefined" values in any MCP responses
 - [ ] Board command doesn't crash with undefined errors
 
 **Manual test:**
+
 ```bash
 # Via MCP in VS Code
 - Call board tool → should show specs grouped by status
@@ -108,15 +112,18 @@ Verify all MCP commands work correctly:
 ## Notes
 
 **Discovery process:**
-1. Tested `lean-spec_board` → got "Cannot read properties of undefined (reading 'push')" error
-2. Tested `lean-spec_stats` → all 11 specs showed as `status: undefined`
-3. Tested `lean-spec_read` on spec 037 → spec file has `status: planned` in frontmatter
+
+1. Tested `harnspec_board` → got "Cannot read properties of undefined (reading 'push')" error
+2. Tested `harnspec_stats` → all 11 specs showed as `status: undefined`
+3. Tested `harnspec_read` on spec 037 → spec file has `status: planned` in frontmatter
 4. Reviewed `mcp-server.ts` → found `specToData()` accessing wrong properties
 5. Checked `spec-loader.ts` → confirmed SpecInfo structure uses `frontmatter` sub-object
 
 **Files affected:**
+
 - `src/mcp-server.ts` - Main fix location (lines ~51, ~188-201, ~215)
 
 **Related:**
+
 - Spec 034: Copilot slash commands (uses MCP server)
 - MCP integration testing script: `test-mcp-integration.sh`

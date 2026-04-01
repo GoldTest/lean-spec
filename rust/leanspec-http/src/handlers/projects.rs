@@ -578,7 +578,7 @@ fn collect_agent_instructions(
 fn collect_project_config(
     project_root: &PathBuf,
 ) -> Result<crate::types::ProjectConfigResponse, (StatusCode, Json<ApiError>)> {
-    let config_path = project_root.join(".lean-spec").join("config.json");
+    let config_path = project_root.join(".harnspec").join("config.json");
 
     if !config_path.exists() {
         return Ok(crate::types::ProjectConfigResponse {

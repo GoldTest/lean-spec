@@ -21,19 +21,21 @@ transitions:
 
 Users on older Linux distributions (e.g., AliOS 7, kernel 4.19) cannot run the pre-built CLI binary because it requires `GLIBC_2.39`, which is only available on Ubuntu 24.04+. The binary is built on `ubuntu-latest` (now Ubuntu 24.04) in GitHub Actions, linking against the newer glibc.
 
-Error: `GLIBC_2.39 not found (required by lean-spec)`
+Error: `GLIBC_2.39 not found (required by harnspec)`
 
 ## Design
 
 Pin the Linux build runner in `publish.yml` from `ubuntu-latest` to `ubuntu-22.04` (GLIBC 2.35). This is the simplest fix that broadens compatibility to most Linux distributions in active use.
 
 **Why `ubuntu-22.04`?**
+
 - GLIBC 2.35 is compatible with most modern Linux distros (Ubuntu 22.04+, Debian 12+, RHEL 9+, Fedora 36+)
 - Still supported by GitHub Actions
 - No code changes required — only CI configuration
 - Alternative (musl static linking) would require more invasive changes
 
 **Why not change `ci.yml`?**
+
 - CI builds are for testing only, not distribution — `ubuntu-latest` is fine there
 
 ## Plan

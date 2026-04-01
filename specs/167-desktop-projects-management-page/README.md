@@ -42,12 +42,14 @@ The LeanSpec desktop app currently lacks a dedicated, easily accessible projects
 6. **Onboarding**: New users don't know how to add their first project effectively
 
 **Target Users:**
+
 - Developers managing 5-10+ LeanSpec projects locally
 - Consultants switching between client codebases frequently
 - Teams wanting organized project workspaces
 - Users migrating from other tools wanting bulk import
 
 **Success Criteria:**
+
 - Projects management accessible within 1-2 clicks from any desktop state
 - Native desktop feel (keyboard shortcuts, context menus)
 - Clear visual distinction between "active project view" and "management view"
@@ -59,11 +61,13 @@ The LeanSpec desktop app currently lacks a dedicated, easily accessible projects
 ### Architecture: Two-Mode System
 
 **Mode 1: Active Project View (Current)**
+
 - Shows the current project's specs, board, dependencies
 - Title bar has minimal project switcher dropdown
 - User is "working in" a specific project
 
 **Mode 2: Projects Management View (New)**
+
 - Dashboard showing ALL projects as cards/list
 - Rich metadata, stats, health indicators
 - Bulk operations, organization features
@@ -72,6 +76,7 @@ The LeanSpec desktop app currently lacks a dedicated, easily accessible projects
 ### Navigation Structure
 
 **NOTE**: This design integrates with spec 163 (multi-tasking-ui-enhancements) which introduces:
+
 - Persistent project sidebar (left side)
 - Browser-style tabs for navigation
 - Quick switcher (Cmd/Ctrl+K)
@@ -87,7 +92,7 @@ Desktop App Window
 │
 ├── Project Sidebar (spec 163)                    Main Content Area
 │   ├── 📁 Projects (collapsible)          │   ├── Active Project View (default)
-│   │   ├── > lean-spec (163 specs)       │   │   ├── [Tab 1] [Tab 2] [Tab 3×]  ← Browser tabs
+│   │   ├── > harnspec (163 specs)       │   │   ├── [Tab 1] [Tab 2] [Tab 3×]  ← Browser tabs
 │   │   ├── > devlog (45 specs)           │   │   ├── Content: Spec details, Board, etc.
 │   │   └── my-app (12 specs)             │   │   └── (Specs navigation sidebar)
 │   ├── [Manage All Projects] ← Button    │   │
@@ -116,6 +121,7 @@ Desktop App Window
 ```
 
 **Components:**
+
 - **Back Button**: Returns to active project view (if one is set)
 - **Search Bar**: Full-text search across project names and paths
 - **Filter Dropdown**: All / Favorites
@@ -155,6 +161,7 @@ Desktop App Window
 ```
 
 **Card Components:**
+
 - **Header**: Star toggle + Project name (editable inline)
 - **Avatar**: Color-coded initials or custom icon
 - **Path**: Truncated with tooltip showing full path
@@ -164,6 +171,7 @@ Desktop App Window
 - **Actions**: Primary "Open" button + overflow menu (•••)
 
 **Overflow Menu Actions:**
+
 - Set as Active
 - Rename
 - Reveal in Finder/Explorer
@@ -185,6 +193,7 @@ Desktop App Window
 ```
 
 **Table Features:**
+
 - Sortable columns (click header to sort)
 - Row hover actions (quick open, favorite toggle)
 - Inline editing (double-click name)
@@ -195,11 +204,13 @@ Desktop App Window
 #### 1. Native Menu Integration
 
 **Integration with Spec 163:**
+
 - Project sidebar already provides project navigation
 - Quick switcher (Cmd/Ctrl+K) provides command access
 - "Manage All Projects" is a button in the project sidebar (spec 163) OR accessible via quick switcher
 
 **File Menu:**
+
 ```
 File
 ├── Open Project...              Cmd+O
@@ -214,6 +225,7 @@ File
 ```
 
 **View Menu:**
+
 ```
 View
 ├── Show Project Sidebar         Cmd+B  ← From spec 163
@@ -247,6 +259,7 @@ View
 #### 3. Drag-and-Drop Support
 
 **Actions:**
+
 - Drag folder from Finder/Explorer → Desktop app → Auto-add as project
 
 #### 4. System Tray Integration
@@ -268,6 +281,7 @@ LeanSpec
 #### 5. Native Context Menus
 
 **Right-click on project card/row:**
+
 ```
 Open                      Enter
 Set as Active             Cmd+Click
@@ -296,12 +310,14 @@ Remove from List         Delete
 #### Background Validation
 
 **On App Startup:**
-1. Load projects from `~/.lean-spec/projects.json`
+
+1. Load projects from `~/.harnspec/projects.json`
 2. Quick validation: Check if paths exist (fast)
 3. Background deep validation: Count specs, parse config (slower)
 4. Update UI progressively as validation completes
 
 **Manual Refresh:**
+
 - Button in projects manager header: "Refresh All"
 - Per-project action: "Refresh Validation"
 - Auto-refresh when project is accessed (if >1h since last check)
@@ -311,9 +327,11 @@ Remove from List         Delete
 #### Editable Fields
 
 **Inline Editing (double-click):**
+
 - Project Name
 
 **Future Enhancements** (defer to V2):
+
 - Description field
 - Custom colors
 - Tags system
@@ -321,10 +339,12 @@ Remove from List         Delete
 #### Project Statistics
 
 **Displayed in card/list view:**
+
 - Total specs
 - Last accessed date
 
 **Future Enhancements** (defer to V2):
+
 - Completion rate
 - Detailed status breakdown
 - Git integration
@@ -332,6 +352,7 @@ Remove from List         Delete
 ### Import/Export Projects (Defer to V2)
 
 **Export Format (JSON):**
+
 ```json
 {
   "version": "1.0",
@@ -350,11 +371,13 @@ Remove from List         Delete
 ```
 
 **Import Options:**
+
 - Import from file (JSON)
 - Import from directory scan (discover all LeanSpec projects in folder tree)
 - Merge vs. Replace existing projects
 
 **Use Cases:**
+
 - Backup project list before reinstalling
 - Share project configurations across team
 - Migrate from web UI to desktop app
@@ -365,11 +388,13 @@ Remove from List         Delete
 #### Color Scheme
 
 **Project Avatars:**
+
 - Default: Auto-generated color from project name hash
 - Custom: 12 preset colors + custom picker
 - Initials: First 2-3 letters of project name
 
 **Status Colors:**
+
 - Valid: `bg-green-100 text-green-800 border-green-300`
 - Warning: `bg-yellow-100 text-yellow-800 border-yellow-300`
 - Invalid: `bg-red-100 text-red-800 border-red-300`
@@ -378,6 +403,7 @@ Remove from List         Delete
 #### Typography
 
 **Desktop-Optimized:**
+
 - Project names: `font-semibold text-base`
 - Paths: `font-mono text-sm text-muted-foreground`
 - Stats: `text-sm text-muted-foreground`
@@ -386,12 +412,14 @@ Remove from List         Delete
 #### Spacing
 
 **Grid View:**
+
 - Card width: `280px` (min) to `320px` (max)
 - Card height: `200px` (fixed)
 - Gap: `16px` (grid-gap)
 - Padding: `16px` (card internal)
 
 **List View:**
+
 - Row height: `56px`
 - Column padding: `12px`
 - Row hover: `bg-muted/50`
@@ -461,6 +489,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Phase 1: Core Navigation & Layout (Week 1)
 
 **Day 1-2: Integration with Spec 163**
+
 - [ ] Add "Manage All Projects" button to project sidebar (spec 163)
 - [ ] Add "Projects Manager" command to quick switcher (Cmd+K)
 - [x] Implement keyboard shortcut `Cmd/Ctrl+Shift+M`
@@ -468,12 +497,14 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [ ] Projects manager opens in new tab (spec 163 tab system)
 
 **Day 3-4: State Management & IPC**
+
 - [x] Define TypeScript types for projects state
 - [x] Create Tauri commands: list, update, remove, validate
 - [x] Implement `useProjectsManager()` React hook
 - [x] Handle navigation between active project and management view
 
 **Day 5: Basic Layout**
+
 - [x] Create `ProjectsManagerView` component
 - [x] Implement header with search bar and add button
 - [x] Create basic routing (`/desktop/projects`)
@@ -482,6 +513,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Phase 2: Grid View & Project Cards (Week 2)
 
 **Day 1-3: Grid View Implementation**
+
 - [x] Create `ProjectCard` component
 - [x] Display project name, path, spec count
 - [x] Add project avatar with auto-generated color
@@ -491,6 +523,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Implement responsive grid layout
 
 **Day 4: Project Actions**  
+
 - [x] Implement "Open" action (switch active project)
 - [x] Add "Remove" with confirmation dialog
 - [x] Implement "Reveal in Finder/Explorer"
@@ -498,6 +531,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Create native context menu (right-click)
 
 **Day 5: Add Project Flow**
+
 - [x] Implement native folder picker
 - [ ] Add drag-and-drop zone for folders
 - [x] Handle project addition validation
@@ -506,12 +540,14 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Phase 3: Organization & Filtering (Week 3)
 
 **Day 1-2: Search & Filtering**
+
 - [x] Implement full-text search (name + path)
 - [x] Add "All" vs "Favorites" tabs
 - [x] Implement sort dropdown (Name, Last Accessed, Spec Count)
 - [x] Optimize search for large project lists
 
 **Day 2-3: List View**
+
 - [x] Create `ProjectsTable` component
 - [x] Implement sortable columns
 - [x] Add row hover actions
@@ -520,6 +556,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Persist view preference
 
 **Day 4-5: Validation System**
+
 - [x] Implement background validation on startup
 - [x] Display health status (Valid, Warning, Invalid, Syncing)
 - [x] Add "Refresh Validation" per project
@@ -529,18 +566,21 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Phase 4: Polish & Launch (Week 4)
 
 **Day 1-2: Keyboard Shortcuts**
+
 - [x] Register all shortcuts in Tauri backend
 - [ ] Implement arrow key navigation in grid/list
 - [ ] Add Enter to open, Space to favorite
 - [ ] Create shortcuts help overlay (`?` key)
 
 **Day 3: Empty States & Onboarding**
+
 - [x] Design "No projects yet" state with CTAs
 - [x] Add "No search results" state
 - [x] Add "No favorites" state
 - [x] Test first-time user experience
 
 **Day 4: Performance & Visual Polish**
+
 - [ ] Test with 100+ projects
 - [ ] Add loading skeletons
 - [x] Refine colors, spacing, typography
@@ -548,6 +588,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Verify dark mode support
 
 **Day 5: Testing & Documentation**
+
 - [ ] Write integration tests
 - [x] Test all user flows end-to-end
 - [ ] Update user documentation
@@ -557,6 +598,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Deferred to V2 (Based on User Feedback)
 
 **Features intentionally excluded from MVP:**
+
 - Bulk operations (multi-select, bulk star/remove/export)
 - Compact view mode (grid + list is sufficient)
 - Import/Export functionality
@@ -571,6 +613,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Functional Testing
 
 **Navigation:**
+
 - [ ] Can open projects manager from project sidebar button (spec 163)
 - [ ] Can open projects manager from quick switcher (Cmd+K)
 - [x] Can open projects manager from native menu (File > Manage All Projects)
@@ -580,6 +623,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [ ] Tab switching works correctly (Cmd+Tab)
 
 **Project Display:**
+
 - [x] All projects load correctly on manager open
 - [x] Project cards show correct metadata (name, path, stats)
 - [x] Health status indicators display correctly
@@ -588,12 +632,14 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Last accessed time updates correctly
 
 **View Modes:**
+
 - [x] Can switch between grid and list views
 - [x] View preference persists across sessions
 - [x] Grid view responsive (1-4 columns based on width)
 - [x] List view sortable columns work
 
 **Organization:**
+
 - [x] "All" tab shows all projects
 - [x] "Favorites" tab shows only starred projects
 - [x] Sort by name/last accessed/spec count works
@@ -601,6 +647,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Filter dropdown works (All vs Favorites)
 
 **Project Actions:**
+
 - [x] Can open project (switches active project)
 - [x] Can star/unstar project
 - [x] Can rename project inline (double-click)
@@ -609,6 +656,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Can refresh validation per project
 
 **Desktop-Specific:**
+
 - [x] Native folder picker opens for "Add Project"
 - [ ] Drag-and-drop folder onto app adds project
 - [x] Right-click context menu appears on project card
@@ -616,6 +664,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - [x] Global keyboard shortcut (Cmd+Shift+M) works when app in background
 
 **Validation:**
+
 - [x] Projects validate on app startup
 - [x] Health status updates correctly
 - [x] "Refresh Validation" re-checks project health
@@ -641,6 +690,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Cross-Platform Testing
 
 **Desktop:**
+
 - [x] macOS: Native menus, shortcuts, file picker work
 - [ ] Windows: Native menus, shortcuts, file picker work
 - [ ] Linux: Native menus, shortcuts, file picker work
@@ -659,30 +709,35 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Design Decisions
 
 **Integration with Spec 163:**
+
 - Spec 163 provides project sidebar for quick navigation/switching
 - This spec (167) provides dedicated management view for organization and bulk viewing
 - Complementary: Sidebar = quick access, Management view = detailed overview
 - Management view opens as a tab (spec 163 tab system)
 
 **Why Grid + List views only?**
+
 - Grid: Visual browsing, rich metadata at a glance
 - List: Power users, sortable columns, higher density
 - Compact view removed as marginal value over optimized list view
 - Can add in V2 if users request it
 
 **Why no bulk operations in MVP?**
+
 - Rare use case: How often do you star 10 projects at once?
 - Adds UI complexity (checkboxes, action bar, confirmation flows)
 - Individual operations are fast enough for typical usage
 - Can add in V2 if user feedback shows demand
 
 **Why defer import/export?**
-- `~/.lean-spec/projects.json` is already portable/editable
+
+- `~/.harnspec/projects.json` is already portable/editable
 - Most users manage projects through UI
 - "Discover projects" is interesting but complex
 - Focus on core workflows first, iterate based on feedback
 
 **Why All + Favorites only (no Recent tab)?**
+
 - "Recent" is redundant with "Sort by Last Accessed"
 - Reduces tab complexity
 - Most users use either All or Favorites
@@ -691,18 +746,21 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Technical Considerations
 
 **State Management:**
+
 - Use React Context for projects manager state (separate from active project)
-- Tauri backend manages `~/.lean-spec/projects.json` as source of truth
+- Tauri backend manages `~/.harnspec/projects.json` as source of truth
 - IPC for all CRUD operations (create, read, update, delete)
 - Optimistic updates with rollback on failure
 
 **Performance Optimizations:**
+
 - Virtualize project list if >100 projects (react-window or similar)
 - Debounce search input (300ms)
 - Lazy load project stats (fetch on demand, cache results)
 - Use memoization for expensive computations
 
 **Error Handling:**
+
 - Gracefully handle missing project directories (show error state)
 - Handle filesystem permissions issues (provide clear error message)
 - Handle corrupted config files (offer repair or removal)
@@ -711,6 +769,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Future Enhancements (V2+)
 
 **Features deferred based on user feedback:**
+
 - Bulk operations (multi-select, batch actions)
 - Compact view mode
 - Import/Export functionality  
@@ -749,6 +808,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 ### Coordination with Spec 163
 
 **Spec 163 provides:**
+
 - Persistent project sidebar (collapsible)
 - Project list with spec counts
 - Quick project switching
@@ -756,6 +816,7 @@ The desktop app provides the richest experience with native OS integration. Web 
 - Quick switcher (Cmd+K)
 
 **This spec (167) provides:**
+
 - "Manage All Projects" button in sidebar (integration point)
 - Dedicated management view (opens as tab)
 - Rich project cards with detailed metadata
@@ -764,12 +825,14 @@ The desktop app provides the richest experience with native OS integration. Web 
 - Advanced organization (grid/list/compact views)
 
 **Implementation Order:**
+
 1. Spec 163 first (provides sidebar + tabs infrastructure)
 2. Then spec 167 (builds on top with management view)
 3. Management view leverages tab system from spec 163
 
 **Design Alignment:**
-- Both specs use same project registry (`~/.lean-spec/projects.json`)
+
+- Both specs use same project registry (`~/.harnspec/projects.json`)
 - Sidebar (163) shows compact list; Management view (167) shows rich cards
 - Sidebar for quick access; Management view for deep operations
 - Consistent keyboard shortcuts across both specs

@@ -21,6 +21,7 @@ updated_at: 2026-01-20T03:20:55.054610486Z
 Automatically detect and repair common structural corruption in specs (unclosed code blocks, malformed frontmatter, duplicate sections, etc.). This extends spec 018's validation by adding safe auto-fix capabilities.
 
 **The Problem:**
+
 - AI agents corrupt specs during editing (unclosed blocks, duplicates, etc.)
 - Spec 018 detects these issues but requires manual fixes
 - Manual fixes are tedious and error-prone
@@ -30,6 +31,7 @@ Automatically detect and repair common structural corruption in specs (unclosed 
 Add safe auto-fix transformations for unambiguous structural issues. Only fix issues with clear, deterministic solutions.
 
 **Key Principles:**
+
 - **Safety first** - Backup before fixing, allow rollback
 - **Conservative** - Only fix unambiguous issues
 - **Idempotent** - Running twice produces same result
@@ -78,6 +80,7 @@ Add safe auto-fix transformations for unambiguous structural issues. Only fix is
 **Detection:** Odd number of ``` fences
 
 **Fix:**
+
 ```typescript
 function fixUnclosedCodeBlock(content: string): string {
   const lines = content.split('\n');
@@ -117,6 +120,7 @@ function fixUnclosedCodeBlock(content: string): string {
 **Detection:** Non-ISO 8601 date format
 
 **Fix:**
+
 ```typescript
 function fixMalformedDate(frontmatter: any): void {
   if (frontmatter.created && !isISO8601(frontmatter.created)) {
@@ -154,6 +158,7 @@ function parseDate(str: string): Date | null {
 **Detection:** Multiple H2 headers with same name
 
 **Fix:**
+
 ```typescript
 function removeDuplicateHeaders(content: string): string {
   const lines = content.split('\n');
@@ -186,6 +191,7 @@ function removeDuplicateHeaders(content: string): string {
 **Detection:** Required field missing from frontmatter
 
 **Fix:**
+
 ```typescript
 function addMissingFields(frontmatter: any): void {
   if (!frontmatter.status) {
@@ -332,7 +338,7 @@ class BackupManager {
 - [ ] Integrate with spec 018 validators
 - [ ] Add revalidation after fixes
 - [ ] Write unit tests (40+ test cases)
-- [ ] Add CLI command: `lean-spec fix <spec>`
+- [ ] Add CLI command: `harnspec fix <spec>`
 - [ ] Add `--dry-run` flag (show what would be fixed)
 - [ ] Integration with file watcher
 - [ ] Documentation
@@ -340,6 +346,7 @@ class BackupManager {
 ## Test
 
 ### Fix Implementation Tests
+
 - [ ] Unclosed code blocks are closed correctly
 - [ ] Malformed dates are converted to ISO 8601
 - [ ] Duplicate headers are removed (keep first)
@@ -347,6 +354,7 @@ class BackupManager {
 - [ ] Doesn't break valid content
 
 ### Backup & Rollback Tests
+
 - [ ] Creates backup before fixing
 - [ ] Rolls back on validation failure
 - [ ] Rolls back on error
@@ -354,6 +362,7 @@ class BackupManager {
 - [ ] No data loss in any scenario
 
 ### Safety Tests
+
 - [ ] Revalidates after fixes
 - [ ] Reports what was fixed
 - [ ] Reports what couldn't be fixed
@@ -364,12 +373,14 @@ class BackupManager {
 
 **Non-Fixable Issues:**
 These require manual intervention:
+
 - Invalid status/priority values (requires decision)
 - Empty required sections (requires content)
 - Broken links (requires investigation)
 - Complex corruption (ambiguous fix)
 
 **Future Enhancements:**
+
 - Interactive mode (show diff, ask user to approve)
 - Custom fix rules via config
 - LLM-powered fix suggestions (for semantic issues)

@@ -31,7 +31,7 @@ The current completion validation requires ALL checkboxes to be checked before a
 Define required vs optional sections. Items in required sections must be checked; optional sections are informational.
 
 ```yaml
-# .lean-spec/config.json
+# .harnspec/config.json
 {
   "validation": {
     "requiredSections": ["Plan", "Test"],
@@ -41,6 +41,7 @@ Define required vs optional sections. Items in required sections must be checked
 ```
 
 **Behavior:**
+
 - Checkboxes in `requiredSections` → Must be checked or explicitly marked N/A
 - Checkboxes in `optionalSections` → Informational only, don't block completion
 - Unconfigured sections → Default to required (backward compatible)
@@ -62,6 +63,7 @@ Allow completion when a percentage threshold is met (e.g., 80%).
 ```
 
 **Behavior:**
+
 - Spec can complete if ≥80% of items are checked
 - Must have at least `minimumItems` checked (prevents gaming with 1-item specs)
 
@@ -79,6 +81,7 @@ Support `[-]` or `[n/a]` or `[~]` syntax for items that don't apply.
 ```
 
 **Behavior:**
+
 - `[x]` = Complete
 - `[-]` or `[~]` or `[n/a]` = Not applicable, counts as "handled"
 - `[ ]` = Unchecked, blocks completion
@@ -89,6 +92,7 @@ Support `[-]` or `[n/a]` or `[~]` syntax for items that don't apply.
 ### Option 4: Hybrid Approach (Recommended)
 
 Combine Options 1 and 3:
+
 1. Section-based rules define importance
 2. N/A marking allows explicit skip of individual items
 3. Threshold as final fallback (configurable, default disabled)
@@ -133,6 +137,7 @@ Recommendation: Support `[-]` as primary, with `[~]` as alias.
 ### Backward Compatibility
 
 Default validation behavior should remain unchanged:
+
 - No config → all checkboxes must be checked
 - Existing specs continue to work
 - New behavior is opt-in via config
@@ -145,6 +150,7 @@ Default validation behavior should remain unchanged:
 ```
 
 Rejected because:
+
 - Clutters spec content
 - Per-item is too granular
 - Section-level is more maintainable

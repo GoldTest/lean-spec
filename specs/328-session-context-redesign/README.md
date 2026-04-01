@@ -54,6 +54,7 @@ pub struct Session {
 
 - **`sessions` table**: Remove `spec_id TEXT` column; add `prompt TEXT` column.
 - **New `session_specs` join table**:
+
   ```sql
   CREATE TABLE session_specs (
     session_id TEXT NOT NULL,
@@ -63,11 +64,13 @@ pub struct Session {
     FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE CASCADE
   )
   ```
+
 - Migration: copy non-null `spec_id` values from `sessions` into `session_specs` (position 0).
 
 ### Runtime Changes
 
 When building the runner environment:
+
 - `LEANSPEC_SPEC_IDS`: comma-separated list of spec IDs (replaces `LEANSPEC_SPEC_ID`)
 - `LEANSPEC_SPEC_ID`: kept for single-spec backward compat (first spec ID, or empty)
 - `LEANSPEC_PROMPT`: value of `prompt` field if set
@@ -75,6 +78,7 @@ When building the runner environment:
 ### API Changes
 
 **`CreateRunnerSessionRequest`**:
+
 ```json
 {
   "project_path": "...",
@@ -84,19 +88,22 @@ When building the runner environment:
   "mode": "autonomous"
 }
 ```
+
 `spec_id` (singular) is kept as a deprecated alias that populates `spec_ids` for backward compat.
 
 **`SessionResponse`** and **`ListSessionsRequest`**: mirror the same changes.
 
 ### CLI Changes
 
-`lean-spec session create/run`:
+`harnspec session create/run`:
+
 - `--spec` becomes repeatable: `--spec 028 --spec 320` (or still accepts a single value)
 - `--prompt` new flag for inline instructions
 
 ### UI / TypeScript Changes
 
 `Session` type:
+
 ```ts
 export interface Session {
   // ...
@@ -129,8 +136,8 @@ export interface Session {
 - [x] HTTP API: `POST /sessions` with `spec_ids: []` and `prompt: "..."` creates a valid prompt-only session
 - [x] HTTP API: `POST /sessions` with `spec_ids: ["028", "320"]` creates a session with two attached specs
 - [x] HTTP API: `POST /sessions` with deprecated `spec_id: "028"` is accepted and stored as `spec_ids: ["028"]`
-- [x] CLI: `lean-spec session run --project-path . --prompt "fix lint errors"` works without `--spec`
-- [x] CLI: `lean-spec session run --project-path . --spec 028 --spec 320` attaches two specs
+- [x] CLI: `harnspec session run --project-path . --prompt "fix lint errors"` works without `--spec`
+- [x] CLI: `harnspec session run --project-path . --spec 028 --spec 320` attaches two specs
 - [x] TypeScript `Session` type: `specIds` is always an array; `specId` alias returns first element or undefined
 
 ## Notes

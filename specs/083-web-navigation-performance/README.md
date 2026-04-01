@@ -21,12 +21,12 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-16 · **Tags**: web, performance, ux, v0.3
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-**The Problem**: Navigating between specs and sub-specs on https://lean-spec-web.vercel.app feels slow (600ms-1.2s per navigation), creating a sluggish user experience that undermines the "realtime" feel we want for v0.3.
+**The Problem**: Navigating between specs and sub-specs on <https://harnspec-web.vercel.app> feels slow (600ms-1.2s per navigation), creating a sluggish user experience that undermines the "realtime" feel we want for v0.3.
 
 **Root Cause**: The spec detail page (`/specs/[id]`) uses full server-side rendering with `export const dynamic = 'force-dynamic'`, meaning every navigation:
 
@@ -36,13 +36,15 @@ transitions:
 4. Parses markdown on server for every render
 5. No prefetching, no client-side caching, no optimistic UI
 
-**Why It Matters**: 
+**Why It Matters**:
+
 - Users navigate between specs frequently during spec review/writing
 - Slow navigation breaks flow state and creates frustration
 - Competitive apps (Notion, Linear, GitHub) feel instant (<100ms)
 - Critical for v0.3 launch credibility
 
 **What We Need**: Hybrid rendering architecture that achieves:
+
 - **Initial load**: Server-rendered for SEO and fast first paint (~200ms)
 - **Subsequent navigation**: Client-side transitions (<100ms)
 - **Data fetching**: API routes with aggressive caching and prefetching
@@ -93,6 +95,7 @@ Total: <100ms per navigation ✨
 ### Three-Tier Optimization Strategy
 
 **Tier 1: Route Segment Config (Immediate - 30 min)**
+
 ```tsx
 // packages/web/src/app/specs/[id]/page.tsx
 export const revalidate = 60; // Cache rendered pages for 60s
@@ -168,6 +171,7 @@ function SpecDetailClient({ initialSpec, initialSpecs }) {
 ```
 
 **Key Changes:**
+
 1. **API routes** for data fetching (not in page component)
 2. **SWR** for client-side caching with stale-while-revalidate
 3. **Prefetching** on sidebar hover (warm cache before click)
@@ -180,9 +184,9 @@ function SpecDetailClient({ initialSpec, initialSpecs }) {
    - Automatic background refetching
    - Optimistic updates
    - Mutation support for future edit features
-   
+
 2. **Virtual scrolling** for sidebar (if >100 specs)
-   
+
 3. **Service worker caching** for offline support
 
 ### API Routes Design
@@ -232,6 +236,7 @@ export async function GET(
 | **Cold Start Penalty** | Yes (500ms) | Yes | Yes | Yes |
 
 **Success Criteria:**
+
 - ✅ Sub-spec navigation feels instant (<50ms perceived)
 - ✅ Spec navigation <100ms for cached/prefetched
 - ✅ Initial load still fast (<300ms)
@@ -254,6 +259,7 @@ export async function GET(
 ### Phase 2: Tier 2 - Hybrid Rendering (Days 2-3 - 2 days)
 
 **Day 2: API Routes + Client Components**
+
 - [ ] Create API route: `GET /api/specs/[id]`
 - [ ] Create API route: `GET /api/specs/[id]/subspecs/[file]`
 - [ ] Add cache headers (`s-maxage=60, stale-while-revalidate=120`)
@@ -263,6 +269,7 @@ export async function GET(
 - [ ] Test API routes return correct data
 
 **Day 3: Prefetching + Optimistic UI**
+
 - [ ] Add hover prefetch to `SpecsNavSidebar`
 - [ ] Implement instant sub-spec switching (no network)
 - [ ] Add loading states (skeleton) for slow connections
@@ -273,6 +280,7 @@ export async function GET(
 ### Phase 3: Performance Testing (Day 4 - 1 day)
 
 **Benchmarking:**
+
 - [ ] Initial page load time (target: <300ms)
 - [ ] Sub-spec switch time (target: <50ms)
 - [ ] Spec navigation (cached) (target: <100ms)
@@ -281,6 +289,7 @@ export async function GET(
 - [ ] Memory usage after 50 navigations (<50MB)
 
 **Real-World Testing:**
+
 - [ ] Test on slow 3G connection
 - [ ] Test with 100+ specs (sidebar performance)
 - [ ] Test browser back/forward buttons work
@@ -308,6 +317,7 @@ export async function GET(
 ### Performance Testing
 
 **Automated Benchmarks:**
+
 ```bash
 # Run Lighthouse CI
 pnpm test:lighthouse
@@ -319,12 +329,14 @@ pnpm test:perf
 **Manual Testing Checklist:**
 
 **Initial Load (Server-Rendered):**
+
 - [ ] Spec detail page loads in <300ms (Fast 3G)
 - [ ] Content visible before JavaScript loads
 - [ ] SEO tags present in HTML source
 - [ ] Lighthouse Performance score >90
 
 **Client-Side Navigation:**
+
 - [ ] Sub-spec switching feels instant (<50ms perceived)
 - [ ] Spec navigation <100ms when cached
 - [ ] Prefetching works (hover → faster click)
@@ -332,6 +344,7 @@ pnpm test:perf
 - [ ] No flash of wrong content
 
 **Browser Features:**
+
 - [ ] Back button works correctly
 - [ ] Forward button works correctly  
 - [ ] Deep links to sub-specs work (`/specs/82?subspec=DESIGN.md`)
@@ -339,6 +352,7 @@ pnpm test:perf
 - [ ] Page refresh loads correct content
 
 **Edge Cases:**
+
 - [ ] Offline → online transition works
 - [ ] Cache invalidation works (API endpoint)
 - [ ] Network error shows graceful fallback
@@ -348,6 +362,7 @@ pnpm test:perf
 ### Regression Testing
 
 **Functionality:**
+
 - [ ] All existing features work (sidebar, search, filters)
 - [ ] Markdown rendering correct
 - [ ] Code highlighting works
@@ -355,12 +370,14 @@ pnpm test:perf
 - [ ] Back to top button works
 
 **Accessibility:**
+
 - [ ] Keyboard navigation works
 - [ ] Screen reader announces page changes
 - [ ] Focus management correct
 - [ ] ARIA labels correct
 
 **SEO:**
+
 - [ ] Meta tags correct
 - [ ] Open Graph tags work
 - [ ] Twitter cards work
@@ -371,6 +388,7 @@ pnpm test:perf
 ### Performance Measurement Tools
 
 **Chrome DevTools:**
+
 ```javascript
 // Measure navigation time
 performance.mark('nav-start');
@@ -381,6 +399,7 @@ console.log(performance.getEntriesByName('navigation')[0].duration);
 ```
 
 **Real User Monitoring:**
+
 ```typescript
 // Add to SpecDetailClient
 useEffect(() => {
@@ -394,6 +413,7 @@ useEffect(() => {
 ```
 
 **Vercel Analytics:**
+
 - Built-in Web Vitals tracking
 - Real-world performance data
 - Geographic distribution
@@ -401,18 +421,21 @@ useEffect(() => {
 ### Key Design Decisions
 
 **Why Tier 2 (Hybrid) over Tier 1 (Cache) alone?**
+
 - Tier 1 only helps repeat visits to *same* spec
 - Users navigate between *different* specs frequently  
 - Tier 2 enables prefetching and client-side transitions
 - Sub-spec switching needs client-side (no network round-trip)
 
 **Why SWR over React Query?**
+
 - Simpler API for our use case
 - Smaller bundle size (~5KB vs ~13KB)
 - Built-in stale-while-revalidate pattern
 - Can upgrade to React Query later if needed
 
 **Why keep server rendering?**
+
 - SEO requires server-rendered HTML
 - Fast initial load (no client JS required)
 - Progressive enhancement (works without JS)
@@ -420,28 +443,34 @@ useEffect(() => {
 
 **Why not ISR immediately?**
 **Why not ISR?**
+
 - Filesystem mode already has 60s caching (same benefit)
 - Adds build complexity without clear win
 - Cold starts acceptable with Tier 1+2 optimizations
 - Can revisit if cold starts become issue
+
 ### Alternative Approaches Considered
 
 **1. Full Static Generation (SSG)**
+
 - **Pros**: Fastest possible (CDN cached HTML)
 - **Cons**: Requires rebuild on every spec change, breaks realtime updates
 - **Verdict**: ❌ Conflicts with v0.3 realtime goals
 
 **2. Full Client-Side Rendering (CSR)**
+
 - **Pros**: Instant navigation, simple architecture
 - **Cons**: Bad SEO, slow initial load, no progressive enhancement
 - **Verdict**: ❌ SEO is critical for public showcase
 
 **3. Server Components Only (Current Approach)**
+
 - **Pros**: Simple, SEO-friendly, no client JS
 - **Cons**: Slow navigation, no caching, no prefetching
 - **Verdict**: ❌ Too slow for good UX
 
 **4. Hybrid Rendering (Chosen Approach)**
+
 - **Pros**: SEO + fast navigation, best of both worlds
 - **Cons**: More complex, requires API routes
 - **Verdict**: ✅ Optimal balance
@@ -449,16 +478,19 @@ useEffect(() => {
 ### Dependencies & Relationships
 
 **This spec depends on:**
+
 - Spec 082 (web-realtime-sync-architecture) - Provides filesystem source and service layer
 - Existing spec detail page (`/specs/[id]/page.tsx`)
 - Next.js 14+ App Router features
 
 **This spec enables:**
+
 - v0.3 launch with acceptable performance
 - Better user experience for spec navigation
 - Foundation for future features (edit, comments)
 
 **Related specs:**
+
 - Spec 081 (web-app-ux-redesign) - UX/UI improvements
 - Spec 068 (live-specs-ux-enhancements) - Phase 2 UX work
 - Spec 035 (live-specs-showcase) - Public showcase goals
@@ -473,18 +505,21 @@ useEffect(() => {
 ### Success Metrics
 
 **Quantitative:**
+
 - Navigation time: 600ms → <100ms (83% reduction)
 - Sub-spec switch: 600ms → <50ms (92% reduction)
 - Lighthouse Performance: Unknown → >90
 - Time to Interactive: Unknown → <2s
 
 **Qualitative:**
+
 - Navigation feels instant (user perception)
 - No more frustration during spec review sessions
 - Competitive with modern web apps (Linear, Notion)
 - Confidence to launch v0.3 publicly
 
 **Business Impact:**
+
 - Higher engagement (more specs viewed per session)
 - Lower bounce rate (users don't leave due to slow navigation)
 - Better first impression for new users

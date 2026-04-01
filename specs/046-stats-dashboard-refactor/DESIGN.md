@@ -5,12 +5,14 @@
 ### Part 1: Rename `analytics` → `stats`
 
 **Why "stats" over "analytics"?**
+
 - Shorter, easier to type
 - More intuitive for quick metrics
 - Matches common CLI patterns (`git stats`, `npm stats`)
 - Less intimidating for non-technical PMs
 
 **Implementation:**
+
 1. Merge `src/commands/analytics.ts` logic into `src/commands/stats.ts`
 2. Delete `src/commands/analytics.ts` entirely
 3. Update command registration in `cli.ts`
@@ -18,18 +20,21 @@
 5. Keep all analytics functionality (just rename command)
 
 **Breaking Change (v0.2.0):**
-- `lean-spec analytics` removed → use `lean-spec stats`
+
+- `harnspec analytics` removed → use `harnspec stats`
 - Note in CHANGELOG as breaking change
 - Update all documentation immediately
 
 ### Part 2: Simplify Default Stats Output
 
-**Current Problem**: `lean-spec stats` shows everything (status, priority, tags, timeline, velocity)
+**Current Problem**: `harnspec stats` shows everything (status, priority, tags, timeline, velocity)
+
 - Too much info for quick check-ins
 - Takes time to render
 - Overwhelming for PMs
 
-**New Default Output** (`lean-spec stats`):
+**New Default Output** (`harnspec stats`):
+
 ```
 📊 Spec Stats
 
@@ -57,10 +62,11 @@
   Throughput       2.8/week ↑
   WIP              5 specs
 
-💡 Use `lean-spec stats --full` for detailed analytics
+💡 Use `harnspec stats --full` for detailed analytics
 ```
 
 **Key Changes:**
+
 - **Focus on actionable insights** - What needs attention?
 - **Health score** - Simple completion rate (% complete)
 - **Priority focus** - Only show priorities that matter (critical/high with issues)
@@ -68,10 +74,11 @@
 - **Velocity summary** - Key metrics only (not full breakdown)
 - **Clear next action** - Prompt for `--full` if they want more
 
-**Full Stats Output** (`lean-spec stats --full`):
+**Full Stats Output** (`harnspec stats --full`):
+
 - Everything from current analytics command
 - Stats + Timeline + Velocity (all sections)
-- Equivalent to current `lean-spec analytics` output
+- Equivalent to current `harnspec analytics` output
 
 ### Part 3: Integrate Smart Insights into Stats
 
@@ -79,6 +86,7 @@
 **New**: Both unified in stats command
 
 **Smart Insights Algorithm** (for "Needs Attention"):
+
 1. **Critical overdue** - `priority=critical, due < today, status != complete`
 2. **High overdue** - `priority=high, due < today, status != complete`
 3. **Long-running WIP** - `status=in-progress, updated > 7 days ago`
@@ -88,6 +96,7 @@
 Show top 5 items, then "and N more need attention"
 
 **Velocity Integration:**
+
 - Include velocity summary in default stats
 - Full velocity breakdown in `--full` or `--velocity`
 - Make velocity calculations part of core stats logic
@@ -97,6 +106,7 @@ Show top 5 items, then "and N more need attention"
 **Why**: Board is the primary PM/workflow entry point - should provide context
 
 **New Board Output:**
+
 ```
 📋 Spec Kanban Board
 
@@ -124,17 +134,20 @@ Show top 5 items, then "and N more need attention"
 ```
 
 **Health Summary Box Shows:**
+
 - **Totals** - Quick counts
 - **Health score** - Simple % complete
 - **Alerts** - Critical issues needing attention
 - **Velocity snapshot** - Key metrics only
 
 **Options:**
-- `lean-spec board` - Default (with health summary)
-- `lean-spec board --simple` - Original kanban-only view (no health box)
-- `lean-spec board --health-only` - Just show health box, no kanban
+
+- `harnspec board` - Default (with health summary)
+- `harnspec board --simple` - Original kanban-only view (no health box)
+- `harnspec board --health-only` - Just show health box, no kanban
 
 **Implementation:**
+
 - Extract health calculation to `utils/health.ts`
 - Reuse velocity calculations from stats
 - Keep board rendering clean (separate concerns)
@@ -142,19 +155,22 @@ Show top 5 items, then "and N more need attention"
 ### Part 5: Remove Dashboard Command
 
 **Why Remove?**
+
 - With enhanced board + simplified stats, dashboard is redundant
-- Users can get overview from `lean-spec board`
-- Detailed analytics from `lean-spec stats --full`
+- Users can get overview from `harnspec board`
+- Detailed analytics from `harnspec stats --full`
 - Reduces command sprawl
 
 **Migration Path:**
+
 ```
-lean-spec dashboard              → lean-spec board
-lean-spec dashboard --compact    → lean-spec board --health-only
-lean-spec dashboard --json       → lean-spec stats --json
+harnspec dashboard              → harnspec board
+harnspec dashboard --compact    → harnspec board --health-only
+harnspec dashboard --json       → harnspec stats --json
 ```
 
 **Removal Strategy (v0.2.0):**
+
 - Delete `src/commands/dashboard.ts` entirely
 - Remove from CLI registration
 - Update all documentation
@@ -163,6 +179,7 @@ lean-spec dashboard --json       → lean-spec stats --json
 ## Architecture
 
 **New File Structure:**
+
 ```
 src/commands/
   ├── stats.ts           # ENHANCED: Unified stats + velocity + insights
@@ -179,6 +196,7 @@ src/utils/
 ## Health Score Calculation
 
 `utils/health.ts`:
+
 ```typescript
 export interface HealthMetrics {
   score: number;           // 0-100
@@ -228,6 +246,7 @@ export function calculateHealth(specs: SpecInfo[]): HealthMetrics {
 ## Smart Insights
 
 `utils/insights.ts`:
+
 ```typescript
 export interface Insight {
   severity: 'critical' | 'warning' | 'info';

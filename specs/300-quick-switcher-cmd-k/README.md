@@ -14,6 +14,7 @@ updated_at: 2026-02-03T14:14:25.793516Z
 Keyboard-driven command palette for fast navigation across specs, sessions, projects, and commands without touching the mouse.
 
 **Problem:**
+
 - Finding a spec requires: click sidebar → scroll list → find spec → click
 - No keyboard-first navigation for power users
 - Project switching requires opening dropdown and scanning
@@ -33,14 +34,14 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │ RECENT                                                           │
-│  📄 168-orchestration-platform          lean-spec      ↵ Enter  │
-│  🤖 Session #a1b2c3                     lean-spec               │
-│  📋 Board                               lean-spec               │
+│  📄 168-orchestration-platform          harnspec      ↵ Enter  │
+│  🤖 Session #a1b2c3                     harnspec               │
+│  📋 Board                               harnspec               │
 │                                                                  │
 │ ALL SPECS                                                        │
-│  📄 297-multi-tasking-ui-architecture   lean-spec               │
-│  📄 298-browser-style-tabs              lean-spec               │
-│  📄 244-session-ui-enhancement          lean-spec               │
+│  📄 297-multi-tasking-ui-architecture   harnspec               │
+│  📄 298-browser-style-tabs              harnspec               │
+│  📄 244-session-ui-enhancement          harnspec               │
 │                                                                  │
 │ COMMANDS                                                         │
 │  ⚡ Create new spec                                              │
@@ -52,15 +53,17 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ### Search Modes
 
 **Default Mode (Cmd+K):**
+
 - Search everything: specs, sessions, pages, commands
 - Recent items shown first
 - Grouped by type for clarity
 
 **Scoped Modes:**
+
 | Prefix | Scope | Example |
 |--------|-------|---------|
 | `>` | Commands only | `>create spec` |
-| `@` | Projects only | `@lean-spec` |
+| `@` | Projects only | `@harnspec` |
 | `#` | Sessions only | `#running` |
 | `:` | Navigate to page | `:board`, `:stats` |
 | No prefix | Specs + all | `orchestration` |
@@ -68,12 +71,14 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ### Search Behavior
 
 **Fuzzy Matching:**
+
 - Matches anywhere in string: `orch` → `168-**orch**estration`
 - Word boundary boost: `ui arch` → `multi-tasking-**ui-arch**itecture`
 - Recent items ranked higher
 - Open tabs ranked higher
 
 **Live Results:**
+
 - Results update as user types (debounced 100ms)
 - Maximum 20 results per category
 - Keyboard navigation preserves scroll position
@@ -92,18 +97,21 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ### Result Types
 
 **Specs:**
+
 ```
-📄 168-orchestration-platform         lean-spec   in-progress
+📄 168-orchestration-platform         harnspec   in-progress
    └── Title and project indicator
 ```
 
 **Sessions:**
+
 ```
-🤖 Session #a1b2c3                    lean-spec   🟢 running
+🤖 Session #a1b2c3                    harnspec   🟢 running
    └── Spec: 168-orchestration        Duration: 12m
 ```
 
 **Pages:**
+
 ```
 📋 Board                              Quick access
 📊 Stats Dashboard                    Quick access
@@ -112,6 +120,7 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ```
 
 **Commands:**
+
 ```
 ⚡ Create new spec                    Cmd+N
 ⚡ Switch project                     Cmd+Shift+P
@@ -122,6 +131,7 @@ VS Code/Raycast-style quick switcher overlay activated by Cmd/Ctrl+K. Fuzzy sear
 ### Cross-Project Search
 
 When in multi-project mode:
+
 - Show project name next to each result
 - Selecting item switches project context automatically
 - Option to filter to current project only
@@ -134,7 +144,7 @@ When in multi-project mode:
 │ SPECS                                               │
 │  📄 042-auth-flow-redesign          my-saas-app    │
 │  📄 089-oauth-integration           client-proj    │
-│  📄 156-cursor-agent-support        lean-spec      │
+│  📄 156-cursor-agent-support        harnspec      │
 │                                                     │
 │ [ ] Search current project only                     │
 │                                                     │
@@ -308,18 +318,21 @@ useHotkeys('esc', () => {
 ### Design Decisions
 
 **Why Cmd+K?**
+
 - Universal shortcut (VS Code, Slack, Notion, Linear, Raycast)
 - Ergonomic for left hand
 - Doesn't conflict with common browser shortcuts
 - Users already expect this behavior
 
 **Why Fuse.js over cmdk?**
+
 - More control over search algorithm
 - cmdk is great but opinionated
 - Fuse.js is battle-tested for fuzzy search
 - Consider cmdk if building from scratch
 
 **Why show recent first?**
+
 - Most navigation is to recently viewed items
 - Reduces search effort for common tasks
 - Consistent with VS Code / IDE patterns
@@ -327,10 +340,12 @@ useHotkeys('esc', () => {
 ### Alternatives Considered
 
 **Spotlight-style**
+
 - Full-screen takeover
 - Rejected: Too heavy for quick navigation
 
 **Sidebar search**
+
 - Search field in sidebar
 - Rejected: Not keyboard-first, takes space
 

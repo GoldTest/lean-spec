@@ -18,7 +18,7 @@ completed: '2025-11-13'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-13
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -50,12 +50,14 @@ commands/
 ```
 
 Each command file exports TWO things:
+
 1. **Business logic function** (already exists): e.g., `archiveSpec()`
 2. **NEW: Command definition function**: e.g., `archiveCommand()` that returns Commander `Command` object
 
 ### Architecture
 
 **Before (current)**:
+
 ```typescript
 // cli.ts (702 lines)
 program
@@ -68,6 +70,7 @@ program
 ```
 
 **After (proposed)**:
+
 ```typescript
 // cli.ts (~150 lines)
 import { registerCommands } from './commands/registry.js';
@@ -140,19 +143,22 @@ Command Groups:
 ## Plan
 
 ### Phase 1: Extract Command Definitions
+
 - [ ] Create `commands/registry.ts` with `registerCommands()` function
 - [ ] Update each command file (e.g., `archive.ts`) to export command definition function
 - [ ] Verify each command still exports business logic for backward compatibility
 
 ### Phase 2: Refactor cli.ts
+
 - [ ] Import and call `registerCommands()` in `cli.ts`
 - [ ] Remove individual command registrations (keep only program setup + help text)
 - [ ] Update help text with complete alphabetical command list
 - [ ] Reduce `cli.ts` from 702 to ~150 lines
 
 ### Phase 3: Validation
+
 - [ ] Run `pnpm build` - ensure TypeScript compiles
-- [ ] Run `node bin/lean-spec.js --help` - verify alphabetical order
+- [ ] Run `node bin/harnspec.js --help` - verify alphabetical order
 - [ ] Test sample commands: `create`, `list`, `view`, `validate`, `tokens`
 - [ ] Run existing test suite: `pnpm test:run`
 - [ ] Check command count matches (currently 20+ commands)
@@ -160,6 +166,7 @@ Command Groups:
 ## Test
 
 **Validation criteria**:
+
 - ✅ Commands appear alphabetically in `--help` output
 - ✅ Help text includes ALL commands (analyze, split, compact, tokens)
 - ✅ `cli.ts` reduced to <200 lines
@@ -167,11 +174,12 @@ Command Groups:
 - ✅ No breaking changes to command behavior
 
 **Manual testing**:
+
 ```bash
-node bin/lean-spec.js --help              # alphabetical order
-node bin/lean-spec.js create test-spec    # works
-node bin/lean-spec.js tokens 059          # works
-node bin/lean-spec.js validate            # works
+node bin/harnspec.js --help              # alphabetical order
+node bin/harnspec.js create test-spec    # works
+node bin/harnspec.js tokens 059          # works
+node bin/harnspec.js validate            # works
 ```
 
 ## Notes
@@ -179,7 +187,7 @@ node bin/lean-spec.js validate            # works
 ### Alternatives Considered
 
 1. **Keep monolithic cli.ts, just alphabetize**: Doesn't solve scalability
-2. **Subcommand grouping** (e.g., `lean-spec analytics board`): Breaking change
+2. **Subcommand grouping** (e.g., `harnspec analytics board`): Breaking change
 3. **Plugin architecture**: Over-engineering for current scale
 
 ### Migration Safety

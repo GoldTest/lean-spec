@@ -25,7 +25,7 @@ completed: '2025-12-05'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-12-05 · **Tags**: init, mcp, onboarding, dx, ai-agents
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -36,7 +36,8 @@ User feedback reveals a critical gap in onboarding:
 
 > "no MCP config file auto setup based on ai tools"
 
-**Current State** (after `lean-spec init`):
+**Current State** (after `harnspec init`):
+
 - ✅ Creates AGENTS.md with MCP-first instructions
 - ✅ Creates AI tool symlinks (CLAUDE.md, etc.)
 - ❌ User must manually configure MCP server in their AI tool
@@ -45,6 +46,7 @@ User feedback reveals a critical gap in onboarding:
 - ❌ Path resolution is error-prone (absolute vs relative paths)
 
 **Why This Matters**:
+
 - MCP provides **richer context** than CLI (structured data, real-time validation)
 - MCP is the **recommended** method per our AGENTS.md
 - But onboarding friction means users fall back to CLI or skip MCP entirely
@@ -53,7 +55,8 @@ User feedback reveals a critical gap in onboarding:
 ### Success Criteria
 
 After implementation:
-- ✅ `lean-spec init` offers to configure MCP for detected AI tools
+
+- ✅ `harnspec init` offers to configure MCP for detected AI tools
 - ✅ Generates correct MCP config entries with proper paths
 - ✅ Handles tool-specific config file locations
 - ✅ Provides copy-paste instructions if auto-setup isn't possible
@@ -77,10 +80,11 @@ After implementation:
 ### MCP Server Entry Format
 
 **Claude Code** (project-scoped `.mcp.json`):
+
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["-y", "@leanspec/mcp", "--project", "${PWD}"]
     }
@@ -89,10 +93,11 @@ After implementation:
 ```
 
 **VS Code / Cursor / Windsurf** (workspace config):
+
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["-y", "@leanspec/mcp", "--project", "/absolute/path/to/project"]
     }
@@ -103,7 +108,7 @@ After implementation:
 ### Init Flow Enhancement
 
 ```
-$ lean-spec init
+$ harnspec init
 
 Welcome to LeanSpec! 🚀
 
@@ -116,7 +121,7 @@ Welcome to LeanSpec! 🚀
   ◯ OpenAI Codex
 
 Creating LeanSpec project...
-  ✓ .lean-spec/config.json
+  ✓ .harnspec/config.json
   ✓ specs/
   ✓ AGENTS.md
   ✓ Tool-specific symlinks (based on selection)
@@ -136,28 +141,33 @@ Next: Open your AI tool and ask "Show me the project board"
 ### Configuration Strategies
 
 **Strategy 1: Project-Scoped Config (Auto) - Claude Code**
+
 - Creates `.mcp.json` at project root
 - Git-trackable (team can share config)
 - Claude Code supports `${PWD}` for relative paths
 
 **Strategy 2: Workspace-Local Config (Auto)**
+
 - Tools: VS Code, Cursor, Windsurf
 - Create config file in project directory (`.vscode/mcp.json`, etc.)
 - Fully automated, no user intervention needed
 
 **Strategy 2b: User-Scoped Config (Auto) - Gemini CLI**
+
 - Creates `~/.gemini/settings.json` in user home directory
 - Merge with existing settings if present
 
 **Strategy 3: AGENTS.md Only (No MCP Config Needed)**
+
 - Tools: OpenAI Codex
 - Codex reads `AGENTS.md` for instructions (already created by init)
 - For MCP, Codex uses remote HTTP servers via OpenAI API
 
 **Strategy 4: Config Merge (Careful Auto)**
+
 - If config file already exists, merge rather than overwrite
 - Detect existing `mcpServers` entries
-- Add `lean-spec` entry without removing others
+- Add `harnspec` entry without removing others
 - Backup original file before modification
 
 ### Path Resolution
@@ -170,14 +180,14 @@ const projectPath = path.resolve(process.cwd());
 
 const mcpConfig = {
   command: "npx",
-  args: ["-y", "@anthropic/lean-spec-mcp", "--project", projectPath]
+  args: ["-y", "@anthropic/harnspec-mcp", "--project", projectPath]
 };
 ```
 
 ### Edge Cases
 
 1. **Existing MCP config**: Merge, don't overwrite
-2. **lean-spec already configured**: Skip with message "Already configured"
+2. **harnspec already configured**: Skip with message "Already configured"
 3. **No write permission**: Fall back to manual instructions
 4. **Windows paths**: Handle backslash vs forward slash
 5. **Monorepo**: Allow configuring for specific workspace
@@ -185,23 +195,27 @@ const mcpConfig = {
 ## Plan
 
 ### Phase 1: Core MCP Config Generation
+
 - [ ] Create `generateMcpConfig(projectPath, tool)` function
 - [ ] Handle path resolution (absolute paths, cross-platform)
 - [ ] Support all target AI tools (Claude Code, VS Code, Cursor, Windsurf)
 
 ### Phase 2: Init Flow Integration
+
 - [ ] Add "Configure MCP?" prompt after AI tool selection
 - [ ] Implement workspace-local config creation (VS Code, Cursor, etc.)
 - [ ] Implement global config instructions (Claude Desktop)
 - [ ] Handle existing config merge gracefully
 
 ### Phase 3: Non-Interactive Mode
+
 - [ ] Add `--mcp-config` flag for non-interactive init
 - [ ] `--mcp-config all` - Configure all detected tools
 - [ ] `--mcp-config vscode,cursor` - Configure specific tools
 - [ ] `--mcp-config none` - Skip MCP configuration
 
 ### Phase 4: Polish & Documentation
+
 - [ ] Update docs with MCP auto-setup feature
 - [ ] Add troubleshooting guide for common MCP issues
 - [ ] Test with real AI tools end-to-end
@@ -209,26 +223,30 @@ const mcpConfig = {
 ## Test
 
 ### Unit Tests
+
 - [ ] `generateMcpConfig()` produces valid JSON for each tool
 - [ ] Path resolution works on Linux, macOS, Windows
 - [ ] Config merge preserves existing entries
 - [ ] Backup is created before modifying existing config
 
 ### Integration Tests
-- [ ] `lean-spec init` with Claude Code creates `.mcp.json`
-- [ ] `lean-spec init` with VS Code creates `.vscode/mcp.json`
-- [ ] `lean-spec init` with Cursor creates `.cursor/mcp.json`
-- [ ] `lean-spec init` with Gemini CLI creates `~/.gemini/settings.json`
-- [ ] `lean-spec init --mcp-config vscode` works non-interactively
+
+- [ ] `harnspec init` with Claude Code creates `.mcp.json`
+- [ ] `harnspec init` with VS Code creates `.vscode/mcp.json`
+- [ ] `harnspec init` with Cursor creates `.cursor/mcp.json`
+- [ ] `harnspec init` with Gemini CLI creates `~/.gemini/settings.json`
+- [ ] `harnspec init --mcp-config vscode` works non-interactively
 - [ ] Existing config is merged, not overwritten
 
 ### End-to-End Tests
-- [ ] Claude Code with configured MCP can use lean-spec tools
-- [ ] VS Code with configured MCP can use lean-spec tools
-- [ ] Cursor with configured MCP can use lean-spec tools
-- [ ] Gemini CLI with configured MCP can use lean-spec tools
+
+- [ ] Claude Code with configured MCP can use harnspec tools
+- [ ] VS Code with configured MCP can use harnspec tools
+- [ ] Cursor with configured MCP can use harnspec tools
+- [ ] Gemini CLI with configured MCP can use harnspec tools
 
 ### Success Metrics
+
 - [ ] User can use MCP tools immediately after init (no manual steps for workspace-local tools)
 - [ ] Clear instructions provided for global config tools
 - [ ] No data loss from config merge operations
@@ -261,13 +279,13 @@ MCP should be the **default** path, not an advanced option.
    - Auto-select tools in init prompt
 
 2. **Should MCP config include project name?**
-   - `"lean-spec"` vs `"lean-spec-myproject"`
+   - `"harnspec"` vs `"harnspec-myproject"`
    - Matters for multi-project users
 
 3. **How to handle package manager differences?**
    - `npx` (npm), `pnpm dlx`, `yarn dlx`
    - Detect from lockfile and use appropriate runner
 
-4. **Should we create a `lean-spec mcp-config` standalone command?**
+4. **Should we create a `harnspec mcp-config` standalone command?**
    - For adding MCP to existing projects
-   - `lean-spec mcp-config --tool vscode`
+   - `harnspec mcp-config --tool vscode`

@@ -1,6 +1,6 @@
 # Implementation: Migration Command
 
-Implementation plan and testing strategy for `lean-spec migrate`.
+Implementation plan and testing strategy for `harnspec migrate`.
 
 ## Migration Workflow
 
@@ -60,7 +60,7 @@ Implementation plan and testing strategy for `lean-spec migrate`.
 - [ ] Add instruction output for manual mode
 - [ ] Basic error handling (path not found, no files)
 
-**Deliverable**: `lean-spec migrate <path>` outputs migration prompt
+**Deliverable**: `harnspec migrate <path>` outputs migration prompt
 
 ### Phase 2: Manual Migration (Week 1-2)
 
@@ -85,7 +85,7 @@ Implementation plan and testing strategy for `lean-spec migrate`.
 - [ ] Add `--dry-run` mode
 - [ ] Add post-migration validation
 
-**Deliverable**: `lean-spec migrate <path> --with copilot` auto-migrates
+**Deliverable**: `harnspec migrate <path> --with copilot` auto-migrates
 
 ### Phase 4: Testing & Documentation (Week 3)
 
@@ -125,6 +125,7 @@ Implementation plan and testing strategy for `lean-spec migrate`.
 ### Integration Tests
 
 **Basic Migration:**
+
 - [ ] Migrate sample ADR repository (10+ docs)
 - [ ] Migrate sample RFC repository
 - [ ] Mixed format migration (various doc types)
@@ -132,6 +133,7 @@ Implementation plan and testing strategy for `lean-spec migrate`.
 - [ ] Single file migration
 
 **AI-Assisted Mode:**
+
 - [ ] AI CLI detection (installed/missing/outdated)
 - [ ] AI CLI execution completes successfully
 - [ ] Dry-run produces no actual changes
@@ -139,6 +141,7 @@ Implementation plan and testing strategy for `lean-spec migrate`.
 - [ ] Error handling when AI CLI fails
 
 **Edge Cases:**
+
 - [ ] Very large repos (100+ documents)
 - [ ] Nested directory structures
 - [ ] Special characters in filenames

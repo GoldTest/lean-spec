@@ -814,8 +814,8 @@ async fn flush_queue(
 
 fn config_dir() -> PathBuf {
     dirs::home_dir()
-        .map(|h| h.join(".lean-spec"))
-        .unwrap_or_else(|| PathBuf::from(".lean-spec"))
+        .map(|h| h.join(".harnspec"))
+        .unwrap_or_else(|| PathBuf::from(".harnspec"))
 }
 
 fn config_path() -> PathBuf {
@@ -887,14 +887,14 @@ fn build_project_config(path: &str, machine_id: &str) -> Result<ProjectConfig> {
 }
 
 fn find_specs_dir(root: &Path) -> Option<PathBuf> {
-    let candidates = ["specs", ".lean-spec/specs", "docs/specs", "doc/specs"];
+    let candidates = ["specs", ".harnspec/specs", "docs/specs", "doc/specs"];
     for candidate in candidates {
         let path = root.join(candidate);
         if path.exists() {
             return Some(path);
         }
     }
-    let config_json = root.join(".lean-spec/config.json");
+    let config_json = root.join(".harnspec/config.json");
     if let Ok(content) = fs::read_to_string(config_json) {
         if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
             if let Some(specs_dir) = json.get("specsDir").and_then(|v| v.as_str()) {

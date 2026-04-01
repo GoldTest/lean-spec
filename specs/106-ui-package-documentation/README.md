@@ -18,12 +18,12 @@ completed: '2025-11-19'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-18
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-The `@leanspec/ui` package and `lean-spec ui` CLI command are complete and functional, but lack comprehensive documentation on the docs site. Users need clear guidance on:
+The `@leanspec/ui` package and `harnspec ui` CLI command are complete and functional, but lack comprehensive documentation on the docs site. Users need clear guidance on:
 
 1. **What it is**: Visual web interface for browsing and managing specs
 2. **How to use it**: Both CLI command and standalone package
@@ -33,7 +33,8 @@ The `@leanspec/ui` package and `lean-spec ui` CLI command are complete and funct
 ### Current State
 
 **What exists:**
-- ✅ `lean-spec ui` CLI command (spec 087 - complete)
+
+- ✅ `harnspec ui` CLI command (spec 087 - complete)
 - ✅ `@leanspec/ui` npm package published and working
 - ✅ Basic README in `packages/ui/README.md`
 - ✅ Filesystem mode integration (spec 082)
@@ -41,7 +42,8 @@ The `@leanspec/ui` package and `lean-spec ui` CLI command are complete and funct
 - ✅ Monorepo dev mode support
 
 **What's missing in docs:**
-- ❌ No docs-site page for `lean-spec ui` command
+
+- ❌ No docs-site page for `harnspec ui` command
 - ❌ No reference docs for `@leanspec/ui` package
 - ❌ No usage guide for visual spec management
 - ❌ No explanation of filesystem mode vs other modes
@@ -52,6 +54,7 @@ The `@leanspec/ui` package and `lean-spec ui` CLI command are complete and funct
 
 **Discovery Issue:**
 Users don't know the UI exists. It's not mentioned in:
+
 - Introduction/Quick Start
 - Getting Started guides
 - Usage documentation
@@ -59,13 +62,15 @@ Users don't know the UI exists. It's not mentioned in:
 
 **Usage Clarity:**
 Users who find it don't understand:
-- Difference between `lean-spec ui` and `npx @leanspec/ui`
+
+- Difference between `harnspec ui` and `npx @leanspec/ui`
 - When to use UI vs CLI commands
 - How filesystem mode works
 - What features are available in the UI
 
 **Integration Guidance:**
 Missing guidance on:
+
 - Using UI in development workflows
 - Team collaboration with UI
 - CI/CD integration considerations
@@ -90,7 +95,7 @@ docs/
 ├── guide/
 │   └── visual-mode.mdx           # NEW: Using the UI (comprehensive guide)
 └── reference/
-    ├── cli.mdx                   # UPDATE: Add `lean-spec ui` section
+    ├── cli.mdx                   # UPDATE: Add `harnspec ui` section
     └── ui-package.mdx            # NEW: @leanspec/ui reference
 ```
 
@@ -108,18 +113,20 @@ Add UI to the quick start flow:
 For a visual interface to browse and manage specs:
 
 ```bash
-lean-spec ui
+harnspec ui
 # Or from any project:
 npx @leanspec/ui
 ```
 
 The UI provides:
+
 - Interactive spec browser with rich formatting
 - Dependency graph visualization
 - Project overview and metrics
 - Search and filtering
 
 → Learn more: [Visual Mode Guide](./guide/visual-mode)
+
 ```
 
 #### B. Visual Mode Guide (New)
@@ -133,7 +140,7 @@ The UI provides:
    - When to use each
 
 2. **Getting Started**
-   - `lean-spec ui` command
+   - `harnspec ui` command
    - `npx @leanspec/ui` standalone
    - Auto-detection vs explicit `--specs`
    - Port configuration, browser control
@@ -168,16 +175,17 @@ The UI provides:
 Add new section for `ui` command:
 
 ```markdown
-### `lean-spec ui`
+### `harnspec ui`
 
 Start local web UI for visual spec management.
 
 **Usage:**
 ```bash
-lean-spec ui [options]
+harnspec ui [options]
 ```
 
 **Options:**
+
 - `-s, --specs <dir>` - Specs directory (auto-detected if omitted)
 - `-p, --port <port>` - Port to run on (default: 3000)
 - `--no-open` - Don't open browser automatically
@@ -185,24 +193,27 @@ lean-spec ui [options]
 - `--dry-run` - Show command without executing
 
 **Examples:**
+
 ```bash
 # Auto-detect specs, open on port 3000
-lean-spec ui
+harnspec ui
 
 # Custom directory and port
-lean-spec ui --specs ./docs/specs --port 3100
+harnspec ui --specs ./docs/specs --port 3100
 
 # Don't open browser
-lean-spec ui --no-open
+harnspec ui --no-open
 ```
 
 **How it works:**
+
 - In LeanSpec monorepo: runs local web package
 - External projects: delegates to `npx @leanspec/ui`
 - Uses filesystem mode (direct file reads)
 - Auto-opens browser unless `--no-open`
 
 → See: [Visual Mode Guide](../guide/visual-mode)
+
 ```
 
 #### D. UI Package Reference (New)
@@ -225,30 +236,31 @@ lean-spec ui --no-open
    leanspec-ui
    ```
 
-3. **CLI Options** (same as `lean-spec ui`)
+1. **CLI Options** (same as `harnspec ui`)
 
-4. **Environment Variables**
+2. **Environment Variables**
    - `SPECS_MODE=filesystem` (set automatically)
    - `SPECS_DIR` (absolute path)
    - `PORT` (server port)
 
-5. **Architecture**
+3. **Architecture**
    - Next.js standalone output
    - Filesystem mode implementation
    - Caching strategy (60s TTL)
 
-6. **Development** (for contributors)
+4. **Development** (for contributors)
    - Building from monorepo
    - `prepare-dist.mjs` script
    - Publishing process
 
-7. **Troubleshooting** (mirrors Visual Mode guide)
+5. **Troubleshooting** (mirrors Visual Mode guide)
 
 ### 3. Cross-References
 
 Update existing pages to reference UI:
 
 **Pages to update:**
+
 - `docs/guide/getting-started.mdx` - Mention UI as alternative
 - `docs/guide/ai-assisted-workflows.mdx` - UI in AI workflows
 - `docs/tutorials/*.mdx` - Add UI screenshots/mentions
@@ -257,6 +269,7 @@ Update existing pages to reference UI:
 ### 4. Visual Assets
 
 **Screenshots to add:**
+
 1. UI landing page (spec list)
 2. Spec detail view
 3. Dependency graph visualization
@@ -264,6 +277,7 @@ Update existing pages to reference UI:
 5. Search results
 
 **Diagrams:**
+
 1. Architecture: CLI → UI package → Next.js
 2. Filesystem mode flow diagram
 3. Monorepo vs external delegation
@@ -271,6 +285,7 @@ Update existing pages to reference UI:
 ### 5. Translation
 
 All new content needs Chinese translation:
+
 - `i18n/zh-Hans/docusaurus-plugin-content-docs/current/guide/visual-mode.mdx`
 - `i18n/zh-Hans/docusaurus-plugin-content-docs/current/reference/ui-package.mdx`
 - Update translated CLI reference
@@ -278,21 +293,25 @@ All new content needs Chinese translation:
 ### Technical Approach
 
 **Phase 1: Content Creation**
+
 - Write English docs first
 - Get feedback on structure/content
 - Iterate on clarity
 
 **Phase 2: Integration**
+
 - Update existing pages with cross-references
 - Add to navigation (sidebars.ts)
 - Ensure all links work
 
 **Phase 3: Visual Assets**
+
 - Take screenshots of current UI
 - Create architecture diagrams
 - Add to docs
 
 **Phase 4: Translation**
+
 - Translate all new content to Chinese
 - Verify terminology consistency
 - Update Chinese navigation
@@ -300,6 +319,7 @@ All new content needs Chinese translation:
 ## Plan
 
 ### Phase 1: Content Writing
+
 - [x] Write `docs/guide/visual-mode.mdx` (comprehensive guide)
   - [x] Introduction and benefits
   - [x] Getting started (both methods)
@@ -315,12 +335,13 @@ All new content needs Chinese translation:
   - [x] Development guide
   - [x] Troubleshooting
 - [x] Update `docs/reference/cli.mdx`
-  - [x] Add `lean-spec ui` section
+  - [x] Add `harnspec ui` section
   - [x] Document all options
   - [x] Add examples
   - [x] Link to visual mode guide
 
 ### Phase 2: Integration
+
 - [x] Update Quick Start
   - [x] Add "Visual Mode" step to Introduction
   - [x] Include UI in main flow
@@ -338,6 +359,7 @@ All new content needs Chinese translation:
   - [x] Ensure proper ordering
 
 ### Phase 3: Visual Assets
+
 - [x] Take screenshots using Playwright MCP
   - [x] Strategy: Use Playwright MCP to automate screenshot capture for consistency
   - [x] Viewport: Set common viewport (1280x720) for all screenshots (default Playwright MCP viewport may vary)
@@ -356,6 +378,7 @@ All new content needs Chinese translation:
   - [x] Optimize for web
 
 ### Phase 4: Translation
+
 - [x] Translate visual-mode.mdx to Chinese
 - [x] Translate ui-package.mdx to Chinese
 - [x] Update Chinese CLI reference
@@ -364,6 +387,7 @@ All new content needs Chinese translation:
 - [x] Verify terminology consistency
 
 ### Phase 5: Validation
+
 - [x] Build docs site (`npm run build`)
 - [x] Verify all links work
 - [x] Test navigation flow
@@ -374,6 +398,7 @@ All new content needs Chinese translation:
 ## Test
 
 ### Content Quality
+
 - [x] Visual mode guide is comprehensive and clear
 - [x] All features explained with examples
 - [x] Troubleshooting covers common issues
@@ -381,6 +406,7 @@ All new content needs Chinese translation:
 - [x] Code examples are correct and tested
 
 ### Navigation & Discovery
+
 - [x] UI mentioned in Quick Start/Introduction
 - [x] Easy to find visual-mode guide from nav
 - [x] UI package reference easy to find
@@ -388,6 +414,7 @@ All new content needs Chinese translation:
 - [x] Cross-references work between pages
 
 ### Accuracy
+
 - [x] All commands match actual implementation
 - [x] Options and flags are current
 - [x] Environment variables correct
@@ -395,6 +422,7 @@ All new content needs Chinese translation:
 - [x] Filesystem mode explanation matches spec 082
 
 ### Visual Assets
+
 - [x] Screenshots are current and clear
 - [x] Images display at proper size
 - [x] Diagrams are readable and accurate
@@ -402,6 +430,7 @@ All new content needs Chinese translation:
 - [x] Images optimized for web
 
 ### Translation
+
 - [x] All English content has Chinese equivalent
 - [x] Terminology consistent across translations
 - [x] Technical terms properly translated
@@ -409,6 +438,7 @@ All new content needs Chinese translation:
 - [x] Code examples don't need translation
 
 ### Build & Technical
+
 - [x] `npm run build` succeeds
 - [x] No broken links
 - [x] No missing images
@@ -416,6 +446,7 @@ All new content needs Chinese translation:
 - [x] Sitemap updated
 
 ### User Experience
+
 - [x] New users can discover UI feature
 - [x] Clear when to use UI vs CLI
 - [x] Troubleshooting helps solve common issues
@@ -427,17 +458,20 @@ All new content needs Chinese translation:
 ### Key Information from Spec 087
 
 **Package Details:**
+
 - Name: `@leanspec/ui`
-- Published to npm: https://www.npmjs.com/package/@leanspec/ui
+- Published to npm: <https://www.npmjs.com/package/@leanspec/ui>
 - Binary: `leanspec-ui`
 - Current version: 0.2.5 (check for latest)
 
 **CLI Command:**
-- `lean-spec ui` delegates to `@leanspec/ui` in external projects
+
+- `harnspec ui` delegates to `@leanspec/ui` in external projects
 - Runs local web package in LeanSpec monorepo (dev mode)
 - Auto-detects package manager (pnpm/yarn/npm)
 
 **Filesystem Mode (Spec 082):**
+
 - Direct reads from specs/ directory
 - No database required
 - 60-second cache TTL
@@ -445,6 +479,7 @@ All new content needs Chinese translation:
 - Environment: `SPECS_MODE=filesystem`, `SPECS_DIR=/path/to/specs`
 
 **Architecture:**
+
 - Next.js standalone output (`output: 'standalone'`)
 - `scripts/prepare-dist.mjs` copies build artifacts
 - `bin/ui.js` entry point with CLI parsing
@@ -454,19 +489,22 @@ All new content needs Chinese translation:
 
 **Why separate UI documentation?**
 The UI is a distinct interface with its own use cases and workflows. While CLI docs focus on command execution, UI docs need to cover:
+
 - Visual exploration and discovery
 - Interactive features (graphs, boards)
 - Team collaboration scenarios
 - Presentation use cases
 
-**Why include both `lean-spec ui` and `@leanspec/ui`?**
+**Why include both `harnspec ui` and `@leanspec/ui`?**
 Users may encounter either:
-- `lean-spec ui` - if they have CLI installed
+
+- `harnspec ui` - if they have CLI installed
 - `@leanspec/ui` - if they find it via npm/docs
 Both should be documented as they serve slightly different audiences.
 
 **Why emphasize filesystem mode?**
 It's a key differentiator:
+
 - No setup required
 - Works immediately
 - No database configuration
@@ -475,18 +513,21 @@ It's a key differentiator:
 ### Content Priorities
 
 **Must have:**
+
 1. Clear explanation of what UI is and why use it
 2. Getting started (both methods)
 3. Feature overview with screenshots
 4. Troubleshooting common issues
 
 **Should have:**
+
 1. Architecture details
 2. Development workflows
 3. Team collaboration guidance
 4. Comparison with CLI
 
 **Could have:**
+
 1. Advanced configuration
 2. Deployment options (hosting UI)
 3. Performance considerations
@@ -510,18 +551,21 @@ It's a key differentiator:
 ### Writing Guidelines
 
 **Tone:**
+
 - Friendly and approachable
 - Visual learners are primary audience
 - Less technical than CLI reference
 - More narrative than reference docs
 
 **Structure:**
+
 - Show, don't just tell (screenshots important)
 - Progressive disclosure (simple → advanced)
 - Practical examples over theory
 - Troubleshooting prominent
 
 **Terminology:**
+
 - "UI" or "web UI" (not "GUI" or "interface")
 - "Visual mode" as feature name
 - "Filesystem mode" for architecture

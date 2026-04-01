@@ -5,6 +5,7 @@ This document contains detailed content specifications for each page in the docs
 ## Modified: `guide/understanding.mdx` (Keep title, restructure content)
 
 **Content Structure**:
+
 ```markdown
 # Understanding LeanSpec
 
@@ -38,6 +39,7 @@ This document contains detailed content specifications for each page in the docs
 ## Keep: `guide/first-principles.mdx` (Extract from current understanding.mdx)
 
 **Content Structure**:
+
 ```markdown
 # First Principles
 
@@ -59,6 +61,7 @@ This document contains detailed content specifications for each page in the docs
 ## New: `guide/context-engineering.mdx`
 
 **Content Structure**:
+
 ```markdown
 # Context Engineering
 
@@ -93,6 +96,7 @@ This document contains detailed content specifications for each page in the docs
 ## New: `guide/ai-agent-memory.mdx`
 
 **Content Structure**:
+
 ```markdown
 # AI Agent Memory
 
@@ -138,6 +142,7 @@ This document contains detailed content specifications for each page in the docs
 ## Modified: `guide/philosophy.mdx`
 
 **Content Structure**:
+
 ```markdown
 # Philosophy & Mindset
 
@@ -176,20 +181,20 @@ This document contains detailed content specifications for each page in the docs
 # Creating & Managing Specs
 
 ## Creating Specs
-- lean-spec create <name>
+- harnspec create <name>
 - Template selection
 - Initial structure
 - See [CLI Reference: create](/docs/reference/cli#create)
 
 ## Updating Specs
-- lean-spec update --status
-- lean-spec update --priority
-- lean-spec update --tags
-- lean-spec update --assignee
+- harnspec update --status
+- harnspec update --priority
+- harnspec update --tags
+- harnspec update --assignee
 - See [CLI Reference: update](/docs/reference/cli#update)
 
 ## Managing Lifecycle
-- lean-spec archive
+- harnspec archive
 - Status transitions
 - See [Frontmatter Reference](/docs/reference/frontmatter)
 ```
@@ -200,19 +205,19 @@ This document contains detailed content specifications for each page in the docs
 # Finding Specs
 
 ## Listing Specs
-- lean-spec list (with filters)
+- harnspec list (with filters)
 - Filtering by status, priority, tags
 - See [CLI Reference: list](/docs/reference/cli#list)
 
 ## Searching
-- lean-spec search (full-text)
+- harnspec search (full-text)
 - Search strategies
 - See [CLI Reference: search](/docs/reference/cli#search)
 
 ## Viewing
-- lean-spec view (formatted)
-- lean-spec view --raw (markdown)
-- lean-spec view --json (structured)
+- harnspec view (formatted)
+- harnspec view --raw (markdown)
+- harnspec view --json (structured)
 - See [CLI Reference: view](/docs/reference/cli#view)
 ```
 
@@ -233,13 +238,14 @@ This document contains detailed content specifications for each page in the docs
 
 ## Metadata Management
 - Never manually edit system-managed fields
-- Use lean-spec update commands
+- Use harnspec update commands
 - See [Configuration Reference](/docs/reference/config)
 ```
 
 ## Sidebar Configuration Changes
 
 ### Before
+
 ```typescript
 guideSidebar: [
   Introduction/,
@@ -251,6 +257,7 @@ guideSidebar: [
 ```
 
 ### After
+
 ```typescript
 guideSidebar: [
   Introduction/ (Overview, Getting Started),

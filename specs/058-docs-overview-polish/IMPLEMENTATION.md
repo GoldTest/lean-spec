@@ -13,6 +13,7 @@ This document contains detailed implementation specifications for each content c
 **Structure**:
 
 Frontmatter:
+
 - id: 'first-principles'
 - title: 'First Principles'
 - sidebar_position: 1
@@ -30,12 +31,13 @@ Content sections:
 ## The 5 First Principles
 
 ### 1. Context Economy
+
 **Specs must fit in working memory—both human and AI.**
 
 - **Target**: <300 lines per spec file
 - **Warning**: 300-400 lines (consider simplifying)
 - **Problem**: >400 lines (must split)
-- **Rationale**: 
+- **Rationale**:
   - Physics: AI context windows are bounded (~20K effective tokens)
   - Biology: Human working memory is limited (7±2 items)
   - Economics: Large contexts cost more time and money
@@ -44,6 +46,7 @@ Content sections:
 **Action**: Split at 400 lines, warning at 300
 
 ### 2. Signal-to-Noise Maximization
+
 **Every word must inform decisions or be cut.**
 
 - **Test**: "What decision does this sentence inform?"
@@ -54,6 +57,7 @@ Content sections:
 **Action**: Remove anything that doesn't answer the test question
 
 ### 3. Intent Over Implementation
+
 **Capture "why" and "what," let "how" emerge.**
 
 - **Must have**: Problem, intent, success criteria
@@ -64,6 +68,7 @@ Content sections:
 **Action**: Explain trade-offs, constraints, success criteria
 
 ### 4. Bridge the Gap
+
 **Specs exist to align human intent with machine execution.**
 
 - **For humans**: Overview, context, rationale
@@ -74,6 +79,7 @@ Content sections:
 **Action**: Clear structure + natural language explanation
 
 ### 5. Progressive Disclosure
+
 **Start simple, add structure only when pain is felt.**
 
 - **Solo dev**: Just status + created
@@ -88,6 +94,7 @@ Content sections:
 When practices conflict, apply principles in priority order:
 
 **Priority Order**:
+
 1. Context Economy
 2. Signal-to-Noise
 3. Intent Over Implementation
@@ -116,9 +123,10 @@ When practices conflict, apply principles in priority order:
 
 - **[Philosophy](/docs/guide/philosophy)** - How to apply first principles day-to-day
 - **[Agile Principles](/docs/guide/principles)** - Practical guidelines for writing specs
-- **[Spec 049](https://github.com/codervisor/lean-spec/tree/main/specs/049-leanspec-first-principles)** - Full analysis and derivation
+- **[Spec 049](https://github.com/codervisor/harnspec/tree/main/specs/049-leanspec-first-principles)** - Full analysis and derivation
 
 **Adaptations for Docusaurus**:
+
 - Use Docusaurus admonitions (`:::tip`, `:::info`, `:::warning`)
 - Add frontmatter with sidebar position
 - Link to other docs pages
@@ -131,6 +139,7 @@ When practices conflict, apply principles in priority order:
 **Key Changes**:
 
 Frontmatter:
+
 - id: 'philosophy'
 - title: 'Philosophy'
 - sidebar_position: 2
@@ -152,6 +161,7 @@ New to LeanSpec? Start with **[First Principles](/docs/guide/first-principles)**
 [Keep existing content but add explicit derivation]
 
 ### 1. Documentation is a Means, Not an End
+
 **Derives from**: Signal-to-Noise Maximization
 
 The goal isn't to create comprehensive documentation. The goal is to **enable effective action**.
@@ -159,6 +169,7 @@ The goal isn't to create comprehensive documentation. The goal is to **enable ef
 [rest of content...]
 
 ### 2. Context Beats Comprehensiveness
+
 **Derives from**: Intent Over Implementation
 
 Capturing **why** something matters is more valuable than exhaustively documenting **what** it is.
@@ -166,6 +177,7 @@ Capturing **why** something matters is more valuable than exhaustively documenti
 [rest of content...]
 
 ### 3. Specs Should Reduce Burden, Not Create It
+
 **Derives from**: Context Economy
 
 Traditional specs often become a burden...
@@ -173,6 +185,7 @@ Traditional specs often become a burden...
 [rest of content...]
 
 ### 4. AI Changes Everything
+
 **Derives from**: Bridge the Gap
 
 In the era of AI-assisted development...
@@ -182,6 +195,7 @@ In the era of AI-assisted development...
 ## AI Integration Migration
 
 **File Structure**:
+
 - `guide/ai-setup.mdx` (comprehensive setup guide)
 - `guide/ai-best-practices.mdx` (tips and patterns)
 - `guide/ai-examples.mdx` (real-world examples)
@@ -189,6 +203,7 @@ In the era of AI-assisted development...
 **`guide/ai-setup.mdx` Structure**:
 
 Frontmatter:
+
 - id: 'ai-setup'
 - title: 'AI Integration Setup'
 - sidebar_position: 7
@@ -206,12 +221,15 @@ LeanSpec is designed from the ground up to work seamlessly with AI coding agents
 ## Integration Methods
 
 ### 1. System Prompts (AGENTS.md)
+
 [Content from ai-integration/agents-md.mdx + setup.mdx]
 
 ### 2. MCP Server
+
 [Brief intro, link to Reference for full API]
 
 ### 3. Repository Context
+
 [Content from existing docs]
 
 ## Setup Steps
@@ -237,6 +255,7 @@ LeanSpec is designed from the ground up to work seamlessly with AI coding agents
 **Structure**:
 
 Frontmatter:
+
 - id: 'mcp-server'
 - title: 'MCP Server API'
 - sidebar_position: 4
@@ -266,12 +285,15 @@ Complete reference for the LeanSpec Model Context Protocol (MCP) server.
 ## Configuration
 
 ### VS Code (GitHub Copilot)
+
 [Detailed setup with examples]
 
 ### Claude Desktop
+
 [Detailed setup with examples]
 
 ### Other Clients
+
 [Generic setup instructions]
 
 ## Troubleshooting
@@ -293,6 +315,7 @@ Complete reference for the LeanSpec Model Context Protocol (MCP) server.
 ### 1. `guide/board-stats.mdx`
 
 Frontmatter:
+
 - id: 'board-stats'
 - title: 'Board & Stats'
 - sidebar_position: 11
@@ -305,19 +328,21 @@ Project visibility and health monitoring with LeanSpec.
 
 ## Board View
 
-The `lean-spec board` command provides a Kanban-style view of your specs:
+The `harnspec board` command provides a Kanban-style view of your specs:
 
 ```bash
-lean-spec board
+harnspec board
 ```
 
 Shows specs organized by status:
+
 - **Planned**: Specs not yet started
 - **In Progress**: Active work
 - **Complete**: Finished specs
 - **Archived**: Historical specs
 
 **Use cases**:
+
 - Daily standup visibility
 - Sprint planning
 - Identifying bottlenecks
@@ -325,19 +350,21 @@ Shows specs organized by status:
 
 ## Stats
 
-The `lean-spec stats` command provides project metrics:
+The `harnspec stats` command provides project metrics:
 
 ```bash
-lean-spec stats
+harnspec stats
 ```
 
 Shows:
+
 - Total specs by status
 - Completion rate
 - Average spec size
 - Distribution by priority/tags
 
 **Use cases**:
+
 - Project health checks
 - Identifying trends
 - Planning capacity
@@ -346,11 +373,13 @@ Shows:
 ## Workflows
 
 ### Daily Workflow
-1. Run `lean-spec board` to see current state
+
+1. Run `harnspec board` to see current state
 2. Update spec status as you work
 3. Review stats weekly
 
 ### Team Workflow
+
 1. Board in standup meetings
 2. Stats for retrospectives
 3. Track velocity over time
@@ -364,6 +393,7 @@ Shows:
 ### 2. `guide/dependencies.mdx`
 
 Frontmatter:
+
 - id: 'dependencies'
 - title: 'Dependencies'
 - sidebar_position: 12
@@ -385,6 +415,7 @@ LeanSpec has two types of relationships:
 **Behavior**: Automatically shown from both sides
 
 **Example**:
+
 ```yaml
 # Spec 042
 related: [043]
@@ -395,6 +426,7 @@ related: [043]
 Both specs will show the relationship.
 
 **Use when:**
+
 - Specs cover related topics
 - Work is coordinated but not blocking
 - Context is helpful but not required
@@ -406,12 +438,14 @@ Both specs will show the relationship.
 **Behavior**: Directional only
 
 **Example**:
+
 ```yaml
 # Spec A
 depends_on: [spec-b]
 ```
 
 **Use when:**
+
 - Spec truly cannot start until another completes
 - There's a clear dependency chain
 - Work must be done in specific order
@@ -421,10 +455,11 @@ depends_on: [spec-b]
 View spec relationships:
 
 ```bash
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 Shows:
+
 - Dependencies (what this spec depends on)
 - Blocks (what this spec blocks)
 - Related specs
@@ -434,23 +469,26 @@ Shows:
 1. **Use `related` by default** - It's simpler and matches most use cases
 2. **Reserve `depends_on` for true blocking dependencies**
 3. **Update once, show everywhere** - `related` only needs to be in one spec
-4. **Check dependencies** - Run `lean-spec deps` to see all relationships
+4. **Check dependencies** - Run `harnspec deps` to see all relationships
 
 ## Patterns
 
 ### Feature Dependencies
+
 ```yaml
 # Spec B depends on Spec A
 depends_on: [spec-a]
 ```
 
 ### Related Features
+
 ```yaml
 # Both specs work on same area
 related: [other-spec]
 ```
 
 ### Complex Dependencies
+
 ```yaml
 # Multiple dependencies
 depends_on: [spec-a, spec-b]
@@ -474,27 +512,30 @@ Quality checks and complexity analysis.
 Check specs for quality issues:
 
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 Validates all specs by default. Check specific specs:
 
 ```bash
-lean-spec validate <spec-1> <spec-2>
+harnspec validate <spec-1> <spec-2>
 ```
 
 ## Quality Checks
 
 ### Line Count
+
 - **Warning**: Specs over 300 lines
 - **Error**: Specs over 400 lines
 - **Rationale**: Context Economy principle
 
 ### Sub-Spec Validation
+
 - Checks sub-spec files (DESIGN.md, etc.)
 - Ensures sub-specs also follow line limits
 
 ### Frontmatter Validation
+
 - Required fields present
 - Valid values for status, priority
 - Proper date formats
@@ -502,6 +543,7 @@ lean-spec validate <spec-1> <spec-2>
 ## Complexity Analysis
 
 Validation detects:
+
 - Overly long specs (Context Economy violation)
 - Missing required frontmatter
 - Invalid frontmatter values
@@ -510,21 +552,24 @@ Validation detects:
 ## Workflows
 
 ### Pre-Commit Check
+
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 ### CI/CD Integration
+
 ```yaml
 # .github/workflows/validate.yml
 - name: Validate Specs
-  run: npx lean-spec validate
+  run: npx harnspec validate
 ```
 
 ### Regular Review
+
 ```bash
 # Weekly spec health check
-lean-spec validate --max-lines 300
+harnspec validate --max-lines 300
 ```
 
 ## Best Practices
@@ -618,12 +663,14 @@ plugins: [
 ## Testing Checklist
 
 ### Automated
+
 - [ ] Build completes without errors: `cd docs-site && npm run build`
 - [ ] No broken internal links
 - [ ] Search functionality works
 - [ ] All assets load correctly
 
 ### Manual
+
 - [ ] Navigation flows logically
 - [ ] First Principles doc renders correctly
 - [ ] Philosophy shows derivation
@@ -635,6 +682,7 @@ plugins: [
 - [ ] Desktop rendering correct
 
 ### Content Quality
+
 - [ ] No spelling/grammar errors
 - [ ] Code examples tested
 - [ ] Links go to correct pages

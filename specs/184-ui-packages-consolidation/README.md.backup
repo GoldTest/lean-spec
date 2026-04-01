@@ -148,14 +148,14 @@ This creates:
 ┌──────────────────────────────────────────────────────────┐
 │              Rust HTTP Server (Single Instance)          │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │  Project Registry (~/.lean-spec/projects.json)     │  │
+│  │  Project Registry (~/.harnspec/projects.json)     │  │
 │  │  - Shared between desktop and web                  │  │
 │  │  - Server loads projects on startup                │  │
 │  │  - CRUD operations via HTTP API                    │  │
 │  └────────────────────────────────────────────────────┘  │
 │                                                           │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │  Config (~/.lean-spec/config.json)                 │  │
+│  │  Config (~/.harnspec/config.json)                 │  │
 │  │  - server.host (default: 127.0.0.1)                │  │
 │  │  - server.port (default: 3333, auto-pick if busy)  │  │
 │  │  - server.cors.origins (configurable)              │  │
@@ -177,10 +177,10 @@ This creates:
 
 2. **Server-Side Project Registry**
    - Already exists in both packages/ui and packages/desktop
-   - Format: `~/.lean-spec/projects.json` (identical structure)
+   - Format: `~/.harnspec/projects.json` (identical structure)
    - Server loads on startup, exposes CRUD via `/api/projects`
 
-3. **Configuration File: `~/.lean-spec/config.json`**
+3. **Configuration File: `~/.harnspec/config.json`**
    ```json
    {
      "server": {
@@ -249,15 +249,15 @@ struct ServerConfig {
 
 struct ProjectRegistry {
     projects: HashMap<String, Project>,
-    config_path: PathBuf,  // ~/.lean-spec/projects.json
+    config_path: PathBuf,  // ~/.harnspec/projects.json
 }
 
 #[tokio::main]
 async fn main() {
-    // Load config from ~/.lean-spec/config.json
+    // Load config from ~/.harnspec/config.json
     let config = ServerConfig::load().unwrap_or_default();
     
-    // Load project registry from ~/.lean-spec/projects.json
+    // Load project registry from ~/.harnspec/projects.json
     let project_registry = ProjectRegistry::load().expect("Failed to load projects");
     
     let state = Arc::new(AppState {
@@ -732,7 +732,7 @@ packages/ui/
   
 - [ ] **Promote new UI**
   - Rename `packages/ui-new` → `packages/ui`
-  - Update `lean-spec ui` command launcher
+  - Update `harnspec ui` command launcher
   - Start Rust HTTP server automatically
   
 - [ ] **Update documentation**
@@ -788,7 +788,7 @@ packages/ui/
 ### Integration Tests
 
 - [ ] Desktop app still works with shared components
-- [ ] `lean-spec ui` launches new UI correctly
+- [ ] `harnspec ui` launches new UI correctly
 - [ ] Multi-project switching works in both desktop and web
 - [ ] CLI operations reflect in UI immediately
 
@@ -855,9 +855,9 @@ packages/ui/
    - **Rationale**: Browser security prevents arbitrary file access, not useful for end users
    - **Alternative**: Could add GitHub repo browsing (spec 035/082) but that's future work
    
-3. **Config File Format & Location**: JSON at `~/.lean-spec/config.json`
+3. **Config File Format & Location**: JSON at `~/.harnspec/config.json`
    - **Rationale**: JSON easier to parse in Rust, consistency with projects.json format
-   - **Location**: `~/.lean-spec/` for consistency, single directory for all data
+   - **Location**: `~/.harnspec/` for consistency, single directory for all data
    
 4. **Hot Reload**: Should server watch projects.json and auto-reload?
    - **Leaning toward**: Yes, with file system watcher (notify-rs)

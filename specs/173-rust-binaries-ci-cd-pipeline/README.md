@@ -30,6 +30,7 @@ transitions:
 ### Problem Statement
 
 Rust binaries must be built for multiple platforms to support cross-platform distribution (spec 172). Building locally is:
+
 - **Time-consuming**: 5-10 minutes per platform
 - **Platform-dependent**: Can't build macOS binaries on Linux
 - **Inconsistent**: Different toolchains, Rust versions, system libraries
@@ -40,6 +41,7 @@ Rust binaries must be built for multiple platforms to support cross-platform dis
 ### Requirements
 
 **Target Platforms** (6 total):
+
 - macOS Intel (x86_64-apple-darwin)
 - macOS Apple Silicon (aarch64-apple-darwin)
 - Linux x64 (x86_64-unknown-linux-gnu)
@@ -48,10 +50,12 @@ Rust binaries must be built for multiple platforms to support cross-platform dis
 - (Future: Windows ARM64 - aarch64-pc-windows-msvc)
 
 **Binaries to Build:**
+
 - `leanspec-cli` - Command-line tool
 - `leanspec-mcp` - MCP server
 
 **Success Criteria:**
+
 - ✅ Automated: Triggers on git tags or manual dispatch
 - ✅ Fast: <20 minutes for all platforms (parallel builds)
 - ✅ Reliable: Deterministic builds, caching works
@@ -63,6 +67,7 @@ Rust binaries must be built for multiple platforms to support cross-platform dis
 ### Workflow Architecture
 
 **High-Level Flow:**
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │              Trigger (git tag or manual)                  │
@@ -205,9 +210,9 @@ jobs:
           
           # Copy CLI binary
           if [ "${{ runner.os }}" = "Windows" ]; then
-            cp rust/target/${{ matrix.target }}/release/lean-spec.exe dist/${{ matrix.platform }}/
+            cp rust/target/${{ matrix.target }}/release/harnspec.exe dist/${{ matrix.platform }}/
           else
-            cp rust/target/${{ matrix.target }}/release/lean-spec dist/${{ matrix.platform }}/
+            cp rust/target/${{ matrix.target }}/release/harnspec dist/${{ matrix.platform }}/
           fi
           
           # Copy MCP binary
@@ -220,10 +225,10 @@ jobs:
           # Generate checksums
           cd dist/${{ matrix.platform }}
           if [ "${{ runner.os }}" = "Windows" ]; then
-            certutil -hashfile lean-spec.exe SHA256 > lean-spec.exe.sha256
+            certutil -hashfile harnspec.exe SHA256 > harnspec.exe.sha256
             certutil -hashfile leanspec-mcp.exe SHA256 > leanspec-mcp.exe.sha256
           else
-            shasum -a 256 lean-spec > lean-spec.sha256
+            shasum -a 256 harnspec > harnspec.sha256
             shasum -a 256 leanspec-mcp > leanspec-mcp.sha256
           fi
       
@@ -318,6 +323,7 @@ jobs:
    - Key: `${{ runner.os }}-${{ target }}-cargo-build-${{ hashFiles('Cargo.lock') }}`
 
 **Expected Performance:**
+
 - First build: ~15-20 minutes (cold cache)
 - Cached build: ~5-7 minutes (warm cache)
 - **Savings: ~70% faster**
@@ -325,6 +331,7 @@ jobs:
 ### Cross-Compilation Setup
 
 **Linux ARM64** (runs on x64 runner):
+
 ```yaml
 - name: Install cross-compilation tools
   if: matrix.target == 'aarch64-unknown-linux-gnu'
@@ -340,21 +347,24 @@ jobs:
 ```
 
 **macOS ARM64** (runs on x64 runner):
+
 - GitHub Actions `macos-latest` supports universal builds
 - No additional setup needed, Rust handles it
 
 **Windows ARM64** (future):
+
 - Requires Windows ARM64 runner (not yet available)
 - Alternative: Cross-compile from x64 (experimental)
 
 ### Artifact Organization
 
 **Upload Structure:**
+
 ```
 artifacts/
 ├── binaries-darwin-x64/
-│   ├── lean-spec
-│   ├── lean-spec.sha256
+│   ├── harnspec
+│   ├── harnspec.sha256
 │   ├── leanspec-mcp
 │   └── leanspec-mcp.sha256
 ├── binaries-darwin-arm64/
@@ -364,13 +374,14 @@ artifacts/
 ├── binaries-linux-arm64/
 │   └── (same structure)
 └── binaries-windows-x64/
-    ├── lean-spec.exe
-    ├── lean-spec.exe.sha256
+    ├── harnspec.exe
+    ├── harnspec.exe.sha256
     ├── leanspec-mcp.exe
     └── leanspec-mcp.exe.sha256
 ```
 
 **Retention:**
+
 - Manual builds: 30 days
 - Release builds: 90 days (GitHub Actions limit)
 - Published packages: Permanent (npm registry)
@@ -378,16 +389,19 @@ artifacts/
 ### Security Considerations
 
 **npm Token:**
+
 - Store `NPM_TOKEN` in GitHub Secrets
 - Scope: Organization-level or repository-level
 - Permissions: Publish-only (not full access)
 
 **Artifact Integrity:**
+
 - Generate SHA256 checksums for all binaries
 - Store checksums alongside binaries
-- Users can verify downloads: `sha256sum -c lean-spec.sha256`
+- Users can verify downloads: `sha256sum -c harnspec.sha256`
 
 **Supply Chain:**
+
 - Builds run on GitHub-hosted runners (trusted)
 - Rust toolchain from official sources
 - Dependencies locked with `Cargo.lock`
@@ -396,6 +410,7 @@ artifacts/
 ## Plan
 
 ### Phase 1: Workflow Setup
+
 - [x] Create `.github/workflows/rust-binaries.yml` (historical)
 - [x] Define build matrix for 6 platforms
 - [x] Set up Rust toolchain installation
@@ -403,6 +418,7 @@ artifacts/
 - [x] Add fail-fast: false for independent builds
 
 ### Phase 2: Caching Implementation
+
 - [x] Add cargo registry cache
 - [x] Add cargo index cache
 - [x] Add build artifacts cache
@@ -410,6 +426,7 @@ artifacts/
 - [x] Measure build time improvement (target: 70% faster)
 
 ### Phase 3: Cross-Compilation
+
 - [x] Set up Linux ARM64 cross-compilation
   - [x] Install gcc-aarch64-linux-gnu
   - [x] Configure Cargo linker
@@ -418,6 +435,7 @@ artifacts/
 - [x] Test Windows builds on Windows runner
 
 ### Phase 4: Artifact Management
+
 - [x] Create artifact preparation script
 - [x] Copy binaries to dist/ directory
 - [x] Generate SHA256 checksums
@@ -426,6 +444,7 @@ artifacts/
 - [ ] Test artifact download from Actions UI
 
 ### Phase 5: npm Publishing (Optional)
+
 - [x] Create `NPM_TOKEN` secret in GitHub
 - [x] Add publish job (depends on build job)
 - [x] Download all artifacts in publish job
@@ -435,6 +454,7 @@ artifacts/
 - [ ] Test publish workflow (dry-run first)
 
 ### Phase 6: Testing & Validation
+
 - [ ] Trigger workflow on test tag (`v0.3.0-test`)
 - [x] Verify all 6 platforms build successfully
 - [ ] Download artifacts and test binaries locally
@@ -443,6 +463,7 @@ artifacts/
 - [ ] Measure build times (cold and warm cache)
 
 ### Phase 7: Documentation
+
 - [ ] Document workflow in `docs/ci-cd.md`
 - [ ] Add troubleshooting guide for build failures
 - [x] Document how to trigger manual builds
@@ -452,6 +473,7 @@ artifacts/
 ## Test
 
 ### Workflow Validation
+
 - [ ] YAML syntax is valid (use `actionlint`)
 - [ ] All matrix combinations are defined
 - [ ] Triggers work (tag push, manual dispatch)
@@ -459,6 +481,7 @@ artifacts/
 - [ ] Permissions are minimal (principle of least privilege)
 
 ### Build Quality
+
 - [ ] All 6 platforms build successfully
 - [ ] Binaries are executable on target platforms
 - [ ] Binary sizes are reasonable (<10MB each)
@@ -466,18 +489,21 @@ artifacts/
 - [ ] Builds are deterministic (same commit = same hash)
 
 ### Cross-Compilation
+
 - [ ] Linux ARM64 binary runs on Raspberry Pi
 - [ ] macOS ARM64 binary runs on Apple Silicon
 - [ ] Windows x64 binary runs on Windows 11
 - [ ] No "wrong architecture" errors
 
 ### Performance
+
 - [ ] First build: <20 minutes per platform
 - [ ] Cached build: <7 minutes per platform
 - [ ] Cache hit rate: >80%
 - [ ] Total workflow time: <20 minutes (all platforms parallel)
 
 ### Artifact Management
+
 - [ ] Artifacts upload successfully
 - [ ] Artifact names are correct (`binaries-{platform}`)
 - [ ] Checksums match binary content
@@ -485,13 +511,15 @@ artifacts/
 - [ ] Retention policies work (expire after 30/90 days)
 
 ### npm Publishing (if enabled)
+
 - [ ] Platform packages publish before main package
 - [ ] All platform packages are available on npm
 - [ ] Main packages reference correct platform versions
-- [ ] `npm install -g lean-spec` works after publish
+- [ ] `npm install -g harnspec` works after publish
 - [ ] Published binaries are executable
 
 ### Security
+
 - [ ] `NPM_TOKEN` is not exposed in logs
 - [ ] Checksums are verified before publishing
 - [ ] Workflow only runs on trusted branches/tags
@@ -502,21 +530,25 @@ artifacts/
 ### Alternative Approaches Considered
 
 **1. Use `cross` for Cross-Compilation**
+
 - ✅ Pros: Simplifies cross-compilation setup
 - ❌ Cons: Docker overhead, slower builds, complex caching
 - **Decision**: Native cross-compilation is simpler for our use case
 
 **2. Use `cargo-zigbuild` for Universal Builds**
+
 - ✅ Pros: Single command for all platforms
 - ❌ Cons: Additional dependency, less tested
 - **Decision**: Use native toolchains for stability
 
 **3. Build on Each Platform (no cross-compilation)**
+
 - ✅ Pros: Most reliable, true native builds
 - ❌ Cons: Requires runners for each platform (macOS, Linux, Windows)
 - **Decision**: We already do this for macOS/Windows, only cross-compile Linux ARM64
 
 **4. Use Tauri GitHub Action**
+
 - ✅ Pros: Pre-configured for Tauri projects
 - ❌ Cons: Designed for desktop apps, not CLI tools
 - **Decision**: Custom workflow gives more control
@@ -524,16 +556,19 @@ artifacts/
 ### Platform-Specific Notes
 
 **macOS:**
+
 - GitHub Actions `macos-latest` = macOS 13 (Ventura)
 - Supports both x64 and ARM64 targets
 - No code signing needed for CLI tools (users will see Gatekeeper warning)
 
 **Linux:**
+
 - GitHub Actions `ubuntu-latest` = Ubuntu 22.04
 - ARM64 cross-compilation requires `gcc-aarch64-linux-gnu`
 - MUSL vs GLIBC: We use GNU (better compatibility)
 
 **Windows:**
+
 - GitHub Actions `windows-latest` = Windows Server 2022
 - MSVC toolchain (not MinGW)
 - No code signing needed for CLI tools (SmartScreen warning expected)
@@ -541,21 +576,25 @@ artifacts/
 ### Future Enhancements
 
 **Code Signing:**
+
 - macOS: Apple Developer ID signing + notarization
 - Windows: Authenticode signing certificate
 - Cost: ~$300-500/year for certificates
 
 **Additional Targets:**
+
 - Windows ARM64 (when runners available)
 - Alpine Linux (MUSL builds)
 - FreeBSD (via cross-compilation)
 
 **Advanced Caching:**
+
 - Use `sccache` for faster Rust compilation
 - Cache across branches (not just same branch)
 - Incremental builds (only changed crates)
 
 **Monitoring:**
+
 - Build time metrics dashboard
 - Cache hit rate tracking
 - Binary size trends over time
@@ -563,16 +602,19 @@ artifacts/
 ### References
 
 **GitHub Actions:**
+
 - [actions-rs/toolchain](https://github.com/actions-rs/toolchain) - Rust setup
 - [actions/cache](https://github.com/actions/cache) - Caching dependencies
 - [actions/upload-artifact](https://github.com/actions/upload-artifact) - Artifact management
 
 **Cross-Compilation:**
+
 - [Rust Cross-Compilation](https://rust-lang.github.io/rustup/cross-compilation.html)
 - [cargo-cross](https://github.com/cross-rs/cross) - Cross-compilation tool
 - [Linux ARM64 Cross](https://github.com/rust-lang/rust/issues/79609)
 
 **Similar Projects:**
+
 - [esbuild CI](https://github.com/evanw/esbuild/blob/master/.github/workflows/ci.yml)
 - [swc CI](https://github.com/swc-project/swc/blob/main/.github/workflows/CI.yml)
 - [Tauri GitHub Action](https://github.com/tauri-apps/tauri-action)
@@ -580,17 +622,20 @@ artifacts/
 ### Success Metrics
 
 **Must Have:**
+
 - ✅ All 6 platforms build successfully
 - ✅ Build time <20 minutes (parallel)
 - ✅ Artifacts are downloadable and executable
 - ✅ Caching reduces build time by 70%
 
 **Nice to Have:**
+
 - ✅ Automated npm publishing
 - ✅ Checksum verification
 - ✅ Build time <10 minutes (cached)
 
 **Optional:**
+
 - Code signing for macOS/Windows
 - Additional platforms (ARM64 Windows, FreeBSD)
 - Build time metrics dashboard

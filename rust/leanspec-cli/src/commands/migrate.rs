@@ -202,8 +202,8 @@ fn migrate_auto(
     println!("{}", "═".repeat(70));
     println!();
     println!("Next steps:");
-    println!("  {}      # View your specs", "lean-spec board".cyan());
-    println!("  {}   # Check for issues", "lean-spec validate".cyan());
+    println!("  {}      # View your specs", "harnspec board".cyan());
+    println!("  {}   # Check for issues", "harnspec validate".cyan());
 
     Ok(())
 }
@@ -253,20 +253,20 @@ fn output_manual_instructions(
     println!("{}", "💡 Quick Option:".bold());
     println!(
         "  {}",
-        format!("lean-spec migrate {} --auto", input_path).cyan()
+        format!("harnspec migrate {} --auto", input_path).cyan()
     );
     println!("  This will automatically restructure in one shot.");
     println!();
     println!("{}", "Manual Migration Steps:".bold());
     println!();
     println!("1. For each document, create a spec:");
-    println!("   {}", "lean-spec create <name>".cyan());
+    println!("   {}", "harnspec create <name>".cyan());
     println!();
     println!("2. Set metadata (NEVER edit frontmatter manually):");
-    println!("   {}", "lean-spec update <name> --status <status>".cyan());
+    println!("   {}", "harnspec update <name> --status <status>".cyan());
     println!(
         "   {}",
-        "lean-spec update <name> --priority <priority>".cyan()
+        "harnspec update <name> --priority <priority>".cyan()
     );
     println!();
     println!("3. Copy content and map sections:");
@@ -276,8 +276,8 @@ fn output_manual_instructions(
     println!("   - Test: Validation criteria");
     println!();
     println!("4. After migration, validate:");
-    println!("   {}", "lean-spec validate".cyan());
-    println!("   {}", "lean-spec board".cyan());
+    println!("   {}", "harnspec validate".cyan());
+    println!("   {}", "harnspec board".cyan());
     println!();
     println!("{}", "─".repeat(70));
     println!();

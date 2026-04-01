@@ -29,19 +29,22 @@ Consolidate the two separate AI tool registries (`runner.rs` and `ai_tools.rs`) 
 ### Current State
 
 **Runners ([rust/leanspec-core/src/sessions/runner.rs](rust/leanspec-core/src/sessions/runner.rs))**: claude, copilot, codex, opencode, aider, cline (6 CLI tools)
+
 - Purpose: Execution config (command, args, env)
-- Used by: `lean-spec run`, session management
+- Used by: `harnspec run`, session management
 - `RunnerDefinition.command` is required (non-optional)
 - `runners.json` schema requires `command`
 
 **AI Tools ([rust/leanspec-cli/src/commands/init/ai_tools.rs](rust/leanspec-cli/src/commands/init/ai_tools.rs))**: Copilot, Claude, Gemini, Cursor, Windsurf, Aider, Codex, Droid (8 tools)
+
 - Purpose: Detection config (commands, config dirs, env vars, extensions, symlinks)
-- Used by: `lean-spec init` wizard
+- Used by: `harnspec init` wizard
 - Detection checks commands via `which/where`, config dirs in $HOME (or LEAN_SPEC_HOME), env vars, and IDE extension folders
 - Symlinks only for Claude + Gemini (CLAUDE.md, GEMINI.md)
 - Includes IDE-based tools (Cursor, Windsurf) not in runner.rs
 
 **Known mismatches today**
+
 - Copilot runner executes `gh copilot suggest`, but detection looks for `copilot` command
 - Gemini/Cursor/Windsurf/Droid exist only in `ai_tools.rs` (not in runner registry)
 - `ai_tools.rs` has detection fields (commands, extensions) not represented in `RunnerDefinition`
@@ -121,7 +124,7 @@ runners.insert(
     RunnerDefinition {
         id: "cursor".to_string(),
         name: Some("Cursor".to_string()),
-        command: None,  // IDE - not executable via lean-spec run
+        command: None,  // IDE - not executable via harnspec run
         args: vec![],
         env: HashMap::new(),
         detection: Some(DetectionConfig {
@@ -136,7 +139,7 @@ runners.insert(
 
 ### Init Integration
 
-Update `lean-spec init` to use `RunnerRegistry`:
+Update `harnspec init` to use `RunnerRegistry`:
 
 ```rust
 // In init command
@@ -178,7 +181,7 @@ impl RunnerRegistry {
 }
 
 impl RunnerDefinition {
-    /// Returns true if this runner can be executed via `lean-spec run`
+    /// Returns true if this runner can be executed via `harnspec run`
     pub fn is_runnable(&self) -> bool {
         self.command.is_some()
     }
@@ -236,9 +239,9 @@ impl RunnerDefinition {
 - [x] Detection works for all builtin runners (CLI and IDE)
 - [x] `RunnerRegistry::detect_available()` returns correct results
 - [x] IDE-only runners (cursor, windsurf) are detected but not runnable
-- [x] `lean-spec run cursor` returns appropriate error for IDE-only tools
+- [x] `harnspec run cursor` returns appropriate error for IDE-only tools
 - [x] Symlink creation works via `symlink_runners()`
-- [x] `lean-spec init` wizard shows detected tools correctly
+- [x] `harnspec init` wizard shows detected tools correctly
 - [x] User-defined runners in `runners.json` with detection config are detected
 - [x] Backward compatibility: runners.json without detection fields still works
 - [x] Command/extension detection uses $HOME (or LEAN_SPEC_HOME) to match current behavior
@@ -256,14 +259,16 @@ impl RunnerDefinition {
 ### IDE-Only Tools
 
 Tools like Cursor and Windsurf are IDEs, not CLI executables. They're included in the registry with `command: None`:
-- Detected during `lean-spec init` via config dirs (`.cursor`, `.windsurf`)
+
+- Detected during `harnspec init` via config dirs (`.cursor`, `.windsurf`)
 - Shown in init wizard for AGENTS.md setup
-- Not runnable via `lean-spec run` (returns error if attempted)
+- Not runnable via `harnspec run` (returns error if attempted)
 - Use AGENTS.md directly (no symlink needed)
 
 ### Migration Path
 
 The migration is backward compatible:
+
 - `detection` and `symlink_file` are optional fields with defaults
 - Existing `runners.json` files continue to work
 - `ai_tools.rs` can be deprecated gradually

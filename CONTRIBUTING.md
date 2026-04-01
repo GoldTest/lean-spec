@@ -11,7 +11,7 @@ Thanks for your interest in contributing! LeanSpec is about keeping things lean,
 5. Commit with clear message: `git commit -m "Add feature X"`
 6. Push and open a PR
 
-> Note: The documentation site lives in the `codervisor/lean-spec-docs` repository and is merged here as the `docs-site/` directory using git subtree. It's already included when you clone the repo - no additional steps needed.
+> Note: The documentation site lives in the `codervisor/harnspec-docs` repository and is merged here as the `docs-site/` directory using git subtree. It's already included when you clone the repo - no additional steps needed.
 
 ## Development Setup
 
@@ -38,6 +38,7 @@ LeanSpec uses a unified HTTP server architecture where the Rust server serves bo
 ### Development Mode
 
 **Option 1: Separate Dev Servers (Recommended for UI development)**
+
 ```bash
 # Terminal 1: Start Rust HTTP server (API on port 3000)
 cd rust/leanspec-http
@@ -51,6 +52,7 @@ pnpm dev
 Vite's proxy configuration automatically forwards `/api/*` requests to the Rust server on port 3000. This gives you fast Hot Module Replacement (HMR) for UI changes.
 
 **Option 2: Unified Dev Mode (Testing production-like setup)**
+
 ```bash
 # Build UI once
 cd packages/ui
@@ -80,10 +82,11 @@ All CLI arguments are passed through to the Rust server. See `leanspec-http --he
 All packages in the monorepo maintain synchronized versions automatically. The root `package.json` serves as the single source of truth.
 
 **Packages:**
-- `lean-spec` (CLI package - wrapper for Rust binary)
+
+- `harnspec` (CLI package - wrapper for Rust binary)
 - `@leanspec/ui` (web UI package)
 - `@leanspec/mcp` (MCP server wrapper)
-- Desktop app repository: https://github.com/codervisor/lean-spec-desktop
+- Desktop app repository: <https://github.com/codervisor/harnspec-desktop>
 
 ### Automated Version Sync
 
@@ -98,6 +101,7 @@ pnpm sync-versions
 ```
 
 The script:
+
 - Reads the version from root `package.json`
 - Updates all workspace packages to match
 - Reports what changed
@@ -106,17 +110,19 @@ The script:
 ### Release Process
 
 **Before Publishing:**
+
 1. Update version in **root `package.json` only**
 2. Run `pnpm sync-versions` (or it runs automatically with `pre-release`)
-3. Update cross-package dependencies if needed (e.g., `@leanspec/mcp` → `lean-spec`)
+3. Update cross-package dependencies if needed (e.g., `@leanspec/mcp` → `harnspec`)
 4. Run `pnpm build` to verify all packages build successfully
 5. Run `pnpm pre-release` to run full validation suite
    - Includes: sync-versions, typecheck, tests, build, and validate with `--warnings-only`
    - The validate step treats all issues as warnings (won't fail on complexity/token issues)
-   - For stricter validation before committing spec changes, run `node bin/lean-spec.js validate` without flags
+   - For stricter validation before committing spec changes, run `node bin/harnspec.js validate` without flags
 6. Test package installation locally using `npm pack`
 
 **Version Bump Example:**
+
 ```bash
 # 1. Update root version
 npm version patch  # or minor/major
@@ -135,6 +141,7 @@ git push
 ```
 
 **Why root as source of truth?**
+
 - Single place to update version
 - Prevents version drift
 - Automated sync in CI/CD
@@ -142,9 +149,10 @@ git push
 
 ### Docs Site Subtree
 
-The docs are maintained in [codervisor/lean-spec-docs](https://github.com/codervisor/lean-spec-docs) and merged into this repo at `docs-site/` using git subtree. The docs are already included when you clone.
+The docs are maintained in [codervisor/harnspec-docs](https://github.com/codervisor/harnspec-docs) and merged into this repo at `docs-site/` using git subtree. The docs are already included when you clone.
 
 **Local development:**
+
 ```bash
 cd docs-site
 pnpm install    # install docs dependencies
@@ -152,6 +160,7 @@ pnpm start      # develop docs locally
 ```
 
 **Pushing docs changes:**
+
 ```bash
 # Make changes in docs-site/, then commit to this repo
 git add docs-site
@@ -159,13 +168,14 @@ git commit -m "docs: your changes"
 git push
 
 # Push to the separate docs repo (maintainers only)
-git subtree push --prefix=docs-site https://github.com/codervisor/lean-spec-docs.git main
+git subtree push --prefix=docs-site https://github.com/codervisor/harnspec-docs.git main
 ```
 
 **Pulling docs changes from upstream:**
+
 ```bash
 # Pull latest from the separate docs repo
-git subtree pull --prefix=docs-site https://github.com/codervisor/lean-spec-docs.git main --squash
+git subtree pull --prefix=docs-site https://github.com/codervisor/harnspec-docs.git main --squash
 ```
 
 ### Monorepo with Turborepo
@@ -177,24 +187,28 @@ This project uses [Turborepo](https://turbo.build/) to manage the monorepo with 
 - **Task dependencies** - Dependencies built first automatically
 
 **Packages:**
-- `packages/cli` - CLI wrapper for Rust binary (published as `lean-spec`)
+
+- `packages/cli` - CLI wrapper for Rust binary (published as `harnspec`)
 - `packages/mcp` - MCP server wrapper (published as `@leanspec/mcp`)
 - `packages/ui` - Web UI bundle (published as `@leanspec/ui`)
-- Desktop app repository: https://github.com/codervisor/lean-spec-desktop
-- `docs-site/` - Git subtree merged from `codervisor/lean-spec-docs` (Docusaurus)
+- Desktop app repository: <https://github.com/codervisor/harnspec-desktop>
+- `docs-site/` - Git subtree merged from `codervisor/harnspec-docs` (Docusaurus)
 
 **Key files:**
+
 - `turbo.json` - Task pipeline configuration
 - `pnpm-workspace.yaml` - Workspace definitions
 - `package.json` - Root scripts that invoke Turbo
 
 **Build specific package:**
+
 ```bash
-turbo run build --filter=lean-spec
+turbo run build --filter=harnspec
 turbo run build --filter=@leanspec/ui
 ```
 
 **Rust Development:**
+
 ```bash
 # Build Rust binaries
 pnpm rust:build
@@ -256,6 +270,7 @@ End-to-end tests live in `packages/cli/src/__e2e__/` and test real CLI commands 
 - `mcp-tools.e2e.test.ts` - MCP server tool integration
 
 E2E tests use helpers from `e2e-helpers.ts` to:
+
 - Create isolated temp directories
 - Execute real CLI commands
 
@@ -277,6 +292,7 @@ git diff -- packages/ui/src/types/generated
 ```
 
 CI enforces this with a stale-binding check.
+
 - Verify filesystem state
 
 ### Regression Tests
@@ -317,6 +333,7 @@ pnpm test:ui
 ## Code Style
 
 We use:
+
 - TypeScript for type safety
 - Prettier for formatting
 
@@ -337,6 +354,7 @@ When in doubt: **Clarity over documentation, Essential over exhaustive, Speed ov
 ## Areas for Contribution
 
 ### High Priority (v0.3.0)
+
 - Programmatic spec management tools (spec 059)
 - VS Code extension (spec 017)
 - GitHub Action for CI integration (spec 016)
@@ -344,6 +362,7 @@ When in doubt: **Clarity over documentation, Essential over exhaustive, Speed ov
 - Live specs showcase on docs site (spec 035)
 
 ### Currently Implemented ✅
+
 - Core CLI commands (create, list, update, archive, search, deps)
 - YAML frontmatter with validation and custom fields
 - Template system with minimal/standard/enterprise presets
@@ -356,6 +375,7 @@ When in doubt: **Clarity over documentation, Essential over exhaustive, Speed ov
 - Relationship tracking (depends_on, related)
 
 ### Future Ideas (v0.4.0+)
+
 - PM system integrations (GitHub Issues, Jira, Azure DevOps) - spec 036
 - Spec coverage reports
 - Additional language-specific templates

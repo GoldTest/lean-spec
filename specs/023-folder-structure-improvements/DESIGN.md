@@ -9,24 +9,27 @@
 Auto-check runs automatically in these commands:
 
 **Commands that interact with specs (11 total):**
-1. `lean-spec create` - After creating spec
-2. `lean-spec list` - Before showing list
-3. `lean-spec board` - Before showing board
-4. `lean-spec update` - Before updating spec
-5. `lean-spec search` - Before searching
-6. `lean-spec stats` - Before showing stats
-7. `lean-spec timeline` - Before showing timeline
-8. `lean-spec gantt` - Before showing gantt
-9. `lean-spec deps` - Before showing dependencies
-10. `lean-spec files` - Before listing files
-11. `lean-spec archive` - Before archiving
+
+1. `harnspec create` - After creating spec
+2. `harnspec list` - Before showing list
+3. `harnspec board` - Before showing board
+4. `harnspec update` - Before updating spec
+5. `harnspec search` - Before searching
+6. `harnspec stats` - Before showing stats
+7. `harnspec timeline` - Before showing timeline
+8. `harnspec gantt` - Before showing gantt
+9. `harnspec deps` - Before showing dependencies
+10. `harnspec files` - Before listing files
+11. `harnspec archive` - Before archiving
 
 **Commands that skip auto-check:**
-- `lean-spec init` - No specs exist yet
-- `lean-spec templates` - Template management only
-- `lean-spec check` - Already checking conflicts
+
+- `harnspec init` - No specs exist yet
+- `harnspec templates` - Template management only
+- `harnspec check` - Already checking conflicts
 
 **Integration pattern:**
+
 ```typescript
 // Standard pattern for all commands
 import { autoCheckIfEnabled } from './check.js';
@@ -283,7 +286,7 @@ export async function checkSpecs(options: {
       }
       
       console.log(chalk.cyan('Tip: Use date prefix to prevent conflicts:'));
-      console.log(chalk.gray('  Edit .lean-spec/config.json → structure.prefix: "{YYYYMMDD}-"'));
+      console.log(chalk.gray('  Edit .harnspec/config.json → structure.prefix: "{YYYYMMDD}-"'));
       console.log('');
       console.log(chalk.cyan('Or rename folders manually to resolve.'));
       console.log('');
@@ -291,7 +294,7 @@ export async function checkSpecs(options: {
       // Brief warning (for auto-check)
       console.log('');
       console.log(chalk.yellow(`⚠️  Conflict warning: ${conflicts.length} sequence conflict(s) detected`));
-      console.log(chalk.gray('Run: lean-spec check'));
+      console.log(chalk.gray('Run: harnspec check'));
       console.log('');
     }
   }
@@ -377,7 +380,7 @@ export async function listSpecs(options: {
     await fs.access(specsDir);
   } catch {
     console.log('');
-    console.log('No specs directory found. Initialize with: lean-spec init');
+    console.log('No specs directory found. Initialize with: harnspec init');
     console.log('');
     return;
   }

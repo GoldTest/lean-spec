@@ -55,7 +55,7 @@ pub fn exec_cli(args: &[&str], cwd: &Path) -> ExecResult {
 
 /// Execute a CLI command with extra environment variables
 pub fn exec_cli_env(args: &[&str], cwd: &Path, env: &[(&str, &str)]) -> ExecResult {
-    let mut cmd = cargo_bin_cmd!("lean-spec");
+    let mut cmd = cargo_bin_cmd!("harnspec");
     cmd.args(args).current_dir(cwd).env("NO_COLOR", "1");
     for (key, value) in env {
         cmd.env(key, value);
@@ -232,10 +232,10 @@ pub fn parse_frontmatter(content: &str) -> std::collections::HashMap<String, ser
     std::collections::HashMap::new()
 }
 
-/// Write a runners.json file with a simple echo test runner into the project's .lean-spec dir
+/// Write a runners.json file with a simple echo test runner into the project's .harnspec dir
 pub fn write_test_runner(cwd: &Path, runner_id: &str) {
-    let lean_spec_dir = cwd.join(".lean-spec");
-    fs::create_dir_all(&lean_spec_dir).expect("Failed to create .lean-spec dir");
+    let lean_spec_dir = cwd.join(".harnspec");
+    fs::create_dir_all(&lean_spec_dir).expect("Failed to create .harnspec dir");
     let runners_json = format!(
         r#"{{
   "$schema": "https://leanspec.dev/schemas/runners.json",
@@ -253,10 +253,10 @@ pub fn write_test_runner(cwd: &Path, runner_id: &str) {
         .expect("Failed to write runners.json");
 }
 
-/// Write raw runners.json content into the project's .lean-spec directory.
+/// Write raw runners.json content into the project's .harnspec directory.
 pub fn write_runners_json(cwd: &Path, content: &str) {
-    let lean_spec_dir = cwd.join(".lean-spec");
-    fs::create_dir_all(&lean_spec_dir).expect("Failed to create .lean-spec dir");
+    let lean_spec_dir = cwd.join(".harnspec");
+    fs::create_dir_all(&lean_spec_dir).expect("Failed to create .harnspec dir");
     fs::write(lean_spec_dir.join("runners.json"), content).expect("Failed to write runners.json");
 }
 
@@ -338,7 +338,7 @@ pub fn session_run(
     exec_cli_env(&args, cwd, &[("HOME", home.to_str().unwrap())])
 }
 
-/// Run a runner directly via the top-level `lean-spec run` command.
+/// Run a runner directly via the top-level `harnspec run` command.
 pub fn run_direct(
     cwd: &Path,
     home: &Path,

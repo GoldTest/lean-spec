@@ -8,7 +8,7 @@
  * The wrapper looks for binaries in the following locations:
  * 1. Rust target/debug binary (for local development)
  * 2. Rust target/release binary (for local development)
- * 3. Platform-specific npm package (lean-spec-darwin-x64, etc.)
+ * 3. Platform-specific npm package (harnspec-darwin-x64, etc.)
  * 4. Local binaries directory (fallback)
  */
 
@@ -24,7 +24,7 @@ const __dirname = dirname(__filename);
 
 // Debug mode - enable with LEANSPEC_DEBUG=1
 const DEBUG = process.env.LEANSPEC_DEBUG === '1';
-const debug = (...args) => DEBUG && console.error('[lean-spec debug]', ...args);
+const debug = (...args) => DEBUG && console.error('[harnspec debug]', ...args);
 
 // Platform detection mapping
 const PLATFORM_MAP = {
@@ -90,9 +90,9 @@ function isExecutableBinary(filePath, platform) {
 function getBinaryPath() {
   const platform = process.platform;
   const arch = process.arch;
-  
+
   debug('Platform detection:', { platform, arch });
-  
+
   const platformKey = PLATFORM_MAP[platform]?.[arch];
   if (!platformKey) {
     console.error(`Unsupported platform: ${platform}-${arch}`);
@@ -101,9 +101,9 @@ function getBinaryPath() {
   }
 
   const isWindows = platform === 'win32';
-  const binaryName = isWindows ? 'lean-spec.exe' : 'lean-spec';
+  const binaryName = isWindows ? 'harnspec.exe' : 'harnspec';
   const packageName = `@leanspec/cli-${platformKey}`;
-  
+
   debug('Binary info:', { platformKey, binaryName, packageName });
 
   // Try rust/target/debug directory first (for local development with `pnpm build:rust`)
@@ -165,15 +165,15 @@ function getBinaryPath() {
   console.error('');
   console.error('Detected missing or corrupted binary.');
   console.error('If you installed globally, reinstall to restore the binary:');
-  console.error('  npm uninstall -g lean-spec && npm install -g lean-spec');
+  console.error('  npm uninstall -g harnspec && npm install -g harnspec');
   console.error('');
   console.error('If your npm config omits optional dependencies, enable them and reinstall.');
   console.error('');
   console.error('To install:');
-  console.error('  npm install -g lean-spec');
+  console.error('  npm install -g harnspec');
   console.error('');
   console.error('If you installed globally, try:');
-  console.error('  npm uninstall -g lean-spec && npm install -g lean-spec');
+  console.error('  npm uninstall -g harnspec && npm install -g harnspec');
   process.exit(1);
 }
 
@@ -195,7 +195,7 @@ child.on('exit', (code) => {
 });
 
 child.on('error', (err) => {
-  console.error('Failed to start lean-spec:', err.message);
+  console.error('Failed to start harnspec:', err.message);
   debug('Spawn error:', err);
   process.exit(1);
 });

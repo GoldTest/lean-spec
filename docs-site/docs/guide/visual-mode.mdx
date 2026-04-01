@@ -40,12 +40,12 @@ Visual Mode is a local web application that provides:
 
 ## Getting Started
 
-### Method 1: Using `lean-spec ui`
+### Method 1: Using `harnspec ui`
 
 If you have the HarnSpec CLI installed:
 
 ```bash
-lean-spec ui
+harnspec ui
 ```
 
 This command will:
@@ -72,16 +72,16 @@ Both methods support the same options:
 
 ```bash
 # Custom specs directory
-lean-spec ui --specs ./my-specs
+harnspec ui --specs ./my-specs
 
 # Custom port
-lean-spec ui --port 3100
+harnspec ui --port 3100
 
 # Don't auto-open browser
-lean-spec ui --no-open
+harnspec ui --no-open
 
 # Combine options
-lean-spec ui --specs ./docs/specs --port 3100 --no-open
+harnspec ui --specs ./docs/specs --port 3100 --no-open
 ```
 
 **Available Options:**
@@ -155,7 +155,7 @@ Need to find a specific spec? The search UI updates results instantly as you typ
 
 ```mermaid
 flowchart LR
-    CLI[lean-spec ui] -- delegates --> Local[Local Next.js build]
+    CLI[harnspec ui] -- delegates --> Local[Local Next.js build]
     External[npx @HarnSpec/ui] -- downloads --> Package["@HarnSpec/ui package"]
     Local & Package --> Server[Next.js standalone server]
     Server -->|Reads specs| FS[specs/ directory]
@@ -167,7 +167,7 @@ flowchart LR
 ```mermaid
 flowchart TB
     subgraph Monorepo Dev
-        CLIDev[lean-spec ui --dev]
+        CLIDev[harnspec ui --dev]
         WebPkg[packages/web]
         CLIDev --> WebPkg --> Server1[Local Next.js server]
     end
@@ -220,11 +220,11 @@ The UI and CLI complement each other:
 
 ```bash
 # Terminal 1: Run the UI
-lean-spec ui
+harnspec ui
 
 # Terminal 2: Work with specs
-lean-spec create new-feature
-lean-spec update new-feature --status=active
+harnspec create new-feature
+harnspec update new-feature --status=active
 
 # The UI automatically reflects changes within 60 seconds
 ```
@@ -238,7 +238,7 @@ lean-spec update new-feature --status=active
 ifconfig | grep "inet " # or ipconfig on Windows
 
 # Start UI and share the URL
-lean-spec ui --port 3000
+harnspec ui --port 3000
 # Share: http://192.168.1.xxx:3000
 ```
 
@@ -265,11 +265,11 @@ The UI is great for presenting specs to stakeholders:
 **Solution**:
 ```bash
 # Explicitly specify the directory
-lean-spec ui --specs ./path/to/specs
+harnspec ui --specs ./path/to/specs
 
 # Or ensure you're in the project root
 cd /path/to/project
-lean-spec ui
+harnspec ui
 ```
 
 ### Port Already in Use
@@ -279,7 +279,7 @@ lean-spec ui
 **Solution**:
 ```bash
 # Use a different port
-lean-spec ui --port 3100
+harnspec ui --port 3100
 
 # Or stop the process using port 3000
 # On macOS/Linux:
@@ -298,7 +298,7 @@ taskkill /PID <PID> /F
 ```bash
 # Manually open: http://localhost:3000
 # Or disable auto-open and use your preferred browser
-lean-spec ui --no-open
+harnspec ui --no-open
 ```
 
 ### Outdated UI Version
@@ -357,13 +357,13 @@ npm run build
 
 ## Next Steps
 
-- **Learn More**: See [CLI Reference](/docs/reference/cli#lean-spec-ui) for all command options
+- **Learn More**: See [CLI Reference](/docs/reference/cli#harnspec-ui) for all command options
 - **UI Package**: Check out [@HarnSpec/ui](/docs/reference/ui-package) for technical details
 - **Get Started**: Read [Getting Started](/docs/guide/getting-started) to set up your first specs
 
 ## Related Documentation
 
-- [CLI Reference - `lean-spec ui` command](/docs/reference/cli#lean-spec-ui)
+- [CLI Reference - `harnspec ui` command](/docs/reference/cli#harnspec-ui)
 - [UI Package Reference](/docs/reference/ui-package)
 - [Getting Started Guide](/docs/guide/getting-started)
 - [Managing Specs](/docs/guide/usage/cli/creating-managing)

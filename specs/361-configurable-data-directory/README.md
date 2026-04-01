@@ -19,13 +19,13 @@ transitions:
 
 ## Overview
 
-The hardcoded `~/.lean-spec/` path is the biggest blocker for cloud deployment — cloud containers have ephemeral filesystems and need configurable storage paths.
+The hardcoded `~/.harnspec/` path is the biggest blocker for cloud deployment — cloud containers have ephemeral filesystems and need configurable storage paths.
 
 ## Design
 
-- Add `LEANSPEC_DATA_DIR` env var (overrides `~/.lean-spec/`)
+- Add `LEANSPEC_DATA_DIR` env var (overrides `~/.harnspec/`)
 - All paths (DB, config, sync state) resolve relative to this directory
-- Falls back to `~/.lean-spec/` when unset (backward compatible)
+- Falls back to `~/.harnspec/` when unset (backward compatible)
 - Document persistent volume mount strategy for each cloud platform
 
 ## Plan

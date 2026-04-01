@@ -7,12 +7,14 @@ Common issues encountered during CI/CD builds and how to fix them.
 ### macOS: Xcode Command Line Tools Not Found
 
 **Error:**
+
 ```
 xcrun: error: unable to find utility "metal", not a developer tool or in PATH
 ```
 
 **Solution:**
 GitHub's macOS runner includes Xcode CLT by default. If missing, add:
+
 ```yaml
 - name: Install Xcode CLT
   run: xcode-select --install
@@ -25,12 +27,14 @@ GitHub's macOS runner includes Xcode CLT by default. If missing, add:
 ### Windows: WiX Toolset Not Installed
 
 **Error:**
+
 ```
 Error: Failed to find WiX candle.exe
 ```
 
 **Solution:**
 Install WiX before building:
+
 ```yaml
 - name: Install WiX
   run: dotnet tool install --global wix
@@ -43,12 +47,14 @@ Install WiX before building:
 ### Linux: Missing System Dependencies
 
 **Error:**
+
 ```
 Package webkit2gtk-4.0 was not found in the pkg-config search path
 ```
 
 **Solution:**
 Install required system packages:
+
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
@@ -60,6 +66,7 @@ sudo apt-get install -y \
 ```
 
 **Common Missing Packages:**
+
 - `libwebkit2gtk-4.0-dev` - WebView rendering
 - `libgtk-3-dev` - GTK3 UI framework
 - `libayatana-appindicator3-dev` - System tray support
@@ -71,11 +78,13 @@ sudo apt-get install -y \
 ### Rust Compilation Errors
 
 **Error:**
+
 ```
 error: linker `cc` not found
 ```
 
 **Solution (Linux):**
+
 ```yaml
 - name: Install build essentials
   run: sudo apt-get install -y build-essential
@@ -94,12 +103,14 @@ Ensure Xcode Command Line Tools are installed (pre-installed on `macos-latest`)
 ### Slow Builds (>30 Minutes)
 
 **Symptoms:**
+
 - Builds timeout before completing
 - High CPU usage for extended periods
 
 **Solutions:**
 
 **1. Enable Caching:**
+
 ```yaml
 - uses: actions/cache@v4
   with:
@@ -112,6 +123,7 @@ Ensure Xcode Command Line Tools are installed (pre-installed on `macos-latest`)
 
 **2. Reduce Rust Debug Info:**
 Add to `packages/desktop/src-tauri/Cargo.toml`:
+
 ```toml
 [profile.release]
 strip = true           # Strip debug symbols
@@ -120,12 +132,14 @@ codegen-units = 1      # Better optimization
 ```
 
 **3. Use Incremental Builds:**
+
 ```yaml
 env:
   CARGO_INCREMENTAL: 1
 ```
 
 **4. Increase Timeout:**
+
 ```yaml
 jobs:
   build:
@@ -137,6 +151,7 @@ jobs:
 ### Cache Misses
 
 **Symptoms:**
+
 - Every build takes the same time
 - "Cache not found" in logs
 
@@ -144,6 +159,7 @@ jobs:
 
 **1. Verify Cache Keys:**
 Ensure `Cargo.lock` is committed:
+
 ```bash
 git add packages/desktop/src-tauri/Cargo.lock
 git commit -m "Add Cargo.lock for CI caching"
@@ -151,6 +167,7 @@ git commit -m "Add Cargo.lock for CI caching"
 
 **2. Check Cache Restore:**
 Add debugging:
+
 ```yaml
 - name: Cache Rust dependencies
   id: cache-cargo
@@ -173,6 +190,7 @@ Go to: `Actions` → `Caches` → Delete old caches
 ### Artifacts Not Found
 
 **Error:**
+
 ```
 Error: No files were found with the provided path
 ```
@@ -180,6 +198,7 @@ Error: No files were found with the provided path
 **Solutions:**
 
 **1. Verify Build Output Path:**
+
 ```yaml
 - name: List build artifacts
   run: |
@@ -187,6 +206,7 @@ Error: No files were found with the provided path
 ```
 
 **2. Check Platform-Specific Paths:**
+
 - macOS: `bundle/dmg/*.dmg`
 - Windows: `bundle/msi/*.msi`
 - Linux AppImage: `bundle/appimage/*.AppImage`
@@ -194,6 +214,7 @@ Error: No files were found with the provided path
 
 **3. Ensure Build Succeeds:**
 Add error handling:
+
 ```yaml
 - name: Build desktop app
   run: pnpm build:desktop || exit 1
@@ -204,10 +225,12 @@ Add error handling:
 ### Wrong Artifact Names
 
 **Symptoms:**
+
 - Artifacts named `LeanSpec Desktop_0.1.0_x64.dmg` instead of `leanspec-desktop-macos-x64-0.1.0.dmg`
 
 **Solution:**
 Rename artifacts during upload:
+
 ```yaml
 - name: Rename artifact
   run: |
@@ -217,6 +240,7 @@ Rename artifacts during upload:
 ```
 
 Or configure in `tauri.conf.json`:
+
 ```json
 {
   "package": {
@@ -232,10 +256,12 @@ Or configure in `tauri.conf.json`:
 ### macOS: App Not Signed
 
 **Symptoms:**
+
 - "LeanSpec Desktop" is damaged and can't be opened
 - Gatekeeper blocks app launch
 
 **Workaround (Testing):**
+
 ```bash
 # Right-click → Open (first time only)
 # Or disable Gatekeeper temporarily:
@@ -244,6 +270,7 @@ sudo spctl --master-disable
 
 **Permanent Solution (Future):**
 Add code signing in CI:
+
 ```yaml
 - name: Sign macOS app
   env:
@@ -263,6 +290,7 @@ Add code signing in CI:
 ```
 
 **Requirements:**
+
 - Apple Developer Program membership ($99/year)
 - Developer ID certificate
 - App-specific password for notarization
@@ -272,6 +300,7 @@ Add code signing in CI:
 ### Windows: SmartScreen Warning
 
 **Symptoms:**
+
 - "Windows protected your PC" warning
 - Users can't easily install
 
@@ -280,6 +309,7 @@ Click "More info" → "Run anyway"
 
 **Permanent Solution (Future):**
 Add code signing with EV certificate:
+
 ```yaml
 - name: Sign Windows installer
   run: |
@@ -289,6 +319,7 @@ Add code signing with EV certificate:
 ```
 
 **Requirements:**
+
 - Code signing certificate (~$300-500/year)
 - EV certificate for instant SmartScreen reputation
 
@@ -299,6 +330,7 @@ Add code signing with EV certificate:
 ### Enable Verbose Logging
 
 **Rust Build:**
+
 ```yaml
 env:
   RUST_LOG: debug
@@ -306,6 +338,7 @@ env:
 ```
 
 **Tauri Build:**
+
 ```yaml
 - name: Build with verbose output
   run: pnpm build:desktop --verbose
@@ -314,6 +347,7 @@ env:
 ### Run Builds Locally
 
 **Reproduce CI environment:**
+
 ```bash
 # Install dependencies matching CI
 rustc --version  # Should match CI Rust version
@@ -327,6 +361,7 @@ pnpm build:desktop
 ### Check Workflow Logs
 
 **Access logs:**
+
 1. Go to Actions tab
 2. Click on failed workflow run
 3. Expand build job
@@ -354,17 +389,20 @@ Click "Download log archive" for offline inspection
 ## Getting Help
 
 **Before asking for help:**
+
 1. ✅ Check this troubleshooting guide
 2. ✅ Review workflow logs (Actions tab)
 3. ✅ Try reproducing locally
 4. ✅ Search GitHub Issues
 
 **Where to get help:**
-- GitHub Issues: [codervisor/lean-spec/issues](https://github.com/codervisor/lean-spec/issues)
+
+- GitHub Issues: [codervisor/harnspec/issues](https://github.com/codervisor/harnspec/issues)
 - Tauri Discord: [discord.gg/tauri](https://discord.gg/tauri)
 - GitHub Actions Community: [community.github.com](https://github.com/orgs/community/discussions)
 
 **Provide this info:**
+
 - Operating system and version
 - Workflow run URL
 - Relevant error messages

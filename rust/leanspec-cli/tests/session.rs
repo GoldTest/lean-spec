@@ -1,8 +1,8 @@
-//! E2E Tests: session lifecycle through the lean-spec CLI
+//! E2E Tests: session lifecycle through the harnspec CLI
 //!
 //! Tests use a temporary HOME directory to isolate the session SQLite database
 //! from the real user environment.  A custom `test-echo` runner (backed by the
-//! system `echo` command) is injected via the project's `.lean-spec/runners.json`
+//! system `echo` command) is injected via the project's `.harnspec/runners.json`
 //! so that sessions complete quickly without requiring any real AI tool.
 
 mod common;
@@ -11,7 +11,7 @@ use tempfile::TempDir;
 
 /// Returns an isolated (empty) home directory as a `TempDir`.
 /// All CLI calls should pass `HOME=<tmp_home>` so that the session DB and
-/// global runner config are written there instead of the real `~/.lean-spec`.
+/// global runner config are written there instead of the real `~/.harnspec`.
 fn isolated_home() -> TempDir {
     TempDir::new().expect("Failed to create temp home dir")
 }

@@ -18,24 +18,24 @@
 
 | Action | MCP Tool | CLI Fallback |
 |--------|----------|--------------|
-| Project status | `board` | `lean-spec board` |
-| List specs | `list` | `lean-spec list` |
-| Search specs | `search` | `lean-spec search "query"` |
-| View spec | `view` | `lean-spec view <spec>` |
-| Create spec | `create` | `lean-spec create <name>` |
-| Update spec | `update` | `lean-spec update <spec> --status <status>` |
-| Link specs | `link` | `lean-spec link <spec> --depends-on <other>` |
-| Unlink specs | `unlink` | `lean-spec unlink <spec> --depends-on <other>` |
-| Dependencies | `deps` | `lean-spec deps <spec>` |
-| Token count | `tokens` | `lean-spec tokens <spec>` |
-| Validate specs | `validate` | `lean-spec validate` |
+| Project status | `board` | `harnspec board` |
+| List specs | `list` | `harnspec list` |
+| Search specs | `search` | `harnspec search "query"` |
+| View spec | `view` | `harnspec view <spec>` |
+| Create spec | `create` | `harnspec create <name>` |
+| Update spec | `update` | `harnspec update <spec> --status <status>` |
+| Link specs | `link` | `harnspec link <spec> --depends-on <other>` |
+| Unlink specs | `unlink` | `harnspec unlink <spec> --depends-on <other>` |
+| Dependencies | `deps` | `harnspec deps <spec>` |
+| Token count | `tokens` | `harnspec tokens <spec>` |
+| Validate specs | `validate` | `harnspec validate` |
 
 ## ⚠️ Core Rules
 
 | Rule | Details |
 |------|---------|
 | **NEVER edit frontmatter manually** | Use `update`, `link`, `unlink` for: `status`, `priority`, `tags`, `assignee`, `transitions`, timestamps, `depends_on` |
-| **ALWAYS link spec references** | Content mentions another spec → `lean-spec link <spec> --depends-on <other>` |
+| **ALWAYS link spec references** | Content mentions another spec → `harnspec link <spec> --depends-on <other>` |
 | **Track status transitions** | `planned` → `in-progress` (before coding) → `complete` (after done) |
 | **Keep specs current** | Document progress, decisions, and learnings as work happens. Obsolete specs mislead both humans and AI |
 | **No nested code blocks** | Use indentation instead |
@@ -63,11 +63,13 @@ AFTER:  document completion → update status to complete
 ## Spec Dependencies
 
 Use `depends_on` to express blocking relationships between specs:
+
 - **`depends_on`** = True blocker, work order matters, directional (A depends on B)
 
 Link dependencies when one spec builds on another:
+
 ```bash
-lean-spec link <spec> --depends-on <other-spec>
+harnspec link <spec> --depends-on <other-spec>
 ```
 
 ## When to Use Specs
@@ -90,12 +92,14 @@ lean-spec link <spec> --depends-on <other-spec>
 ## Quality Validation
 
 Before completing work, validate spec quality:
+
 ```bash
-lean-spec validate              # Check structure and quality
-lean-spec validate --check-deps # Verify dependency alignment
+harnspec validate              # Check structure and quality
+harnspec validate --check-deps # Verify dependency alignment
 ```
 
 Validation checks:
+
 - Missing required sections
 - Excessive length (>400 lines)
 - Content/frontmatter dependency misalignment

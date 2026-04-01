@@ -17,7 +17,7 @@ created_at: '2026-03-20T08:46:00.000000+00:00'
 
 ## Overview
 
-The initial TUI (`lean-spec tui`) provides a working foundation but falls short of the quality bar set by the web UI and tools like lazygit or Claude Code. This spec tracks targeted UX improvements to make the TUI feel first-class: responsive layout, mouse support, readable markdown rendering, and web UI parity for key interactions.
+The initial TUI (`harnspec tui`) provides a working foundation but falls short of the quality bar set by the web UI and tools like lazygit or Claude Code. This spec tracks targeted UX improvements to make the TUI feel first-class: responsive layout, mouse support, readable markdown rendering, and web UI parity for key interactions.
 
 ## Problems
 

@@ -18,7 +18,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-17
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -33,7 +33,7 @@ The docs site's spec-detail experience currently blocks reviewers from scanning 
 4. **Hide HTML comments**: preprocess markdown AST to drop `<!-- ... -->` nodes before rendering to stop internal guidance text from leaking.
 5. **Accurate updated field**: surface `updated_at` from spec frontmatter, falling back to git modified time when absent, and ensure the detail query feeds the value through the API contract.
 6. **Icon-less sidebar rows**: simplify the nav list item template to text-only to reduce noise and reclaim horizontal space for long titles.
-7. **Dependencies visualization**: embed a compact relationship widget (start with badges showing `depends_on` and `related`; stretch goal is mini graph) so readers can see blockers without opening `lean-spec deps`.
+7. **Dependencies visualization**: embed a compact relationship widget (start with badges showing `depends_on` and `related`; stretch goal is mini graph) so readers can see blockers without opening `harnspec deps`.
 
 ## Plan
 

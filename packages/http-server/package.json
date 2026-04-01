@@ -21,12 +21,12 @@
   "license": "MIT AND Commons-Clause-1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git",
+    "url": "https://github.com/codervisor/harnspec.git",
     "directory": "packages/http-server"
   },
-  "homepage": "https://lean-spec.dev",
+  "homepage": "https://harnspec.dev",
   "bugs": {
-    "url": "https://github.com/codervisor/lean-spec/issues"
+    "url": "https://github.com/codervisor/harnspec/issues"
   },
   "files": [
     "bin/",

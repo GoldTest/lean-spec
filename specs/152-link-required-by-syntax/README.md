@@ -24,16 +24,16 @@ Add a `requiredBy` parameter to the link command/tool as syntactic sugar for rev
 
 ```bash
 # Current: To say "151 is required by 148, 098, 146"
-lean-spec link 148 --depends-on 151
-lean-spec link 098 --depends-on 151
-lean-spec link 146 --depends-on 151
+harnspec link 148 --depends-on 151
+harnspec link 098 --depends-on 151
+harnspec link 146 --depends-on 151
 ```
 
 With `requiredBy`, express this naturally from the source spec:
 
 ```bash
 # Proposed: Single command from source spec
-lean-spec link 151 --required-by 148,098,146
+harnspec link 151 --required-by 148,098,146
 ```
 
 ## Design
@@ -41,12 +41,14 @@ lean-spec link 151 --required-by 148,098,146
 ### Parameter Addition
 
 **CLI:**
+
 ```bash
-lean-spec link <spec> --depends-on <specs>    # Existing
-lean-spec link <spec> --required-by <specs>   # New
+harnspec link <spec> --depends-on <specs>    # Existing
+harnspec link <spec> --required-by <specs>   # New
 ```
 
 **MCP Tool:**
+
 ```typescript
 // Current schema
 {
@@ -91,7 +93,7 @@ if (requiredBy) {
 
 ## Test
 
-- [ ] `lean-spec link 151 --required-by 148` adds 151 to 148's depends_on
+- [ ] `harnspec link 151 --required-by 148` adds 151 to 148's depends_on
 - [ ] Multiple targets work: `--required-by 148,098,146`
 - [ ] Can combine: `--depends-on 109 --required-by 148`
 - [ ] Circular dependency detected and rejected
@@ -106,7 +108,8 @@ When creating a foundational spec (like 151-multi-project-architecture-refactori
 
 ### Alternative Considered
 
-**Separate command**: `lean-spec link-reverse 151 148,098`
+**Separate command**: `harnspec link-reverse 151 148,098`
+
 - Rejected: Adds command proliferation, `--required-by` is clearer
 
 ### Naming

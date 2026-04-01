@@ -18,7 +18,7 @@ updated_at: 2026-03-10T07:43:12.964449221Z
 
 ## Overview
 
-Provide full agent skills lifecycle management across CLI, MCP, and UI — supporting both **project-scoped** and **user-scoped** skills. Today `lean-spec skill` wraps `npx skills` for install/update/list of the bundled `leanspec-sdd` skill, but there is no way to:
+Provide full agent skills lifecycle management across CLI, MCP, and UI — supporting both **project-scoped** and **user-scoped** skills. Today `harnspec skill` wraps `npx skills` for install/update/list of the bundled `leanspec-sdd` skill, but there is no way to:
 
 1. **Create** custom skills from templates (like the VS Code agent-customization / skill-creator pattern)
 2. **Remove** installed skills
@@ -38,30 +38,30 @@ This spec adds a comprehensive skill management subsystem across all three inter
 
 ## Requirements
 
-### CLI: `lean-spec skill` Subcommands
+### CLI: `harnspec skill` Subcommands
 
 #### Skill Listing & Inspection
 
-- [ ] `lean-spec skill list` — show installed skills with scope indicator (project/user), tool target, and version
-- [ ] `lean-spec skill list --scope project` — filter to project-scoped skills only
-- [ ] `lean-spec skill list --scope user` — filter to user-scoped skills only
-- [ ] `lean-spec skill view <name>` — display SKILL.md content and metadata for an installed skill
-- [ ] `lean-spec skill info <name>` — show metadata summary (name, description, scope, path, tool targets, version)
+- [ ] `harnspec skill list` — show installed skills with scope indicator (project/user), tool target, and version
+- [ ] `harnspec skill list --scope project` — filter to project-scoped skills only
+- [ ] `harnspec skill list --scope user` — filter to user-scoped skills only
+- [ ] `harnspec skill view <name>` — display SKILL.md content and metadata for an installed skill
+- [ ] `harnspec skill info <name>` — show metadata summary (name, description, scope, path, tool targets, version)
 
 #### Skill Installation & Removal
 
-- [ ] `lean-spec skill install` — current behavior (install leanspec-sdd via skills.sh)
-- [ ] `lean-spec skill install <repo>` — install skill(s) from a GitHub repo via skills.sh
-- [ ] `lean-spec skill install --scope user` — install to user-level skills directory
-- [ ] `lean-spec skill install --scope project` — install to project-level skills directory (default)
-- [ ] `lean-spec skill remove <name>` — remove an installed skill (with confirmation)
-- [ ] `lean-spec skill remove <name> --scope user` — remove from user-level only
-- [ ] `lean-spec skill update` — update all installed skills (current behavior)
-- [ ] `lean-spec skill update <name>` — update a specific skill
+- [ ] `harnspec skill install` — current behavior (install leanspec-sdd via skills.sh)
+- [ ] `harnspec skill install <repo>` — install skill(s) from a GitHub repo via skills.sh
+- [ ] `harnspec skill install --scope user` — install to user-level skills directory
+- [ ] `harnspec skill install --scope project` — install to project-level skills directory (default)
+- [ ] `harnspec skill remove <name>` — remove an installed skill (with confirmation)
+- [ ] `harnspec skill remove <name> --scope user` — remove from user-level only
+- [ ] `harnspec skill update` — update all installed skills (current behavior)
+- [ ] `harnspec skill update <name>` — update a specific skill
 
 #### Skill Creation (Skill-Creator Pattern)
 
-- [ ] `lean-spec skill create <name>` — scaffold a new custom skill from template
+- [ ] `harnspec skill create <name>` — scaffold a new custom skill from template
 - [ ] Interactive prompts: name, description, trigger keywords, tool targets
 - [ ] Generate SKILL.md with proper frontmatter and section scaffolding
 - [ ] Generate optional `references/` directory with placeholder files
@@ -113,6 +113,7 @@ This spec adds a comprehensive skill management subsystem across all three inter
 ### Skill Resolution Order
 
 When resolving a skill by name:
+
 1. Project-scoped skills (`.agents/skills/`, tool-specific project dirs)
 2. User-scoped skills (`~/.agents/skills/`, tool-specific user dirs)
 3. Project scope overrides user scope if same skill exists in both
@@ -129,6 +130,7 @@ When resolving a skill by name:
 ```
 
 **Generated SKILL.md (minimal template):**
+
 ```markdown
 ---
 name: <skill-name>
@@ -180,15 +182,15 @@ packages/ui/
 
 ## Acceptance Criteria
 
-- [ ] `lean-spec skill list` shows all skills with scope and tool info
-- [ ] `lean-spec skill create my-skill` scaffolds a new skill with valid SKILL.md
-- [ ] `lean-spec skill remove <name>` removes a skill with confirmation
-- [ ] `lean-spec skill view <name>` displays skill content
+- [ ] `harnspec skill list` shows all skills with scope and tool info
+- [ ] `harnspec skill create my-skill` scaffolds a new skill with valid SKILL.md
+- [ ] `harnspec skill remove <name>` removes a skill with confirmation
+- [ ] `harnspec skill view <name>` displays skill content
 - [ ] Project vs user scope works correctly for all operations
 - [ ] MCP tools expose equivalent functionality to CLI
 - [ ] UI page lists skills with install/remove/create actions
 - [ ] Custom-created skills are discoverable by AI tools (placed in correct directory)
-- [ ] Existing `lean-spec skill install/update` behavior preserved (backward compatible)
+- [ ] Existing `harnspec skill install/update` behavior preserved (backward compatible)
 
 ## Dependencies
 

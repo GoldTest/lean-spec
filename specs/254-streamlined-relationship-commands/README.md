@@ -30,17 +30,19 @@ transitions:
 LeanSpec relationship management has evolved organically across multiple specs (076, 085, 099, 250), resulting in a fragmented command/tool landscape:
 
 **Current CLI Commands:**
+
 | Command                                        | Purpose                | Status  |
 | ---------------------------------------------- | ---------------------- | ------- |
-| `lean-spec deps <spec>`                        | View dependencies      | ✅ Works |
-| `lean-spec deps <spec> --complete`             | View all relationships | ✅ Works |
-| `lean-spec link <spec> --depends-on <other>`   | Add dependency         | ✅ Works |
-| `lean-spec unlink <spec> --depends-on <other>` | Remove dependency      | ✅ Works |
-| `lean-spec set-parent <spec> <parent>`         | Set parent             | ✅ Works |
-| `lean-spec list --hierarchy`                   | Hierarchy tree view    | ✅ Works |
-| `lean-spec children <spec>`                    | List children          | ✅ Works |
+| `harnspec deps <spec>`                        | View dependencies      | ✅ Works |
+| `harnspec deps <spec> --complete`             | View all relationships | ✅ Works |
+| `harnspec link <spec> --depends-on <other>`   | Add dependency         | ✅ Works |
+| `harnspec unlink <spec> --depends-on <other>` | Remove dependency      | ✅ Works |
+| `harnspec set-parent <spec> <parent>`         | Set parent             | ✅ Works |
+| `harnspec list --hierarchy`                   | Hierarchy tree view    | ✅ Works |
+| `harnspec children <spec>`                    | List children          | ✅ Works |
 
 **Current MCP Tools:**
+
 | Tool             | Purpose                  |
 | ---------------- | ------------------------ |
 | `deps`           | View dependencies        |
@@ -61,12 +63,14 @@ LeanSpec relationship management has evolved organically across multiple specs (
 ### Solution
 
 Design a **streamlined relationship interface** that:
+
 - Unifies hierarchy and dependencies under single mental model
 - Provides intuitive command structure with consistent patterns
 - Reduces cognitive load for both humans and AI agents
 - **Full migration** to new commands with deprecation notices on old ones
 
 **Key insight**: All relationships are just edges in a graph. The distinction is:
+
 - `parent/children` = **organizational** edges (hierarchy)
 - `depends_on/required_by` = **technical** edges (blocking)
 
@@ -76,17 +80,17 @@ Design a **streamlined relationship interface** that:
 
 ```bash
 # View all relationships
-lean-spec rel <spec>              # Shows parent, children, deps, required-by
+harnspec rel <spec>              # Shows parent, children, deps, required-by
 
 # Add relationships
-lean-spec rel add <spec> --parent <umbrella>
-lean-spec rel add <spec> --depends-on <other>
-lean-spec rel add <spec> --child <other>        # Sets parent on <other>
+harnspec rel add <spec> --parent <umbrella>
+harnspec rel add <spec> --depends-on <other>
+harnspec rel add <spec> --child <other>        # Sets parent on <other>
 
 # Remove relationships  
-lean-spec rel rm <spec> --parent
-lean-spec rel rm <spec> --depends-on <other>
-lean-spec rel rm <spec> --child <other>         # Clears parent on <other>
+harnspec rel rm <spec> --parent
+harnspec rel rm <spec> --depends-on <other>
+harnspec rel rm <spec> --child <other>         # Clears parent on <other>
 ```
 
 ### MCP: Single unified tool (Option A) ✅
@@ -108,9 +112,10 @@ lean-spec rel rm <spec> --child <other>         # Clears parent on <other>
 ### Migration: Full migration with deprecation notice ✅
 
 Old commands/tools will show deprecation warnings but continue to work for 2 minor versions:
-- `lean-spec link/unlink` → "Deprecated: use `lean-spec rel add/rm`"
-- `lean-spec set-parent` → "Deprecated: use `lean-spec rel add --parent`"
-- `lean-spec deps` → "Deprecated: use `lean-spec rel`"
+
+- `harnspec link/unlink` → "Deprecated: use `harnspec rel add/rm`"
+- `harnspec set-parent` → "Deprecated: use `harnspec rel add --parent`"
+- `harnspec deps` → "Deprecated: use `harnspec rel`"
 - MCP `link`, `unlink`, `set_parent`, `deps`, `list_children`, `list_umbrellas` → show deprecation in response
 
 ## Design
@@ -131,10 +136,10 @@ Edge Types:
 
 ```bash
 # Subcommands
-lean-spec rel <spec>              # Default: view relationships
-lean-spec rel view <spec>         # Explicit view
-lean-spec rel add <spec> <flags>  # Add relationship
-lean-spec rel rm <spec> <flags>   # Remove relationship
+harnspec rel <spec>              # Default: view relationships
+harnspec rel view <spec>         # Explicit view
+harnspec rel add <spec> <flags>  # Add relationship
+harnspec rel rm <spec> <flags>   # Remove relationship
 
 # Flags for add/rm
 --parent <spec>      # Set/clear parent relationship
@@ -142,7 +147,7 @@ lean-spec rel rm <spec> <flags>   # Remove relationship
 --depends-on <spec>  # Add/remove dependency
 
 # Multiple at once
-lean-spec rel add 254 --parent 250 --depends-on 085
+harnspec rel add 254 --parent 250 --depends-on 085
 ```
 
 ### MCP `relationships` Tool
@@ -168,6 +173,7 @@ lean-spec rel add 254 --parent 250 --depends-on 085
 ### Output Format
 
 **View output (CLI and MCP):**
+
 ```
 # Relationships for #254 Streamlined Relationship Commands
 
@@ -185,24 +191,28 @@ lean-spec rel add 254 --parent 250 --depends-on 085
 ## Plan
 
 ### Phase 1: Core Implementation
+
 - [x] Create `rel` command with view/add/rm subcommands
 - [x] Create unified `relationships` MCP tool
 - [x] Add deprecation warnings to old commands
 - [x] Update command registry
 
 ### Phase 2: Deprecation Setup
+
 - [x] Add deprecation util function
 - [x] Wire deprecation to `link`, `unlink`, `set-parent`, `deps`, `children`
 - [x] Wire deprecation to MCP tools: `link`, `unlink`, `set_parent`, `deps`, `list_children`, `list_umbrellas`
 - [x] Log deprecation warnings to stderr (CLI) / response prefix (MCP)
 
 ### Phase 3: Documentation
+
 - [x] Create "Spec Relationships" reference doc
 - [x] Update CLI help with `rel` examples
 - [x] Update MCP tool descriptions
 - [x] Update AGENTS.md with new commands
 
 ### Phase 4: SKILL Update
+
 - [x] Update leanspec-sdd SKILL with `rel` command
 - [x] Replace all references to old commands
 - [x] Add relationship decision guide
@@ -237,16 +247,19 @@ lean-spec rel add 254 --parent 250 --depends-on 085
 ### When to Use What
 
 **Use `parent`/`children` when:**
+
 - Grouping related work under umbrella spec
 - Creating feature sub-specs
 - Organizing by initiative/epic
 
 **Use `depends_on`/`required_by` when:**
+
 - Spec A cannot complete until Spec B is done
 - Technical dependency exists
 - Blocking relationship
 
 **Both can be used:**
+
 - A spec can have parent AND dependencies
 - Example: #244 (Session UI) has parent #168 AND depends on #239
 

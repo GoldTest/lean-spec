@@ -513,7 +513,7 @@ impl App {
     pub fn prefs_path(project_id: &str) -> Option<std::path::PathBuf> {
         let home = std::env::var("HOME").ok()?;
         let dir = std::path::PathBuf::from(home)
-            .join(".lean-spec")
+            .join(".harnspec")
             .join("tui-prefs");
         std::fs::create_dir_all(&dir).ok()?;
         Some(dir.join(format!("{}.json", project_id)))

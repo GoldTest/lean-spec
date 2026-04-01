@@ -13,7 +13,7 @@ Learn how to discover and navigate specs using search, list commands, and the MC
 
 ```bash
 # Show all specs
-lean-spec list
+harnspec list
 ```
 
 Output:
@@ -30,33 +30,33 @@ Output:
 
 ```bash
 # Show only in-progress specs
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # Show planned specs
-lean-spec list --status planned
+harnspec list --status planned
 
 # Show completed specs
-lean-spec list --status complete
+harnspec list --status complete
 ```
 
 ### Filter by Tag
 
 ```bash
 # Show specs with specific tag
-lean-spec list --tag api
+harnspec list --tag api
 
 # Show specs with multiple tags
-lean-spec list --tag api --tag backend
+harnspec list --tag api --tag backend
 ```
 
 ### Filter by Priority
 
 ```bash
 # High priority specs
-lean-spec list --priority high
+harnspec list --priority high
 
 # Low priority specs
-lean-spec list --priority low
+harnspec list --priority low
 ```
 
 ## Search by Content
@@ -65,7 +65,7 @@ lean-spec list --priority low
 
 ```bash
 # Search all spec content
-lean-spec search "authentication"
+harnspec search "authentication"
 ```
 
 Searches across:
@@ -78,28 +78,28 @@ Searches across:
 
 ```bash
 # Search in specific status
-lean-spec search "API" --status in-progress
+harnspec search "API" --status in-progress
 
 # Search with tag filter
-lean-spec search "cache" --tag performance
+harnspec search "cache" --tag performance
 
 # Combine multiple filters
-lean-spec search "refactor" --status planned --tag backend --priority high
+harnspec search "refactor" --status planned --tag backend --priority high
 ```
 
 ### Case-Insensitive Search
 
 Search is case-insensitive by default:
 ```bash
-lean-spec search "api"      # Matches "API", "api", "Api"
-lean-spec search "JWT"      # Matches "jwt", "JWT", "Jwt"
+harnspec search "api"      # Matches "API", "api", "Api"
+harnspec search "JWT"      # Matches "jwt", "JWT", "Jwt"
 ```
 
 ## Dependency Navigation
 
 ```bash
 # Show dependencies for a spec
-lean-spec deps 042
+harnspec deps 042
 ```
 
 Output:
@@ -130,25 +130,25 @@ Navigate relationships:
 
 ```bash
 # High-priority backend work that's planned
-lean-spec list --priority high --tag backend --status planned
+harnspec list --priority high --tag backend --status planned
 
 # In-progress API work
-lean-spec list --status in-progress --tag api
+harnspec list --status in-progress --tag api
 
 # Completed security work
-lean-spec list --status complete --tag security
+harnspec list --status complete --tag security
 ```
 
 ### Exclude Archived
 
-By default, archived specs are excluded from `lean-spec list`:
+By default, archived specs are excluded from `harnspec list`:
 
 ```bash
 # Default: excludes archived
-lean-spec list
+harnspec list
 
 # Include archived
-lean-spec list --archived
+harnspec list --archived
 ```
 
 ## Common Search Patterns
@@ -157,17 +157,17 @@ lean-spec list --archived
 
 ```bash
 # What's ready to work on?
-lean-spec list --status planned --priority high
+harnspec list --status planned --priority high
 ```
 
 ### Check Active Work
 
 ```bash
 # What's in progress?
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # Who's working on what?
-lean-spec list --status in-progress
+harnspec list --status in-progress
 # (shows assignee if set)
 ```
 
@@ -175,29 +175,29 @@ lean-spec list --status in-progress
 
 ```bash
 # Recently completed
-lean-spec list --status complete
+harnspec list --status complete
 
 # Completed work by tag
-lean-spec list --status complete --tag api
+harnspec list --status complete --tag api
 ```
 
 ### Check Dependencies
 
 ```bash
 # What's ready to start?
-lean-spec list --status planned
+harnspec list --status planned
 
 # Check if dependencies are met
-lean-spec deps <spec-id>
+harnspec deps <spec-id>
 # (verify required specs are complete)
 ```
 
 ## Navigation Tips
 
 **DO:**
-- ✅ Use `lean-spec search` for content-based discovery
-- ✅ Use `lean-spec list` with filters for focused views
-- ✅ Use `lean-spec deps` to understand relationships
+- ✅ Use `harnspec search` for content-based discovery
+- ✅ Use `harnspec list` with filters for focused views
+- ✅ Use `harnspec deps` to understand relationships
 - ✅ Check [Board & Stats](/docs/guide/usage/cli/project-management#board-stats) for visual overview
 
 **DON'T:**
@@ -211,33 +211,33 @@ lean-spec deps <spec-id>
 
 ```bash
 # 1. What's the project state?
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # 2. What should I work on?
-lean-spec list --status planned --priority high
+harnspec list --status planned --priority high
 
 # 3. What's this spec about?
-lean-spec view <spec-id>
+harnspec view <spec-id>
 
 # 4. Start working
-lean-spec update <spec-id> --status in-progress
-lean-spec open <spec-id>
+harnspec update <spec-id> --status in-progress
+harnspec open <spec-id>
 ```
 
 ### Research Flow
 
 ```bash
 # 1. Find relevant specs
-lean-spec search "authentication"
+harnspec search "authentication"
 
 # 2. View promising spec
-lean-spec view 042
+harnspec view 042
 
 # 3. Check related work
-lean-spec deps 042
+harnspec deps 042
 
 # 4. Read related spec
-lean-spec view 041
+harnspec view 041
 ```
 
 ## Next Steps

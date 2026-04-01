@@ -24,7 +24,7 @@ completed: '2025-11-13'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-12 · **Tags**: web, ux, enhancement, v0.3.0-launch
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development  
 **Related**: Spec 035 (live-specs-showcase)
 
@@ -35,6 +35,7 @@ This spec captures the remaining UX/UI enhancements and missing features for the
 **Dependency**: This spec **depends on** spec 035 Phase 1 MVP completion (~80% done). Work cannot start until foundational UI/UX is stable.
 
 **Why now?**
+
 - Phase 1 MVP (spec 035) is nearly complete with critical fixes applied
 - Users need these features for a complete, professional experience
 - Several items are blockers for broader adoption (quick search, proper navigation)
@@ -42,6 +43,7 @@ This spec captures the remaining UX/UI enhancements and missing features for the
 - Can run in parallel with spec 035 Phase 2 (GitHub integration)
 
 **What's included?**
+
 - Stats page completion
 - Spec detail page redesign (sidebar, sticky elements, better metadata display)
 - Sub-spec navigation improvements
@@ -61,6 +63,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Current State**: Basic stats cards exist but many sections are incomplete or missing.
 
 **Required Enhancements:**
+
 - Full statistics dashboard with all metrics from API
 - Trend charts/sparklines showing progress over time
 - Filtering by date range, status, priority
@@ -69,6 +72,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Interactive tooltips on hover
 
 **Technical Approach:**
+
 - Use recharts or similar charting library for visualizations
 - Implement date range picker component
 - Add CSV/PDF export utilities
@@ -77,6 +81,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### 2. Spec Detail Page Redesign
 
 **Current Issues:**
+
 - No sidebar for quick navigation between specs
 - Metadata area is not sticky
 - Header doesn't stick on scroll
@@ -85,6 +90,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Required Changes:**
 
 **a) Sidebar Navigation**
+
 - Left sidebar (collapsible) showing list of all specs
 - Quick navigation to any spec without going back to list
 - Search/filter within sidebar
@@ -92,16 +98,19 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Sticky positioning
 
 **b) Sticky Left Info Panel**
+
 - Metadata area (timeline, status, priority, tags) should stick on scroll
 - Keep important info visible as user reads long spec
 - Right side content scrolls normally
 
 **c) Sticky Header**
+
 - Spec title and key actions stay visible on scroll
 - Breadcrumb navigation sticky
 - Theme toggle always accessible
 
 **d) Improved Frontmatter Display**
+
 - Better visual hierarchy for metadata
 - Icons for each field (already implemented for some)
 - Cleaner layout using cards/sections
@@ -110,11 +119,13 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### 3. Sub-Spec Navigation Improvements
 
 **Current Issues:**
+
 - Tab design doesn't clearly indicate sub-spec structure
 - No clear visual hierarchy
 - Confusing to understand relationship between main spec and sub-specs
 
 **Required Changes:**
+
 - Redesign tab navigation to show clear hierarchy
 - Add visual indicators for sub-spec types (icons, colors)
 - Show overview tab that lists all sub-specs with descriptions
@@ -127,6 +138,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Feature**: Global keyboard-triggered search
 
 **Requirements:**
+
 - Keyboard shortcut: `Cmd+K` (Mac) / `Ctrl+K` (Windows/Linux)
 - Fuzzy search across all specs (title, content, tags)
 - Recent searches stored locally
@@ -136,6 +148,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Responsive design
 
 **Technical Approach:**
+
 - Use Radix UI Dialog component
 - Implement fuzzy search with fuse.js or similar
 - Store recent searches in localStorage
@@ -147,6 +160,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Current State**: No loading indicators for async content
 
 **Required:**
+
 - Skeleton loaders for all pages during data fetch
 - Suspense boundaries at route level
 - Loading spinners for actions (create, update, delete)
@@ -158,6 +172,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Smooth transitions between loading and loaded states
 
 **Technical Approach:**
+
 - Create reusable skeleton components
 - Use React Suspense with Server Components
 - Add loading.tsx files for Next.js route segments
@@ -168,6 +183,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Current State**: Basic empty messages
 
 **Required:**
+
 - More helpful messaging with context
 - Actionable next steps (CTAs)
 - Icons/illustrations for visual interest
@@ -183,6 +199,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Feature**: User feedback system for actions
 
 **Requirements:**
+
 - Toast notifications for:
   - Successful actions (create, update, delete)
   - Error messages
@@ -195,6 +212,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Accessible (screen reader support)
 
 **Technical Approach:**
+
 - Use sonner or react-hot-toast library
 - Consistent styling with design system
 - Different variants (success, error, warning, info)
@@ -205,6 +223,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 **Current State**: No logo or favicon
 
 **Required:**
+
 - Logo design for LeanSpec brand
 - Multiple sizes for different uses:
   - Header logo (with and without text)
@@ -215,6 +234,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Dark/light mode variants if needed
 
 **Technical Approach:**
+
 - Work with designer or use AI tools to generate logo
 - Export in all required formats
 - Add to Next.js public directory
@@ -224,6 +244,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### 9. Accessibility Improvements
 
 **Requirements:**
+
 - WCAG 2.1 AA compliance
 - Keyboard navigation for all interactive elements
 - Focus indicators visible and clear
@@ -234,6 +255,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - Form accessibility (labels, error messages)
 
 **Technical Approach:**
+
 - Run Lighthouse accessibility audit
 - Use axe DevTools for testing
 - Test with keyboard only
@@ -245,6 +267,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### Phase 2A: Core UX Improvements (Week 1-2)
 
 **Week 1: Navigation & Search**
+
 - [ ] Implement quick search modal (Cmd+K)
 - [ ] Add sidebar navigation to spec detail page
 - [ ] Make header sticky on scroll
@@ -252,6 +275,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - [ ] Test keyboard navigation flow
 
 **Week 2: Spec Detail Enhancements**
+
 - [ ] Redesign frontmatter display with better layout
 - [ ] Make left info panel sticky
 - [ ] Improve sub-spec navigation design
@@ -261,6 +285,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### Phase 2B: Polish & Feedback (Week 3)
 
 **Week 3: Loading & Empty States**
+
 - [ ] Create skeleton loader components
 - [ ] Add Suspense boundaries to all routes
 - [ ] Implement enhanced empty states
@@ -270,6 +295,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### Phase 2C: Stats & Branding (Week 4)
 
 **Week 4: Completion**
+
 - [ ] Complete stats page with charts
 - [ ] Add logo and favicon
 - [ ] Run accessibility audit
@@ -280,6 +306,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ## Test
 
 ### Functional Testing
+
 - [ ] Quick search (Cmd+K) works across all pages
 - [ ] Search results are accurate and relevant
 - [ ] Sidebar navigation shows all specs and highlights current
@@ -292,6 +319,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - [ ] Logo and favicon display correctly
 
 ### Accessibility Testing
+
 - [ ] All interactive elements keyboard accessible
 - [ ] Focus indicators visible on all elements
 - [ ] Screen reader announces all important content
@@ -301,6 +329,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - [ ] Forms have proper labels and error messages
 
 ### Browser Testing
+
 - [ ] Chrome/Edge (latest)
 - [ ] Firefox (latest)
 - [ ] Safari (latest)
@@ -308,6 +337,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 - [ ] Mobile Chrome (Android)
 
 ### Performance Testing
+
 - [ ] Page load times remain under 2s
 - [ ] Search responds instantly (<100ms)
 - [ ] Smooth animations (60fps)
@@ -317,6 +347,7 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ## Notes
 
 ### Dependencies
+
 - Related to spec 035 (live-specs-showcase)
 - Requires completion of Phase 1 MVP
 - Some features may require design input/review
@@ -324,29 +355,34 @@ See **[DESIGN.md](./DESIGN.md)** for comprehensive UI/UX design system specifica
 ### Design Decisions
 
 **Why Cmd+K for search?**
+
 - Industry standard (GitHub, Linear, Notion, etc.)
 - Discoverable and easy to remember
 - Doesn't conflict with browser shortcuts
 
 **Why toast notifications?**
+
 - Non-intrusive
 - Auto-dismiss reduces clutter
 - Standard pattern users expect
 - Better than modal dialogs for simple feedback
 
 **Why skeleton loaders?**
+
 - Research shows skeletons reduce perceived wait time
 - Better UX than spinners alone
 - Makes loading feel faster
 - Indicates layout structure
 
 ### Open Questions
+
 - [ ] Should logo be designed in-house or contracted?
 - [ ] Do we need a design review for sub-spec navigation redesign?
 - [ ] Should stats page support custom date ranges or predefined only?
 - [ ] What's the budget for professional logo design?
 
 ### Future Enhancements (Post Phase 2)
+
 - Collaborative features (comments, annotations)
 - Version history visualization
 - Advanced search with filters

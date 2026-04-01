@@ -17,14 +17,14 @@ This tutorial assumes you're comfortable with basic HarnSpec workflows. If you'r
 
 ## Real-World Example
 
-Want to see these tools in action? Check out the **[HarnSpec project itself](https://web.lean-spec.dev)**—a live example with 100+ specs showing real dependencies, numbering conventions, and project organization.
+Want to see these tools in action? Check out the **[HarnSpec project itself](https://harnspec.gitub.io)**—a live example with 100+ specs showing real dependencies, numbering conventions, and project organization.
 
 :::tip Try It Yourself
 For the best learning experience, clone the HarnSpec repo locally and explore in visual mode:
 
 ```bash
-git clone https://github.com/codervisor/lean-spec.git
-cd lean-spec
+git clone https://github.com/codervisor/harnspec.git
+cd harnspec
 npx @HarnSpec/cli ui
 ```
 
@@ -37,11 +37,11 @@ Throughout this tutorial, we'll reference actual specs from the HarnSpec codebas
 
 HarnSpec provides five key tools for managing large projects:
 
-1. **`lean-spec board`** - Kanban view of project status
-2. **`lean-spec deps <spec>`** - Dependency analysis
-3. **`lean-spec stats`** - Project health metrics
-4. **`lean-spec list --tags <tags>`** - Filter by team/feature
-5. **`lean-spec search <query>`** - Semantic search across specs
+1. **`harnspec board`** - Kanban view of project status
+2. **`harnspec deps <spec>`** - Dependency analysis
+3. **`harnspec stats`** - Project health metrics
+4. **`harnspec list --tags <tags>`** - Filter by team/feature
+5. **`harnspec search <query>`** - Semantic search across specs
 
 Let's explore each one.
 
@@ -50,7 +50,7 @@ Let's explore each one.
 The board gives you instant visibility into what's happening across your entire project:
 
 ```bash
-lean-spec board
+harnspec board
 ```
 
 Shows all specs organized by status columns: **Planned** → **In Progress** → **Complete** → **Archived**
@@ -75,7 +75,7 @@ The board also shows project health metrics:
 Understand how specs relate before making changes:
 
 ```bash
-lean-spec deps <spec> --mode complete
+harnspec deps <spec> --mode complete
 ```
 
 Shows three types of relationships:
@@ -86,7 +86,7 @@ Shows three types of relationships:
 **Real example from HarnSpec:**
 
 ```bash
-lean-spec deps 114  # Example Projects Scaffold
+harnspec deps 114  # Example Projects Scaffold
 ```
 
 Shows:
@@ -98,7 +98,7 @@ Shows:
 Before refactoring, check the blast radius:
 
 ```bash
-lean-spec deps <spec> --mode impact
+harnspec deps <spec> --mode impact
 ```
 
 Shows:
@@ -115,7 +115,7 @@ Shows:
 Get health metrics for your entire project:
 
 ```bash
-lean-spec stats
+harnspec stats
 ```
 
 Shows:
@@ -139,13 +139,13 @@ Organize specs by team, feature area, or technology:
 
 ```bash
 # See all specs for a team
-lean-spec list --tags team-frontend
+harnspec list --tags team-frontend
 
 # See all specs for a feature area
-lean-spec list --tags documentation
+harnspec list --tags documentation
 
 # See all specs for a milestone
-lean-spec list --tags v0.3.0
+harnspec list --tags v0.3.0
 ```
 
 **Real HarnSpec tags:**
@@ -158,8 +158,8 @@ lean-spec list --tags v0.3.0
 Focus on critical work:
 
 ```bash
-lean-spec list --priority critical
-lean-spec list --priority high
+harnspec list --priority critical
+harnspec list --priority high
 ```
 
 ### By Status
@@ -167,9 +167,9 @@ lean-spec list --priority high
 Track work in specific states:
 
 ```bash
-lean-spec list --status planned      # Ready to start
-lean-spec list --status in-progress  # Currently active
-lean-spec list --status complete     # Shipped
+harnspec list --status planned      # Ready to start
+harnspec list --status in-progress  # Currently active
+harnspec list --status complete     # Shipped
 ```
 
 ## 5. Semantic Search
@@ -177,9 +177,9 @@ lean-spec list --status complete     # Shipped
 Find specs by content, not just name:
 
 ```bash
-lean-spec search "authentication"
-lean-spec search "performance optimization"
-lean-spec search "dependency graph"
+harnspec search "authentication"
+harnspec search "performance optimization"
+harnspec search "dependency graph"
 ```
 
 Search uses semantic matching—it understands context and finds relevant specs even without exact keywords.
@@ -231,10 +231,10 @@ Link specs when one blocks another:
 
 ```bash
 # Spec B depends on Spec A completing first
-lean-spec link B --depends-on A
+harnspec link B --depends-on A
 
 # Spec C depends on both A and B
-lean-spec link C --depends-on A,B
+harnspec link C --depends-on A,B
 ```
 
 ### Removing Links
@@ -242,12 +242,12 @@ lean-spec link C --depends-on A,B
 Clean up outdated dependencies:
 
 ```bash
-lean-spec unlink A --depends-on B    # Remove dependency
+harnspec unlink A --depends-on B    # Remove dependency
 ```
 
 ## Live Example: HarnSpec Web UI
 
-See all these tools in action at **[web.lean-spec.dev](https://web.lean-spec.dev)**—the HarnSpec project's own spec dashboard.
+See all these tools in action at **[harnspec.gitub.io](https://harnspec.gitub.io)**—the HarnSpec project's own spec dashboard.
 
 You'll see:
 - 100+ specs organized by status
@@ -279,34 +279,34 @@ Keep your specs healthy:
 ### Communication Patterns
 
 Use specs for async coordination:
-- Check `lean-spec deps` before starting work
-- Run `lean-spec board` in standups
-- Share `lean-spec stats` in sprint reviews
-- Use `lean-spec search` to find context before asking
+- Check `harnspec deps` before starting work
+- Run `harnspec board` in standups
+- Share `harnspec stats` in sprint reviews
+- Use `harnspec search` to find context before asking
 
 ## What You Learned
 
 You now know how to:
 
-✅ Use `lean-spec board` for project visibility  
-✅ Analyze dependencies with `lean-spec deps`  
-✅ Track health with `lean-spec stats`  
+✅ Use `harnspec board` for project visibility  
+✅ Analyze dependencies with `harnspec deps`  
+✅ Track health with `harnspec stats`  
 ✅ Filter specs by tags, priority, and status  
-✅ Search semantically with `lean-spec search`  
+✅ Search semantically with `harnspec search`  
 ✅ Organize specs with numbering and tagging conventions  
 ✅ Manage dependencies without creating bottlenecks  
 
 ## Next Steps
 
 **Apply to your project:**
-- Run `lean-spec board` in your next standup
+- Run `harnspec board` in your next standup
 - Set up a tagging convention in your README
 - Check dependencies before starting new work
-- Review `lean-spec stats` monthly for health checks
+- Review `harnspec stats` monthly for health checks
 
 **Explore advanced features:**
 - [Custom Fields](/docs/guide/usage/advanced-features/custom-fields) - Add project-specific metadata
 - [Templates](/docs/guide/usage/advanced-features/templates) - Standardize spec structure
 - [Validation](/docs/guide/usage/cli/validation) - Enforce quality standards
 
-**Need help?** Check [FAQ](/docs/faq) or [file an issue](https://github.com/codervisor/lean-spec/issues).
+**Need help?** Check [FAQ](/docs/faq) or [file an issue](https://github.com/codervisor/harnspec/issues).

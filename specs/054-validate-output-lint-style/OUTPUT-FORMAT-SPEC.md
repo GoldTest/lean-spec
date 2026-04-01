@@ -7,7 +7,7 @@
 Show each spec once with all its issues grouped together:
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 Validating 25 specs...
 
@@ -80,11 +80,13 @@ Run with --verbose to see passing specs.
 ```
 
 If only warnings:
+
 ```
 ⚠ <M> warnings (<total> specs checked, <clean> clean)
 ```
 
 If all pass:
+
 ```
 ✓ All <total> specs passed
 ```
@@ -104,19 +106,19 @@ If all pass:
 
 ```bash
 # Default: Show only issues, quiet success
-lean-spec validate
+harnspec validate
 
 # Show everything including passing specs
-lean-spec validate --verbose
+harnspec validate --verbose
 
 # Only errors, no warnings
-lean-spec validate --quiet
+harnspec validate --quiet
 
 # JSON for CI integration
-lean-spec validate --format=json
+harnspec validate --format=json
 
 # Check only line count issues
-lean-spec validate --rule=max-lines
+harnspec validate --rule=max-lines
 ```
 
 ## Severity Hierarchy
@@ -134,7 +136,7 @@ Always show errors before warnings within a file:
 Show passing specs only when requested:
 
 ```bash
-$ lean-spec validate --verbose
+$ harnspec validate --verbose
 
 # ... issues shown first ...
 

@@ -399,7 +399,7 @@ User Action                LeanSpec Desktop          agent-relay           Devlo
 
 ```
 Project Switcher:
-├── lean-spec (3 active sessions)
+├── harnspec (3 active sessions)
 │   ├── 168-orchestration → Claude (implementing)
 │   ├── 165-tauri-v2 → Testing (paused)
 │   └── 148-desktop-app → Complete
@@ -459,32 +459,32 @@ OS Notification:
 
 ```bash
 # Full lifecycle
-lean-spec create auth-redesign
-lean-spec implement auth-redesign --agent claude --guided
-lean-spec validate auth-redesign
-lean-spec complete auth-redesign
+harnspec create auth-redesign
+harnspec implement auth-redesign --agent claude --guided
+harnspec validate auth-redesign
+harnspec complete auth-redesign
 
 # Session management
-lean-spec sessions list
-lean-spec sessions show auth-redesign
-lean-spec sessions pause auth-redesign
-lean-spec sessions resume auth-redesign
-lean-spec sessions stop auth-redesign
+harnspec sessions list
+harnspec sessions show auth-redesign
+harnspec sessions pause auth-redesign
+harnspec sessions resume auth-redesign
+harnspec sessions stop auth-redesign
 
 # Validation
-lean-spec validate auth-redesign --tests --lint --types --ai-review
-lean-spec validate auth-redesign --watch  # Continuous validation
+harnspec validate auth-redesign --tests --lint --types --ai-review
+harnspec validate auth-redesign --watch  # Continuous validation
 
 # Metrics
-lean-spec stats auth-redesign  # Show implementation metrics
-lean-spec stats --all          # Project-wide metrics
+harnspec stats auth-redesign  # Show implementation metrics
+harnspec stats --all          # Project-wide metrics
 ```
 
 ### CLI Examples
 
 ```bash
 # Autonomous implementation
-$ lean-spec implement 168 --agent claude --autonomous
+$ harnspec implement 168 --agent claude --autonomous
 ✓ Started session: 168-orchestration-platform
 → Design phase... (1m 23s)
 → Implementation phase... (8m 45s)
@@ -499,7 +499,7 @@ $ lean-spec implement 168 --agent claude --autonomous
 → Updated spec status to complete
 
 # Guided implementation with pause
-$ lean-spec implement 168 --agent claude --guided
+$ harnspec implement 168 --agent claude --guided
 ✓ Started session: 168-orchestration-platform
 → Design phase... (1m 23s)
 ✓ Design phase complete
@@ -520,7 +520,7 @@ Continue to testing? [Y/n]: y
 
 ## Configuration
 
-### Desktop Config (~/.lean-spec/desktop.json)
+### Desktop Config (~/.harnspec/desktop.json)
 
 ```json
 {

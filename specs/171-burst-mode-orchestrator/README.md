@@ -29,7 +29,6 @@ transitions:
 
 > **Status**: 🗓️ Archived · **Priority**: High · **Created**: 2025-12-17 · **Tags**: ai-agents, orchestration, testing, automation, coding-pattern, quality-over-speed, ralph, superseded
 
-
 ## Vision & Objectives
 
 Build an intelligent code orchestrator based on **LeanSpec** to achieve an automated closed-loop "Spec-Driven Development" workflow.
@@ -80,11 +79,11 @@ The system uses an **Agentic Loop** architecture. It's not just code generation,
 2. **Coder:** Generates/modifies implementation code based on the Spec.
 3. **Executor (Sandbox):** A secure runtime (Node.js/Docker) that runs tests and captures `stdout/stderr`.
 4. **Critic (Verification Engine):** Analyzes test results AND verifies spec completion. Performs comprehensive validation:
-   - **Test Analysis:** Analyzes error logs and stack traces when tests fail
-   - **Spec Verification:** Even when tests pass, validates all requirements are implemented
-   - **Acceptance Criteria (AC) Check:** Ensures all ACs are met
-   - **Completeness Audit:** Prevents false positives from self-claimed "passes"
-   - **Gap Analysis:** Identifies missing functionality not covered by tests
+   * **Test Analysis:** Analyzes error logs and stack traces when tests fail
+   * **Spec Verification:** Even when tests pass, validates all requirements are implemented
+   * **Acceptance Criteria (AC) Check:** Ensures all ACs are met
+   * **Completeness Audit:** Prevents false positives from self-claimed "passes"
+   * **Gap Analysis:** Identifies missing functionality not covered by tests
 
 ### Component Interaction
 
@@ -199,26 +198,27 @@ throw new Error(`Ralph loop failed after ${maxIterations} iterations. Manual int
 **Origin**: The Ralph technique was created by Geoffrey Huntley as an autonomous AI development pattern. The name "Ralph" refers to Ralph Wiggum from The Simpsons, representing deterministic behavior in an undeterministic world. See [ghuntley.com/ralph](https://ghuntley.com/ralph/) and [frankbria/ralph-claude-code](https://github.com/frankbria/ralph-claude-code).
 
 **Traditional Workflow Problems:**
-- After AI generates code, humans manually run tests
-- After finding errors, need to manually describe issues back to AI
-- Multiple round-trips, low efficiency, unstable quality
-- False positives: "tests pass" doesn't guarantee spec completion
+* After AI generates code, humans manually run tests
+* After finding errors, need to manually describe issues back to AI
+* Multiple round-trips, low efficiency, unstable quality
+* False positives: "tests pass" doesn't guarantee spec completion
 
 **Ralph Mode Advantages:**
-- Automated PDCA cycle with no human intervention (like Ralph's `while` loop)
-- System automatically captures and analyzes errors
-- Continuous iteration until verified complete or max iterations reached
-- Critic prevents false positives by verifying spec compliance
-- Inspired by battle-tested ralph-claude-code implementation (v0.9.8, 276 passing tests)
+* Automated PDCA cycle with no human intervention (like Ralph's `while` loop)
+* System automatically captures and analyzes errors
+* Continuous iteration until verified complete or max iterations reached
+* Critic prevents false positives by verifying spec compliance
+* Inspired by battle-tested ralph-claude-code implementation (v0.9.8, 276 passing tests)
 
 ### 2. Sandbox Execution Environment
 
 **Security Requirements:**
-- Code may contain malicious instructions or infinite loops
-- Need isolated execution environment (Docker/VM)
-- Resource limits (CPU/memory/time)
+* Code may contain malicious instructions or infinite loops
+* Need isolated execution environment (Docker/VM)
+* Resource limits (CPU/memory/time)
 
 **Implementation Options:**
+
 ```yaml
 Option 1: Docker Container
   Pros: Strong isolation, cross-platform
@@ -234,8 +234,8 @@ Option 3: WebAssembly
 ```
 
 **Recommended Approach:** Hybrid mode
-- Use lightweight sandbox (VM2/Deno) for initial iterations
-- Use Docker for verification when nearing completion
+* Use lightweight sandbox (VM2/Deno) for initial iterations
+* Use Docker for verification when nearing completion
 
 ### 3. Critic Verification Strategy
 
@@ -263,12 +263,12 @@ Even when tests pass, verify:
 | **Edge Cases**           | Verify boundary conditions mentioned in spec           | Brittle implementations                  |
 
 **Enhanced Techniques:**
-- **Semantic Diff:** Compare code changes to judge fix effectiveness
-- **Pattern Matching:** Identify common error patterns (e.g., off-by-one)
-- **Context Retention:** Retain failure history to avoid repeated errors
-- **Requirement Tracing:** Track each spec requirement to its implementation
-- **AC Checklist:** Maintain explicit checklist of acceptance criteria
-- **Intent Matching:** Use AI to verify code matches spec intent, not just mechanics
+* **Semantic Diff:** Compare code changes to judge fix effectiveness
+* **Pattern Matching:** Identify common error patterns (e.g., off-by-one)
+* **Context Retention:** Retain failure history to avoid repeated errors
+* **Requirement Tracing:** Track each spec requirement to its implementation
+* **AC Checklist:** Maintain explicit checklist of acceptance criteria
+* **Intent Matching:** Use AI to verify code matches spec intent, not just mechanics
 
 ### 4. Context Economy
 
@@ -281,11 +281,11 @@ Iteration N: Spec (2k) + Test Suite (1k) + ACs (0.5k) + Verification Report (1k)
 ```
 
 **Optimization Strategies:**
-- **Error Log Compression:** Keep only last 3 failures' stack traces
-- **Incremental Updates:** Pass code diffs instead of full code
-- **Smart Truncation:** Auto-remove old error records when exceeding 10k tokens
-- **AC Checklist Format:** Use compact checklist format instead of verbose descriptions
-- **Verification Summaries:** Compress verification reports to essential gaps only
+* **Error Log Compression:** Keep only last 3 failures' stack traces
+* **Incremental Updates:** Pass code diffs instead of full code
+* **Smart Truncation:** Auto-remove old error records when exceeding 10k tokens
+* **AC Checklist Format:** Use compact checklist format instead of verbose descriptions
+* **Verification Summaries:** Compress verification reports to essential gaps only
 
 ## Implementation Roadmap
 
@@ -294,10 +294,10 @@ Iteration N: Spec (2k) + Test Suite (1k) + ACs (0.5k) + Verification Report (1k)
 **Goal:** Validate Ralph Loop feasibility
 
 **Scope:**
-- [ ] Simple Coder (Claude/GPT API calls)
-- [ ] Basic Executor (local `npm test`)
-- [ ] Naive Critic (forward test errors only, no spec verification)
-- [ ] Unit test scenarios (calculator, string processing)
+* [ ] Simple Coder (Claude/GPT API calls)
+* [ ] Basic Executor (local `npm test`)
+* [ ] Naive Critic (forward test errors only, no spec verification)
+* [ ] Unit test scenarios (calculator, string processing)
 
 **Success Criteria:** At least 80% of simple test cases pass within 5 iterations
 
@@ -306,11 +306,11 @@ Iteration N: Spec (2k) + Test Suite (1k) + ACs (0.5k) + Verification Report (1k)
 **Goal:** Add comprehensive verification to prevent false positives
 
 **Scope:**
-- [ ] Requirement coverage tracking
-- [ ] AC checklist validation
-- [ ] Spec-to-code mapping
-- [ ] Gap analysis when tests pass but spec incomplete
-- [ ] Intent matching using AI
+* [ ] Requirement coverage tracking
+* [ ] AC checklist validation
+* [ ] Spec-to-code mapping
+* [ ] Gap analysis when tests pass but spec incomplete
+* [ ] Intent matching using AI
 
 **Success Criteria:** Zero false positives (tests pass but spec incomplete)
 
@@ -319,10 +319,10 @@ Iteration N: Spec (2k) + Test Suite (1k) + ACs (0.5k) + Verification Report (1k)
 **Goal:** Improve Critic intelligence for faster convergence
 
 **Scope:**
-- [ ] Error classification system
-- [ ] Pattern matching rule library
-- [ ] Semantic diff analysis
-- [ ] Context retention strategy
+* [ ] Error classification system
+* [ ] Pattern matching rule library
+* [ ] Semantic diff analysis
+* [ ] Context retention strategy
 
 **Success Criteria:** Average iterations reduced from 5 to 3
 
@@ -331,29 +331,30 @@ Iteration N: Spec (2k) + Test Suite (1k) + ACs (0.5k) + Verification Report (1k)
 **Goal:** Integrate into LeanSpec ecosystem
 
 **Scope:**
-- [ ] Desktop App UI (Tauri)
-- [ ] CLI integration via `lean-spec agent run <spec> --ralph` or `--burst` flag
-- [ ] `--max-iterations <n>` option (default: 10)
-- [ ] Ralph mode context injection in agent prompts
-- [ ] Sandbox environment (Docker)
-- [ ] Monitoring and logging
+* [ ] Desktop App UI (Tauri)
+* [ ] CLI integration via `harnspec agent run <spec> --ralph` or `--burst` flag
+* [ ] `--max-iterations <n>` option (default: 10)
+* [ ] Ralph mode context injection in agent prompts
+* [ ] Sandbox environment (Docker)
+* [ ] Monitoring and logging
 
 **CLI Usage:**
+
 ```bash
 # Enable Ralph mode for single spec
-lean-spec agent run 045 --ralph
+harnspec agent run 045 --ralph
 
 # Alternative: Use --burst alias
-lean-spec agent run 045 --burst
+harnspec agent run 045 --burst
 
 # Ralph mode with custom iterations
-lean-spec agent run 045 --ralph --max-iterations 15
+harnspec agent run 045 --ralph --max-iterations 15
 
 # Ralph mode with specific agent
-lean-spec agent run 045 --agent claude --ralph
+harnspec agent run 045 --agent claude --ralph
 
 # Dry run to preview Ralph workflow
-lean-spec agent run 045 --ralph --dry-run
+harnspec agent run 045 --ralph --dry-run
 ```
 
 **Success Criteria:** One-click Ralph Mode trigger from Desktop App and CLI flag support
@@ -361,12 +362,12 @@ lean-spec agent run 045 --ralph --dry-run
 ### Phase 5: Advanced Features (Future)
 
 **Possible Directions:**
-- [ ] Multi-language support (Python, Go, Rust) - following ralph-claude-code patterns
-- [ ] Parallel Ralph (run multiple test suites simultaneously)
-- [ ] AI-to-AI Communication (multi-agent collaboration)
-- [ ] Adaptive maxIterations (dynamically adjust based on complexity)
-- [ ] Human-in-the-loop for ambiguous ACs
-- [ ] Integration with ralph-claude-code's circuit breaker and rate limiting patterns
+* [ ] Multi-language support (Python, Go, Rust) - following ralph-claude-code patterns
+* [ ] Parallel Ralph (run multiple test suites simultaneously)
+* [ ] AI-to-AI Communication (multi-agent collaboration)
+* [ ] Adaptive maxIterations (dynamically adjust based on complexity)
+* [ ] Human-in-the-loop for ambiguous ACs
+* [ ] Integration with ralph-claude-code's circuit breaker and rate limiting patterns
 
 ## Success Metrics
 
@@ -422,42 +423,42 @@ Database (Session Storage):
 ## Open Questions
 
 1. **How to handle tests requiring human judgment?** (e.g., UI tests, visual regression tests)
-   - Possible solution: Provide "human verification" step, pause Burst for confirmation
+   * Possible solution: Provide "human verification" step, pause Burst for confirmation
 
 2. **Should we support incremental testing?** (run only failed tests, not entire suite)
-   - Advantage: Save time
-   - Risk: May introduce new errors
+   * Advantage: Save time
+   * Risk: May introduce new errors
 
 3. **How to integrate with Git?**
-   - Create commit per iteration?
-   - Commit only after verification complete?
+   * Create commit per iteration?
+   * Commit only after verification complete?
 
 4. **How to handle ambiguous acceptance criteria?**
-   - Require human clarification mid-burst?
-   - Use AI to infer intent with confidence scores?
+   * Require human clarification mid-burst?
+   * Use AI to infer intent with confidence scores?
 
 5. **When should Critic be strict vs lenient?**
-   - Balance between completeness and pragmatism
-   - Different modes for different project types?
+   * Balance between completeness and pragmatism
+   * Different modes for different project types?
 
 6. **How does `--ralph`/`--burst` flag interact with other agent options?**
-   - Can Ralph mode work with `--parallel` (worktrees)?
-   - Should Ralph mode auto-enable certain agents (e.g., Claude for best reasoning)?
-   - How to handle Ralph mode in cloud agents (gh-coding)?
-   - Can we learn from ralph-claude-code's session management and circuit breaker patterns?
+   * Can Ralph mode work with `--parallel` (worktrees)?
+   * Should Ralph mode auto-enable certain agents (e.g., Claude for best reasoning)?
+   * How to handle Ralph mode in cloud agents (gh-coding)?
+   * Can we learn from ralph-claude-code's session management and circuit breaker patterns?
 
 ## References
 
 **Ralph Technique**:
-- [Ralph Wiggum as a "software engineer"](https://ghuntley.com/ralph/) - Geoffrey Huntley's original article
-- [ralph-claude-code](https://github.com/frankbria/ralph-claude-code) - Production implementation by Frank Bria
-- [How Ralph Wiggum went from 'The Simpsons' to the biggest name in AI](https://venturebeat.com/technology/how-ralph-wiggum-went-from-the-simpsons-to-the-biggest-name-in-ai-right-now) - VentureBeat coverage
+* [Ralph Wiggum as a "software engineer"](https://ghuntley.com/ralph/) - Geoffrey Huntley's original article
+* [ralph-claude-code](https://github.com/frankbria/ralph-claude-code) - Production implementation by Frank Bria
+* [How Ralph Wiggum went from 'The Simpsons' to the biggest name in AI](https://venturebeat.com/technology/how-ralph-wiggum-went-from-the-simpsons-to-the-biggest-name-in-ai-right-now) - VentureBeat coverage
 
 **Development Practices**:
-- [Test-Driven Development (TDD)](https://martinfowler.com/bliki/TestDrivenDevelopment.html)
-- [PDCA Cycle](https://en.wikipedia.org/wiki/PDCA)
-- [Docker Security Best Practices](https://docs.docker.com/engine/security/)
-- [LeanSpec First Principles](../docs/advanced/first-principles.mdx)
+* [Test-Driven Development (TDD)](https://martinfowler.com/bliki/TestDrivenDevelopment.html)
+* [PDCA Cycle](https://en.wikipedia.org/wiki/PDCA)
+* [Docker Security Best Practices](https://docs.docker.com/engine/security/)
+* [LeanSpec First Principles](../docs/advanced/first-principles.mdx)
 
 ---
 

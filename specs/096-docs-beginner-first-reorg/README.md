@@ -21,7 +21,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17 · **Tags**: docs, ux, beginner-friendly
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -29,12 +29,13 @@ completed: '2025-11-17'
 **Problem**: Current docs site structure mixes beginner and advanced content, making it harder for new users to find the right information. Advanced topics in "Core Concepts" create cognitive load, and case studies lack intuitive organization.
 
 **Solution**: Reorganize docs with beginner-first approach:
+
 1. Separate "Advanced Topics" section for deep theory
 2. Individual terminology pages with clear explanations
 3. Streamline "Understanding LeanSpec" for beginners only
 4. Refocus "Tutorials" on AI-assisted spec writing
 5. Promote case studies to top-level with better naming
-6. Link to web app (web.lean-spec.dev) instead of GitHub
+6. Link to web app (harnspec.gitub.io) instead of GitHub
 
 **Why now**: Following specs 88-92 migrations, documentation content is accurate but structure needs optimization for user experience.
 
@@ -43,6 +44,7 @@ completed: '2025-11-17'
 ### 1. Advanced Topics Separation
 
 **Current state**: "Core Concepts" contains:
+
 - Terminology ✅ (beginner-friendly)
 - Understanding LeanSpec ✅ (beginner-friendly)
 - First Principles 🔴 (advanced)
@@ -117,6 +119,7 @@ Reference
 - `tags-priority.mdx` - Organization and prioritization
 
 **Benefits**:
+
 - Easier to find specific concepts
 - More space for explanations and examples
 - Better SEO (one concept per URL)
@@ -127,6 +130,7 @@ Reference
 **Current**: `understanding.md` mixes beginner explanations with advanced concepts.
 
 **New**: Split into two:
+
 - `Core Concepts/what-is-leanspec.mdx` - Beginner-only
   - What problems does LeanSpec solve?
   - How is it different?
@@ -138,6 +142,7 @@ Reference
   - Evolution during development
   
 **Move to Advanced Topics**:
+
 - Deep theory about why specs work
 - Cognitive science connections
 - Advanced workflow patterns
@@ -159,18 +164,19 @@ Reference
    - AI writes spec from requirements
    - AI implements from spec
    - User validates and guides
-   
+
 3. **Managing Multiple Specs with AI**
    - AI helps find related specs
    - AI suggests dependencies
    - AI updates status tracking
-   
+
 4. **Team Collaboration with AI Agents**
    - AI agents read team specs
    - AI proposes changes
    - Human review and approval
 
 **Format**: Each tutorial includes:
+
 - Video walkthrough (Loom/YouTube)
 - Step-by-step screenshots
 - Code snippets with Copilot prompts
@@ -184,16 +190,19 @@ Reference
 **Promote to top-level**: Move from under "Guide" to its own top-level section in sidebar.
 
 **Add overview page**: Enhanced version of current `index.mdx` with:
+
 - Visual overview (grid/cards)
 - Filter by complexity (simple/complex/refactor/cross-team)
 - Time to complete estimates
 - Learning objectives
 
 **Link to web app**: Replace GitHub links with web app links:
-- ❌ Old: `github.com/codervisor/lean-spec/tree/main/specs/071-...`
-- ✅ New: `web.lean-spec.dev/specs/071`
+
+- ❌ Old: `github.com/codervisor/harnspec/tree/main/specs/071-...`
+- ✅ New: `harnspec.gitub.io/specs/071`
 
 **Benefits**:
+
 - Better reading experience (web app has syntax highlighting, navigation)
 - Consistent with product ecosystem
 - Easier to maintain (one canonical link)
@@ -288,6 +297,7 @@ const sidebars: SidebarsConfig = {
 ## Plan
 
 ### Phase 1: Structure Setup
+
 - [ ] Create `docs/advanced/` directory
 - [ ] Create `docs/examples/` directory (rename from case-studies)
 - [ ] Create `docs/guide/terminology/` directory with individual term pages
@@ -295,6 +305,7 @@ const sidebars: SidebarsConfig = {
 - [ ] Update `docusaurus.config.ts` navbar
 
 ### Phase 2: Content Migration & Creation
+
 - [ ] Move advanced topics to `docs/advanced/`:
   - [ ] `first-principles.mdx`
   - [ ] `context-engineering.mdx`
@@ -312,19 +323,22 @@ const sidebars: SidebarsConfig = {
 - [ ] Rename case-studies → examples, update all links
 
 ### Phase 3: Tutorials Rewrite (AI-focused)
+
 - [ ] Rewrite tutorial 1: Writing first spec with AI (+ video)
 - [ ] Rewrite tutorial 2: AI-assisted feature development (+ video)
 - [ ] Rewrite tutorial 3: Managing multiple specs with AI
 - [ ] Rewrite tutorial 4: Team collaboration with AI agents
 
 ### Phase 4: Examples Enhancement
+
 - [ ] Update `examples/index.mdx` with visual overview
-- [ ] Replace all GitHub links with web.lean-spec.dev links
+- [ ] Replace all GitHub links with harnspec.gitub.io links
 - [ ] Add complexity filters/tags
 - [ ] Add time-to-complete estimates
 - [ ] Add learning objectives to each example
 
 ### Phase 5: Polish & Validation
+
 - [ ] Update all internal cross-references
 - [ ] Run `npm run build` to verify
 - [ ] Test navigation flows (beginner → intermediate → advanced)
@@ -334,11 +348,13 @@ const sidebars: SidebarsConfig = {
 ## Test
 
 **Build validation**:
+
 - [ ] `cd docs-site && npm run build` succeeds
 - [ ] No broken links (`npm run build` catches broken internal links)
 - [ ] All pages render correctly in dev mode
 
 **User experience validation**:
+
 - [ ] New user can find "Getting Started" easily
 - [ ] Beginner doesn't encounter advanced theory prematurely
 - [ ] Terminology concepts are easy to understand
@@ -346,12 +362,14 @@ const sidebars: SidebarsConfig = {
 - [ ] Examples link to web app instead of GitHub
 
 **Content validation**:
+
 - [ ] All moved content maintains frontmatter
 - [ ] SEO metadata updated for new structure
 - [ ] Search functionality works with new paths
 - [ ] Sidebar navigation is intuitive
 
 **AI agent validation**:
+
 - [ ] AGENTS.md references correct doc paths
 - [ ] AI agents can find beginner vs advanced content
 - [ ] Tutorial instructions work with Copilot Agent Mode
@@ -363,6 +381,7 @@ const sidebars: SidebarsConfig = {
 **Low risk**: Content already accurate (thanks to specs 88-92), we're just reorganizing structure.
 
 **Approach**:
+
 1. Create new directories first
 2. Copy files to new locations (don't delete originals yet)
 3. Update all links and references
@@ -372,11 +391,13 @@ const sidebars: SidebarsConfig = {
 ### Naming Decisions
 
 **"Real-World Examples" vs "Case Studies"**:
+
 - "Examples" is more approachable
 - "Real-World" signals practical, not academic
 - Matches common developer docs patterns (React, Vue, etc.)
 
 **"Advanced Topics" vs "Deep Dive" or "Theory"**:
+
 - "Advanced Topics" is clear and standard
 - Sets expectation: "Not for beginners"
 - Matches user mental model

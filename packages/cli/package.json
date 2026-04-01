@@ -1,10 +1,10 @@
 {
-  "name": "lean-spec",
+  "name": "harnspec",
   "version": "0.2.28",
   "description": "Specification-driven development made simple",
   "type": "module",
   "bin": {
-    "lean-spec": "./bin/lean-spec.js"
+    "harnspec": "./bin/harnspec.js"
   },
   "scripts": {
     "typecheck": "echo 'No TypeScript source to check'"
@@ -26,11 +26,11 @@
   "license": "MIT AND Commons-Clause-1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   },
-  "homepage": "https://lean-spec.dev",
+  "homepage": "https://harnspec.dev",
   "bugs": {
-    "url": "https://github.com/codervisor/lean-spec/issues"
+    "url": "https://github.com/codervisor/harnspec/issues"
   },
   "files": [
     "bin/",

@@ -32,7 +32,7 @@ completed: '2025-11-07'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-07 · **Tags**: documentation, quality, restructure, first-principles
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -40,12 +40,14 @@ completed: '2025-11-07'
 **Comprehensive docs-site restructure** to align with LeanSpec First Principles (spec 049) and fix structural issues.
 
 **Scope Changed**: Originally minor polish, now major restructure based on findings:
+
 1. ❌ **AI Integration as separate tab** - Wrong! AI is core to LeanSpec, not optional add-on
 2. ❌ **Core Concepts outdated** - Doesn't align with First Principles (spec 049)
 3. ❌ **`docs/` folder not integrated** - Valuable content (MCP, migration, examples) not in docs-site
 4. ❌ **Navigation structure suboptimal** - Doesn't reflect actual workflow
 
-**Why Now**: 
+**Why Now**:
+
 - Part of v0.2.0 launch (spec 043) - must be right before launch
 - Spec 049 established First Principles - docs must reflect them
 - Current structure treats AI as optional when it's fundamental
@@ -88,6 +90,7 @@ completed: '2025-11-07'
 ### Navigation Structure (Summary)
 
 **New Structure**:
+
 ```
 Guide/
   Introduction/ (Overview, Getting Started, Examples)
@@ -107,6 +110,7 @@ Roadmap
 ```
 
 **Key Changes**:
+
 1. ✅ AI Integration moved into Guide as "Working with AI"
 2. ✅ First Principles added (from spec 049)
 3. ✅ Workflow section added (board, stats, deps, validate)
@@ -125,6 +129,7 @@ Roadmap
 ## Plan
 
 ### Phase 1: Navigation & Structure (Foundation)
+
 - [ ] Update `sidebars.ts` with new structure
   - [ ] Move AI Integration content into guideSidebar
   - [ ] Add Core Concepts with first-principles
@@ -134,6 +139,7 @@ Roadmap
 - [ ] Test navigation build (ensure no broken links)
 
 ### Phase 2: Core Concepts (Critical Content)
+
 - [ ] Create `docs-site/docs/guide/first-principles.mdx`
   - [ ] Extract content from spec 049 (FIRST-PRINCIPLES.md)
   - [ ] Adapt for docs-site format (Docusaurus)
@@ -147,6 +153,7 @@ Roadmap
   - [ ] Link to First Principles doc
 
 ### Phase 3: Working with AI (Move from Separate Tab)
+
 - [ ] Rename/move AI integration content into Guide
   - [ ] `ai-integration/index.mdx` → `guide/ai-setup.mdx`
   - [ ] `ai-integration/setup.mdx` → merge into `guide/ai-setup.mdx`
@@ -157,6 +164,7 @@ Roadmap
 - [ ] Delete old `docs-site/docs/ai-integration/` directory
 
 ### Phase 4: Migrate `docs/` Content (Consolidation)
+
 - [ ] Create `docs-site/docs/reference/mcp-server.mdx`
   - [ ] Migrate content from `docs/MCP-SERVER.md`
   - [ ] Enhance with comprehensive setup, troubleshooting, security
@@ -172,6 +180,7 @@ Roadmap
   - [ ] Keep folder but mark as deprecated
 
 ### Phase 5: Workflow Section (New Content)
+
 - [ ] Create `docs-site/docs/guide/board-stats.mdx`
   - [ ] Document board and stats commands
   - [ ] Show project visibility workflows
@@ -185,6 +194,7 @@ Roadmap
   - [ ] Show quality workflows
 
 ### Phase 6: Overview Updates (Original Scope)
+
 - [ ] Update `docs-site/docs/guide/index.mdx`
   - [ ] Replace "How It Works" with "What You Get"
   - [ ] Prominently feature MCP server
@@ -194,6 +204,7 @@ Roadmap
   - [ ] Link to roadmap page
 
 ### Phase 7: Testing & Validation
+
 - [ ] Build docs-site: `cd docs-site && npm run build`
 - [ ] Verify no broken links
 - [ ] Check all internal references updated
@@ -202,6 +213,7 @@ Roadmap
 - [ ] Validate on mobile/desktop
 
 ### Phase 8: Cleanup & Polish
+
 - [ ] Update README.md if needed (ensure it matches docs-site)
 - [ ] Update AGENTS.md with new doc structure
 - [ ] Archive or remove redundant content
@@ -212,6 +224,7 @@ Roadmap
 **Success Criteria**:
 
 ### Navigation & Structure
+
 - [ ] AI Integration moved into Guide as "Working with AI"
 - [ ] First Principles doc exists and is prominent
 - [ ] Workflow section exists (board-stats, dependencies, validation)
@@ -220,6 +233,7 @@ Roadmap
 - [ ] Sidebar navigation logical and intuitive
 
 ### Content Quality
+
 - [ ] First Principles clearly explained with examples
 - [ ] Philosophy shows derivation from First Principles
 - [ ] All `docs/` content integrated into docs-site
@@ -228,6 +242,7 @@ Roadmap
 - [ ] Custom fields examples included
 
 ### Completeness
+
 - [ ] MCP server prominently featured in overview
 - [ ] Features grouped logically (CLI, MCP, Templates)
 - [ ] Workflow docs complete (board, stats, deps, validate)
@@ -235,6 +250,7 @@ Roadmap
 - [ ] `docs/` folder deprecated with redirect message
 
 ### Technical
+
 - [ ] Docs-site builds without errors: `cd docs-site && npm run build`
 - [ ] No broken links
 - [ ] Search functionality works
@@ -242,18 +258,20 @@ Roadmap
 - [ ] All images/assets load
 
 ### Alignment
+
 - [ ] Docs reflect First Principles (spec 049)
 - [ ] AI-native identity clear throughout
 - [ ] README.md consistent with docs-site
 - [ ] AGENTS.md reflects new structure
 
 **Validation Commands**:
+
 ```bash
 # Build docs-site
 cd docs-site && npm run build
 
 # Validate specs
-cd .. && npx lean-spec validate
+cd .. && npx harnspec validate
 
 # Check for broken links (if link checker installed)
 # npm run check-links
@@ -264,6 +282,7 @@ cd .. && npx lean-spec validate
 **See [NOTES.md](./NOTES.md) for implementation notes, decisions, and lessons learned.**
 
 **Key Points**:
+
 - Scope expanded from minor polish to comprehensive restructure
 - User feedback + First Principles (spec 049) drove changes
 - AI Integration → Working with AI (AI is core, not optional)
@@ -271,6 +290,7 @@ cd .. && npx lean-spec validate
 - Estimated effort: 8-12 hours over 1-2 days
 
 **Related Specs**:
+
 - **Spec 049**: LeanSpec First Principles (foundation for this work)
 - **Spec 056**: Initial docs audit (fixed major issues)
 - **Spec 057**: Comprehensive validation (found these issues)

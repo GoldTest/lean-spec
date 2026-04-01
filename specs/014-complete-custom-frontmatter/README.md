@@ -18,7 +18,8 @@ completed: '2025-11-04'
 Complete the custom frontmatter and variable substitution system outlined in spec 001-custom-spec-templates. The template system foundation is done, but the advanced customization features (custom fields, variables) are not yet implemented.
 
 **Current State:**
-- ✅ Templates moved to `.lean-spec/templates/`
+
+- ✅ Templates moved to `.harnspec/templates/`
 - ✅ Template management commands implemented
 - ❌ Custom frontmatter fields from config not implemented
 - ❌ Variable substitution system not implemented
@@ -31,7 +32,8 @@ This was the core promise of the customization-first redesign. Without these fea
 
 ### 1. Custom Frontmatter Fields
 
-Extend `.lean-spec/config.json`:
+Extend `.harnspec/config.json`:
+
 ```json
 {
   "frontmatter": {
@@ -49,6 +51,7 @@ Extend `.lean-spec/config.json`:
 ```
 
 **Implementation:**
+
 - Parse `custom` fields from config
 - Validate types during spec creation/update
 - Support in `list` and `search` commands for filtering
@@ -57,6 +60,7 @@ Extend `.lean-spec/config.json`:
 ### 2. Variable Substitution System
 
 Support variables in templates:
+
 ```markdown
 ---
 status: planned
@@ -72,6 +76,7 @@ reviewer: {default_reviewer}
 ```
 
 **Built-in Variables:**
+
 - `{name}` - Spec name
 - `{date}` - Creation date (ISO format)
 - `{project_name}` - From package.json or config
@@ -80,6 +85,7 @@ reviewer: {default_reviewer}
 - `{git_repo}` - Repository name
 
 **Custom Variables (from config):**
+
 ```json
 {
   "variables": {
@@ -93,6 +99,7 @@ reviewer: {default_reviewer}
 ### 3. Git Integration
 
 Add utility to extract git information:
+
 ```typescript
 async function getGitInfo(): Promise<{
   user: string;
@@ -106,6 +113,7 @@ async function getGitInfo(): Promise<{
 ## Plan
 
 ### Phase 1: Custom Frontmatter (Week 1)
+
 - [ ] Update config schema with `frontmatter.custom` support
 - [ ] Extend frontmatter parser to handle custom fields
 - [ ] Add type validation and coercion (string, number, boolean, array)
@@ -116,6 +124,7 @@ async function getGitInfo(): Promise<{
 - [ ] Add tests for custom frontmatter parsing and validation
 
 ### Phase 2: Variable System (Week 1)
+
 - [ ] Create variable resolver utility
 - [ ] Implement built-in variables (`name`, `date`, `project_name`)
 - [ ] Add git integration for `author`, `git_user`, `git_repo`
@@ -125,16 +134,18 @@ async function getGitInfo(): Promise<{
 - [ ] Handle missing variables gracefully (warning, not error)
 
 ### Phase 3: Integration & Polish (Week 1)
+
 - [ ] Test custom frontmatter + variables together
 - [ ] Update documentation (README, examples)
 - [ ] Update AGENTS.md with customization instructions
 - [ ] Create example configs for common use cases
-- [ ] Dogfood on lean-spec itself (add epic, issue fields)
+- [ ] Dogfood on harnspec itself (add epic, issue fields)
 - [ ] Update init templates to show example custom fields
 
 ## Test
 
 ### Custom Frontmatter
+
 - [ ] Parse custom fields from config correctly
 - [ ] Validate field types (reject invalid types)
 - [ ] Accept custom fields in `create --epic=FOO-123`
@@ -144,6 +155,7 @@ async function getGitInfo(): Promise<{
 - [ ] Handle missing custom fields gracefully
 
 ### Variable Substitution
+
 - [ ] Substitute `{name}` correctly in templates
 - [ ] Substitute `{date}` with ISO format
 - [ ] Load `{project_name}` from package.json
@@ -154,6 +166,7 @@ async function getGitInfo(): Promise<{
 - [ ] Nested variable references work (or explicitly not supported)
 
 ### Integration
+
 - [ ] Custom frontmatter + variables work together
 - [ ] Init process creates example config with custom fields
 - [ ] Works with all templates (minimal, standard, enterprise)
@@ -161,10 +174,12 @@ async function getGitInfo(): Promise<{
 ## Notes
 
 **Dependencies:**
+
 - Builds on spec 001-custom-spec-templates foundation
 - Requires no changes to core architecture
 
 **Breaking Changes:**
+
 - None - this is purely additive
 
 **Reference Implementation:**

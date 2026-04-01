@@ -13,7 +13,7 @@ sidebar_position: 2
 
 ```bash
 # 显示所有Spec
-lean-spec list
+harnspec list
 ```
 
 输出：
@@ -33,33 +33,33 @@ lean-spec list
 
 ```bash
 # 仅显示进行中的Spec
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # 显示计划中的Spec
-lean-spec list --status planned
+harnspec list --status planned
 
 # 显示已完成的Spec
-lean-spec list --status complete
+harnspec list --status complete
 ```
 
 ### 按标签过滤
 
 ```bash
 # 显示带特定标签的Spec
-lean-spec list --tag api
+harnspec list --tag api
 
 # 显示带多个标签的Spec
-lean-spec list --tag api --tag backend
+harnspec list --tag api --tag backend
 ```
 
 ### 按优先级过滤
 
 ```bash
 # 高优先级Spec
-lean-spec list --priority high
+harnspec list --priority high
 
 # 低优先级Spec
-lean-spec list --priority low
+harnspec list --priority low
 ```
 
 ## 按内容搜索
@@ -68,7 +68,7 @@ lean-spec list --priority low
 
 ```bash
 # 搜索所有Spec内容
-lean-spec search "authentication"
+harnspec search "authentication"
 ```
 
 搜索范围：
@@ -81,28 +81,28 @@ lean-spec search "authentication"
 
 ```bash
 # 在特定状态中搜索
-lean-spec search "API" --status in-progress
+harnspec search "API" --status in-progress
 
 # 使用标签过滤器搜索
-lean-spec search "cache" --tag performance
+harnspec search "cache" --tag performance
 
 # 组合多个过滤器
-lean-spec search "refactor" --status planned --tag backend --priority high
+harnspec search "refactor" --status planned --tag backend --priority high
 ```
 
 ### 不区分大小写搜索
 
 搜索默认不区分大小写：
 ```bash
-lean-spec search "api"      # 匹配 "API"、"api"、"Api"
-lean-spec search "JWT"      # 匹配 "jwt"、"JWT"、"Jwt"
+harnspec search "api"      # 匹配 "API"、"api"、"Api"
+harnspec search "JWT"      # 匹配 "jwt"、"JWT"、"Jwt"
 ```
 
 ## 依赖导航
 
 ```bash
 # 显示Spec的依赖关系
-lean-spec deps 042
+harnspec deps 042
 ```
 
 输出：
@@ -133,25 +133,25 @@ lean-spec deps 042
 
 ```bash
 # 计划中的高优先级后端工作
-lean-spec list --priority high --tag backend --status planned
+harnspec list --priority high --tag backend --status planned
 
 # 进行中的 API 工作
-lean-spec list --status in-progress --tag api
+harnspec list --status in-progress --tag api
 
 # 已完成的安全工作
-lean-spec list --status complete --tag security
+harnspec list --status complete --tag security
 ```
 
 ### 排除已归档
 
-默认情况下，`lean-spec list` 排除已归档的Spec：
+默认情况下，`harnspec list` 排除已归档的Spec：
 
 ```bash
 # 默认：排除已归档
-lean-spec list
+harnspec list
 
 # 包括已归档
-lean-spec list --archived
+harnspec list --archived
 ```
 
 ## 常见搜索模式
@@ -160,17 +160,17 @@ lean-spec list --archived
 
 ```bash
 # 准备开始的工作是什么？
-lean-spec list --status planned --priority high
+harnspec list --status planned --priority high
 ```
 
 ### 检查活动工作
 
 ```bash
 # 进行中的是什么？
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # 谁在做什么？
-lean-spec list --status in-progress
+harnspec list --status in-progress
 # （如果设置则显示负责人）
 ```
 
@@ -178,29 +178,29 @@ lean-spec list --status in-progress
 
 ```bash
 # 最近完成的
-lean-spec list --status complete
+harnspec list --status complete
 
 # 按标签完成的工作
-lean-spec list --status complete --tag api
+harnspec list --status complete --tag api
 ```
 
 ### 检查依赖关系
 
 ```bash
 # 准备开始的是什么？
-lean-spec list --status planned
+harnspec list --status planned
 
 # 检查是否满足依赖关系
-lean-spec deps <spec-id>
+harnspec deps <spec-id>
 # （验证所需Spec已完成）
 ```
 
 ## 导航提示
 
 **做：**
-- ✅ 使用 `lean-spec search` 进行基于内容的发现
-- ✅ 使用带过滤器的 `lean-spec list` 进行聚焦视图
-- ✅ 使用 `lean-spec deps` 了解关系
+- ✅ 使用 `harnspec search` 进行基于内容的发现
+- ✅ 使用带过滤器的 `harnspec list` 进行聚焦视图
+- ✅ 使用 `harnspec deps` 了解关系
 - ✅ 查看[看板与统计](/zh-Hans/docs/guide/usage/cli/project-management#board-stats)获得可视化概览
 
 **不要做：**
@@ -214,33 +214,33 @@ lean-spec deps <spec-id>
 
 ```bash
 # 1. 项目状态如何？
-lean-spec list --status in-progress
+harnspec list --status in-progress
 
 # 2. 我应该做什么？
-lean-spec list --status planned --priority high
+harnspec list --status planned --priority high
 
 # 3. 这个Spec是关于什么的？
-lean-spec view <spec-id>
+harnspec view <spec-id>
 
 # 4. 开始工作
-lean-spec update <spec-id> --status in-progress
-lean-spec open <spec-id>
+harnspec update <spec-id> --status in-progress
+harnspec open <spec-id>
 ```
 
 ### 研究流程
 
 ```bash
 # 1. 查找相关Spec
-lean-spec search "authentication"
+harnspec search "authentication"
 
 # 2. 查看有希望的Spec
-lean-spec view 042
+harnspec view 042
 
 # 3. 检查相关工作
-lean-spec deps 042
+harnspec deps 042
 
 # 4. 阅读相关Spec
-lean-spec view 041
+harnspec view 041
 ```
 
 ## 下一步

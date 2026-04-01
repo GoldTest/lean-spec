@@ -3,21 +3,25 @@
 ## ✅ Completed
 
 ### 1. Timeline vs Stats Analysis
+
 - **Decision**: Keep both commands separate - they serve distinct purposes
 - **Stats**: Shows aggregate counts (status distribution, priority breakdown, tags) with bar charts
 - **Timeline**: Shows temporal patterns (daily activity, monthly trends, completion rates over time)
 - **No changes needed** - commands are well-differentiated
 
 ### 2. Status Icon Updates ✅
+
 Successfully updated all status icons to be more intuitive:
 
 **Before → After:**
+
 - Planned: 📅 (calendar) → 📋 (clipboard) - clearer "to-do" indicator
 - In Progress: 🔨 (hammer) → ⚡ (lightning) - better conveys active work
 - Complete: ✅ (checkmark) → ✅ (unchanged, already perfect)
 - Archived: 📦 (box) → 📦 (unchanged, already perfect)
 
 **Files Updated:**
+
 - `src/utils/spec-helpers.ts` - Core helper functions
 - `src/components/SpecList.tsx` - List view component
 - `src/components/StatsDisplay.tsx` - Stats display component
@@ -25,41 +29,49 @@ Successfully updated all status icons to be more intuitive:
 - `src/frontmatter.ts` - Frontmatter generation
 
 ### 3. Priority Color Fix ✅
+
 Fixed priority colors to follow intuitive traffic light convention:
 
 **Before (counterintuitive):**
+
 - Low: 🟢 Gray
 - Medium: 🟠 Blue
 - High: 🟡 Yellow
 - Critical: 🔴 Red
 
 **After (intuitive):**
+
 - Low: 🟢 Green ✓
 - Medium: 🟡 Yellow ✓
 - High: 🟠 Orange ✓
 - Critical: 🔴 Red ✓
 
 **Files Updated:**
+
 - `src/utils/spec-helpers.ts` - Using chalk.hex('#FFA500') for orange
 - `src/components/SpecList.tsx` - Priority emoji order corrected
 - `src/components/StatsDisplay.tsx` - Bar chart colors fixed
 - `src/components/Board.tsx` - Priority badge colors updated
 
 ### 4. Testing ✅
+
 - All existing tests pass (106 tests)
 - No compilation errors
 - **All visualization commands tested and working:**
-  - `lean-spec board` - Ink-based, new icons/colors ✓
-  - `lean-spec stats` - Chalk-based (simplified), new icons/colors ✓
-  - `lean-spec timeline` - Chalk-based (unchanged) ✓
+  - `harnspec board` - Ink-based, new icons/colors ✓
+  - `harnspec stats` - Chalk-based (simplified), new icons/colors ✓
+  - `harnspec timeline` - Chalk-based (unchanged) ✓
 
 ### 5. Stats Command Simplification ✅
+
 **Issue**: Stats was using complex Ink components (Panel, KeyValueList) which could cause issues
 **Solution**: Converted to simple chalk-based output like timeline command
 **Result**: Clean, fast, reliable output with consistent styling
 
 ### 6. Stats Output Alignment ✅
+
 **Improvements Made:**
+
 - Added column headers with separator lines (like timeline)
 - Merged "Bar" and "Cnt" into single "Count" column
 - Standardized all label widths to 15 characters
@@ -69,6 +81,7 @@ Fixed priority colors to follow intuitive traffic light convention:
 - All sections now perfectly aligned with consistent spacing
 
 **Code Quality:**
+
 - Eliminated duplicate constants across sections
 - Single source of truth for layout measurements
 - More maintainable and easier to adjust
@@ -76,9 +89,11 @@ Fixed priority colors to follow intuitive traffic light convention:
 ## 🚧 In Progress - Needs Fix
 
 ### Gantt Chart Enhancement with Ink
+
 **Goal**: Refactor gantt chart to use Ink component for consistency with board/stats commands
 
 **What Was Done:**
+
 - Created `src/components/GanttChart.tsx` - New Ink-based React component
 - Updated `src/commands/gantt.ts` - Simplified to use Ink render
 - Added enhanced features:
@@ -91,6 +106,7 @@ Fixed priority colors to follow intuitive traffic light convention:
   - Overdue warnings
 
 **Current Issue:**
+
 ```
 ERROR Objects are not valid as a React child (found: [object Date])
 ```
@@ -98,6 +114,7 @@ ERROR Objects are not valid as a React child (found: [object Date])
 **Root Cause**: React/Ink is complaining about Date/dayjs objects being rendered. Despite thorough review, the exact source hasn't been pinpointed yet.
 
 **Possible Solutions for Next Session:**
+
 1. **Revert gantt to chalk-based** (recommended - simpler, already works, matches timeline/stats pattern)
 2. Add explicit `.toString()` or `.format()` calls to all dayjs objects
 3. Debug by adding console.log to identify which prop is passing a Date
@@ -107,7 +124,8 @@ ERROR Objects are not valid as a React child (found: [object Date])
 
 ## Files Changed
 
-### Modified:
+### Modified
+
 - `src/utils/spec-helpers.ts` - Status icons and priority colors
 - `src/components/SpecList.tsx` - Status and priority emojis
 - `src/components/StatsDisplay.tsx` - Priority colors in bar charts (now unused)
@@ -117,7 +135,8 @@ ERROR Objects are not valid as a React child (found: [object Date])
 - `src/commands/gantt.ts` - Simplified to use Ink (has runtime error)
 - `specs/20251103/015-visualization-improvements/README.md` - Status updated to complete
 
-### Created:
+### Created
+
 - `src/components/GanttChart.tsx` - New Ink component (has runtime error)
 
 ## Test Results
@@ -139,14 +158,16 @@ All tests passing ✓
 
 ## Command Testing
 
-### Working Commands:
+### Working Commands
+
 ```bash
-lean-spec board              # ✅ Ink-based, new icons and colors
-lean-spec stats              # ✅ Chalk-based, new icons/colors, aligned output with headers
-lean-spec timeline           # ✅ Chalk-based (unchanged)
+harnspec board              # ✅ Ink-based, new icons and colors
+harnspec stats              # ✅ Chalk-based, new icons/colors, aligned output with headers
+harnspec timeline           # ✅ Chalk-based (unchanged)
 ```
 
-### Broken Command:
+### Broken Command
+
 ```bash
-lean-spec gantt --weeks 6    # ❌ React Date object error
+harnspec gantt --weeks 6    # ❌ React Date object error
 ```

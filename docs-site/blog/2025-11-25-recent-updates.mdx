@@ -19,10 +19,10 @@ The best way to understand HarnSpec is to use it. That's why we built **example 
 
 ```bash
 # See what's available
-npx lean-spec examples
+npx harnspec examples
 
 # Scaffold an example project
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme
 npm install
 npm start
@@ -68,7 +68,7 @@ We extracted `@HarnSpec/mcp` into its own npm package. Setup is now cleaner:
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["@HarnSpec/mcp"]
     }
@@ -84,13 +84,13 @@ New commands make relationship management clearer:
 
 ```bash
 # Link specs with clear dependencies
-lean-spec link feature-123 --depends-on auth-system
+harnspec link feature-123 --depends-on auth-system
 
 # See the full dependency graph
-lean-spec deps feature-123
+harnspec deps feature-123
 
 # Remove relationships
-lean-spec unlink feature-123 --from auth-system
+harnspec unlink feature-123 --from auth-system
 ```
 
 Better validation catches circular dependencies before they cause problems.
@@ -101,13 +101,13 @@ Every major command now supports `--json` for programmatic use:
 
 ```bash
 # Integrate with dashboards
-lean-spec board --json | jq '.columns[] | select(.status=="in-progress")'
+harnspec board --json | jq '.columns[] | select(.status=="in-progress")'
 
 # Build custom workflows
-lean-spec list --json --status=complete | jq -r '.[] | .name'
+harnspec list --json --status=complete | jq -r '.[] | .name'
 
 # Export for reporting
-lean-spec timeline --json > project-timeline.json
+harnspec timeline --json > project-timeline.json
 ```
 
 Use HarnSpec data in your CI/CD pipelines, project dashboards, or custom tooling.
@@ -134,7 +134,7 @@ If you're working with Chinese-speaking teams, our docs are now fully localized 
 - Consistent terminology across all documentation
 - Full coverage of guides, tutorials, and API reference
 
-Visit [lean-spec.dev/zh-Hans](https://lean-spec.dev/zh-Hans) to see the Chinese documentation.
+Visit [harnspec.dev/zh-Hans](https://harnspec.dev/zh-Hans) to see the Chinese documentation.
 
 ## 🎯 Your Path to Getting Started
 
@@ -149,7 +149,7 @@ Read [Why Your AI Agent Gets Dumber with Large Specs](/blog/ai-agent-performance
 ### 2. Spin Up an Example (2 minutes)
 
 ```bash
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme
 npm install
 ```
@@ -171,8 +171,8 @@ Open the [Your First Spec with AI](/docs/tutorials/first-spec-with-ai) tutorial.
 
 ```bash
 cd your-existing-project
-npx lean-spec init
-lean-spec create user-authentication
+npx harnspec init
+harnspec create user-authentication
 ```
 
 Now apply what you learned. Start simple (status + created), add structure as needed (tags, priority, custom fields).
@@ -193,16 +193,16 @@ We're focused on making HarnSpec work seamlessly with more AI tools and developm
 - **Project management integrations** - Jira, Linear, and GitHub Projects sync
 - **More example projects** - Backend APIs, mobile apps, infrastructure
 
-**Feedback shapes the roadmap**. What would make HarnSpec more useful for your workflow? [Open an issue](https://github.com/codervisor/lean-spec/issues) or [join the discussion](https://github.com/codervisor/lean-spec/discussions).
+**Feedback shapes the roadmap**. What would make HarnSpec more useful for your workflow? [Open an issue](https://github.com/codervisor/harnspec/issues) or [join the discussion](https://github.com/codervisor/harnspec/discussions).
 
 ## Try It Today
 
 ```bash
 # Install globally
-npm install -g lean-spec
+npm install -g harnspec
 
 # Or use npx for one-off commands
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 ```
 
 The fastest way to learn is to build. Pick an example, follow a tutorial, see how AI-assisted spec-driven development changes your workflow.
@@ -210,10 +210,10 @@ The fastest way to learn is to build. Pick an example, follow a tutorial, see ho
 ---
 
 **Links**:
-- [Documentation](https://lean-spec.dev)
-- [GitHub Repository](https://github.com/codervisor/lean-spec)
-- [Example Projects](https://lean-spec.dev/docs/tutorials/first-spec-with-ai#quick-start)
-- [Getting Started Guide](https://lean-spec.dev/docs/guide/getting-started)
-- [Full Tutorial Collection](https://lean-spec.dev/docs/tutorials/first-spec-with-ai)
+- [Documentation](https://harnspec.dev)
+- [GitHub Repository](https://github.com/codervisor/harnspec)
+- [Example Projects](https://harnspec.dev/docs/tutorials/first-spec-with-ai#quick-start)
+- [Getting Started Guide](https://harnspec.dev/docs/guide/getting-started)
+- [Full Tutorial Collection](https://harnspec.dev/docs/tutorials/first-spec-with-ai)
 
-**Changelog**: See [CHANGELOG.md](https://github.com/codervisor/lean-spec/blob/main/CHANGELOG.md) for detailed version history.
+**Changelog**: See [CHANGELOG.md](https://github.com/codervisor/harnspec/blob/main/CHANGELOG.md) for detailed version history.

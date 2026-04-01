@@ -9,13 +9,14 @@ priority: high
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-02 · **Tags**: documentation, migration, docusaurus, vercel
 
-**🎉 Live at: https://www.lean-spec.dev**
+**🎉 Live at: <https://harnspec.gitub.io>**
 
 ## Overview
 
 Migrate the LeanSpec documentation site from VitePress + GitHub Pages to Docusaurus + Vercel. While the current VitePress setup works, Docusaurus offers better documentation features, plugin ecosystem, and Vercel provides superior deployment experience with preview deployments and analytics.
 
 **Why Migrate:**
+
 - **Better DX**: Docusaurus has richer documentation-specific features (versioning, i18n, plugin system)
 - **Preview Deployments**: Vercel automatically creates preview deployments for PRs
 - **Better Analytics**: Vercel Web Analytics and Speed Insights built-in
@@ -24,6 +25,7 @@ Migrate the LeanSpec documentation site from VitePress + GitHub Pages to Docusau
 - **Build Performance**: Faster builds and better caching on Vercel
 
 **What Success Looks Like:**
+
 - All existing documentation content migrated without loss
 - Live on Vercel with custom domain support
 - Preview deployments working for PRs
@@ -36,6 +38,7 @@ Migrate the LeanSpec documentation site from VitePress + GitHub Pages to Docusau
 ### Technology Stack
 
 **Docusaurus 3.0+**
+
 - Meta's documentation framework
 - React-based with MDX support
 - Built-in versioning and i18n
@@ -44,6 +47,7 @@ Migrate the LeanSpec documentation site from VitePress + GitHub Pages to Docusau
 - Native blog support (for changelogs, announcements)
 
 **Vercel Hosting**
+
 - Automatic deployments from GitHub
 - Preview deployments for every PR
 - Edge network for fast global delivery
@@ -107,6 +111,7 @@ docs-site/                    # New root for Docusaurus
 ### Configuration Strategy
 
 **docusaurus.config.ts** - Main configuration:
+
 ```typescript
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
@@ -116,11 +121,11 @@ const config: Config = {
   tagline: 'Lightweight spec methodology for AI-powered development',
   favicon: 'img/favicon.ico',
   
-  url: 'https://www.lean-spec.dev', // Custom domain
+  url: 'https://harnspec.gitub.io', // Custom domain
   baseUrl: '/',
   
   organizationName: 'codervisor',
-  projectName: 'lean-spec',
+  projectName: 'harnspec',
   
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -136,11 +141,11 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/codervisor/lean-spec/tree/main/docs-site/',
+          editUrl: 'https://github.com/codervisor/harnspec/tree/main/docs-site/',
         },
         blog: {
           showReadingTime: true,
-          editUrl: 'https://github.com/codervisor/lean-spec/tree/main/docs-site/',
+          editUrl: 'https://github.com/codervisor/harnspec/tree/main/docs-site/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -177,7 +182,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/codervisor/lean-spec',
+          href: 'https://github.com/codervisor/harnspec',
           label: 'GitHub',
           position: 'right',
         },
@@ -197,8 +202,8 @@ const config: Config = {
         {
           title: 'Community',
           items: [
-            {label: 'GitHub', href: 'https://github.com/codervisor/lean-spec'},
-            {label: 'Issues', href: 'https://github.com/codervisor/lean-spec/issues'},
+            {label: 'GitHub', href: 'https://github.com/codervisor/harnspec'},
+            {label: 'Issues', href: 'https://github.com/codervisor/harnspec/issues'},
           ],
         },
       ],
@@ -212,7 +217,7 @@ const config: Config = {
       // Algolia DocSearch (better than local search)
       appId: 'YOUR_APP_ID',
       apiKey: 'YOUR_SEARCH_API_KEY',
-      indexName: 'lean-spec',
+      indexName: 'harnspec',
     },
   },
 };
@@ -223,6 +228,7 @@ export default config;
 ### Vercel Configuration
 
 **vercel.json**:
+
 ```json
 {
   "buildCommand": "cd docs-site && npm run build",
@@ -235,14 +241,16 @@ export default config;
 ```
 
 **Environment Variables** (in Vercel Dashboard):
+
 - `NODE_VERSION`: 18
-- `DOCUSAURUS_URL`: https://www.lean-spec.dev
+- `DOCUSAURUS_URL`: <https://harnspec.gitub.io>
 - `ALGOLIA_APP_ID`: (for search)
 - `ALGOLIA_API_KEY`: (for search)
 
 ## Plan
 
 ### Phase 1: Setup & Configuration (Day 1)
+
 - [ ] Create new `docs-site/` directory in repository root
 - [ ] Initialize Docusaurus with TypeScript: `npx create-docusaurus@latest docs-site classic --typescript`
 - [ ] Configure `docusaurus.config.ts` with LeanSpec branding
@@ -252,6 +260,7 @@ export default config;
 - [ ] Configure custom domain (if ready) or use vercel.app subdomain
 
 ### Phase 2: Content Migration (Day 1-2)
+
 - [ ] Migrate homepage to custom React page (`src/pages/index.tsx`)
 - [ ] Copy and adapt all guide documentation
 - [ ] Copy and adapt reference documentation
@@ -262,6 +271,7 @@ export default config;
 - [ ] Create initial blog post announcing v0.1.0
 
 ### Phase 3: Enhancement (Day 2)
+
 - [ ] Design custom landing page with hero section
 - [ ] Add code block enhancements (copy button, line highlighting)
 - [ ] Configure Algolia DocSearch or local search plugin
@@ -271,6 +281,7 @@ export default config;
 - [ ] Add social preview images
 
 ### Phase 4: Testing & Deployment (Day 2-3)
+
 - [ ] Test build locally: `npm run build && npm run serve`
 - [ ] Verify all links work
 - [ ] Test responsive design on mobile/tablet
@@ -280,6 +291,7 @@ export default config;
 - [ ] Verify search functionality
 
 ### Phase 5: Cleanup & Documentation (Day 3)
+
 - [ ] Archive old VitePress setup:
   - [ ] Move `docs/` to `docs-old/` or delete
   - [ ] Remove `.github/workflows/docs.yml`
@@ -295,6 +307,7 @@ export default config;
 ### Frontmatter Migration
 
 **VitePress format:**
+
 ```yaml
 ---
 title: Getting Started
@@ -303,6 +316,7 @@ description: Start using LeanSpec
 ```
 
 **Docusaurus format:**
+
 ```yaml
 ---
 id: getting-started
@@ -316,6 +330,7 @@ sidebar_position: 1
 ### Sidebar Configuration
 
 **sidebars.ts** example:
+
 ```typescript
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 
@@ -357,6 +372,7 @@ export default sidebars;
 ### Custom Landing Page
 
 Create a React-based hero section in `src/pages/index.tsx`:
+
 ```typescript
 import React from 'react';
 import clsx from 'clsx';
@@ -407,17 +423,19 @@ export default function Home(): JSX.Element {
    - Output Directory: `build`
 3. **Enable Preview Deployments** for all branches
 4. **Configure Domain**:
-   - Add custom domain: `www.lean-spec.dev` (primary) with `lean-spec.dev` redirect
+   - Add custom domain: `harnspec.gitub.io` (primary) with `harnspec.dev` redirect
    - Vercel handles SSL automatically
 
 ### Enhanced Features
 
 **Algolia DocSearch** (better than local search):
+
 - Submit site to [Algolia DocSearch](https://docsearch.algolia.com/)
 - Free for open source projects
 - Provides instant search with autocomplete
 
 **Vercel Analytics**:
+
 ```typescript
 // docusaurus.config.ts
 scripts: [
@@ -429,6 +447,7 @@ scripts: [
 ```
 
 **MDX Components** - Add interactive examples:
+
 ```typescript
 // src/components/SpecExample.tsx
 export function SpecExample({ title, children }) {
@@ -444,6 +463,7 @@ export function SpecExample({ title, children }) {
 ## Test
 
 ### Migration Verification
+
 - [ ] All existing documentation pages accessible
 - [ ] No broken links (internal or external)
 - [ ] Search functionality works correctly
@@ -452,12 +472,14 @@ export function SpecExample({ title, children }) {
 - [ ] Navigation (sidebar, navbar) works as expected
 
 ### Performance Metrics
+
 - [ ] Lighthouse score > 90 for all categories
 - [ ] Time to Interactive < 2s
 - [ ] First Contentful Paint < 1s
 - [ ] Build time < 2 minutes
 
 ### Deployment Verification
+
 - [ ] Production deployment successful on Vercel
 - [ ] Preview deployments work for PRs
 - [ ] Custom domain resolves correctly (if configured)
@@ -465,6 +487,7 @@ export function SpecExample({ title, children }) {
 - [ ] Analytics tracking works
 
 ### User Experience
+
 - [ ] Documentation is easier to navigate than VitePress version
 - [ ] Search returns relevant results
 - [ ] Code examples are easy to copy
@@ -518,8 +541,8 @@ export function SpecExample({ title, children }) {
 
 ## Open Questions
 
-- [x] **Custom Domain**: Use `lean-spec.dev` (primary) or add `www.lean-spec.dev` redirect?
-  - **Decision**: Using `www.lean-spec.dev` as primary, with `lean-spec.dev` redirect configured in Vercel ✅
+- [x] **Custom Domain**: Use `harnspec.dev` (primary) or add `harnspec.gitub.io` redirect?
+  - **Decision**: Using `harnspec.gitub.io` as primary, with `harnspec.dev` redirect configured in Vercel ✅
 - [x] **Keep Old Docs**: Archive `docs/` or delete entirely?
   - **Decision**: Moved to `docs-vitepress-old/` with archive notice ✅
 - [x] **Blog Usage**: Use blog for changelogs or keep CHANGELOG.md?
@@ -541,13 +564,13 @@ export function SpecExample({ title, children }) {
 ## Implementation Notes
 
 **Completed:** 2025-11-03
-**Deployed:** 2025-11-03 at https://www.lean-spec.dev
+**Deployed:** 2025-11-03 at <https://harnspec.gitub.io>
 
 ### What Was Done
 
 1. **Setup Phase**
    - Initialized Docusaurus 3.9.2 with TypeScript in `docs-site/` directory
-   - Configured `docusaurus.config.ts` with LeanSpec branding, URL (www.lean-spec.dev), and navigation
+   - Configured `docusaurus.config.ts` with LeanSpec branding, URL (harnspec.gitub.io), and navigation
    - Set up three sidebars: Guide, Reference, and AI Integration
    - Created `vercel.json` for Vercel deployment configuration
 
@@ -565,7 +588,7 @@ export function SpecExample({ title, children }) {
 3. **Configuration Changes**
    - Updated root `package.json`:
      - Changed docs scripts to point to Docusaurus
-     - Updated homepage URL to `www.lean-spec.dev`
+     - Updated homepage URL to `harnspec.gitub.io`
      - Removed VitePress dependency
    - Updated `README.md` with new documentation URL
    - Updated `.gitignore` to exclude Docusaurus build artifacts
@@ -583,19 +606,21 @@ export function SpecExample({ title, children }) {
 
 ### Deployment Completed
 
-✅ **Site deployed successfully on Vercel:** https://www.lean-spec.dev
+✅ **Site deployed successfully on Vercel:** <https://harnspec.gitub.io>
 
 **Deployment Configuration:**
-- Repository: `codervisor/lean-spec` connected to Vercel
+
+- Repository: `codervisor/harnspec` connected to Vercel
 - Framework Preset: Docusaurus
 - Root Directory: `docs-site`
 - Build Command: `npm run build`
 - Output Directory: `build`
-- Custom Domain: `www.lean-spec.dev` (primary) with `lean-spec.dev` redirect
+- Custom Domain: `harnspec.gitub.io` (primary) with `harnspec.dev` redirect
 - SSL Certificate: Automatically provisioned and active
 - Preview Deployments: Enabled for all branches
 
 **Future Enhancements (Optional):**
+
 - Apply for Algolia DocSearch (better search than local)
 - Enable Vercel Analytics
 - Add versioning when needed

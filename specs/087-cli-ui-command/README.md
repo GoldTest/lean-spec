@@ -21,18 +21,19 @@ depends_on:
   - 035-live-specs-showcase
 ---
 
-# CLI UI Command: `lean-spec ui`
+# CLI UI Command: `harnspec ui`
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-17 · **Tags**: cli, web, dx, integration
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development  
 **Related**: Spec 035 (live-specs-showcase), Spec 081 (web-app-ux-redesign), Spec 082 (web-realtime-sync-architecture)
 
 ## Current Status
 
 **Phase 1: CLI Command (Monorepo Mode)** - ✅ **COMPLETE**
-- Basic `lean-spec ui` command implemented with all options
+
+- Basic `harnspec ui` command implemented with all options
 - Monorepo detection working (checks for `packages/web`)
 - Package manager auto-detection (pnpm/yarn/npm)
 - Port validation (1-65535 range)
@@ -43,15 +44,18 @@ depends_on:
 ### Implementation Approach
 
 **Phase 1: CLI command (packages/cli/src/commands/ui.ts)**
-- `startUi` validates ports, resolves specs via explicit flag, `.lean-spec/config.json`, YAML configs, or common folder heuristics.
+
+- `startUi` validates ports, resolves specs via explicit flag, `.harnspec/config.json`, YAML configs, or common folder heuristics.
 - `detectPackageManager()` centralizes pnpm/yarn/npm detection using user agents + lockfiles so both dev and production code paths invoke the right tool.
 - `runLocalWeb()` now sets `SPECS_MODE=filesystem`, inherits the detected package manager (`pnpm run dev`, `yarn run dev`, etc.), auto-opens the browser, and tears down cleanly on `SIGINT`.
 
 **Phase 2: Published runner (`runPublishedUI`)**
+
 - Outside the monorepo we construct the proper command (`pnpm dlx --prefer-offline @leanspec/ui ...`, `yarn dlx ...`, or `npx --yes ...`) and stream stdio straight through so the packaged UI owns the console experience.
 - Dry runs show the exact delegation command for both monorepo and external cases, enabling smoke tests without starting servers.
 
 **@leanspec/ui package (packages/ui/)**
+
 - Next.js config now emits `output: 'standalone'`, producing `/.next/standalone/packages/web/server.js` plus the necessary node_modules snapshot.
 - `scripts/prepare-dist.mjs`
   - Ensures a fresh web build exists (running `pnpm --filter @leanspec/web build` on demand).
@@ -61,6 +65,7 @@ depends_on:
   - Runs `node dist/standalone/packages/web/server.js` with `SPECS_MODE=filesystem`, opens the browser after launch, and surfaces troubleshooting hints when the build is missing.
 
 **Release automation**
+
 - `.github/workflows/publish-ui.yml` installs dependencies, runs `pnpm --filter @leanspec/ui build`, and publishes the package with provenance whenever a `ui-v*` tag is pushed or the workflow is dispatched.
   
 **Phase 2: Standalone UI Package (packages/ui/)**
@@ -136,21 +141,25 @@ process.on('SIGINT', () => {
 ### Package Publishing Strategy
 
 **Option 1: Separate @leanspec/ui package** (Recommended)
+
 - **Pros**: Clean separation, can be used standalone, smaller CLI package
 - **Cons**: One more package to maintain
-- **Use case**: External projects using `npx lean-spec ui`
+- **Use case**: External projects using `npx harnspec ui`
 
 **Option 2: Bundle in @leanspec/web**
+
 - **Pros**: Reuse existing package
 - **Cons**: Web package is currently private, larger dependency
 - **Use case**: Make `@leanspec/web` public with CLI wrapper
 
-**Option 3: Bundle in lean-spec CLI**
+**Option 3: Bundle in harnspec CLI**
+
 - **Pros**: Single package install
 - **Cons**: CLI becomes massive (Next.js + React = ~50MB)
 - **Use case**: All-in-one installation
 
 **Recommendation: Option 1** - Create `@leanspec/ui` as a thin wrapper around `@leanspec/web` that:
+
 - Shares code with `@leanspec/web` (monorepo symlinks)
 - Has its own bin/ui.js entry point
 - Can be published separately
@@ -165,7 +174,7 @@ function detectSpecsDirectory(): string | null {
     './spec',
     './docs/specs',
     './docs/spec',
-    './.lean-spec/specs'
+    './.harnspec/specs'
   ];
   
   for (const candidate of candidates) {
@@ -195,8 +204,9 @@ The web UI will use the **filesystem mode** (spec 082) for local projects:
 - No manual seeding or sync required
 
 **Environment Configuration:**
+
 ```bash
-# Automatically set by lean-spec ui command
+# Automatically set by harnspec ui command
 SPECS_MODE=filesystem
 SPECS_DIR=/absolute/path/to/project/specs
 PORT=3000
@@ -207,6 +217,7 @@ PORT=3000
 ### Phase 1: CLI Command (Week 1)
 
 **Day 1-2: Basic Command Implementation** - ✅ **COMPLETE**
+
 - [x] Create `packages/cli/src/commands/ui.ts`
 - [x] Implement command registration in registry
 - [x] Add monorepo detection logic (check for `packages/web`)
@@ -220,6 +231,7 @@ PORT=3000
 - [x] Comprehensive error handling
 
 **Day 3: External Package Delegation** - ✅ **COMPLETE**
+
 - [x] Implement `runPublishedUI()` that spawns pnpm/yarn/npm runners for `@leanspec/ui`
 - [x] Add specs directory auto-detection (config + heuristics)
 - [x] Add error handling for missing specs / missing build artifacts
@@ -229,6 +241,7 @@ PORT=3000
 ### Phase 2: Standalone UI Package (Week 2) - ✅ **COMPLETE**
 
 **Day 4-5: Package Structure**
+
 - [x] Create `packages/ui/` directory
 - [x] Build wrapper + dist copier sourced from `packages/web`
 - [x] Create `bin/ui.js` wrapper script
@@ -237,6 +250,7 @@ PORT=3000
 - [x] Add README with usage + troubleshooting instructions
 
 **Day 6-7: Standalone Build**
+
 - [x] Configure Next.js for standalone builds (`output: 'standalone'`)
 - [x] Test production build works and copies nested workspace paths
 - [x] Verify bundle completeness via `node packages/ui/bin/ui.js --dry-run`
@@ -244,7 +258,8 @@ PORT=3000
 - [x] Browser auto-open + graceful shutdown
 
 **Day 8: Integration Testing**
-- [x] Test `lean-spec ui` in monorepo (dev mode, dry-run)
+
+- [x] Test `harnspec ui` in monorepo (dev mode, dry-run)
 - [x] Test external invocation (`node ... ui --specs ... --dry-run`)
 - [x] Validate missing specs messaging + port validation
 - [ ] Full manual verification of realtime filesystem cache (tracked for follow-up release)
@@ -252,6 +267,7 @@ PORT=3000
 ### Phase 3: Documentation & Polish (Week 3)
 
 **Day 9-10: Documentation**
+
 - [x] Update CLI help text with `ui` command + specs override example
 - [x] Add examples to main README (Quick Start step 4)
 - [x] Create @leanspec/ui README with usage + env docs
@@ -259,6 +275,7 @@ PORT=3000
 - [x] Add troubleshooting guide for the published package
 
 **Day 11-12: Publishing Preparation**
+
 - [x] Version bump coordination (`@leanspec/ui@0.3.0`)
 - [x] Update CHANGELOG.md
 - [ ] Test npm publish dry-run (handled during release freeze)
@@ -266,8 +283,9 @@ PORT=3000
 - [ ] Test installation from npm registry (will happen after first publish)
 
 **Day 13: Release**
+
 - [ ] Publish `@leanspec/ui` to npm (next release tag `ui-v0.3.0`)
-- [ ] Publish updated `lean-spec` CLI to npm (bundled with release cadence)
+- [ ] Publish updated `harnspec` CLI to npm (bundled with release cadence)
 - [ ] Create GitHub release with notes
 - [ ] Announce feature in docs/social once npm publish is live
 
@@ -276,8 +294,9 @@ PORT=3000
 ### Functional Testing
 
 **CLI Command:**
-- [x] `lean-spec ui` works in LeanSpec monorepo (dev mode dry-run)
-- [x] `lean-spec ui` works in external projects (delegates via pnpm/yarn/npm dry-run)
+
+- [x] `harnspec ui` works in LeanSpec monorepo (dev mode dry-run)
+- [x] `harnspec ui` works in external projects (delegates via pnpm/yarn/npm dry-run)
 - [x] `--specs` option overrides auto-detection
 - [x] `--port` option changes port correctly
 - [x] `--no-open` prevents browser from opening
@@ -288,6 +307,7 @@ PORT=3000
 - [x] Package manager detection (pnpm/yarn/npm)
 
 **Standalone UI Package:**
+
 - [ ] `npx @leanspec/ui` launches web UI (will verify after first publish)
 - [x] Dry-run confirms env vars (SPECS_MODE/SPECS_DIR) and command construction
 - [x] Works with custom `--specs` directory via CLI flag
@@ -296,6 +316,7 @@ PORT=3000
 - [ ] Cache updates work (realtime within 60s)
 
 **Integration:**
+
 - [x] CLI delegates to standalone package when outside the monorepo (dry-run verification)
 - [x] Monorepo dev mode takes precedence over published package
 - [ ] Both modes can run simultaneously (different ports)
@@ -331,23 +352,27 @@ PORT=3000
 ### Design Decisions
 
 **Why separate @leanspec/ui package?**
+
 - **Clean separation**: CLI stays lightweight, UI is separate concern
 - **Standalone use**: Users can run `npx @leanspec/ui` directly
 - **Smaller CLI**: Don't bloat CLI with Next.js/React dependencies
 - **Easier maintenance**: UI can version independently
 
 **Why not bundle UI in CLI?**
+
 - **Size**: Next.js + React = ~50MB, too large for CLI
 - **Dependencies**: React, Next.js not needed for CLI users who never use UI
 - **Complexity**: Build process more complicated
 - **Performance**: Slower CLI startup if bundled
 
 **Why detect monorepo mode?**
+
 - **Dev experience**: LeanSpec contributors shouldn't need published package
 - **Faster iteration**: Local changes immediately available
 - **Flexibility**: Can test unreleased UI changes
 
 **Why filesystem mode (spec 082)?**
+
 - **No setup**: Works immediately, no database required
 - **Realtime**: Changes appear within 60s (cache TTL)
 - **Simple**: Single source of truth (specs/ directory)
@@ -357,7 +382,7 @@ PORT=3000
 
 | Package | Compressed | Unpacked | Dependencies |
 |---------|-----------|----------|--------------|
-| `lean-spec` CLI | ~500KB | ~2MB | 20 packages |
+| `harnspec` CLI | ~500KB | ~2MB | 20 packages |
 | `@leanspec/ui` | ~5MB | ~25MB | Next.js, React, UI libs |
 | **Combined** | ~5.5MB | ~27MB | Separate installs |
 
@@ -366,21 +391,25 @@ PORT=3000
 ### Alternative Approaches Considered
 
 **1. Embedded Server in CLI**
+
 - Pros: Single package
 - Cons: Massive size, complex build, slow startup
 - **Rejected**: Too complex, violates Unix philosophy
 
 **2. Static HTML Export**
+
 - Pros: No server needed, tiny package
 - Cons: No realtime updates, limited interactivity
 - **Rejected**: Defeats purpose of web UI
 
 **3. Electron App**
+
 - Pros: Native feel, auto-updates
 - Cons: Even larger (100MB+), more maintenance
 - **Rejected**: Overkill for this use case
 
 **4. Browser Extension**
+
 - Pros: Integrated in browser
 - Cons: Limited filesystem access, requires extension install
 - **Rejected**: Adds friction to workflow
@@ -388,7 +417,7 @@ PORT=3000
 ### Open Questions
 
 - [ ] Should we support watching for file changes (instant reload) beyond the filesystem cache window? (Deferred to a future spec once we feel pain)
-- [ ] Should we add `lean-spec ui export/share` flows for static hosting or temporary sharing?
+- [ ] Should we add `harnspec ui export/share` flows for static hosting or temporary sharing?
 - [ ] Should we bundle a version checker (warn if CLI/UI versions are out of sync)? (Candidate for the docs polish phase)
 
 ### Related Work
@@ -400,9 +429,10 @@ PORT=3000
 ### Future Enhancements
 
 **v0.4+:**
-- [ ] `lean-spec ui export` - Static HTML export
-- [ ] `lean-spec ui share` - Temporary public URL (via ngrok/tunneling)
-- [ ] `lean-spec ui --watch` - Instant reload on file changes
+
+- [ ] `harnspec ui export` - Static HTML export
+- [ ] `harnspec ui share` - Temporary public URL (via ngrok/tunneling)
+- [ ] `harnspec ui --watch` - Instant reload on file changes
 - [ ] Desktop app wrapper (Tauri/Electron)
 - [ ] VSCode webview integration (spec 017)
 - [ ] Multi-project mode (switch between projects in UI)
@@ -410,10 +440,12 @@ PORT=3000
 ### Dependencies
 
 **This spec depends on:**
+
 - Spec 082 (filesystem mode) - Must be complete for realtime updates
 - Spec 081 (UX redesign) - UI should be polished before exposing via CLI
 
 **This spec enables:**
+
 - Better DX for visual learners
 - Easier onboarding (show, don't tell)
 - Spec 017 (VSCode extension) - Can embed UI in webview

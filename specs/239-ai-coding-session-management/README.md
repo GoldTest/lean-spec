@@ -49,6 +49,7 @@ Build a complete session management system:
 ### Scope
 
 **In Scope**:
+
 - Session lifecycle (create, start, monitor, stop, archive)
 - Support for major AI coding tools (Claude Code, Copilot, Codex-CLI, OpenCode)
 - SQLite-based session storage
@@ -57,6 +58,7 @@ Build a complete session management system:
 - UI components for session management
 
 **Out of Scope** (handled by other specs):
+
 - Autonomous quality loops (Ralph mode - spec 171)
 - Desktop kanban board UI (spec 168)
 - Chatbot orchestration (spec 94)
@@ -261,7 +263,7 @@ impl ToolManager {
 └─────────────────────────────────────────────────────────┘
 
 1. CREATE
-   User: lean-spec session create --spec 171 --tool claude
+   User: harnspec session create --spec 171 --tool claude
    System: 
      → Generate session ID
      → Insert into sessions table (status: pending)
@@ -269,7 +271,7 @@ impl ToolManager {
      → Return session ID
 
 2. START
-   User: lean-spec session start <session_id>
+   User: harnspec session start <session_id>
    System:
      → Load session from database
      → Validate tool environment
@@ -279,28 +281,28 @@ impl ToolManager {
      → Begin log streaming
 
 3. MONITOR
-   User: lean-spec session logs <session_id> --follow
+   User: harnspec session logs <session_id> --follow
    System:
      → Query session_logs where session_id = ?
      → Stream new logs via WebSocket
      → Update UI in real-time
 
 4. PAUSE (optional)
-   User: lean-spec session pause <session_id>
+   User: harnspec session pause <session_id>
    System:
      → Send SIGSTOP to process
      → Update status: paused
      → Log event: paused
 
 5. RESUME (optional)
-   User: lean-spec session resume <session_id>
+   User: harnspec session resume <session_id>
    System:
      → Send SIGCONT to process
      → Update status: running
      → Log event: resumed
 
 6. STOP
-   User: lean-spec session stop <session_id>
+   User: harnspec session stop <session_id>
    System:
      → Send SIGTERM to process
      → Wait for graceful shutdown (10s timeout)
@@ -320,7 +322,7 @@ impl ToolManager {
      → Log event: failed
 
 8. ARCHIVE (optional)
-   User: lean-spec session archive <session_id>
+   User: harnspec session archive <session_id>
    System:
      → Export logs to file: .leanspec/sessions/{session_id}.log
      → Keep metadata in database
@@ -331,38 +333,38 @@ impl ToolManager {
 
 ```bash
 # Create a new session
-lean-spec session create --spec <spec> --tool <tool> [--mode <mode>]
+harnspec session create --spec <spec> --tool <tool> [--mode <mode>]
 
 # Start a session
-lean-spec session start <session_id>
+harnspec session start <session_id>
 
 # Create and start in one command
-lean-spec session run --spec <spec> --tool <tool> [--mode <mode>]
+harnspec session run --spec <spec> --tool <tool> [--mode <mode>]
 
 # List sessions
-lean-spec session list [--spec <spec>] [--status <status>] [--tool <tool>]
+harnspec session list [--spec <spec>] [--status <status>] [--tool <tool>]
 
 # View session details
-lean-spec session view <session_id>
+harnspec session view <session_id>
 
 # View session logs
-lean-spec session logs <session_id> [--follow] [--tail <n>]
+harnspec session logs <session_id> [--follow] [--tail <n>]
 
 # Monitor session in real-time
-lean-spec session monitor <session_id>
+harnspec session monitor <session_id>
 
 # Pause/Resume session
-lean-spec session pause <session_id>
-lean-spec session resume <session_id>
+harnspec session pause <session_id>
+harnspec session resume <session_id>
 
 # Stop session
-lean-spec session stop <session_id>
+harnspec session stop <session_id>
 
 # Archive session
-lean-spec session archive <session_id>
+harnspec session archive <session_id>
 
 # Delete session
-lean-spec session delete <session_id>
+harnspec session delete <session_id>
 ```
 
 ### HTTP API Endpoints
@@ -552,16 +554,19 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Integration with Existing Specs
 
 **Spec 168 (Orchestration Platform)** depends on this spec:
+
 - Desktop app "Implement with AI" button calls session API
 - Real-time terminal output powered by WebSocket streaming
 - Session history displayed in spec detail view
 
 **Spec 221 (Unified Workflow)** depends on this spec:
+
 - CLI agent commands use session management under the hood
 - Ralph mode creates persistent sessions for iteration tracking
 - Chatbot triggers sessions via HTTP API
 
 **Spec 171 (Ralph Mode)** depends on this spec:
+
 - Each Ralph iteration is a session event
 - Test results logged to session_logs
 - Critic verification events stored in session_events
@@ -652,18 +657,18 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Phase 5: CLI Commands (Week 7)
 
 - [x] **Session Commands**
-  - [x] lean-spec session create
-  - [x] lean-spec session start
-  - [x] lean-spec session run (create + start)
-  - [x] lean-spec session list
-  - [x] lean-spec session view
-  - [x] lean-spec session logs
-  - [x] lean-spec session pause
-  - [x] lean-spec session resume
-  - [x] lean-spec session stop
-  - [x] lean-spec session delete
-  - [x] lean-spec session archive
-  - [x] lean-spec session rotate-logs
+  - [x] harnspec session create
+  - [x] harnspec session start
+  - [x] harnspec session run (create + start)
+  - [x] harnspec session list
+  - [x] harnspec session view
+  - [x] harnspec session logs
+  - [x] harnspec session pause
+  - [x] harnspec session resume
+  - [x] harnspec session stop
+  - [x] harnspec session delete
+  - [x] harnspec session archive
+  - [x] harnspec session rotate-logs
 
 ### Phase 6: UI Components (Weeks 8-9)
 
@@ -718,6 +723,7 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ## Test
 
 ### Unit Tests
+
 - [x] SessionManager CRUD operations
 - [x] Tool adapter validation
 - [x] Process spawning and control
@@ -725,6 +731,7 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 - [x] Database migrations
 
 ### Integration Tests
+
 - [ ] Full session lifecycle (create → start → complete)
 - [ ] WebSocket log streaming
 - [ ] HTTP API endpoints
@@ -732,12 +739,14 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 - [ ] Multi-session isolation
 
 ### Performance Tests
+
 - [ ] Log streaming latency <500ms
 - [ ] 100+ concurrent sessions
 - [ ] 1M+ log entries query time
 - [ ] WebSocket connection stability (24h+)
 
 ### User Acceptance Tests
+
 - [x] Create session from Desktop UI
 - [x] Monitor session in real-time
 - [x] Pause and resume session
@@ -749,32 +758,38 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Tool Research
 
 **Claude Code**:
+
 - May not have public CLI yet (as of Jan 2025)
 - Fallback: Use Anthropic API directly with system prompts
 - Alternative: agent-relay Claude runner
 
 **GitHub Copilot CLI**:
+
 - Available via: gh copilot suggest
 - Requires: gh CLI + copilot extension
 - Interactive prompts via stdin/stdout
 
 **Codex-CLI**:
+
 - Open source: github.com/microsoft/codex-cli
 - Uses OpenAI Codex API (deprecated?)
 - May need migration to GPT-4
 
 **OpenCode**:
+
 - Research needed for CLI existence
 - May be web-only tool
 
 ### Session Security
 
 **Considerations**:
+
 - Sessions run with user's permissions
 - Environment variables may contain secrets
 - Logs may contain API keys or tokens
 
 **Mitigations**:
+
 - Sanitize environment variables before logging
 - Redact common secret patterns (API_KEY, TOKEN, etc.)
 - Encrypt session_logs table at rest
@@ -783,11 +798,13 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Token Tracking
 
 **Why Track Tokens?**:
+
 - Cost estimation per session
 - Context economy monitoring
 - Ralph mode iteration budgets
 
 **Implementation**:
+
 - Parse tool output for token counts
 - Store in session_metadata
 - Display in UI (e.g., "$1.23 estimated cost")
@@ -796,11 +813,13 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Session Recovery
 
 **Scenarios**:
+
 - Desktop app crashes during session
 - HTTP server restarts
 - System reboot
 
 **Solution**:
+
 - Sessions persist in SQLite
 - Running sessions marked as "interrupted" on restart
 - UI prompts: "Resume interrupted sessions?"
@@ -809,10 +828,12 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Related Specs
 
 **Dependencies**:
+
 - 186-rust-http-server: HTTP API foundation
 - 187-vite-spa-migration: UI foundation
 
 **Dependents**:
+
 - 168-leanspec-orchestration-platform: Uses sessions for desktop orchestration
 - 221-ai-orchestration-integration: Uses sessions for unified workflow
 - 171-burst-mode-orchestrator: Uses sessions for Ralph mode iterations
@@ -821,21 +842,25 @@ export function SessionControls({ sessionId, status, ...handlers }: SessionContr
 ### Future Enhancements
 
 **Cloud Sync**:
+
 - Sync sessions to cloud storage
 - Share session replays with team
 - Cross-device session continuity
 
 **Session Templates**:
+
 - Save successful sessions as templates
 - Replay with different specs
 - Share templates with community
 
 **AI Assistance**:
+
 - Analyze failed sessions for patterns
 - Suggest fixes based on error logs
 - Auto-generate retry commands
 
 **Analytics**:
+
 - Session success rate by tool
 - Average duration per spec type
 - Most common failure modes

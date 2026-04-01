@@ -18,7 +18,7 @@ completed: '2025-11-24'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-24
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -34,14 +34,16 @@ The current Chinese translations in the documentation site are overly literal an
 ### Translation Guidelines
 
 **1. Keep English Terms for Core Concepts**
+
 - "Spec" → Keep as "Spec" (not "规格")
 - "LeanSpec" → Keep as "LeanSpec"
 - "CLI" → Keep as "CLI"
 - "Token" → Keep as "Token" (in context economy discussions)
-- Technical commands → Keep in English (e.g., `lean-spec create`)
+- Technical commands → Keep in English (e.g., `harnspec create`)
 
 **2. Add English References for Technical Terms**
 When translating necessary technical terms, include original English in parentheses:
+
 - "Context Economy" → "上下文经济 (Context Economy)"
 - "Signal-to-Noise Ratio" → "信噪比 (Signal-to-Noise)"
 - "Progressive Disclosure" → "渐进式披露 (Progressive Disclosure)"
@@ -49,12 +51,14 @@ When translating necessary technical terms, include original English in parenthe
 
 **3. Avoid Literal Translation**
 Use natural Chinese expressions instead of word-by-word translation:
+
 - ❌ "规格文件" (literal: specification file)
 - ✅ "Spec 文件" (natural, clear)
 - ❌ "为什么这个很重要" (literal: why this is important)
 - ✅ "重要性" or contextual phrasing (natural)
 
 **4. Maintain Technical Accuracy**
+
 - Keep code examples, commands, and file paths in English
 - Use Chinese for explanatory text, concepts, and instructions
 - Balance between readability and technical precision
@@ -62,11 +66,13 @@ Use natural Chinese expressions instead of word-by-word translation:
 ### Scope
 
 **Phase 1: Documentation Guidelines**
+
 - Update `docs-site/AGENTS.md` with translation rules
 - Create translation glossary for common terms
 - Document examples of good vs. bad translations
 
 **Phase 2: Existing Content Review**
+
 - Audit current Chinese translations
 - Prioritize high-traffic pages (homepage, getting started, core guides)
 - Update translations following new guidelines
@@ -96,11 +102,13 @@ Use natural Chinese expressions instead of word-by-word translation:
 ### Quality Checks
 
 **Readability Test:**
+
 - Chinese text should be natural and fluent
 - Technical content should be clear without ambiguity
 - Balance between localization and technical accuracy
 
 **Consistency Test:**
+
 - Same term translated consistently across all pages
 - Core concepts always use English (not translated)
 - Technical terms always have English reference

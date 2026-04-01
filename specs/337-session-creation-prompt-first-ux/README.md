@@ -30,19 +30,22 @@ The current "Create AI Session" dialog uses a traditional form layout that doesn
 ## Requirements
 
 ### Prompt-First Input
+
 - [x] Replace the form-based dialog with a prompt-centric layout using the `PromptInput` component
 - [x] The prompt textarea is the primary and most prominent element
 - [x] Support Enter-to-submit (Shift+Enter for newlines)
 
 ### Visible & Customizable Prompt Default
+
 - [x] Show users the effective prompt that will be sent to the runner (no hidden assembly)
 - [x] Provide a sensible default prompt template when specs are attached (e.g., editable "Implement the following specs" preamble)
 - [x] Users can edit or replace the default — the template is a starting point, not a locked behavior
 - [x] Backend API: make `prompt` truly optional; when omitted, the backend applies a configurable default template (not hardcoded in `build_context_prompt`)
-- [x] Consider a project-level prompt template config (e.g., in `.lean-spec/config.yaml`) so teams can customize
+- [x] Consider a project-level prompt template config (e.g., in `.harnspec/config.yaml`) so teams can customize
 - [x] The composed prompt (template + specs) should be previewable before session start
 
 ### Specs as Context Attachments (Shared Pattern)
+
 - [x] Replace single `SpecSearchSelect` dropdown with a multi-spec context attachment pattern
 - [x] Add a context button (e.g., `@` or `+` icon) that opens a spec search popover
 - [x] Display attached specs as inline chips/badges near the prompt textarea
@@ -52,12 +55,14 @@ The current "Create AI Session" dialog uses a traditional form layout that doesn
 - [x] **Reuse the same spec attachment UI in the AI chat input** — both sessions and chat share one pattern
 
 ### Runner & Mode Selectors
+
 - [x] Display runner and mode as compact inline selectors in the footer area (pill/button style)
 - [x] Runner selector shows currently selected runner with dropdown on click
 - [x] Mode selector shows current mode with toggle or dropdown
 - [x] Keep existing runner auto-detection logic
 
 ### Layout & Interaction
+
 - [x] Remove the full `Dialog` wrapper — consider a panel/inline approach
 - [x] Auto-focus the prompt textarea on open
 - [x] Show error state inline
@@ -72,6 +77,7 @@ The current "Create AI Session" dialog uses a traditional form layout that doesn
 ## Technical Notes
 
 ### Key Files
+
 - `packages/ui/src/components/sessions/session-create-dialog.tsx` — current component to redesign
 - `packages/ui/src/components/library/ai-elements/prompt-input.tsx` — prompt input (wire referenced sources)
 - `packages/ui/src/components/chat/chat-sidebar.tsx` — chat must also adopt spec-context pattern
@@ -80,8 +86,10 @@ The current "Create AI Session" dialog uses a traditional form layout that doesn
 - `rust/leanspec-core/src/ai_native/chat.rs` — chat system prompt (related)
 
 ### Backend Changes Required
+
 The current `build_context_prompt()` hardcodes `"Implement the following specs:\n\n"`. This must be either:
-1. Moved to a configurable template in `.lean-spec/config.yaml`, or
+
+1. Moved to a configurable template in `.harnspec/config.yaml`, or
 2. Sent from the frontend as part of the prompt (making the assembly transparent)
 
 The `PromptInputMessage` type must be extended to include referenced sources in `onSubmit`.
@@ -102,7 +110,7 @@ The `PromptInputMessage` type must be extended to include referenced sources in 
 - Added shared spec context attachment component in `packages/ui/src/components/spec-context-attachments.tsx` and reused it in session creation and chat input.
 - Extended `PromptInputMessage` to include `referencedSources` and wired end-to-end in `packages/ui/src/components/library/ai-elements/prompt-input.tsx`.
 - Added chat-side context plumbing in `packages/ui/src/components/chat/chat-container.tsx` so selected spec sources are included with submitted prompt text.
-- Backend prompt composition now supports configurable template fallback via `session_prompt_template` in `.lean-spec/config.yaml` (`rust/leanspec-core/src/types/config.rs`, `rust/leanspec-core/src/sessions/manager.rs`).
+- Backend prompt composition now supports configurable template fallback via `session_prompt_template` in `.harnspec/config.yaml` (`rust/leanspec-core/src/types/config.rs`, `rust/leanspec-core/src/sessions/manager.rs`).
 - Added backend tests covering explicit prompt passthrough and configured template behavior in `rust/leanspec-core/src/sessions/manager.rs`.
 - Validation on current workspace state:
   - `pnpm typecheck`: pass

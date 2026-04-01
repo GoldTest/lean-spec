@@ -24,7 +24,7 @@ transitions:
 
 ## Overview
 
-The TUI currently operates on a single specs directory passed as an argument. It has no awareness of the project registry (`~/.lean-spec/projects.json`) that the web UI uses to manage multiple projects. The web UI provides a project switcher dropdown, a full project management page with CRUD operations, favorites, color coding, and GitHub import. The TUI has none of this — users must exit and relaunch with a different path to view another project's specs.
+The TUI currently operates on a single specs directory passed as an argument. It has no awareness of the project registry (`~/.harnspec/projects.json`) that the web UI uses to manage multiple projects. The web UI provides a project switcher dropdown, a full project management page with CRUD operations, favorites, color coding, and GitHub import. The TUI has none of this — users must exit and relaunch with a different path to view another project's specs.
 
 **Goal**: Bring project management to the TUI by integrating with the existing `ProjectRegistry` from `leanspec-core`, enabling multi-project switching and basic project management without leaving the terminal.
 
@@ -44,7 +44,7 @@ Add a project switcher accessible via `p` key from any view:
 ┌─ Switch Project ──────────────────────┐
 │ Search: _                             │
 │                                       │
-│ ★ lean-spec          ~/projects/lean  │
+│ ★ harnspec          ~/projects/lean  │
 │   acme-backend       ~/projects/acme  │
 │   mobile-app         ~/projects/mob…  │
 │   ◐ cloud-infra (gh) codervisor/inf…  │
@@ -54,6 +54,7 @@ Add a project switcher accessible via `p` key from any view:
 ```
 
 **Behavior:**
+
 - Opens as a centered overlay (popup) above the current view
 - Lists all projects from `ProjectRegistry`, sorted: favorites first, then by `last_accessed` descending
 - Each row shows: favorite star (`★`), project name, truncated path (or `owner/repo` for GitHub projects)
@@ -65,6 +66,7 @@ Add a project switcher accessible via `p` key from any view:
 - Status bar shows current project name after switching
 
 **Integration with `ProjectRegistry`:**
+
 - On TUI launch: if no `--specs-dir` argument, auto-load the most recently accessed project from the registry
 - If `--specs-dir` is provided, use it directly (backward compatible)
 - New `--project <name-or-id>` flag to launch directly into a named project
@@ -76,8 +78,8 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 ```
 ┌─ Projects ──────────────────────────────────────┐
 │                                                  │
-│ ★ lean-spec            42 specs  96% complete    │
-│   ~/projects/codervisor/lean-spec                │
+│ ★ harnspec            42 specs  96% complete    │
+│   ~/projects/codervisor/harnspec                │
 │   Last accessed: 2 hours ago                     │
 │                                                  │
 │   acme-backend         18 specs  72% complete    │
@@ -93,6 +95,7 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 ```
 
 **Project card details:**
+
 - Project name with favorite star and color indicator
 - Path (full, not truncated)
 - Spec count and completion rate (percentage of specs with status `complete`)
@@ -100,7 +103,8 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 - Validation status icon: `✓` valid, `✗` invalid path, `?` unchecked
 
 **Actions (on selected project):**
-- `a` — **Add project**: prompts for directory path, auto-detects specs dir (checks `specs/`, `.lean-spec/specs/`, `doc/specs/`, `docs/specs/`)
+
+- `a` — **Add project**: prompts for directory path, auto-detects specs dir (checks `specs/`, `.harnspec/specs/`, `doc/specs/`, `docs/specs/`)
 - `r` — **Rename**: inline edit of project name
 - `c` — **Change color**: cycle through preset colors or enter hex code
 - `f` — **Toggle favorite**: star/unstar the project
@@ -109,6 +113,7 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 - `Enter` — **Open**: switches to this project's specs view
 
 **Add project flow:**
+
 ```
 ┌─ Add Project ─────────────────────────┐
 │ Path: ~/projects/new-project_         │
@@ -118,6 +123,7 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 │ [Enter] add  [Esc] cancel             │
 └───────────────────────────────────────┘
 ```
+
 - Text input for path with basic tab-completion (list directories)
 - Auto-detects specs directory and shows preview of spec count
 - Validates path exists before adding
@@ -127,7 +133,7 @@ Add a dedicated project management view accessible via `P` (shift-p) or from the
 Update the TUI status bar to show the current project:
 
 ```
- lean-spec │ List │ 42 specs │ #369 │ ? help
+ harnspec │ List │ 42 specs │ #369 │ ? help
 ```
 
 - Project name appears at the left of the status bar
@@ -140,10 +146,10 @@ Enhance TUI launch to be project-aware:
 
 | Scenario | Behavior |
 |----------|----------|
-| `lean-spec tui` (no args), CWD is a registered project | Open that project (**CWD takes priority**) |
-| `lean-spec tui` (no args), CWD not a registered project | Load most recently accessed project from registry |
-| `lean-spec tui --specs-dir ./specs` | Use specified directory (existing behavior) |
-| `lean-spec tui --project acme` | Load named project from registry |
+| `harnspec tui` (no args), CWD is a registered project | Open that project (**CWD takes priority**) |
+| `harnspec tui` (no args), CWD not a registered project | Load most recently accessed project from registry |
+| `harnspec tui --specs-dir ./specs` | Use specified directory (existing behavior) |
+| `harnspec tui --project acme` | Load named project from registry |
 | No projects in registry | Show "Add Project" prompt on first launch |
 | Registry project path invalid | Show warning, offer to remove or re-point |
 
@@ -174,8 +180,8 @@ Enhance TUI launch to be project-aware:
 
 ## Test
 
-- [x] `lean-spec tui` with no args loads the most recently accessed project
-- [x] `lean-spec tui --project acme` loads the named project
+- [x] `harnspec tui` with no args loads the most recently accessed project
+- [x] `harnspec tui --project acme` loads the named project
 - [x] `p` key opens project switcher overlay with all registered projects
 - [x] Switching projects reloads specs and updates the sidebar
 - [x] Favorites sort to the top of the project list

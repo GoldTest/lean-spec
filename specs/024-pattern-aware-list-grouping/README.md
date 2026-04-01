@@ -19,8 +19,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: ux, polish, v0.2.0
 
-
-> Make `lean-spec list` adapt to flat vs date-grouped folder patterns
+> Make `harnspec list` adapt to flat vs date-grouped folder patterns
 
 ## Overview
 
@@ -32,7 +31,7 @@ Currently `list.ts` has hardcoded date grouping logic that assumes the `{YYYYMMD
 
 ## Design
 
-Make `lean-spec list` respect the configured folder pattern:
+Make `harnspec list` respect the configured folder pattern:
 
 1. **For date-grouped patterns** (contains `{YYYYMMDD}/`):
    - Group by date as it does now
@@ -47,6 +46,7 @@ Make `lean-spec list` respect the configured folder pattern:
    - Default to flat list if unclear
 
 **Implementation:**
+
 - Read `folderPattern` from config
 - Detect if pattern includes date component
 - Adjust grouping logic in `list.ts` accordingly
@@ -62,6 +62,7 @@ Make `lean-spec list` respect the configured folder pattern:
 - [x] Update documentation
 
 **Implementation Notes:**
+
 - Makes list command respect configured folder patterns
 - Fixes hardcoded date grouping assumption
 - Improves UX for users with flat or custom patterns
@@ -70,7 +71,8 @@ Make `lean-spec list` respect the configured folder pattern:
 - Works with spec 026 (pattern selection during init)
 
 **Technical Approach:**
-1. Read `folderPattern` from `.lean-spec/config.json`
+
+1. Read `folderPattern` from `.harnspec/config.json`
 2. Detect if pattern contains `{YYYYMMDD}/` for date grouping
 3. Apply appropriate grouping strategy in list output
 4. Maintain backward compatibility
@@ -78,17 +80,20 @@ Make `lean-spec list` respect the configured folder pattern:
 ## Implementation (2025-11-05)
 
 **Created new utility module:** `src/utils/pattern-detection.ts`
+
 - Exports `detectPatternType()` function that returns explicit pattern type
 - Pattern types: `flat`, `date-grouped`, or `custom-grouped`
 - Helper functions: `isDateGroupedPattern()`, `shouldGroupSpecs()`
 - Makes the logic testable and reusable
 
 **Updated list command:** `src/commands/list.ts`
+
 - Replaced inline pattern detection with utility function
 - Clearer intent: detect pattern type, then decide rendering strategy
 - Maintains full backward compatibility
 
 **Test coverage:**
+
 - 14 unit tests for pattern-detection utility
 - 4 integration tests for list command:
   - Flat pattern → flat list
@@ -98,6 +103,7 @@ Make `lean-spec list` respect the configured folder pattern:
 - All 261 tests pass
 
 **Files changed:**
+
 - `src/utils/pattern-detection.ts` (new)
 - `src/utils/pattern-detection.test.ts` (new)
 - `src/list-integration.test.ts` (new)

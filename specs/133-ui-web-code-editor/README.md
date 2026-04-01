@@ -16,7 +16,7 @@ updated_at: '2025-12-04T04:10:12.737Z'
 
 > **Status**: 🗓️ Planned · **Priority**: Low · **Created**: 2025-11-28 · **Tags**: ui, ux, feature, editor, dx
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -26,6 +26,7 @@ Enhance `@leanspec/ui` with seamless external editor integration for editing spe
 ### Problem
 
 Users viewing specs in `@leanspec/ui` need to switch context when editing:
+
 1. Find the spec file in their filesystem
 2. Open in their editor manually
 3. Navigate to the correct section
@@ -35,6 +36,7 @@ This friction breaks the reading-editing workflow.
 ### Solution
 
 Add "Edit" buttons throughout the UI that open files directly in the user's configured editor:
+
 - **Spec content**: Open spec README.md at specific line
 - **Context files**: Open AGENTS.md, config files, etc.
 - **Sub-specs**: Open specific sub-spec files
@@ -54,7 +56,8 @@ Add "Edit" buttons throughout the UI that open files directly in the user's conf
 | **GitHub.dev** | Works remotely, familiar VS Code UI | Requires GitHub repo, no AI copilot |
 | **Embedded Monaco** | Works anywhere, self-contained | +500KB bundle, no AI assistance |
 
-**Decision**: 
+**Decision**:
+
 - **Local mode** → External editor (VS Code, Cursor, etc.)
 - **Remote mode** → GitHub.dev as primary fallback, with optional lightweight Monaco for non-GitHub projects
 
@@ -213,6 +216,7 @@ export function useEditHandler(filePath: string, line?: number) {
 ### UI Integration Points
 
 **1. Spec Detail Header** - "Edit" button next to spec title:
+
 ```tsx
 <Button variant="outline" size="sm" onClick={handleEdit}>
   <PencilLine className="h-4 w-4 mr-2" />
@@ -221,6 +225,7 @@ export function useEditHandler(filePath: string, line?: number) {
 ```
 
 **2. Section-Level Edit** - "Edit" icon in TOC or section headers:
+
 ```tsx
 // In TableOfContents component
 <Button 
@@ -237,6 +242,7 @@ export function useEditHandler(filePath: string, line?: number) {
 The existing "Open in Editor" button in `context-file-detail.tsx` follows this pattern.
 
 **4. Quick Actions Dropdown**:
+
 ```tsx
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
@@ -316,7 +322,8 @@ export function getGitHub1sUri(
 }
 ```
 
-**Configuration** (`.lean-spec/config.json`):
+**Configuration** (`.harnspec/config.json`):
+
 ```json
 {
   "github": {
@@ -374,6 +381,7 @@ useFocusRefresh(refetch);
 ## Plan
 
 ### Phase 1: Core Infrastructure
+
 - [ ] Create `lib/deployment-mode.ts` for local/remote detection
 - [ ] Create `lib/editor-links.ts` with multi-editor URI generation
 - [ ] Create `lib/preferences.ts` for editor preference storage
@@ -381,24 +389,28 @@ useFocusRefresh(refetch);
 - [ ] Implement `useFocusRefresh` hook for auto-refresh
 
 ### Phase 2: Local Mode - External Editor
+
 - [ ] Add "Edit in {Editor}" button to spec detail header
 - [ ] Add edit icons to TableOfContents for section-level editing
 - [ ] Implement quick actions dropdown with edit options
 - [ ] Show keyboard shortcut hint (e.g., "Press E to edit")
 
 ### Phase 3: Remote Mode - GitHub.dev Integration
+
 - [ ] Create `lib/github-editor.ts` for GitHub.dev URI generation
-- [ ] Add GitHub config to `.lean-spec/config.json` schema
+- [ ] Add GitHub config to `.harnspec/config.json` schema
 - [ ] Detect GitHub repo info from git remote or config
 - [ ] Fallback to "Copy path" when no GitHub config
 
 ### Phase 4: Editor Selection UI
+
 - [ ] Create `EditorSelector` component with popular editors
 - [ ] Add settings dropdown/dialog for editor preference
 - [ ] Support custom editor URI patterns
 - [ ] Show deployment mode indicator in UI
 
 ### Phase 5: (Future) Lightweight Embedded Editor
+
 - [ ] Evaluate CodeMirror 6 vs simple textarea
 - [ ] Implement for non-GitHub remote deployments
 - [ ] Add save-to-filesystem API route
@@ -407,38 +419,45 @@ useFocusRefresh(refetch);
 ## Test
 
 **Deployment Mode Detection**
+
 - [ ] Correctly identifies localhost as local mode
 - [ ] Correctly identifies Vercel/remote URLs as remote mode
 - [ ] Handles edge cases (local IP, .local domains)
 
 **Local Mode - URI Generation**
+
 - [ ] VS Code URI opens correct file
 - [ ] Cursor URI works correctly
 - [ ] Line number parameter opens at correct line
 - [ ] Handles paths with spaces and special characters
 
 **Remote Mode - GitHub.dev**
+
 - [ ] GitHub.dev link opens correct file in browser
 - [ ] Line number anchor scrolls to correct line
 - [ ] Works with different branch configurations
 - [ ] Graceful fallback when GitHub config missing
 
 **Preference Storage**
+
 - [ ] Editor preference persists across sessions
 - [ ] Default detection works when no preference set
 - [ ] Can switch editors without page reload
 
 **Section Editing**
+
 - [ ] Clicking "Edit Section" opens at correct line
 - [ ] Works for all heading levels (h1-h6)
 - [ ] Handles duplicate heading text correctly
 
 **Auto-Refresh**
+
 - [ ] Spec content updates after returning from editor
 - [ ] No duplicate refreshes on rapid focus changes
 - [ ] Works across browser tabs
 
 **Error Handling**
+
 - [ ] Graceful fallback if editor not installed
 - [ ] Shows helpful message about installing editor
 - [ ] Fallback to copy path if all else fails
@@ -463,6 +482,7 @@ const handleOpenInEditor = () => {
 ```
 
 This spec extends that pattern with:
+
 1. Multi-editor support (not just VS Code)
 2. Line number targeting for section editing
 3. User preference storage
@@ -471,12 +491,14 @@ This spec extends that pattern with:
 ### Alternative: Embedded Editor Modal
 
 A lighter alternative to full web editor: show a simple textarea modal for quick edits, then save via API. Consider for Phase 5 if users want inline editing without switching apps. Only pursue if:
+
 1. Many users deploy remotely without GitHub
 2. GitHub.dev friction is too high for quick edits
 
 ### Remote Editing Limitations
 
 When deployed remotely, be aware of these constraints:
+
 - **GitHub.dev** requires the project to be in a GitHub repository
 - **File sync** after editing requires git commit + refresh
 - **No AI copilot** in GitHub.dev (only basic IntelliSense)

@@ -140,6 +140,7 @@ The biggest gap. Today, the AI chat cannot read the user's project files. When i
 **Security boundary**: All operations scoped to the project directory. No path traversal. No write operations in Phase 1 (specs are written through the spec tools; code is written through sessions/runners).
 
 **Implementation**: These map directly to the existing HTTP API:
+
 - `file_read` → `GET /api/projects/{id}/files/{path}` (already exists)
 - `file_search` → `GET /api/projects/{id}/files?search=...` (already exists)
 - `grep` → New endpoint, or expand file search with regex support
@@ -171,7 +172,7 @@ This is the key differentiator for making LeanSpec chat competitive. Users confi
                                           └── Custom MCP tools
 ```
 
-**Configuration** (in `.lean-spec/config.json` or project config):
+**Configuration** (in `.harnspec/config.json` or project config):
 
 ```json
 {
@@ -193,6 +194,7 @@ This is the key differentiator for making LeanSpec chat competitive. Users confi
 ```
 
 **How it works**:
+
 1. On chat session start, LeanSpec spawns configured MCP servers as child processes
 2. Calls `tools/list` on each to discover available tools
 3. Merges external tools into the `ToolRegistry` (prefixed: `github__create_issue`, `postgres__query`)
@@ -278,6 +280,7 @@ Follow SDD principles: context economy, progressive disclosure, verify against r
 ## Plan
 
 ### Phase 1: Workspace Tools + Unified Schema
+
 - [ ] Add `file_read`, `file_search`, `grep`, `directory_list` tools to the AI chat tool registry in `leanspec-core`
 - [ ] Ensure new tools use the same `make_tool<I>` pattern with `schemars` for schema generation
 - [ ] Add corresponding HTTP endpoints for grep (or expand file search)
@@ -286,17 +289,20 @@ Follow SDD principles: context economy, progressive disclosure, verify against r
 - [ ] Update UI `tool-result-registry.tsx` with rendering for workspace tool results (file content, search results)
 
 ### Phase 2: Session and Runner Tools in Chat
+
 - [ ] Add `run_session`, `session_status`, `list_sessions`, `list_runners`, `detect_runners` to chat tool registry
 - [ ] Replace `run_subagent` with `run_session` (keep `run_subagent` as alias for backward compat)
 - [ ] Add tool result UI components for session status (progress, logs summary)
 
 ### Phase 3: MCP Server Expansion
+
 - [ ] Add session/runner tools to `leanspec-mcp` — `list_sessions`, `create_session`, `session_status`, `list_runners`, `detect_runners`
 - [ ] Add workspace tools to `leanspec-mcp` — `file_read`, `file_search`
 - [ ] Update MCP server `tools/list` response with full tool surface
 - [ ] Test with Claude Code, VS Code Copilot, and Cursor as MCP consumers
 
 ### Phase 4: External MCP Aggregation
+
 - [ ] Implement MCP client in Rust (stdio transport) — connect to external MCP servers
 - [ ] Add `mcpServers` configuration to project config schema
 - [ ] Implement tool discovery: spawn MCP server → `tools/list` → merge into registry
@@ -305,6 +311,7 @@ Follow SDD principles: context economy, progressive disclosure, verify against r
 - [ ] UI: Show external tool sources in tool result display (badge: "via GitHub MCP")
 
 ### Phase 5: Polish and Documentation
+
 - [ ] Document the three-channel architecture in docs-site
 - [ ] Add MCP server setup guide for popular AI tools (Claude Code, Copilot, Cursor)
 - [ ] Add `mcpServers` configuration examples in project templates
@@ -331,6 +338,7 @@ Follow SDD principles: context economy, progressive disclosure, verify against r
 ### Why Not Just Use MCP for Everything?
 
 MCP is great for tool *exposure* to external agents. But for LeanSpec's own AI chat, we need:
+
 1. **Tighter integration** — built-in tools execute in-process, not via stdio
 2. **Streaming** — tool results can stream (e.g., large file reads) vs MCP's request-response
 3. **Context** — built-in tools have access to the full project context, session state, etc.

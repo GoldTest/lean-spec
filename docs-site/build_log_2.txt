@@ -1,5 +1,5 @@
 
-> docs-site@0.0.0 build D:\Develop\Projects\lean-spec\docs-site
+> docs-site@0.0.0 build D:\Develop\Projects\harnspec\docs-site
 > docusaurus build
 
 [INFO] Website will be built for all these locales: 
@@ -9,13 +9,13 @@
 [ERROR] Loading of version failed for version current
 
 [ERROR] Error: Unable to build website for locale en.
-    at tryToBuildLocale (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:83:15)
-    at async D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:35:9
-    at async mapAsyncSequential (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+utils@3.9.2_rea_153aea2ca6ace5cd262845b0cb087f34\node_modules\@docusaurus\utils\lib\jsUtils.js:21:24)
-    at async Command.build (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:34:5)
+    at tryToBuildLocale (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:83:15)
+    at async D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:35:9
+    at async mapAsyncSequential (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+utils@3.9.2_rea_153aea2ca6ace5cd262845b0cb087f34\node_modules\@docusaurus\utils\lib\jsUtils.js:21:24)
+    at async Command.build (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\build.js:34:5)
     at async Promise.all (index 0)
-    at async runCLI (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\cli.js:56:5)
-    at async file:///D:/Develop/Projects/lean-spec/docs-site/node_modules/.pnpm/@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253/node_modules/@docusaurus/core/bin/docusaurus.mjs:44:3 {
+    at async runCLI (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\cli.js:56:5)
+    at async file:///D:/Develop/Projects/harnspec/docs-site/node_modules/.pnpm/@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253/node_modules/@docusaurus/core/bin/docusaurus.mjs:44:3 {
   [cause]: Error: Invalid sidebar file at "sidebars.ts".
   These sidebar document ids do not exist:
   - guide/understanding-HarnSpec
@@ -67,15 +67,15 @@ Node version: v24.11.1
   - tutorials/refactoring-with-specs
   - tutorials/sdd-without-toolkit
   
-      at Object.checkSidebarsDocIds (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\sidebars\utils.js:245:19)
-      at doLoadVersion (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\versions\loadVersion.js:102:19)
-      at async loadVersion (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\versions\loadVersion.js:119:16)
+      at Object.checkSidebarsDocIds (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\sidebars\utils.js:245:19)
+      at doLoadVersion (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\versions\loadVersion.js:102:19)
+      at async loadVersion (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\versions\loadVersion.js:119:16)
       at async Promise.all (index 0)
-      at async Object.loadContent (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\index.js:152:33)
-      at async D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\plugins\plugins.js:40:23
+      at async Object.loadContent (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+plugin-content-_7e893c7fa877854941d7c0dce92396ee\node_modules\@docusaurus\plugin-content-docs\lib\index.js:152:33)
+      at async D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\plugins\plugins.js:40:23
       at async Promise.all (index 1)
-      at async D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\plugins\plugins.js:146:25
-      at async loadSite (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\site.js:155:45)
-      at async buildLocale (D:\Develop\Projects\lean-spec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\buildLocale.js:33:18)
+      at async D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\plugins\plugins.js:146:25
+      at async loadSite (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\server\site.js:155:45)
+      at async buildLocale (D:\Develop\Projects\harnspec\docs-site\node_modules\.pnpm\@docusaurus+core@3.9.2_@mdx_fadc2d9f2410dabf36df90dec8e6f253\node_modules\@docusaurus\core\lib\commands\build\buildLocale.js:33:18)
 }
 鈥塃LIFECYCLE鈥?Command failed with exit code 1.

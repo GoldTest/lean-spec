@@ -15,6 +15,7 @@ completed: '2025-11-01'
 Replace manual argument parsing with Commander.js to improve maintainability, type safety, and developer experience as CLI grows in complexity.
 
 ### Current Pain Points
+
 - Manual argument parsing (~220 LOC in cli.ts)
 - Repetitive flag handling (`--flag=value` vs `--flag value`)
 - No automatic help generation
@@ -22,6 +23,7 @@ Replace manual argument parsing with Commander.js to improve maintainability, ty
 - Difficult to add new commands
 
 ### Goals
+
 - Reduce cli.ts from ~220 to ~60 lines
 - Type-safe command options
 - Auto-generated help text
@@ -33,6 +35,7 @@ Replace manual argument parsing with Commander.js to improve maintainability, ty
 ### Framework Choice: Commander.js
 
 **Why Commander.js:**
+
 - Industry standard (30k+ stars, used by npm, webpack-cli)
 - Excellent TypeScript support with `@types/commander`
 - Minimal learning curve
@@ -40,6 +43,7 @@ Replace manual argument parsing with Commander.js to improve maintainability, ty
 - Well-maintained, stable API
 
 **Alternatives Considered:**
+
 - `cliffy`: More modern but less ecosystem support
 - `yargs`: More verbose, overkill for our use case
 - `ts-command-line`: Too enterprise-focused
@@ -65,6 +69,7 @@ src/commands/*.ts (unchanged)
 ```
 
 ### Migration Strategy
+
 1. **Additive approach**: Install Commander alongside existing code
 2. **Command-by-command**: Migrate one command, verify, repeat
 3. **Backward compatible**: Maintain same CLI interface
@@ -73,12 +78,14 @@ src/commands/*.ts (unchanged)
 ## Plan
 
 ### Phase 1: Setup (30 min)
+
 - [x] Create migration spec
 - [ ] Install `commander` package
 - [ ] Create `src/cli-new.ts` prototype
 - [ ] Migrate `create` command (simplest)
 
 ### Phase 2: Core Commands (2 hours)
+
 - [ ] Migrate `list` command with filters
 - [ ] Migrate `update` command
 - [ ] Migrate `archive` command
@@ -86,6 +93,7 @@ src/commands/*.ts (unchanged)
 - [ ] Migrate `templates` command
 
 ### Phase 3: New Commands (1 hour)
+
 - [ ] Add `board` command to CLI
 - [ ] Add `gantt` command to CLI
 - [ ] Add `stats` command to CLI
@@ -94,34 +102,38 @@ src/commands/*.ts (unchanged)
 - [ ] Add `deps` command to CLI
 
 ### Phase 4: Cutover (30 min)
+
 - [ ] Replace `src/cli.ts` with new implementation
-- [ ] Update `bin/lean-spec.js` if needed
+- [ ] Update `bin/harnspec.js` if needed
 - [ ] Run integration tests
 - [ ] Update README with new examples
 
 ## Test
 
 ### Integration Tests
-- [ ] `lean-spec create test-spec` works
-- [ ] `lean-spec create test-spec --title "Custom"` works
-- [ ] `lean-spec list` displays all specs
-- [ ] `lean-spec list --status=in-progress` filters correctly
-- [ ] `lean-spec list --tag=api --tag=feature` handles multiple tags
-- [ ] `lean-spec update <path> --status=complete` updates frontmatter
-- [ ] `lean-spec archive <path>` moves to archived/
-- [ ] `lean-spec init` prompts and creates structure
-- [ ] `lean-spec templates` lists available templates
-- [ ] `lean-spec --help` shows all commands
-- [ ] `lean-spec create --help` shows command-specific help
+
+- [ ] `harnspec create test-spec` works
+- [ ] `harnspec create test-spec --title "Custom"` works
+- [ ] `harnspec list` displays all specs
+- [ ] `harnspec list --status=in-progress` filters correctly
+- [ ] `harnspec list --tag=api --tag=feature` handles multiple tags
+- [ ] `harnspec update <path> --status=complete` updates frontmatter
+- [ ] `harnspec archive <path>` moves to archived/
+- [ ] `harnspec init` prompts and creates structure
+- [ ] `harnspec templates` lists available templates
+- [ ] `harnspec --help` shows all commands
+- [ ] `harnspec create --help` shows command-specific help
 - [ ] Error messages are clear for invalid commands
 
 ### New Commands
-- [ ] `lean-spec board` displays kanban view
-- [ ] `lean-spec board --tag=api` filters correctly
-- [ ] `lean-spec gantt` displays timeline
-- [ ] `lean-spec stats` shows metrics
+
+- [ ] `harnspec board` displays kanban view
+- [ ] `harnspec board --tag=api` filters correctly
+- [ ] `harnspec gantt` displays timeline
+- [ ] `harnspec stats` shows metrics
 
 ### Edge Cases
+
 - [ ] Unknown command shows helpful error
 - [ ] Missing required args show usage
 - [ ] Invalid flag values show validation errors
@@ -131,6 +143,7 @@ src/commands/*.ts (unchanged)
 ### Implementation Details
 
 **Key Commander.js Patterns:**
+
 ```typescript
 // Variadic options (multiple values)
 .option('--tag <tag...>', 'Filter by tags')
@@ -146,6 +159,7 @@ src/commands/*.ts (unchanged)
 ```
 
 **Action Handler Pattern:**
+
 ```typescript
 program
   .command('list')
@@ -156,19 +170,23 @@ program
 ```
 
 ### Code Size Comparison
+
 - Current: ~220 lines of parsing logic
 - Expected: ~60 lines of Commander setup
 - **Reduction: ~73%**
 
 ### Dependencies
+
 - Add: `commander` (~100KB, 0 deps)
 - Keep: All existing deps (chalk, inquirer, etc.)
 
 ### Breaking Changes
+
 **None expected** - CLI interface remains identical
 
 ### Future Opportunities
-- Command aliases (`lean-spec ls` → `list`)
+
+- Command aliases (`harnspec ls` → `list`)
 - Shell completion scripts
 - Command grouping for help text
 - Plugin system for custom commands

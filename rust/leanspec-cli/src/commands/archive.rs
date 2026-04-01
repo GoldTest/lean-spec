@@ -29,7 +29,7 @@ pub fn run(specs_dir: &str, specs: &[String], dry_run: bool) -> Result<(), Box<d
                 // Check if in archived/ folder (legacy)
                 if spec_info.path.starts_with("archived/") {
                     errors.push(format!(
-                        "Spec is already in archived/ folder: {}. Run 'lean-spec migrate-archived' first.",
+                        "Spec is already in archived/ folder: {}. Run 'harnspec migrate-archived' first.",
                         spec
                     ));
                     continue;

@@ -11,7 +11,7 @@ use leanspec_http::{AppState, ProjectRegistry, ServerConfig};
 fn test_registry_file(temp_dir: &TempDir) -> std::path::PathBuf {
     temp_dir
         .path()
-        .join(".lean-spec-test")
+        .join(".harnspec-test")
         .join("projects.json")
 }
 

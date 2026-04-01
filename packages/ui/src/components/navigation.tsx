@@ -230,7 +230,7 @@ export function Navigation({ onToggleSidebar, rightSlot, onHeaderDoubleClick }: 
                   data-tauri-drag-region="false"
                 >
                   <a
-                    href="https://www.lean-spec.dev"
+                    href="https://harnspec.gitub.io"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={t('navigation.docsTooltip')}
@@ -254,7 +254,7 @@ export function Navigation({ onToggleSidebar, rightSlot, onHeaderDoubleClick }: 
                   data-tauri-drag-region="false"
                 >
                   <a
-                    href="https://github.com/codervisor/lean-spec"
+                    href="https://github.com/codervisor/harnspec"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={t('navigation.githubTooltip')}

@@ -58,7 +58,7 @@ Quick action templates for common workflows:
 The MCP server is included with HarnSpec. No additional installation is required.
 
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 ```
 
 ## Configuration
@@ -75,9 +75,9 @@ npm install -g lean-spec
 ```json
 {
   "github.copilot.chat.mcp.servers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "${workspaceFolder}"
     }
   }
@@ -102,16 +102,16 @@ Using `npx` ensures you're always using the latest version and works without glo
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
-      "cwd": "/path/to/your/lean-spec/project"
+      "args": ["-y", "harnspec", "mcp"],
+      "cwd": "/path/to/your/harnspec/project"
     }
   }
 }
 ```
 
-Replace `/path/to/your/lean-spec/project` with the absolute path to your HarnSpec project directory.
+Replace `/path/to/your/harnspec/project` with the absolute path to your HarnSpec project directory.
 
 ### Multiple Projects
 
@@ -120,14 +120,14 @@ You can configure multiple HarnSpec projects:
 ```json
 {
   "mcpServers": {
-    "lean-spec-projectA": {
+    "harnspec-projectA": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "/path/to/projectA"
     },
-    "lean-spec-projectB": {
+    "harnspec-projectB": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "/path/to/projectB"
     }
   }
@@ -136,15 +136,15 @@ You can configure multiple HarnSpec projects:
 
 ### Alternative: Using Global Installation
 
-If you have HarnSpec installed globally (`npm install -g lean-spec`), you can use:
+If you have HarnSpec installed globally (`npm install -g harnspec`), you can use:
 
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
-      "command": "lean-spec",
+    "harnspec": {
+      "command": "harnspec",
       "args": ["mcp"],
-      "cwd": "/path/to/your/lean-spec/project"
+      "cwd": "/path/to/your/harnspec/project"
     }
   }
 }
@@ -153,7 +153,7 @@ If you have HarnSpec installed globally (`npm install -g lean-spec`), you can us
 ### Other MCP Clients
 
 For other MCP-compatible clients, configure them to run:
-- **Command**: `npx -y lean-spec mcp` (recommended) or `lean-spec mcp` (if globally installed)
+- **Command**: `npx -y harnspec mcp` (recommended) or `harnspec mcp` (if globally installed)
 - **Working Directory**: Your HarnSpec project root
 - **Transport**: stdio
 
@@ -285,16 +285,16 @@ This helps you make smart decisions about what to load into context, avoiding co
 
 ### Server won't start
 
-- Verify the `cwd` path in your configuration points to a valid HarnSpec project (has `.lean-spec/config.json`)
+- Verify the `cwd` path in your configuration points to a valid HarnSpec project (has `.harnspec/config.json`)
 - If using `npx`, ensure you have internet access for the first run
-- If using global installation, check that `lean-spec` is in your PATH
-- Try running `npx -y lean-spec mcp` or `lean-spec mcp` directly from your project directory
+- If using global installation, check that `harnspec` is in your PATH
+- Try running `npx -y harnspec mcp` or `harnspec mcp` directly from your project directory
 
 ### Tools not appearing
 
 - Restart your MCP client after configuration changes
 - Check client logs for connection errors
-- Verify the HarnSpec project is properly initialized (`lean-spec init`)
+- Verify the HarnSpec project is properly initialized (`harnspec init`)
 
 ### Permission errors
 
@@ -308,16 +308,16 @@ This helps you make smart decisions about what to load into context, avoiding co
 You can test the MCP server using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
 
 ```bash
-npx @modelcontextprotocol/inspector npx -y lean-spec mcp
+npx @modelcontextprotocol/inspector npx -y harnspec mcp
 ```
 
 Or test directly from your project:
 
 ```bash
-cd /path/to/your/lean-spec/project
-npx -y lean-spec mcp
+cd /path/to/your/harnspec/project
+npx -y harnspec mcp
 # or if installed globally:
-lean-spec mcp
+harnspec mcp
 ```
 
 ## Security Considerations

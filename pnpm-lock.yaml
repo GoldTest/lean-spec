@@ -48,7 +48,7 @@ importers:
 
   packages/mcp:
     dependencies:
-      lean-spec:
+      harnspec:
         specifier: workspace:*
         version: link:../cli
 
@@ -3122,7 +3122,7 @@ packages:
   layout-base@2.0.1:
     resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
 
-  lean-spec@0.2.28:
+  harnspec@0.2.28:
     resolution: {integrity: sha512-Pe+Hyn2oHqCj+xLXWQYZ7N3eK5vtI/MACJe0Lq4osca6ahAKtTaTXm8MUXurxybvfm2uNHY6UWiL9a8OX7in9Q==}
     engines: {node: '>=20'}
     hasBin: true
@@ -5075,7 +5075,7 @@ snapshots:
 
   '@leanspec/mcp@0.2.28':
     dependencies:
-      lean-spec: 0.2.28
+      harnspec: 0.2.28
     optionalDependencies:
       '@leanspec/mcp-darwin-arm64': 0.2.28
       '@leanspec/mcp-darwin-x64': 0.2.28
@@ -7654,7 +7654,7 @@ snapshots:
 
   layout-base@2.0.1: {}
 
-  lean-spec@0.2.28:
+  harnspec@0.2.28:
     optionalDependencies:
       '@leanspec/cli-darwin-arm64': 0.2.28
       '@leanspec/cli-darwin-x64': 0.2.28

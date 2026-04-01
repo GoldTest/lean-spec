@@ -22,20 +22,22 @@ transitions:
 
 > **Status**: 🗓️ Planned · **Priority**: Medium · **Created**: 2025-11-13 · **Tags**: templates, cli, dx, ai-first, sub-specs
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-**Problem**: Current `.lean-spec/templates/` system only generates main spec file (README.md), but specs often need sub-files like DESIGN.md, TESTING.md, IMPLEMENTATION.md, etc.
+**Problem**: Current `.harnspec/templates/` system only generates main spec file (README.md), but specs often need sub-files like DESIGN.md, TESTING.md, IMPLEMENTATION.md, etc.
 
 **Current Limitations**:
+
 - Template system generates only README.md
 - Users manually create sub-spec files after initial creation
 - No support for optional vs required sub-specs
 - AI agents and automation tools need programmatic sub-spec creation
 
 **Goal**: Enable template system to generate optional sub-spec files using:
+
 - Declarative flags (`--design`, `--testing`) for AI/automation
 - File conventions (`.opt`, `.req`) for template authors
 - Interactive mode (`--with-subs`) for human users (opt-in)
@@ -47,7 +49,7 @@ transitions:
 ### Proposed Template Structure
 
 ```
-.lean-spec/
+.harnspec/
 └── templates/
     ├── default/
     │   ├── README.md         # Main spec template (always generated)
@@ -68,18 +70,20 @@ transitions:
 ### Usage Patterns (AI-First Design)
 
 **Primary Interface: Explicit Flags** (optimized for AI agents)
+
 ```bash
 # Generate with specific sub-specs
-lean-spec create my-feature --design --testing
+harnspec create my-feature --design --testing
 # → Creates README.md + DESIGN.md + TESTING.md
 
 # No flags = README.md only (default)
-lean-spec create simple-fix
+harnspec create simple-fix
 ```
 
 **Secondary Interface: Interactive Mode** (opt-in for humans)
+
 ```bash
-lean-spec create my-feature --with-subs
+harnspec create my-feature --with-subs
 # Prompts user to select which optional sub-specs to include
 ? Include optional sub-specs? (space to select)
   [ ] DESIGN.md
@@ -119,6 +123,7 @@ lean-spec create my-feature --with-subs
 ### Technical Implementation
 
 **Extend `packages/cli/src/commands/creator.ts`**:
+
 1. Parse sub-spec flags from command line
 2. Detect `.opt` and `.req` files in template directory
 3. Filter files based on flags and conventions
@@ -126,6 +131,7 @@ lean-spec create my-feature --with-subs
 5. Fall back to interactive mode if `--with-subs` flag present
 
 **Template Resolution Logic**:
+
 ```typescript
 // Pseudo-code
 function resolveTemplateFiles(templateDir, flags, interactive) {
@@ -154,12 +160,14 @@ function resolveTemplateFiles(templateDir, flags, interactive) {
 ## Plan
 
 ### Phase 1: Design & Planning
+
 - [ ] Define `.opt` / `.req` file convention spec
 - [ ] Design config schema for template metadata and flag mappings
 - [ ] Design flag-based interface (primary) + interactive mode (opt-in)
 - [ ] Document sub-spec template authoring guide
 
 ### Phase 2: Core Implementation
+
 - [ ] Extend `creator.ts` to handle sub-spec templates
 - [ ] Implement file discovery (`.opt`, `.req` conventions)
 - [ ] Add explicit sub-spec flags (`--design`, `--testing`, `--implementation`)
@@ -167,17 +175,20 @@ function resolveTemplateFiles(templateDir, flags, interactive) {
 - [ ] Update template resolution and variable substitution
 
 ### Phase 3: Interactive Mode
+
 - [ ] Add `--with-subs` flag for interactive mode
 - [ ] Implement interactive prompt for sub-spec selection
 - [ ] Handle multi-select UI for optional sub-specs
 
 ### Phase 4: Template Updates
+
 - [ ] Create example templates with sub-specs
 - [ ] Update existing templates with `.opt` convention
 - [ ] Add template metadata to config.json files
 - [ ] Update default template with common sub-specs
 
 ### Phase 5: Documentation & Testing
+
 - [ ] Update CLI documentation for sub-spec flags
 - [ ] Create sub-spec template authoring guide
 - [ ] Update AGENTS.md with new commands
@@ -189,26 +200,31 @@ function resolveTemplateFiles(templateDir, flags, interactive) {
 ### Test Scenarios
 
 **Basic Sub-Spec Generation**:
-- [ ] `lean-spec create feat --design` generates README.md + DESIGN.md
-- [ ] `lean-spec create feat --design --testing` generates README.md + DESIGN.md + TESTING.md
-- [ ] `lean-spec create feat` (no flags) generates only README.md
+
+- [ ] `harnspec create feat --design` generates README.md + DESIGN.md
+- [ ] `harnspec create feat --design --testing` generates README.md + DESIGN.md + TESTING.md
+- [ ] `harnspec create feat` (no flags) generates only README.md
 
 **Interactive Mode**:
-- [ ] `lean-spec create feat --with-subs` shows interactive prompt
+
+- [ ] `harnspec create feat --with-subs` shows interactive prompt
 - [ ] Multi-select allows choosing multiple optional sub-specs
 - [ ] Selected sub-specs are generated correctly
 
 **Required Sub-Specs**:
+
 - [ ] Templates with `.req` files always generate those files
 - [ ] Required files included even without flags
 - [ ] Example: API template always includes API.md
 
 **Variable Substitution**:
+
 - [ ] Variables work correctly in sub-spec templates
 - [ ] Spec name, date, and custom variables populated
 - [ ] Frontmatter generated correctly in sub-specs
 
 **Edge Cases**:
+
 - [ ] Invalid flag ignored gracefully
 - [ ] Template without sub-specs works as before
 - [ ] Mixed `.opt` and `.req` files handled correctly
@@ -218,15 +234,16 @@ function resolveTemplateFiles(templateDir, flags, interactive) {
 ```bash
 # AI agent determines feature needs DESIGN + TESTING
 # Should invoke: 
-lean-spec create feature --design --testing
+harnspec create feature --design --testing
 
 # Not this (requires interaction):
-lean-spec create feature --with-subs
+harnspec create feature --with-subs
 ```
 
 ### Success Criteria
+
 - [ ] AI agents can create specs with sub-specs programmatically
-- [ ] No breaking changes to existing `lean-spec create` behavior
+- [ ] No breaking changes to existing `harnspec create` behavior
 - [ ] Interactive mode provides good UX for human users
 - [ ] Template authors can easily add sub-spec support
 
@@ -235,15 +252,17 @@ lean-spec create feature --with-subs
 ### Why AI-First Design?
 
 In AI-human co-op spec writing mode:
+
 - **AI agents primarily use the CLI**, not humans
 - **Interactive prompts block automation** - AI can't respond to prompts effectively
 - **Flags are declarative** - AI can determine needed sub-specs and invoke with explicit flags
 - **Humans can opt-in** - `--with-subs` flag preserves interactive experience when desired
 
 Example AI workflow:
+
 ```
 AI analyzes task → determines needs DESIGN + TESTING sub-specs
-→ runs: lean-spec create feature --design --testing
+→ runs: harnspec create feature --design --testing
 → no interaction needed, continues working
 ```
 
@@ -259,6 +278,7 @@ This aligns with 072-ai-agent-first-use-workflow principles: optimize for AI, ac
 ### Split from Spec 073
 
 Originally planned as Phase 2 of spec 073, split into separate spec because:
+
 - Phase 1 (AGENTS.md template engine) is complete and independent
 - Phase 2 (sub-spec template system) is a different feature with different scope
 - Cleaner separation allows independent planning and archiving
@@ -275,23 +295,28 @@ Originally planned as Phase 2 of spec 073, split into separate spec because:
 ### Alternative Approaches Considered
 
 **1. Single `--subs` flag with comma-separated list**
+
 ```bash
-lean-spec create feat --subs=design,testing
+harnspec create feat --subs=design,testing
 ```
+
 - ✅ More concise
 - ❌ Less discoverable (need to know names)
 - ❌ Less idiomatic (most CLIs use separate flags)
 
 **2. Always prompt for sub-specs**
+
 ```bash
-lean-spec create feat
+harnspec create feat
 ? Include sub-specs? (Y/n)
 ```
+
 - ❌ Blocks automation
 - ❌ Annoying for quick creates
 - ❌ Not AI-friendly
 
 **3. Config file to specify defaults**
+
 ```json
 {
   "defaults": {
@@ -299,6 +324,7 @@ lean-spec create feat
   }
 }
 ```
+
 - ✅ Could work for power users
 - ⚠️ Adds complexity
 - 🤔 Could be added later as enhancement

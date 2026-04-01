@@ -20,7 +20,7 @@ completed: '2025-11-02'
 
 **Current Problem**: Templates are locked in the npm package. Users cannot customize spec templates, frontmatter fields, variables, or template directory structure without modifying package files (which are lost on updates).
 
-**Solution**: Invert the architecture - templates live in the user's project (`.lean-spec/templates/`), not the npm package. Package templates become initialization starters only.
+**Solution**: Invert the architecture - templates live in the user's project (`.harnspec/templates/`), not the npm package. Package templates become initialization starters only.
 
 ## Current Architecture (Template-Centric) ❌
 
@@ -32,11 +32,12 @@ npm package (read-only)
     └── enterprise/
 
 User's project
-└── .lean-spec/
+└── .harnspec/
     └── config.json   # Only stores template name reference
 ```
 
 **Problems:**
+
 - Templates in npm package are immutable
 - No way to add custom templates
 - No way to customize spec structure
@@ -46,7 +47,7 @@ User's project
 
 ```
 User's project
-└── .lean-spec/
+└── .harnspec/
     ├── config.json
     └── templates/
         ├── spec-template.md      # Default (copied from npm on init)
@@ -62,6 +63,7 @@ npm package (initialization only)
 ```
 
 **Benefits:**
+
 - ✅ Users own and control all templates
 - ✅ Can customize immediately after init
 - ✅ Can add unlimited custom templates
@@ -73,34 +75,37 @@ npm package (initialization only)
 
 ### 1. Template Lifecycle
 
-**Phase 1: Initialization (`lean-spec init`)**
+**Phase 1: Initialization (`harnspec init`)**
+
 ```bash
-lean-spec init
+harnspec init
 # User chooses template: minimal/standard/enterprise
-# Template copied from npm package to .lean-spec/templates/spec-template.md
+# Template copied from npm package to .harnspec/templates/spec-template.md
 # User immediately has full control
 ```
 
 **Phase 2: Customization (User's choice)**
+
 ```bash
 # Edit default template
-vim .lean-spec/templates/spec-template.md
+vim .harnspec/templates/spec-template.md
 
 # Add custom templates
-cp .lean-spec/templates/spec-template.md .lean-spec/templates/api-spec.md
+cp .harnspec/templates/spec-template.md .harnspec/templates/api-spec.md
 # Edit api-spec.md for API-specific structure
 
 # Register in config
-lean-spec templates add api api-spec.md
+harnspec templates add api api-spec.md
 ```
 
 **Phase 3: Usage**
+
 ```bash
 # Use default template
-lean-spec create my-feature
+harnspec create my-feature
 
 # Use custom template
-lean-spec create my-api --template=api
+harnspec create my-api --template=api
 ```
 
 ### 2. Enhanced Config Structure
@@ -143,21 +148,21 @@ lean-spec create my-api --template=api
 
 ```bash
 # List available templates in project
-lean-spec templates list
+harnspec templates list
 
 # Add/register a template
-lean-spec templates add <name> <file>
-# Example: lean-spec templates add api api-spec.md
+harnspec templates add <name> <file>
+# Example: harnspec templates add api api-spec.md
 
 # Show template content
-lean-spec templates show <name>
+harnspec templates show <name>
 
 # Remove template
-lean-spec templates remove <name>
+harnspec templates remove <name>
 
 # Copy existing template as starting point
-lean-spec templates copy <source> <target>
-# Example: lean-spec templates copy default api-spec
+harnspec templates copy <source> <target>
+# Example: harnspec templates copy default api-spec
 ```
 
 ### 4. Template Resolution
@@ -170,7 +175,7 @@ async function resolveTemplate(
   config: LeanSpecConfig, 
   cwd: string
 ): Promise<string> {
-  const templatesDir = path.join(cwd, '.lean-spec', 'templates');
+  const templatesDir = path.join(cwd, '.harnspec', 'templates');
   
   // 1. Check for --template flag
   if (templateName && config.templates?.[templateName]) {
@@ -198,8 +203,8 @@ async function resolveTemplate(
   } catch {
     // Error - templates should exist after init
     console.error(chalk.red('No templates found!'));
-    console.error(chalk.gray('Expected: .lean-spec/templates/spec-template.md'));
-    console.error(chalk.yellow('Run: lean-spec init'));
+    console.error(chalk.gray('Expected: .harnspec/templates/spec-template.md'));
+    console.error(chalk.yellow('Run: harnspec init'));
     process.exit(1);
   }
 }
@@ -237,17 +242,19 @@ function parseCustomFrontmatter(
 ```
 
 **Usage:**
+
 ```bash
 # Create with custom frontmatter
-lean-spec create my-feature --epic=PLAT-123 --sprint=42
+harnspec create my-feature --epic=PLAT-123 --sprint=42
 
 # Update custom fields
-lean-spec update specs/20251102/001-my-feature --epic=PLAT-456
+harnspec update specs/20251102/001-my-feature --epic=PLAT-456
 ```
 
 ### 6. Variable Substitution System
 
 **Built-in variables:**
+
 - `{name}` - Spec name
 - `{date}` - Creation date
 - `{project_name}` - From package.json or config
@@ -257,6 +264,7 @@ lean-spec update specs/20251102/001-my-feature --epic=PLAT-456
 - `{team}` - From config
 
 **Custom variables from config:**
+
 ```json
 {
   "variables": {
@@ -268,6 +276,7 @@ lean-spec update specs/20251102/001-my-feature --epic=PLAT-456
 ```
 
 **In templates:**
+
 ```markdown
 ---
 status: planned
@@ -289,21 +298,24 @@ epic: {epic}
 ## Implementation Plan
 
 ### Phase 1: Core Template System (Week 1)
-- [ ] Create `.lean-spec/templates/` directory on init
-- [ ] Copy chosen template to `.lean-spec/templates/spec-template.md`
+
+- [ ] Create `.harnspec/templates/` directory on init
+- [ ] Copy chosen template to `.harnspec/templates/spec-template.md`
 - [ ] Update `create.ts` to use project templates (remove package fallback)
 - [ ] Implement template resolution logic
 - [ ] Update `init.ts` to set up templates directory
 
 ### Phase 2: Template Management (Week 1)
-- [ ] Implement `lean-spec templates list` command
-- [ ] Implement `lean-spec templates add <name> <file>` command
-- [ ] Implement `lean-spec templates show <name>` command
-- [ ] Implement `lean-spec templates copy <source> <target>` command
-- [ ] Implement `lean-spec templates remove <name>` command
+
+- [ ] Implement `harnspec templates list` command
+- [ ] Implement `harnspec templates add <name> <file>` command
+- [ ] Implement `harnspec templates show <name>` command
+- [ ] Implement `harnspec templates copy <source> <target>` command
+- [ ] Implement `harnspec templates remove <name>` command
 - [ ] Add `--template` flag to `create` command
 
 ### Phase 3: Custom Frontmatter (Week 2)
+
 - [ ] Extend config.json schema with `frontmatter.custom`
 - [ ] Update frontmatter parser to handle custom fields
 - [ ] Add validation and type coercion
@@ -312,6 +324,7 @@ epic: {epic}
 - [ ] Update `list` command to show custom fields
 
 ### Phase 4: Variable System (Week 2)
+
 - [ ] Implement built-in variable resolution
 - [ ] Support custom variables from config
 - [ ] Add git integration for author/repo variables
@@ -319,17 +332,21 @@ epic: {epic}
 - [ ] Document all available variables
 
 ### Phase 5: Documentation & Dogfooding (Week 2)
+
 - [ ] Update README.md with customization examples
 - [ ] Update AGENTS.md with template customization workflow
+
 ## Test Cases
 
 ### Template Resolution
+
 - [ ] Uses project template when exists
 - [ ] Errors when template missing (no fallback)
 - [ ] Resolves --template flag correctly
 - [ ] Errors gracefully with helpful message when template not found
 
 ### Template Management
+
 - [ ] `templates list` shows all project templates
 - [ ] `templates add` registers new template
 - [ ] `templates copy` creates copy with new name
@@ -337,6 +354,7 @@ epic: {epic}
 - [ ] Config stays in sync with template commands
 
 ### Custom Frontmatter
+
 - [ ] Parses custom fields from config
 - [ ] Validates field types
 - [ ] Accepts custom fields in create command
@@ -344,36 +362,41 @@ epic: {epic}
 - [ ] Lists specs with custom fields
 
 ### Variables
+
 - [ ] Substitutes built-in variables
 - [ ] Substitutes custom variables from config
 - [ ] Resolves git variables correctly
 - [ ] Handles missing variables gracefully
 
 ### Init Process
-- [ ] Creates .lean-spec/templates/ directory
+
+- [ ] Creates .harnspec/templates/ directory
 - [ ] Copies chosen template to spec-template.md
 - [ ] Sets up config with templates section
 - [ ] Works with merge/backup/skip for AGENTS.md
 
 ## Breaking Changes
 
-**This is a breaking change** - but since lean-spec is new and only dogfooding itself, this is acceptable.
+**This is a breaking change** - but since harnspec is new and only dogfooding itself, this is acceptable.
 
 **What breaks:**
-- Projects initialized with old version will have no `.lean-spec/templates/`
-- `lean-spec create` will fail with clear error message
-- Solution: Run `lean-spec init` again or manually create templates directory
 
-**Migration for lean-spec itself:**
-1. Create `.lean-spec/templates/` directory
-2. Copy current package template to `.lean-spec/templates/spec-template.md`
+- Projects initialized with old version will have no `.harnspec/templates/`
+- `harnspec create` will fail with clear error message
+- Solution: Run `harnspec init` again or manually create templates directory
+
+**Migration for harnspec itself:**
+
+1. Create `.harnspec/templates/` directory
+2. Copy current package template to `.harnspec/templates/spec-template.md`
 3. Update config to include templates section
-4. Test creating new specstinuing with: lean-spec create my-feature
+4. Test creating new specstinuing with: harnspec create my-feature
+
 ```
 
 **Manual migration:**
 ```bash
-lean-spec templates migrate
+harnspec templates migrate
 ```
 
 ## Non-Goals (for v1)
@@ -387,6 +410,7 @@ lean-spec templates migrate
 - Backward compatibility with pre-templates projects
 
 These can be added later based on user feedback.ly after init
+
 - ✅ Users can add unlimited custom templates
 - ✅ Users can define custom frontmatter fields
 - ✅ Users can define custom variables
@@ -403,9 +427,10 @@ LeanSpec's entire value proposition is about **giving users control** over their
 
 > "LeanSpec is a mindset. Adapt these guidelines to what actually helps."
 
-This only works if users can actually adapt the system. Moving templates to `.lean-spec/templates/` makes customization tangible and discoverable.
+This only works if users can actually adapt the system. Moving templates to `.harnspec/templates/` makes customization tangible and discoverable.
 
 **Learning from other tools:**
+
 - **Next.js**: `eject` is available but discouraged (creates maintenance burden)
 - **Create React App**: Same - eject is one-way, creates complexity
 - **Prettier/Tailwind**: Configs in project - users have full control ✅

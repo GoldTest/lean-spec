@@ -12,7 +12,7 @@ sidebar_position: 3
 
 HarnSpec 迁移主要关注两个方面：
 
-1. **元数据/Frontmatter**（主要）- 使用 `lean-spec backfill` 从 git 历史中提取
+1. **元数据/Frontmatter**（主要）- 使用 `harnspec backfill` 从 git 历史中提取
 2. **文件夹组织**（因工具而异）- 取决于你的源工具
 
 **好消息**：HarnSpec 对内容格式很灵活——你可以保留现有的写作风格！
@@ -28,10 +28,10 @@ OpenSpec 是目前最广泛采用的 SDD 工具。迁移需要合并单独的目
 **使用 `--auto` 快速迁移**：
 ```bash
 # 一键自动迁移
-lean-spec migrate ./openspec --auto
+harnspec migrate ./openspec --auto
 
 # 先预览
-lean-spec migrate ./openspec --auto --dry-run
+harnspec migrate ./openspec --auto --dry-run
 ```
 
 **手动迁移步骤**：
@@ -48,14 +48,14 @@ mv specs/api-gateway specs/002-api-gateway
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 4. 从 git 历史生成 frontmatter
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 5. 更新 AGENTS.md 命令
-sed -i 's/openspec/lean-spec/g' AGENTS.md
+sed -i 's/openspec/harnspec/g' AGENTS.md
 
 # 6. 验证
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **时间**：20 个 Spec 约 15-30 分钟（使用 `--auto` 则小于 1 分钟）
@@ -68,7 +68,7 @@ lean-spec board
 
 **使用 `--auto` 快速迁移**：
 ```bash
-lean-spec migrate ./.specify/specs --auto
+harnspec migrate ./.specify/specs --auto
 ```
 
 **手动迁移步骤**：
@@ -80,11 +80,11 @@ mv .specify/specs specs/
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. 从 git 历史生成 frontmatter
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. 验证
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **时间**：20 个 Spec 约 5 分钟（使用 `--auto` 则小于 30 秒）
@@ -97,7 +97,7 @@ Kiro 使用类似 spec-kit 的结构，带有一些 AWS 特定的约定。
 
 **使用 `--auto` 快速迁移**：
 ```bash
-lean-spec migrate ./.kiro/specs --auto
+harnspec migrate ./.kiro/specs --auto
 ```
 
 **手动迁移步骤**：
@@ -109,11 +109,11 @@ mv .kiro/specs specs/
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. 从 git 历史生成 frontmatter
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. 验证
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **时间**：20 个 Spec 约 5 分钟
@@ -126,13 +126,13 @@ lean-spec board
 
 ```bash
 # 自动迁移处理通用 markdown
-lean-spec migrate ./docs/adr --auto
+harnspec migrate ./docs/adr --auto
 
 # 或手动：每个 ADR 变成一个 spec 文件夹
 # 0001-use-typescript.md → specs/001-use-typescript/README.md
 ```
 
-## `lean-spec backfill` 命令
+## `harnspec backfill` 命令
 
 这是你从 git 历史生成 frontmatter 的主要迁移工具。
 
@@ -140,16 +140,16 @@ lean-spec migrate ./docs/adr --auto
 
 ```bash
 # 从 git 历史提取时间戳
-lean-spec backfill
+harnspec backfill
 
 # 包含来自 git 作者的负责人
-lean-spec backfill --assignee
+harnspec backfill --assignee
 
 # 提取所有可用元数据
-lean-spec backfill --all
+harnspec backfill --all
 
 # 预览更改而不应用
-lean-spec backfill --dry-run
+harnspec backfill --dry-run
 ```
 
 ### 它提取什么
@@ -162,8 +162,8 @@ lean-spec backfill --dry-run
 - `transitions` - 完整状态更改历史（使用 `--transitions`）
 
 **之后手动设置**：
-- `priority` - 默认为 'medium'，使用 `lean-spec update --priority` 调整
-- `tags` - 默认从文件夹名称获取，使用 `lean-spec update --tags` 调整
+- `priority` - 默认为 'medium'，使用 `harnspec update --priority` 调整
+- `tags` - 默认从文件夹名称获取，使用 `harnspec update --tags` 调整
 - `status` - 从内容/历史推断，必要时调整
 
 ### 示例输出
@@ -182,9 +182,9 @@ tags:
 ---
 ```
 
-## 使用 `lean-spec migrate`
+## 使用 `harnspec migrate`
 
-对于更复杂的迁移或 AI 辅助工作流，使用 `lean-spec migrate` 命令。
+对于更复杂的迁移或 AI 辅助工作流，使用 `harnspec migrate` 命令。
 
 ### 自动模式（推荐）✅
 
@@ -192,10 +192,10 @@ tags:
 
 ```bash
 # 自动迁移 - 检测格式并处理所有事情
-lean-spec migrate ./openspec --auto
+harnspec migrate ./openspec --auto
 
 # 预览而不做更改
-lean-spec migrate ./openspec --auto --dry-run
+harnspec migrate ./openspec --auto --dry-run
 ```
 
 **`--auto` 做什么**：
@@ -211,7 +211,7 @@ lean-spec migrate ./openspec --auto --dry-run
 为任何 AI 工具输出迁移说明：
 
 ```bash
-lean-spec migrate ./openspec
+harnspec migrate ./openspec
 ```
 
 这会生成一个提示，你可以复制到 ChatGPT、Claude、Copilot 或任何 AI 助手：
@@ -225,9 +225,9 @@ lean-spec migrate ./openspec
 1. 分析源文档
 2. 提取元数据（标题、状态、日期、优先级）
 3. 对于每个文档：
-   - 运行：lean-spec create <name>
-   - 运行：lean-spec update <name> --status <status>
-   - 运行：lean-spec update <name> --priority <priority>
+   - 运行：harnspec create <name>
+   - 运行：harnspec update <name> --status <status>
+   - 运行：harnspec update <name> --priority <priority>
    - 编辑内容以匹配 HarnSpec 结构
 4. 保留决策理由和关系
 5. 保持 Spec 在 400 行以下
@@ -241,13 +241,13 @@ lean-spec migrate ./openspec
 
 ```bash
 # 使用 GitHub Copilot CLI
-lean-spec migrate ./openspec --with copilot
+harnspec migrate ./openspec --with copilot
 
 # 使用 Claude CLI
-lean-spec migrate ./openspec --with claude
+harnspec migrate ./openspec --with claude
 
 # 使用 Gemini CLI
-lean-spec migrate ./openspec --with gemini
+harnspec migrate ./openspec --with gemini
 ```
 
 **先决条件**：
@@ -257,13 +257,13 @@ lean-spec migrate ./openspec --with gemini
 **选项**：
 ```bash
 # 预览而不更改
-lean-spec migrate ./openspec --dry-run
+harnspec migrate ./openspec --dry-run
 
 # 分批处理
-lean-spec migrate ./openspec --batch-size 10
+harnspec migrate ./openspec --batch-size 10
 
 # 迁移后自动运行 backfill
-lean-spec migrate ./openspec --backfill
+harnspec migrate ./openspec --backfill
 ```
 
 ## 迁移检查清单
@@ -275,23 +275,23 @@ lean-spec migrate ./openspec --backfill
 - [ ] 备份现有文档
 - [ ] 审查源文件夹结构
 - [ ] 检查 git 历史是否可用（用于 `backfill`）
-- [ ] 安装 HarnSpec：`npm install -g lean-spec`
-- [ ] 初始化 HarnSpec：`lean-spec init`
+- [ ] 安装 HarnSpec：`npm install -g harnspec`
+- [ ] 初始化 HarnSpec：`harnspec init`
 
 ### 迁移期间
 
 - [ ] 重组文件夹（如果你的源工具需要）
 - [ ] 将主 Spec 文件重命名为 `README.md`
-- [ ] 运行 `lean-spec backfill --assignee --all`
+- [ ] 运行 `harnspec backfill --assignee --all`
 - [ ] 必要时手动调整优先级
 - [ ] 必要时手动调整标签
 - [ ] 验证状态值是否正确
 
 ### 迁移后
 
-- [ ] 运行 `lean-spec validate` 检查问题
-- [ ] 运行 `lean-spec board` 可视化迁移
-- [ ] 测试 Spec 发现：`lean-spec list`、`lean-spec search`
+- [ ] 运行 `harnspec validate` 检查问题
+- [ ] 运行 `harnspec board` 可视化迁移
+- [ ] 测试 Spec 发现：`harnspec list`、`harnspec search`
 - [ ] 更新任何损坏的关系（`depends_on`、`related`）
 - [ ] 迁移系统提示（AGENTS.md、.cursorrules）
 
@@ -320,7 +320,7 @@ AGENTS.md（在项目根目录）
 HarnSpec 支持通过 SKILL.md 提供 **Agent Skills**。这样 AGENTS.md 可以保持精简，仅包含项目特定规则。
 
 **推荐步骤：**
-1. 通过 `lean-spec skill install` 安装 Skill
+1. 通过 `harnspec skill install` 安装 Skill
 2. 使用安装后的 SKILL.md：.github/skills/HarnSpec-sdd/
 3. 将 AGENTS.md 缩减为项目特定规则（`<100` 行）
 4. 在 AGENTS.md 中添加指向 skill 的简短说明
@@ -343,8 +343,8 @@ HarnSpec 支持通过 SKILL.md 提供 **Agent Skills**。这样 AGENTS.md 可以
 
 1. **审查源工具的现有 AI 指导**
 2. **保留项目特定的约定**
-3. **与 HarnSpec AGENTS.md 合并**（由 `lean-spec init` 创建）
-4. **更新命令**：`openspec` → `lean-spec` 等
+3. **与 HarnSpec AGENTS.md 合并**（由 `harnspec init` 创建）
+4. **更新命令**：`openspec` → `harnspec` 等
 5. **保持团队工作流程完整**
 
 这确保 AI 代理在过渡期间保持连续性。
@@ -371,14 +371,14 @@ HarnSpec 支持通过 SKILL.md 提供 **Agent Skills**。这样 AGENTS.md 可以
 mv .specify/specs specs/
 mv specs/001-task-management/spec.md specs/001-task-management/README.md
 # 保持 plan.md、tasks.md、contracts/ 不变
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 ```
 
 **选项 B：合并**（用于更简单的功能）
 ```bash
 # 手动将 spec.md + plan.md 合并到 README.md
 # 然后运行 backfill
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 ```
 
 ### 场景 2：OpenSpec 使用单独的目录
@@ -401,10 +401,10 @@ mv specs/auth specs/001-authentication
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. Backfill 元数据
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. 更新 AGENTS.md 命令
-sed -i 's/openspec/lean-spec/g' AGENTS.md
+sed -i 's/openspec/harnspec/g' AGENTS.md
 ```
 
 ## 从外部系统迁移
@@ -419,7 +419,7 @@ sed -i 's/openspec/lean-spec/g' AGENTS.md
 
 ```bash
 # 从 Linear、Jira 等导出到 ./exports/
-lean-spec migrate ./exports/
+harnspec migrate ./exports/
 ```
 
 ### 为什么不直接 API 集成？
@@ -440,17 +440,17 @@ HarnSpec 有意不与外部系统 API 集成，因为：
 **解决方案**：手动设置时间戳或使用当前日期
 ```bash
 # backfill 将为没有 git 历史的 Spec使用当前时间戳
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 或手动设置
-lean-spec update 001 --priority high
+harnspec update 001 --priority high
 ```
 
 ### 问题：重复的序列号
 
-**解决方案**：使用 `lean-spec check` 检测冲突
+**解决方案**：使用 `harnspec check` 检测冲突
 ```bash
-lean-spec check
+harnspec check
 # 通过手动重命名文件夹修复冲突
 ```
 
@@ -471,7 +471,7 @@ related: [010, 012]
 ---
 
 # 验证关系
-lean-spec deps 001
+harnspec deps 001
 ```
 
 ## 迁移时间估计
@@ -493,9 +493,9 @@ lean-spec deps 001
 
 需要迁移支持？
 
-- **GitHub Issues**：[报告迁移问题](https://github.com/codervisor/lean-spec/issues)
-- **示例**：查看 [spec 063](https://web.lean-spec.dev/specs/063-migration-from-existing-tools) 获取详细示例
-- **命令帮助**：运行 `lean-spec migrate --help` 或 `lean-spec backfill --help`
+- **GitHub Issues**：[报告迁移问题](https://github.com/codervisor/harnspec/issues)
+- **示例**：查看 [spec 063](https://harnspec.gitub.io/specs/063-migration-from-existing-tools) 获取详细示例
+- **命令帮助**：运行 `harnspec migrate --help` 或 `harnspec backfill --help`
 
 ## 下一步
 

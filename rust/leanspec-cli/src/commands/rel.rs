@@ -38,7 +38,7 @@ pub fn run(specs_dir: &str, rel_args: RelArgs, output_format: &str) -> Result<()
 
 fn parse_action_and_spec(args: &[String]) -> Result<(String, String), Box<dyn Error>> {
     if args.is_empty() {
-        return Err("Usage: lean-spec rel <spec> OR lean-spec rel <action> <spec>".into());
+        return Err("Usage: harnspec rel <spec> OR harnspec rel <action> <spec>".into());
     }
 
     let first = args[0].as_str();

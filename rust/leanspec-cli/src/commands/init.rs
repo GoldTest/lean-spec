@@ -112,7 +112,7 @@ fn run_standard_init(specs_dir: &str, options: InitOptions) -> Result<(), Box<dy
 
     // Core filesystem scaffolding
     scaffold_specs(&root, &specs_path)?;
-    let config_dir = root.join(".lean-spec");
+    let config_dir = root.join(".harnspec");
     scaffold_config(&config_dir, draft_status_enabled)?;
     scaffold_templates(&config_dir)?;
     scaffold_agents(&root, &project_name, will_install_skills)?;
@@ -127,9 +127,9 @@ fn run_standard_init(specs_dir: &str, options: InitOptions) -> Result<(), Box<dy
     println!("Next steps:");
     println!(
         "  1. Create your first spec: {}",
-        "lean-spec create my-feature".cyan()
+        "harnspec create my-feature".cyan()
     );
-    println!("  2. View the board: {}", "lean-spec board".cyan());
+    println!("  2. View the board: {}", "harnspec board".cyan());
     println!("  3. Read the docs: {}", "https://leanspec.dev".cyan());
 
     Ok(())
@@ -261,8 +261,8 @@ fn scaffold_specs(root: &Path, specs_path: &Path) -> Result<(), Box<dyn Error>> 
         );
     }
 
-    // Create .lean-spec directory for configuration
-    let config_dir = root.join(".lean-spec");
+    // Create .harnspec directory for configuration
+    let config_dir = root.join(".harnspec");
     if !config_dir.exists() {
         fs::create_dir_all(&config_dir)?;
         println!(
@@ -283,16 +283,16 @@ This directory contains LeanSpec specifications for this project.
 
 ```bash
 # Create a new spec
-lean-spec create my-feature
+harnspec create my-feature
 
 # List all specs
-lean-spec list
+harnspec list
 
 # View the board
-lean-spec board
+harnspec board
 
 # Validate specs
-lean-spec validate
+harnspec validate
 ```
 
 ## Structure
@@ -637,7 +637,7 @@ fn handle_skills_install(
     if let Err(err) = skill::install(agents_opt, true) {
         println!("{} Failed to install agent skills: {}", "⚠".yellow(), err);
         println!(
-            "{} You can retry with: npx skills add codervisor/lean-spec --skill leanspec-sdd",
+            "{} You can retry with: npx skills add codervisor/harnspec --skill leanspec-sdd",
             "•".cyan()
         );
     }

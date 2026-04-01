@@ -9,7 +9,7 @@ LeanSpec can be deployed to any cloud platform that supports Docker containers.
 ```bash
 docker run -d \
   -p 3000:3000 \
-  -v leanspec-data:/home/leanspec/.lean-spec \
+  -v leanspec-data:/home/leanspec/.harnspec \
   -e LEANSPEC_API_KEY=your-secret-key \
   ghcr.io/codervisor/leanspec:latest
 ```
@@ -48,7 +48,7 @@ fly deploy
 |----------|---------|-------------|
 | `PORT` | `3000` | Server port |
 | `LEANSPEC_HOST` | `127.0.0.1` | Bind address (use `0.0.0.0` in containers) |
-| `LEANSPEC_DATA_DIR` | `~/.lean-spec` | Persistent data directory |
+| `LEANSPEC_DATA_DIR` | `~/.harnspec` | Persistent data directory |
 | `LEANSPEC_API_KEY` | _(none)_ | Bearer token for API authentication |
 | `LEANSPEC_LOG_FORMAT` | `text` | `text` or `json` for structured logging |
 | `LEANSPEC_LOG_LEVEL` | `info` | Log verbosity |

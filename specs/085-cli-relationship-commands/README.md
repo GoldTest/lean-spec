@@ -22,7 +22,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-16 · **Tags**: cli, metadata, relationships, dx
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -31,13 +31,14 @@ transitions:
 
 1. **Violates Core Rule #6**: "NEVER manually edit system-managed frontmatter"
 2. **Error-prone**: Easy to create invalid spec references (typos, non-existent specs)
-3. **No validation**: Can break `lean-spec deps` without knowing
+3. **No validation**: Can break `harnspec deps` without knowing
 4. **Inconsistent with other metadata**: Status, priority, tags use CLI flags, but relationships don't
 5. **Poor DX**: Have to remember YAML syntax, indentation, array format
 6. **Blocks AI agents**: No programmatic interface for MCP tools (spec 076)
 7. **Missing from `create`**: Can't set relationships at creation time (unlike tags, priority, assignee)
 
 **Current Workaround** (from AGENTS.md):
+
 ```yaml
 # Manual editing required - no CLI command exists yet
 depends_on: [042, 035]
@@ -45,15 +46,16 @@ related: [081, 068]
 ```
 
 **What We Need**: CLI commands AND MCP tools to manage relationships safely:
+
 ```bash
 # At creation
-lean-spec create new-feature --depends-on 042,035 --related 081
+harnspec create new-feature --depends-on 042,035 --related 081
 
 # After creation
-lean-spec link 085 --depends-on 042,035
-lean-spec link 085 --related 081,068
-lean-spec unlink 085 --depends-on 042
-lean-spec deps 085  # Verify relationships
+harnspec link 085 --depends-on 042,035
+harnspec link 085 --related 081,068
+harnspec unlink 085 --depends-on 042
+harnspec deps 085  # Verify relationships
 
 # MCP usage (AI agents)
 await mcp_lean_spec_create({ name: "new-feature", dependsOn: ["042", "035"] });
@@ -62,6 +64,7 @@ await mcp_lean_spec_unlink({ specPath: "085", related: ["081"] });
 ```
 
 **Why It Matters**:
+
 - Consistency with other metadata (tags, priority, assignee all settable at creation)
 - Validation prevents broken relationships
 - Enables automation (scripts, CI/CD, **AI agents**)
@@ -71,47 +74,49 @@ await mcp_lean_spec_unlink({ specPath: "085", related: ["081"] });
 
 ## Design
 
-### Command Design: `lean-spec link` and `lean-spec unlink`
+### Command Design: `harnspec link` and `harnspec unlink`
 
-**Rationale**: Use dedicated `link`/`unlink` commands instead of extending `lean-spec update` because:
+**Rationale**: Use dedicated `link`/`unlink` commands instead of extending `harnspec update` because:
+
 1. Relationships are **bidirectional** or **directional** (different from simple metadata)
 2. Need **add/remove** semantics (not just set/replace)
 3. Clear intent: "linking specs" vs "updating metadata"
 4. Future-proof for advanced relationship features (types, labels, etc.)
 
-**Additionally**: Extend `lean-spec create` to support relationship flags for consistency with other metadata (tags, priority, assignee).
+**Additionally**: Extend `harnspec create` to support relationship flags for consistency with other metadata (tags, priority, assignee).
 
 ### Command Interface
 
 ```bash
 # Create with relationships (new)
-lean-spec create <name> --depends-on <spec1,spec2,...>
-lean-spec create <name> --related <spec1,spec2,...>
+harnspec create <name> --depends-on <spec1,spec2,...>
+harnspec create <name> --related <spec1,spec2,...>
 
 # Add relationships
-lean-spec link <spec> --depends-on <spec1,spec2,...>
-lean-spec link <spec> --related <spec1,spec2,...>
-lean-spec link <spec> --blocks <spec1,spec2,...>  # Inverse of depends-on
+harnspec link <spec> --depends-on <spec1,spec2,...>
+harnspec link <spec> --related <spec1,spec2,...>
+harnspec link <spec> --blocks <spec1,spec2,...>  # Inverse of depends-on
 
 # Remove relationships
-lean-spec unlink <spec> --depends-on <spec1,spec2,...>
-lean-spec unlink <spec> --related <spec1,spec2,...>
-lean-spec unlink <spec> --blocks <spec1,spec2,...>
+harnspec unlink <spec> --depends-on <spec1,spec2,...>
+harnspec unlink <spec> --related <spec1,spec2,...>
+harnspec unlink <spec> --blocks <spec1,spec2,...>
 
 # Remove all relationships of a type
-lean-spec unlink <spec> --depends-on --all
-lean-spec unlink <spec> --related --all
+harnspec unlink <spec> --depends-on --all
+harnspec unlink <spec> --related --all
 
 # View relationships (existing command)
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 ### Examples
 
 **Creating with relationships:**
+
 ```bash
 # Create spec that depends on 042 and relates to 068
-lean-spec create api-redesign --depends-on 042 --related 068,081
+harnspec create api-redesign --depends-on 042 --related 068,081
 
 # Result in api-redesign/README.md frontmatter:
 # depends_on: [042]
@@ -119,34 +124,38 @@ lean-spec create api-redesign --depends-on 042 --related 068,081
 ```
 
 **Adding dependencies:**
+
 ```bash
 # Spec 085 depends on specs 042 and 035
-lean-spec link 085 --depends-on 042,035
+harnspec link 085 --depends-on 042,035
 
 # Result in 085-cli-relationship-commands/README.md:
 # depends_on: [042, 035]
 ```
 
 **Adding related specs:**
+
 ```bash
 # Spec 082 is related to 035, 068, 081, 083
-lean-spec link 082 --related 035,068,081,083
+harnspec link 082 --related 035,068,081,083
 
 # Result: related: [035, 068, 081, 083]
 ```
 
 **Removing dependencies:**
+
 ```bash
 # Remove dependency on 042
-lean-spec unlink 085 --depends-on 042
+harnspec unlink 085 --depends-on 042
 
 # Result: depends_on: [035]  (042 removed)
 ```
 
 **Bidirectional relationships (related):**
+
 ```bash
 # Link 085 to 082 (automatically updates both specs)
-lean-spec link 085 --related 082
+harnspec link 085 --related 082
 
 # Result:
 # - 085/README.md: related: [082]
@@ -154,17 +163,18 @@ lean-spec link 085 --related 082
 ```
 
 **Directional dependencies (depends_on → blocks):**
+
 ```bash
 # Spec 085 depends on 042
-lean-spec link 085 --depends-on 042
+harnspec link 085 --depends-on 042
 
 # View from 085's perspective:
-lean-spec deps 085
+harnspec deps 085
 # Depends On:
 #   → 042-mcp-error-handling [complete]
 
 # View from 042's perspective:
-lean-spec deps 042
+harnspec deps 042
 # Required By:
 #   ← 085-cli-relationship-commands [planned]
 ```
@@ -172,28 +182,34 @@ lean-spec deps 042
 ### Validation Rules
 
 **Spec Existence:**
+
 - ✅ Validate all referenced specs exist before linking
 - ❌ Error if spec not found: "Spec 999 not found in specs/"
 
 **Duplicate Prevention:**
+
 - ✅ Skip if relationship already exists (idempotent)
 - ✅ Show warning: "Relationship already exists"
 
 **Cycle Detection:**
+
 - ⚠️ Warn on dependency cycles (A → B → C → A)
 - ✅ Allow cycles (don't block, just warn)
 
 **Self-Reference:**
+
 - ❌ Error if spec references itself
 - ❌ "Cannot link spec to itself"
 
 **Conflict Detection:**
+
 - ⚠️ Warn if spec is both `depends_on` and `related` to same spec
 - ❌ Error if A depends on B and B depends on A (mutual dependency)
 
 ### Implementation Details
 
 **File Structure:**
+
 ```typescript
 // packages/cli/src/commands/link.ts
 export function linkCommand(): Command {
@@ -241,6 +257,7 @@ export function createCommand(): Command {
 ```
 
 **Core Logic:**
+
 ```typescript
 // packages/cli/src/relationships.ts
 import { getSpecFile, updateFrontmatter, parseFrontmatter } from './frontmatter.js';
@@ -358,40 +375,43 @@ async function detectCycles(
 ### User Experience
 
 **Success Messages:**
+
 ```bash
-$ lean-spec link 085 --depends-on 042,035
+$ harnspec link 085 --depends-on 042,035
 ✓ Added dependencies: 042, 035
   Updated: specs/085-cli-relationship-commands/README.md
 
-$ lean-spec link 085 --related 082
+$ harnspec link 085 --related 082
 ✓ Added related: 082
   Updated: specs/085-cli-relationship-commands/README.md
   Updated: specs/082-web-realtime-sync-architecture/README.md (bidirectional)
 
-$ lean-spec unlink 085 --depends-on 042
+$ harnspec unlink 085 --depends-on 042
 ✓ Removed dependency: 042
   Updated: specs/085-cli-relationship-commands/README.md
 ```
 
 **Error Messages:**
+
 ```bash
-$ lean-spec link 085 --depends-on 999
+$ harnspec link 085 --depends-on 999
 ✗ Error: Spec 999 not found
   Searched: 999, 999-*, specs/999
 
-$ lean-spec link 085 --depends-on 085
+$ harnspec link 085 --depends-on 085
 ✗ Error: Cannot link spec to itself
 
-$ lean-spec link 085 --depends-on 042
+$ harnspec link 085 --depends-on 042
 ⚠️  Dependency cycle detected: 085 → 042 → 035 → 085
 ✓ Added dependency: 042 (cycle warning above)
 ```
 
-### Integration with `lean-spec deps`
+### Integration with `harnspec deps`
 
 **Current behavior** (already exists):
+
 ```bash
-$ lean-spec deps 085
+$ harnspec deps 085
 Depends On:
   → 042-mcp-error-handling [complete]
   → 035-live-specs-showcase [in-progress]
@@ -513,6 +533,7 @@ export function unlinkTool(): ToolDefinition {
 ```
 
 **Registration** (in `packages/cli/src/mcp/tools/registry.ts`):
+
 ```typescript
 import { linkTool } from './link.js';
 import { unlinkTool } from './unlink.js';
@@ -527,6 +548,7 @@ export function registerTools(server: McpServer): void {
 ```
 
 **Benefits**:
+
 - AI agents can manage relationships without manual YAML editing
 - Consistent interface between CLI and MCP
 - Reuses validation and business logic from CLI
@@ -534,6 +556,7 @@ export function registerTools(server: McpServer): void {
 - Enables spec 076 (programmatic-spec-relationships)
 
 **Example AI Agent Workflow**:
+
 ```typescript
 // Before: Manual YAML editing (error-prone)
 await mcp_lean_spec_view({ specPath: "085" });
@@ -561,6 +584,7 @@ await mcp_lean_spec_link({
 ### Phase 1: Core Commands (Days 1-2)
 
 **Day 1: `link` Command**
+
 - [ ] Create `packages/cli/src/commands/link.ts`
 - [ ] Create `packages/cli/src/relationships.ts` (shared logic)
 - [ ] Implement spec existence validation
@@ -571,6 +595,7 @@ await mcp_lean_spec_link({
 - [ ] Update CLI index to register command
 
 **Day 2: `unlink` Command + `create` Extension**
+
 - [ ] Create `packages/cli/src/commands/unlink.ts`
 - [ ] Implement `--depends-on` option (remove dependencies)
 - [ ] Implement `--related` option (remove related specs)
@@ -583,6 +608,7 @@ await mcp_lean_spec_link({
 ### Phase 2: Validation & Safety (Day 3)
 
 **Validation:**
+
 - [ ] Duplicate prevention (idempotent operations)
 - [ ] Self-reference detection
 - [ ] Cycle detection (warn, don't block)
@@ -590,6 +616,7 @@ await mcp_lean_spec_link({
 - [ ] Format validation (spec number/name)
 
 **Error Handling:**
+
 - [ ] Graceful failure messages
 - [ ] Rollback on partial failure
 - [ ] Dry-run mode (`--dry-run`)
@@ -598,14 +625,16 @@ await mcp_lean_spec_link({
 ### Phase 3: Advanced Features (Day 4 - Optional)
 
 **Nice-to-have:**
+
 - [ ] `--blocks` option (inverse of depends-on)
 - [ ] Bulk operations (link multiple specs at once)
 - [ ] Interactive mode (prompt for relationships)
-- [ ] Graph visualization (`lean-spec graph`)
+- [ ] Graph visualization (`harnspec graph`)
 
 ### Phase 4: MCP Integration (Day 5)
 
 **MCP Tools** (leveraging modular architecture from spec 080):
+
 - [ ] **Extend `packages/cli/src/mcp/tools/create.ts`**
   - [ ] Add `dependsOn` and `related` to input schema
   - [ ] Wire to relationship handling logic
@@ -629,6 +658,7 @@ await mcp_lean_spec_link({
 ### Phase 5: Documentation & Migration (Day 6)
 
 **Documentation:**
+
 - [ ] Update AGENTS.md (remove manual editing exception)
 - [ ] Update CLI help text
 - [ ] Add examples to README
@@ -636,6 +666,7 @@ await mcp_lean_spec_link({
 - [ ] Document MCP tools in spec 076
 
 **Migration:**
+
 - [ ] Validate all existing relationships in specs/
 - [ ] Fix any broken references
 - [ ] Test commands on real specs
@@ -646,6 +677,7 @@ await mcp_lean_spec_link({
 ### Unit Tests
 
 **Validation Tests:**
+
 ```typescript
 describe('updateRelationships', () => {
   it('validates spec existence', async () => {
@@ -675,6 +707,7 @@ describe('updateRelationships', () => {
 ```
 
 **Bidirectional Tests:**
+
 ```typescript
 describe('bidirectional related', () => {
   it('updates both specs when adding related', async () => {
@@ -705,30 +738,32 @@ describe('bidirectional related', () => {
 ### Integration Tests
 
 **CLI Tests:**
+
 ```bash
 # Test link command
-$ lean-spec link test-spec --depends-on 042
+$ harnspec link test-spec --depends-on 042
 # Verify: test-spec/README.md has depends_on: [042]
 
-$ lean-spec link test-spec --related 082
+$ harnspec link test-spec --related 082
 # Verify: both specs updated
 
 # Test unlink command
-$ lean-spec unlink test-spec --depends-on 042
+$ harnspec unlink test-spec --depends-on 042
 # Verify: depends_on removed or array updated
 
 # Test validation
-$ lean-spec link test-spec --depends-on 999
+$ harnspec link test-spec --depends-on 999
 # Verify: error message shown
 
 # Test bidirectional
-$ lean-spec deps test-spec
+$ harnspec deps test-spec
 # Verify: relationships displayed correctly
 ```
 
 ### Manual Testing Checklist
 
 **Basic Operations:**
+
 - [ ] Add single dependency works
 - [ ] Add multiple dependencies works (comma-separated)
 - [ ] Add related spec updates both specs
@@ -736,23 +771,27 @@ $ lean-spec deps test-spec
 - [ ] Remove all dependencies works (`--all`)
 
 **Validation:**
+
 - [ ] Non-existent spec shows error
 - [ ] Self-reference shows error
 - [ ] Cycle detection shows warning
 - [ ] Duplicate add is idempotent (no error)
 
 **Edge Cases:**
+
 - [ ] Empty relationships (no depends_on/related) handled
 - [ ] Spec with no frontmatter handled
 - [ ] Removing non-existent relationship is safe (no error)
 - [ ] Unicode in spec names handled
 
 **Integration:**
-- [ ] `lean-spec deps` shows correct relationships
+
+- [ ] `harnspec deps` shows correct relationships
 - [ ] Updated relationships persist across commands
 - [ ] Works with spec numbers (042) and names (mcp-error-handling)
 
 **MCP Tools:**
+
 - [ ] `mcp_lean_spec_link` tool works from AI agent
 - [ ] `mcp_lean_spec_unlink` tool works from AI agent
 - [ ] MCP tools validate inputs correctly
@@ -763,7 +802,8 @@ $ lean-spec deps test-spec
 
 ### Design Decisions
 
-**Why `link`/`unlink` instead of extending `lean-spec update`?**
+**Why `link`/`unlink` instead of extending `harnspec update`?**
+
 - Relationships are conceptually different from simple metadata
 - Need add/remove semantics (not set/replace)
 - Bidirectional updates require special handling
@@ -771,23 +811,27 @@ $ lean-spec deps test-spec
 - Clearer command intent ("link specs" vs "update metadata")
 
 **Why allow dependency cycles with warning?**
+
 - Real-world projects have circular dependencies
 - Blocking would be too restrictive
 - Warning gives visibility without preventing work
 - Can add `--strict` flag later if needed
 
 **Why bidirectional for `related` but not `depends_on`?**
+
 - `related` is symmetric: if A relates to B, B relates to A
 - `depends_on` is directional: A depends on B ≠ B depends on A
-- `lean-spec deps` shows both perspectives (`→` and `←`)
+- `harnspec deps` shows both perspectives (`→` and `←`)
 
 **Why not `--blocks` initially?**
+
 - Syntactic sugar for inverse of `depends_on`
 - Can compute from existing data
 - Add later if users request it
 - Keeps MVP simpler
 
 **Why MCP tools in Phase 4 instead of separate spec?**
+
 - CLI logic is the foundation - MCP tools are thin wrappers
 - Reusing validation/business logic prevents divergence
 - Spec 080 (modular MCP architecture) makes integration trivial
@@ -795,6 +839,7 @@ $ lean-spec deps test-spec
 - Enables spec 076 (programmatic-spec-relationships) immediately
 
 **Why extend `create` instead of separate command?**
+
 - Consistency: tags, priority, assignee all settable at creation
 - Natural workflow: declare dependencies upfront when planning
 - Reduces manual steps: create + link → create (one command)
@@ -803,40 +848,48 @@ $ lean-spec deps test-spec
 
 ### Alternative Approaches Considered
 
-**1. Extend `lean-spec update`**
+**1. Extend `harnspec update`**
+
 ```bash
-lean-spec update 085 --add-dependency 042
-lean-spec update 085 --remove-dependency 042
+harnspec update 085 --add-dependency 042
+harnspec update 085 --remove-dependency 042
 ```
+
 - **Pros**: Fewer commands, consistent with update
 - **Cons**: Awkward syntax, hard to extend, no bidirectional handling
 - **Verdict**: ❌ Too limiting
 
 **2. Separate commands per relationship type**
+
 ```bash
-lean-spec add-dependency 085 042
-lean-spec remove-dependency 085 042
-lean-spec add-related 085 082
+harnspec add-dependency 085 042
+harnspec remove-dependency 085 042
+harnspec add-related 085 082
 ```
+
 - **Pros**: Very explicit
 - **Cons**: Too many commands, verbose
 - **Verdict**: ❌ Command explosion
 
 **3. Unified `link`/`unlink` with options (Chosen)**
+
 ```bash
-lean-spec link 085 --depends-on 042 --related 082
-lean-spec unlink 085 --depends-on 042
+harnspec link 085 --depends-on 042 --related 082
+harnspec unlink 085 --depends-on 042
 ```
+
 - **Pros**: Flexible, extensible, clear intent
 - **Cons**: Slightly longer syntax
 - **Verdict**: ✅ Best balance
 
 **4. Interactive mode only**
+
 ```bash
-lean-spec link 085
+harnspec link 085
 > Add dependency: 042
 > Add related: 082
 ```
+
 - **Pros**: User-friendly
 - **Cons**: Not scriptable, slow for automation
 - **Verdict**: ❌ Too limited (can add as optional mode)
@@ -853,25 +906,29 @@ lean-spec link 085
 ### Success Criteria
 
 **Functionality:**
+
 - ✅ Can add/remove dependencies without manual editing
 - ✅ Bidirectional `related` updates both specs
 - ✅ Validation prevents broken relationships
-- ✅ `lean-spec deps` shows correct relationships
+- ✅ `harnspec deps` shows correct relationships
 
 **Developer Experience:**
+
 - ✅ Commands feel natural and intuitive
 - ✅ Error messages are helpful
 - ✅ Works with spec numbers or names
 - ✅ Faster than manual editing
 
 **Code Quality:**
+
 - ✅ Test coverage >90%
 - ✅ No regressions in existing commands
-- ✅ Passes `lean-spec validate`
+- ✅ Passes `harnspec validate`
 - ✅ TypeScript compilation clean
 - ✅ MCP tools follow modular pattern from spec 080
 
 **AI Agent Experience:**
+
 - ✅ Can manage relationships without manual YAML editing
 - ✅ Workflow parity with spec 076 vision
 - ✅ Error messages guide agents to correct usage
@@ -879,11 +936,13 @@ lean-spec link 085
 ### Context Economy Analysis
 
 **Current state**: 6,296 tokens (🔴 should split threshold)
+
 - 54% code examples (validation, CLI, MCP)
 - 45% prose (design rationale, decisions)
 - 808 lines total
 
 **Why not split?**
+
 - This is a **design spec** with extensive code examples needed for:
   - CLI command interface (multiple examples)
   - Validation logic (comprehensive error cases)
@@ -894,6 +953,7 @@ lean-spec link 085
 - Once implemented, can extract to sub-specs if needed
 
 **Trade-off**: Accept elevated token count for design phase to maintain coherence. After implementation, can extract:
+
 - `IMPLEMENTATION.md` - Core logic, validation
 - `MCP-INTEGRATION.md` - MCP tool details
 - `EXAMPLES.md` - Usage examples, edge cases
@@ -901,12 +961,14 @@ lean-spec link 085
 ### Related Specs
 
 **This spec depends on:**
+
 - Existing frontmatter parsing (`packages/cli/src/frontmatter.ts`)
-- Existing `lean-spec deps` command (view-only)
+- Existing `harnspec deps` command (view-only)
 - Spec path resolution utilities
 - Spec 080 (mcp-server-modular-architecture) - Modular MCP structure for adding new tools
 
 **This spec enables:**
+
 - Automated relationship management in CI/CD
 - Better spec graph analysis
 - Foundation for future relationship features
@@ -914,6 +976,7 @@ lean-spec link 085
 - **Spec 076 (programmatic-spec-relationships)** - MCP tools for relationship management
 
 **Related specs:**
+
 - **Spec 076 (programmatic-spec-relationships)** - MCP server side (depends on this CLI foundation)
 - Spec 059 (programmatic-spec-management) - API design patterns
 - Spec 080 (mcp-server-modular-architecture) - Modular MCP architecture (complete)

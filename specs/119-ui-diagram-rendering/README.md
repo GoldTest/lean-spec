@@ -22,7 +22,7 @@ completed: '2025-11-25'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-25 · **Tags**: ui, ux, feature, visualization
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -32,6 +32,7 @@ completed: '2025-11-25'
 **Request**: User feedback asks for natural diagram rendering in the spec detail view.
 
 **Impact**:
+
 - Better spec readability and comprehension
 - Aligns with how specs are viewed in GitHub/docs sites (which render Mermaid natively)
 - Enhanced visual communication of complex relationships
@@ -42,12 +43,14 @@ completed: '2025-11-25'
 ### Approach: Mermaid-First with PlantUML Support
 
 **Phase 1: Mermaid (Primary Focus)**
+
 - Native browser rendering via `mermaid` npm package
 - No server required, fully client-side
 - Excellent React integration
 - Already well-established in GitHub, Docusaurus, etc.
 
 **Phase 2: PlantUML (Optional Enhancement)**
+
 - Requires server-side rendering (Java-based PlantUML server)
 - Options: External service (plantuml.com) or self-hosted
 - Lower priority - Mermaid covers 90%+ of use cases
@@ -57,6 +60,7 @@ completed: '2025-11-25'
 **react-markdown Custom Component**
 
 Current code in `spec-detail-client.tsx`:
+
 ```tsx
 <ReactMarkdown
   remarkPlugins={[remarkGfm, remarkStripHtmlComments]}
@@ -70,6 +74,7 @@ Current code in `spec-detail-client.tsx`:
 ```
 
 Add custom `code` component to intercept diagram blocks:
+
 ```tsx
 components={{
   a: (props) => <MarkdownLink {...props} />,
@@ -151,6 +156,7 @@ export function MermaidDiagram({ code }: MermaidDiagramProps) {
 ### Dark Mode Support
 
 Mermaid needs theme awareness:
+
 ```tsx
 import { useTheme } from 'next-themes';
 
@@ -167,12 +173,14 @@ mermaid.initialize({
 Options for PlantUML rendering:
 
 **Option A: Public PlantUML Server** (Quick but external dependency)
+
 ```tsx
 const plantUmlUrl = `https://www.plantuml.com/plantuml/svg/${encode(code)}`;
 return <img src={plantUmlUrl} alt="PlantUML diagram" />;
 ```
 
 **Option B: Self-hosted via Docker** (Privacy-focused, more setup)
+
 - Add optional `PLANTUML_SERVER_URL` env var
 - Fall back to public server or show code block if not configured
 
@@ -181,6 +189,7 @@ return <img src={plantUmlUrl} alt="PlantUML diagram" />;
 ### Fallback Behavior
 
 When rendering fails or feature is disabled:
+
 - Show original code block with syntax highlighting
 - Display subtle error message above the code
 - Allow toggle between rendered view and source code
@@ -208,6 +217,7 @@ const MermaidDiagram = dynamic(
 ## Plan
 
 **Phase 1: Mermaid Support (MVP)**
+
 - [ ] Add `mermaid` package to `@leanspec/ui` dependencies
 - [ ] Create `MermaidDiagram` client component
 - [ ] Add custom `code` component to ReactMarkdown in `spec-detail-client.tsx`
@@ -216,12 +226,14 @@ const MermaidDiagram = dynamic(
 - [ ] Test with various Mermaid diagram types (flowchart, sequence, class, etc.)
 
 **Phase 2: UX Polish**
+
 - [ ] Add loading skeleton while diagram renders
 - [ ] Add "View Source" toggle button for each diagram
 - [ ] Add zoom/pan for large diagrams (optional)
 - [ ] Optimize with lazy loading / dynamic import
 
 **Phase 3: PlantUML Support (Optional)**
+
 - [ ] Add PlantUML encoding utility
 - [ ] Create `PlantUMLDiagram` component using public server
 - [ ] Add configuration for self-hosted PlantUML server
@@ -230,6 +242,7 @@ const MermaidDiagram = dynamic(
 ## Test
 
 **Mermaid Rendering**
+
 - [ ] Flowchart diagrams render correctly
 - [ ] Sequence diagrams render correctly
 - [ ] Class diagrams render correctly
@@ -239,21 +252,25 @@ const MermaidDiagram = dynamic(
 - [ ] Pie charts render correctly
 
 **Theme Support**
+
 - [ ] Diagrams use light theme in light mode
 - [ ] Diagrams use dark theme in dark mode
 - [ ] Theme switches correctly without page reload
 
 **Error Handling**
+
 - [ ] Invalid Mermaid syntax shows error message
 - [ ] Error state shows original code as fallback
 - [ ] Non-diagram code blocks render normally (no regression)
 
 **Performance**
+
 - [ ] Mermaid package only loads when diagram present
 - [ ] Page without diagrams has no bundle size increase
 - [ ] Multiple diagrams on one page render efficiently
 
 **Accessibility**
+
 - [ ] Diagrams have appropriate alt text or labels
 - [ ] Source code is available for screen readers
 
@@ -270,6 +287,7 @@ const MermaidDiagram = dynamic(
 ### PlantUML Considerations
 
 PlantUML is more powerful but requires Java runtime:
+
 - Sequence diagrams with more features
 - Component diagrams
 - Deployment diagrams

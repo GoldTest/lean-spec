@@ -14,14 +14,15 @@ completed: '2025-11-03'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: cli, enhancement, ux, viewer
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-Add new `lean-spec` commands for viewing and reading spec details with rich rendering capabilities. Users currently need to manually open spec files in their editor or navigate to the specs directory. This spec introduces commands to view spec content directly in the terminal with proper markdown rendering, making it easier to quickly read and reference specs without leaving the command line.
+Add new `harnspec` commands for viewing and reading spec details with rich rendering capabilities. Users currently need to manually open spec files in their editor or navigate to the specs directory. This spec introduces commands to view spec content directly in the terminal with proper markdown rendering, making it easier to quickly read and reference specs without leaving the command line.
 
 **Why now?** As LeanSpec grows, users need quick ways to view spec content. This is foundational for:
+
 - MCP server integration (spec 033) - needs to expose spec content to AI agents
 - Better CLI UX - completes the workflow of discover → view → edit
 - AI agent workflows - agents need to read specs before taking action
@@ -30,15 +31,17 @@ Add new `lean-spec` commands for viewing and reading spec details with rich rend
 
 **New Commands:**
 
-### `lean-spec show <spec-name>`
+### `harnspec show <spec-name>`
+
 Display full spec content with rendered markdown in the terminal.
 
 ```bash
-lean-spec show api-redesign
-lean-spec show 015-npm-publishing  # Also support spec number
+harnspec show api-redesign
+harnspec show 015-npm-publishing  # Also support spec number
 ```
 
 **Features:**
+
 - Render markdown with syntax highlighting (headers, lists, code blocks)
 - Preserve frontmatter display in readable format
 - Support terminal hyperlinks for cross-references
@@ -46,33 +49,38 @@ lean-spec show 015-npm-publishing  # Also support spec number
 - Show spec metadata (status, priority, tags) at top
 
 **Implementation:**
+
 - Use `marked-terminal` or `ink-markdown` for rendering
 - Parse frontmatter and display separately from content
 - Auto-detect terminal capabilities (colors, hyperlinks)
 - Handle long content with pagination (optional `--no-pager` flag)
 
-### `lean-spec view <spec-name>` (alias)
-Shorter alias for `lean-spec show` for convenience.
+### `harnspec view <spec-name>` (alias)
 
-### `lean-spec read <spec-name>` (raw mode)
+Shorter alias for `harnspec show` for convenience.
+
+### `harnspec read <spec-name>` (raw mode)
+
 Output raw markdown content without rendering (useful for piping, AI consumption, scripting).
 
 ```bash
-lean-spec read api-redesign
-lean-spec read 015-npm-publishing | grep "TODO"
+harnspec read api-redesign
+harnspec read 015-npm-publishing | grep "TODO"
 ```
 
 **Output Options:**
+
 - `--format=markdown` (default) - raw markdown
 - `--format=json` - structured JSON with frontmatter and content separated
 - `--frontmatter-only` - only output frontmatter as JSON
 
-### `lean-spec open <spec-name>`
+### `harnspec open <spec-name>`
+
 Open spec in default editor or specified editor.
 
 ```bash
-lean-spec open api-redesign
-lean-spec open api-redesign --editor=code  # Open in VS Code
+harnspec open api-redesign
+harnspec open api-redesign --editor=code  # Open in VS Code
 ```
 
 **Technical Approach:**
@@ -105,11 +113,11 @@ lean-spec open api-redesign --editor=code  # Open in VS Code
 ## Plan
 
 - [ ] Add `marked-terminal` dependency
-- [ ] Implement `lean-spec show` command with markdown rendering
+- [ ] Implement `harnspec show` command with markdown rendering
 - [ ] Add frontmatter display formatting
-- [ ] Implement `lean-spec read` command for raw/JSON output
-- [ ] Add `lean-spec view` alias
-- [ ] Implement `lean-spec open` command with editor detection
+- [ ] Implement `harnspec read` command for raw/JSON output
+- [ ] Add `harnspec view` alias
+- [ ] Implement `harnspec open` command with editor detection
 - [ ] Add pagination support for long content
 - [ ] Add terminal capability detection (colors, hyperlinks)
 - [ ] Write unit tests for rendering logic
@@ -119,15 +127,15 @@ lean-spec open api-redesign --editor=code  # Open in VS Code
 
 ## Test
 
-- [ ] `lean-spec show` renders markdown correctly in terminal
+- [ ] `harnspec show` renders markdown correctly in terminal
 - [ ] Frontmatter displays with proper formatting
 - [ ] Code blocks have syntax highlighting
 - [ ] Long specs trigger pagination (unless --no-pager)
-- [ ] `lean-spec read` outputs raw markdown
-- [ ] `lean-spec read --format=json` outputs valid JSON
-- [ ] `lean-spec read --frontmatter-only` outputs frontmatter only
-- [ ] `lean-spec open` opens spec in default editor
-- [ ] `lean-spec open --editor=<cmd>` uses specified editor
+- [ ] `harnspec read` outputs raw markdown
+- [ ] `harnspec read --format=json` outputs valid JSON
+- [ ] `harnspec read --frontmatter-only` outputs frontmatter only
+- [ ] `harnspec open` opens spec in default editor
+- [ ] `harnspec open --editor=<cmd>` uses specified editor
 - [ ] Commands work with spec name, number, or path
 - [ ] Graceful error for non-existent specs
 - [ ] Works in non-interactive terminals (CI)
@@ -137,10 +145,12 @@ lean-spec open api-redesign --editor=code  # Open in VS Code
 ## Notes
 
 **Dependencies:**
+
 - Related to spec 033 (MCP Server) - `read` command output should match MCP resource format
 - Complements spec 006 (PM Visualization) - different view modes for different contexts
 
 **Markdown Rendering Libraries Considered:**
+
 - `marked-terminal` - Battle-tested, good terminal rendering
 - `ink-markdown` - React-based, heavier but more features
 - `terminal-markdown` - Lighter but less maintained
@@ -148,18 +158,21 @@ lean-spec open api-redesign --editor=code  # Open in VS Code
 **Decision:** Start with `marked-terminal` for simplicity and reliability.
 
 **Editor Detection:**
+
 - Check `$EDITOR`, `$VISUAL` environment variables
 - Fall back to `open` (macOS), `xdg-open` (Linux), `start` (Windows)
 - Allow override with `--editor` flag or config setting
 
 **Future Enhancements:**
+
 - Interactive mode with search/filter
 - Spec-to-spec navigation (jump to dependencies)
-- Diff mode (`lean-spec show <spec> --diff`) to see changes
+- Diff mode (`harnspec show <spec> --diff`) to see changes
 - Export to PDF/HTML for sharing
 
 **MCP Integration Notes:**
-The `lean-spec read --format=json` output should align with the MCP resource schema:
+The `harnspec read --format=json` output should align with the MCP resource schema:
+
 ```json
 {
   "name": "spec-name",

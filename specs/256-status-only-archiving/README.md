@@ -20,14 +20,17 @@ transitions:
 ## Overview
 
 Currently archived specs use two mechanisms:
+
 1. **Folder location**: Moved to `specs/archived/` directory
 2. **Status field**: `status: archived` in frontmatter
 
 This creates inconsistency:
+
 - 26 specs in `archived/` folder have `status: complete` (legacy)
 - 5 specs had `status: archived` but were NOT in `archived/` folder
 
 **Decision**: Migrate to status-only archiving where:
+
 - All specs stay in `specs/` folder (flat structure)
 - Archive status determined solely by `status: archived` frontmatter
 - No file movement required to archive/unarchive
@@ -35,6 +38,7 @@ This creates inconsistency:
 ## Design
 
 ### Benefits of Status-Only
+
 - Single source of truth (frontmatter)
 - Git history preserved (no file moves)
 - Links between specs never break
@@ -42,17 +46,19 @@ This creates inconsistency:
 - Consistent with other status values
 
 ### Legacy Compatibility (Option D)
+
 To ensure smooth transition for existing users:
 
 1. **Folder fallback**: If spec is in `archived/` folder, treat as archived regardless of frontmatter status
 2. **Deprecation warning**: Log warning when `archived/` folder is detected, suggesting migration
-3. **Migration command**: `lean-spec migrate-archived` to:
+3. **Migration command**: `harnspec migrate-archived` to:
    - Move specs from `archived/` to `specs/`
    - Set `status: archived` on all moved specs
    - Remove empty `archived/` directory
 4. **Future removal**: Remove folder support in next major version
 
 ### Code Changes Required
+
 1. **spec_loader.rs**: Keep `archived/` detection but mark as deprecated, override status to `archived` for folder-based specs
 2. **spec_archiver.rs**: Simplify to only update status field (no file move)
 3. **archive.rs CLI**: Update to not move directories
@@ -73,12 +79,12 @@ To ensure smooth transition for existing users:
 
 ## Test
 
-- [x] `lean-spec list` excludes archived specs by default
-- [x] `lean-spec list --all` shows archived specs
-- [x] `lean-spec archive <spec>` sets status to archived (no move)
-- [x] `lean-spec unarchive <spec>` sets status to complete (no move)
+- [x] `harnspec list` excludes archived specs by default
+- [x] `harnspec list --all` shows archived specs
+- [x] `harnspec archive <spec>` sets status to archived (no move)
+- [x] `harnspec unarchive <spec>` sets status to complete (no move)
 - [x] Specs in `archived/` folder still treated as archived (deprecation warning shown)
-- [x] `lean-spec migrate-archived` moves specs and sets statuses
+- [x] `harnspec migrate-archived` moves specs and sets statuses
 - [x] UI board view shows archived column correctly
 - [x] Existing links/dependencies still resolve
 

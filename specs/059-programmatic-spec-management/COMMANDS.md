@@ -5,12 +5,14 @@
 ## Design Philosophy
 
 These commands are designed for **AI agent orchestration**:
+
 - AI agents read specs and detect issues
 - AI agents decide transformation strategies
 - AI agents call tools with explicit parameters
 - Tools execute transformations mechanically (no LLM calls)
 
 **Key Principles**:
+
 1. **Tools are executors, not deciders** - AI agents provide intelligence
 2. **Deterministic operations** - Same input = same output, always
 3. **Structured I/O** - JSON output for AI agent consumption
@@ -21,28 +23,30 @@ These commands are designed for **AI agent orchestration**:
 
 ```bash
 # Analysis (returns structured data)
-lean-spec analyze <spec> [options]
+harnspec analyze <spec> [options]
 
 # Transformations (execute AI agent decisions)
-lean-spec split <spec> [options]
-lean-spec compact <spec> [options]  
-lean-spec compress <spec> [options]
-lean-spec isolate <spec> [options]
+harnspec split <spec> [options]
+harnspec compact <spec> [options]  
+harnspec compress <spec> [options]
+harnspec isolate <spec> [options]
 
 # Utilities
-lean-spec diff <spec> --before-after
-lean-spec preview <spec> --transformation=<type>
-lean-spec rollback <spec>
+harnspec diff <spec> --before-after
+harnspec preview <spec> --transformation=<type>
+harnspec rollback <spec>
 ```
 
-## `lean-spec analyze` - Analyze Spec Complexity
+## `harnspec analyze` - Analyze Spec Complexity
 
 ### Purpose
+
 Parse spec structure and return metrics for AI agent decision-making. No semantic analysis, just structural facts.
 
 ### Usage
+
 ```bash
-lean-spec analyze <spec> [options]
+harnspec analyze <spec> [options]
 
 Options:
   --json           Output as JSON (default for AI agents)
@@ -53,6 +57,7 @@ Options:
 ### Output Format
 
 **JSON (primary format for AI agents)**:
+
 ```json
 {
   "spec": "045-unified-dashboard",
@@ -103,8 +108,9 @@ Options:
 ### Human-Readable Format
 
 **For human review** (optional `--verbose` flag):
+
 ```bash
-$ lean-spec analyze 045 --verbose
+$ harnspec analyze 045 --verbose
 
 📊 Spec Analysis: 045-unified-dashboard
 
@@ -132,7 +138,7 @@ Recommendation: Split into sub-specs
 
 ```typescript
 // AI agent workflow
-const analysis = await exec('lean-spec analyze 045 --json');
+const analysis = await exec('harnspec analyze 045 --json');
 const data = JSON.parse(analysis);
 
 if (data.threshold.status === 'warning' && data.recommendation.action === 'split') {
@@ -142,18 +148,20 @@ if (data.threshold.status === 'warning' && data.recommendation.action === 'split
     .map(s => `${s.section}.md:${s.lineRange[0]}-${s.lineRange[1]}`);
   
   // AI calls tool with explicit parameters
-  await exec(`lean-spec split 045 ${outputs.map(o => `--output=${o}`).join(' ')}`);
+  await exec(`harnspec split 045 ${outputs.map(o => `--output=${o}`).join(' ')}`);
 }
 ```
 
-## `lean-spec split` - Partition Spec into Files
+## `harnspec split` - Partition Spec into Files
 
 ### Purpose
+
 Mechanically split spec into multiple files based on explicit line ranges. AI agent decides what goes where.
 
 ### Usage
+
 ```bash
-lean-spec split <spec> [options]
+harnspec split <spec> [options]
 
 Options:
   --output=<file>:<lines>   Output file with line range (required, repeatable)
@@ -165,9 +173,10 @@ Options:
 ### Examples
 
 **AI agent orchestrated split**:
+
 ```bash
 # AI agent analyzed spec and decided on split points
-$ lean-spec split 045 \
+$ harnspec split 045 \
   --output=README.md:1-150 \
   --output=DESIGN.md:151-528 \
   --output=TESTING.md:529-710 \
@@ -183,8 +192,9 @@ Split complete: 3 files, 3,052 tokens total
 ```
 
 **Dry run preview**:
+
 ```bash
-$ lean-spec split 045 --output=README.md:1-150 --dry-run
+$ harnspec split 045 --output=README.md:1-150 --dry-run
 
 Would create:
   specs/045-unified-dashboard/README.md
@@ -196,11 +206,12 @@ No files modified (dry run)
 ```
 
 **Conflict detection**:
+
 ```bash
 **AI agent orchestrated split**:
 ```bash
 # AI agent analyzed spec and decided on split points
-$ lean-spec split 045 \
+$ harnspec split 045 \
   --output=README.md:1-150 \
   --output=DESIGN.md:151-528 \
   --output=TESTING.md:529-710 \
@@ -216,8 +227,9 @@ Split complete: 3 files, 3,052 tokens total
 ```
 
 **Dry run preview**:
+
 ```bash
-$ lean-spec split 045 --output=README.md:1-150 --dry-run
+$ harnspec split 045 --output=README.md:1-150 --dry-run
 
 Would create:
   specs/045-unified-dashboard/README.md
@@ -231,6 +243,7 @@ No files modified (dry run)
 ### Tool Behavior
 
 **What it does**:
+
 1. Parses spec structure (frontmatter, sections, line ranges)
 2. Extracts specified line ranges to new files
 3. Copies frontmatter to README.md only
@@ -238,19 +251,22 @@ No files modified (dry run)
 5. Validates all created files
 
 **What it doesn't do**:
+
 - ❌ No semantic analysis of content
 - ❌ No decisions about what should go where
 - ❌ No content rewriting or summarization
 - ✅ Just mechanical extraction and file creation
 
-## `lean-spec compact` - Remove Specified Content
+## `harnspec compact` - Remove Specified Content
 
 ### Purpose
+
 Mechanically remove specified line ranges. AI agent identifies redundancy, tool executes removal.
 
 ### Usage
+
 ```bash
-lean-spec compact <spec> [options]
+harnspec compact <spec> [options]
 
 Options:
   --remove=<lines>         Line range to remove (required, repeatable)
@@ -261,9 +277,10 @@ Options:
 ### Examples
 
 **AI agent orchestrated compaction**:
+
 ```bash
 # AI agent detected redundancy at specific lines
-$ lean-spec compact 045 \
+$ harnspec compact 045 \
   --remove=145-153 \
   --remove=234-256 \
   --remove=401-415
@@ -277,8 +294,9 @@ Compaction complete: Removed 47 lines, saved ~188 tokens
 ```
 
 **Dry run**:
+
 ```bash
-$ lean-spec compact 045 --remove=145-153 --dry-run
+$ harnspec compact 045 --remove=145-153 --dry-run
 
 Would remove:
   Lines 145-153 (9 lines):
@@ -293,24 +311,28 @@ No files modified (dry run)
 ### Tool Behavior
 
 **What it does**:
+
 1. Removes specified line ranges
 2. Updates internal line number references
 3. Validates markdown structure after removal
 4. Reports token/line savings
 
 **What it doesn't do**:
+
 - ❌ No detection of redundancy
 - ❌ No semantic understanding of what's safe to remove
 - ✅ Just mechanical deletion of specified lines
 
-## `lean-spec compress` - Replace Content with Summary
+## `harnspec compress` - Replace Content with Summary
 
 ### Purpose
+
 Replace specified content with AI-provided summary. AI agent generates summary, tool executes replacement.
 
 ### Usage
+
 ```bash
-lean-spec compress <spec> [options]
+harnspec compress <spec> [options]
 
 Options:
   --replace=<lines>:<text>  Replace line range with text (required)
@@ -320,9 +342,10 @@ Options:
 ### Examples
 
 **AI agent orchestrated compression**:
+
 ```bash
 # AI agent read completed phase, generated summary
-$ lean-spec compress 043 \
+$ harnspec compress 043 \
   --replace='142-284:## ✅ Phase 1: Foundation (Completed 2025-11-05)
 
 Established first principles through comprehensive analysis.
@@ -337,23 +360,27 @@ Compression complete: 143 → 4 lines
 ### Tool Behavior
 
 **What it does**:
+
 1. Replaces specified line range with provided text
 2. Validates markdown structure
 3. Reports compression ratio
 
 **What it doesn't do**:
+
 - ❌ No summarization of content
 - ❌ No decision about what to keep/remove
 - ✅ Just mechanical text replacement
 
-## `lean-spec isolate` - Move Content to New Spec
+## `harnspec isolate` - Move Content to New Spec
 
 ### Purpose
+
 Move specified content to a new spec file. AI agent decides what to isolate, tool executes move.
 
 ### Usage
+
 ```bash
-lean-spec isolate <source-spec> [options]
+harnspec isolate <source-spec> [options]
 
 Options:
   --lines=<range>          Lines to move (required)
@@ -364,9 +391,10 @@ Options:
 ### Examples
 
 **AI agent orchestrated isolation**:
+
 ```bash
 # AI agent determined section is independent concern
-$ lean-spec isolate 045 \
+$ harnspec isolate 045 \
   --lines=401-542 \
   --to=060-velocity-algorithm \
   --add-reference
@@ -382,6 +410,7 @@ Isolation complete: New spec 060 created
 ### Tool Behavior
 
 **What it does**:
+
 1. Creates new spec directory and README.md
 2. Moves specified lines to new spec
 3. Removes lines from source spec
@@ -389,6 +418,7 @@ Isolation complete: New spec 060 created
 5. Initializes frontmatter for new spec
 
 **What it doesn't do**:
+
 - ❌ No decision about what constitutes a separate concern
 - ❌ No analysis of dependencies
 - ✅ Just mechanical file operations
@@ -401,8 +431,9 @@ Isolation complete: New spec 060 created
 ### Examples
 
 **Auto split** (recommended):
+
 ```bash
-$ lean-spec split 045
+$ harnspec split 045
 
 🔍 Analyzing spec structure...
 ✓ Detected 5 concerns
@@ -431,8 +462,9 @@ Apply this split? (Y/n) █
 ```
 
 **Preview mode**:
+
 ```bash
-$ lean-spec split 045 --preview
+$ harnspec split 045 --preview
 
 Split Plan:
 
@@ -465,8 +497,9 @@ Run without --preview to apply.
 ```
 
 **Split by phases**:
+
 ```bash
-$ lean-spec split 043 --strategy=phases
+$ harnspec split 043 --strategy=phases
 
 Phase-based split for multi-phase spec:
 
@@ -484,8 +517,9 @@ Apply? (Y/n)
 ```
 
 **Custom/interactive split**:
+
 ```bash
-$ lean-spec split 045 --strategy=custom
+$ harnspec split 045 --strategy=custom
 
 Interactive Split Wizard:
 
@@ -513,6 +547,7 @@ Select sections for next file:
 ### Post-Split Validation
 
 After splitting, automatically validates:
+
 - ✓ All files under 3,500 tokens
 - ✓ No broken cross-references
 - ✓ Valid markdown syntax
@@ -520,14 +555,16 @@ After splitting, automatically validates:
 - ✓ Sub-spec links in README.md
 - ✓ Git-trackable (files committed together)
 
-## `lean-spec compact` - Remove Redundancy
+## `harnspec compact` - Remove Redundancy
 
 ### Purpose
+
 Remove duplicate and redundant content while preserving decisions.
 
 ### Usage
+
 ```bash
-lean-spec compact <spec> [options]
+harnspec compact <spec> [options]
 
 Options:
   --preview              Show changes before applying
@@ -539,8 +576,9 @@ Options:
 ### Examples
 
 **Basic compaction**:
+
 ```bash
-$ lean-spec compact 018
+$ harnspec compact 018
 
 🔍 Analyzing redundancy...
 ✓ Found 3 duplicate sections
@@ -570,8 +608,9 @@ Apply compaction? (Y/n)
 ```
 
 **Aggressive mode**:
+
 ```bash
-$ lean-spec compact 018 --aggressive
+$ harnspec compact 018 --aggressive
 
 🔍 Aggressive compaction analysis...
 
@@ -592,14 +631,16 @@ Choose mode:
 Selection: █
 ```
 
-## `lean-spec compress` - Summarize Sections
+## `harnspec compress` - Summarize Sections
 
 ### Purpose
+
 Compress completed phases or verbose sections into summaries.
 
 ### Usage
+
 ```bash
-lean-spec compress <spec> [options]
+harnspec compress <spec> [options]
 
 Options:
   --section=<name>       Section to compress
@@ -612,8 +653,9 @@ Options:
 ### Examples
 
 **Compress completed phases**:
+
 ```bash
-$ lean-spec compress 043 --phases
+$ harnspec compress 043 --phases
 
 🔍 Identifying completed phases...
 ✓ Found 2 completed phases
@@ -659,8 +701,9 @@ Apply compression? (Y/n)
 ```
 
 **Compress specific section**:
+
 ```bash
-$ lean-spec compress 045 --section="Research Notes"
+$ harnspec compress 045 --section="Research Notes"
 
 Section: Research Notes (85 lines)
 Status: Supporting information, not critical to decisions
@@ -681,8 +724,9 @@ Apply? (Y/n)
 ```
 
 **AI-powered compression**:
+
 ```bash
-$ lean-spec compress 018 --history --ai
+$ harnspec compress 018 --history --ai
 
 🤖 Using AI to summarize historical sections...
 
@@ -713,14 +757,16 @@ Lost:
 Apply? (Y/n)
 ```
 
-## `lean-spec isolate` - Extract to New Spec
+## `harnspec isolate` - Extract to New Spec
 
 ### Purpose
+
 Move unrelated concern to separate spec.
 
 ### Usage
+
 ```bash
-lean-spec isolate <spec> [options]
+harnspec isolate <spec> [options]
 
 Options:
   --section=<name>       Section to isolate
@@ -732,8 +778,9 @@ Options:
 ### Examples
 
 **Isolate section**:
+
 ```bash
-$ lean-spec isolate 045 --section="Velocity Algorithm" --new-spec=velocity-algorithm
+$ harnspec isolate 045 --section="Velocity Algorithm" --new-spec=velocity-algorithm
 
 🔍 Analyzing section "Velocity Algorithm"...
 ✓ Can be isolated (minimal dependencies)
@@ -760,8 +807,9 @@ Apply isolation? (Y/n)
 ```
 
 **Interactive mode**:
+
 ```bash
-$ lean-spec isolate 045 --interactive
+$ harnspec isolate 045 --interactive
 
 Select sections to isolate:
   [ ] 1. Overview
@@ -792,10 +840,10 @@ Proceed? (Y/n)
 
 ## Utility Commands
 
-### `lean-spec diff` - Show Transformation Diff
+### `harnspec diff` - Show Transformation Diff
 
 ```bash
-$ lean-spec diff 045 --before-after
+$ harnspec diff 045 --before-after
 
 Comparing before/after split:
 
@@ -812,10 +860,10 @@ Total: 3,052 tokens / 763 lines
 Savings: 1,748 tokens / 403 lines (via compaction)
 ```
 
-### `lean-spec preview` - Preview Transformation
+### `harnspec preview` - Preview Transformation
 
 ```bash
-$ lean-spec preview 045 \
+$ harnspec preview 045 \
   --split=README.md:1-150,DESIGN.md:151-528
 
 Preview:
@@ -826,10 +874,10 @@ Preview:
 Use --apply to execute transformation
 ```
 
-### `lean-spec rollback` - Undo Transformation
+### `harnspec rollback` - Undo Transformation
 
 ```bash
-$ lean-spec rollback 045
+$ harnspec rollback 045
 
 Found git history:
   1. Split into sub-specs (2 hours ago) - commit abc123
@@ -847,7 +895,7 @@ Select rollback point: 1
 
 ```typescript
 // AI agent detects large spec during review
-const analysis = await exec('lean-spec analyze 045 --json');
+const analysis = await exec('harnspec analyze 045 --json');
 const data = JSON.parse(analysis);
 
 if (data.metrics.tokens > 3500) {
@@ -869,10 +917,10 @@ if (data.metrics.tokens > 3500) {
   });
   
   // Execute split
-  await exec(`lean-spec split 045 ${outputs.join(' ')} --update-refs`);
+  await exec(`harnspec split 045 ${outputs.join(' ')} --update-refs`);
   
   // Verify
-  const newTokens = await exec('lean-spec tokens 045/*');
+  const newTokens = await exec('harnspec tokens 045/*');
   // Confirm all files under 2,000 tokens
 }
 ```
@@ -895,7 +943,7 @@ const removes = duplicates
   .map(d => `--remove=${d.duplicate[0]}-${d.duplicate[1]}`)
   .join(' ');
 
-await exec(`lean-spec compact 045 ${removes}`);
+await exec(`harnspec compact 045 ${removes}`);
 ```
 
 ### Pattern 3: Compress Completed Phases
@@ -903,7 +951,7 @@ await exec(`lean-spec compact 045 ${removes}`);
 ```typescript
 // AI agent detects completed phase in implementation spec
 const content = await readFile('specs/043-official-launch-02/README.md');
-const analysis = await exec('lean-spec analyze 043 --json');
+const analysis = await exec('harnspec analyze 043 --json');
 
 // AI reads phase 1 section (lines 142-284)
 const phase1Content = lines.slice(141, 284).join('\n');
@@ -915,14 +963,14 @@ Established first principles through comprehensive analysis.
 Key deliverable: specs/049-leanspec-first-principles/`;
 
 // Execute compression
-await exec(`lean-spec compress 043 --replace='142-284:${summary}'`);
+await exec(`harnspec compress 043 --replace='142-284:${summary}'`);
 ```
 
 ### Pattern 4: Isolate Independent Concern
 
 ```typescript
 // AI agent identifies section that should be separate spec
-const analysis = await exec('lean-spec analyze 045 --json');
+const analysis = await exec('harnspec analyze 045 --json');
 
 // AI finds "Velocity Algorithm" section is self-contained
 const velocitySection = analysis.structure.find(
@@ -934,7 +982,7 @@ const hasExternalDeps = false; // AI determined this
 
 if (!hasExternalDeps) {
   // Execute isolation
-  await exec(`lean-spec isolate 045 \
+  await exec(`harnspec isolate 045 \
     --lines=${velocitySection.lineRange.join('-')} \
     --to=060-velocity-algorithm \
     --add-reference`);
@@ -948,7 +996,7 @@ if (!hasExternalDeps) {
 async function optimizeSpec(specId: string) {
   // 1. Analyze
   const analysis = JSON.parse(
-    await exec(`lean-spec analyze ${specId} --json`)
+    await exec(`harnspec analyze ${specId} --json`)
   );
   
   // 2. Decide strategy based on metrics
@@ -960,7 +1008,7 @@ async function optimizeSpec(specId: string) {
     await compactSpec(specId, analysis);
     
     const recheck = JSON.parse(
-      await exec(`lean-spec analyze ${specId} --json`)
+      await exec(`harnspec analyze ${specId} --json`)
     );
     
     if (recheck.metrics.tokens > 3500) {
@@ -969,7 +1017,7 @@ async function optimizeSpec(specId: string) {
   }
   
   // 3. Verify all files are healthy
-  const finalCheck = await exec(`lean-spec validate ${specId}`);
+  const finalCheck = await exec(`harnspec validate ${specId}`);
   return finalCheck;
 }
 ```

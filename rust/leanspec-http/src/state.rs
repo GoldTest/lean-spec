@@ -202,7 +202,7 @@ fn default_project_path() -> Option<(PathBuf, PathBuf)> {
         let root = PathBuf::from(&explicit);
         if root.exists() {
             // Use Project::from_path to discover the specs dir with the
-            // standard multi-candidate logic (specs, .lean-spec/specs, etc.)
+            // standard multi-candidate logic (specs, .harnspec/specs, etc.)
             if let Ok(project) = Project::from_path(&root) {
                 if project.specs_dir.exists() {
                     return Some((root, project.specs_dir));

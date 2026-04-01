@@ -19,7 +19,7 @@ updated_at: 2026-03-24T03:08:52.977776872Z
 
 ## Overview
 
-The TUI is currently read-only. Users must drop to the CLI (`lean-spec update`, `lean-spec create`) or open a text editor separately to make any changes. This breaks the \"stay in the terminal\" workflow — the whole point of a TUI. This spec adds two tiers of editing: quick inline metadata changes (status, priority, tags) via popup pickers, and full content editing via `\$EDITOR` launch.
+The TUI is currently read-only. Users must drop to the CLI (`harnspec update`, `harnspec create`) or open a text editor separately to make any changes. This breaks the \"stay in the terminal\" workflow — the whole point of a TUI. This spec adds two tiers of editing: quick inline metadata changes (status, priority, tags) via popup pickers, and full content editing via `\$EDITOR` launch.
 
 ## Design
 
@@ -30,6 +30,7 @@ The highest-value editing action: open the current spec's `README.md` in the use
 **Keybinding**: `e` (from any focus state when a spec is selected)
 
 **Flow**:
+
 1. Suspend TUI: call `ratatui::restore()` + `DisableMouseCapture`
 2. Launch `\$EDITOR <spec-path>/README.md` via `std::process::Command::new(editor).status()`; fall back to `\$VISUAL`, then `vi` if neither set
 3. Block until editor exits
@@ -92,7 +93,7 @@ Opens a single-line input prompt (reuse the search input widget style):
 ```
 
 - Accepts kebab-case name; `Enter` to confirm, `Esc` to cancel
-- On confirm: calls `leanspec-core` create logic (equivalent to `lean-spec create <name>`) with `status: planned`, no content
+- On confirm: calls `leanspec-core` create logic (equivalent to `harnspec create <name>`) with `status: planned`, no content
 - Then immediately launches `\$EDITOR` on the new spec file (same as tier 1 flow) so the user can fill in content right away
 - Spec 374's file watch picks up the new file and adds it to the sidebar list
 
@@ -112,7 +113,7 @@ Confirmation prompt before acting:
 
 ### Write Path
 
-All metadata mutations go through `leanspec-core`'s existing `SpecStore` / frontmatter write functions — never via `std::process::Command` shelling out to `lean-spec update`. This avoids subprocess overhead and keeps the write path testable.
+All metadata mutations go through `leanspec-core`'s existing `SpecStore` / frontmatter write functions — never via `std::process::Command` shelling out to `harnspec update`. This avoids subprocess overhead and keeps the write path testable.
 
 The exact function to use: `SpecInfo::with_updated_frontmatter` + write back to `README.md`. If this helper doesn't exist, add it to `leanspec-core` as part of this spec.
 

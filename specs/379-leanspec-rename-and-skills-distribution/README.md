@@ -21,19 +21,19 @@ updated_at: 2026-03-25T00:00:00Z
 
 The project has an inconsistent naming problem and a broken skills distribution:
 
-1. **Inconsistent naming** — The product is referred to as both `lean-spec` (hyphenated: repo, CLI, npm) and `leanspec` (no hyphen: code, types, internal references). This causes confusion for users and contributors.
+1. **Inconsistent naming** — The product is referred to as both `harnspec` (hyphenated: repo, CLI, npm) and `leanspec` (no hyphen: code, types, internal references). This causes confusion for users and contributors.
 
 2. **Missing user-facing skill** — The `leanspec-sdd` skill was deleted (commit 926f1d2) when skill management was delegated to `npx skills`. But no public skill exists to distribute.
 
-3. **Internal skills leak** — `npx skills add codervisor/lean-spec` would expose internal-only skills (`leanspec-development`, `agent-browser`).
+3. **Internal skills leak** — `npx skills add codervisor/harnspec` would expose internal-only skills (`leanspec-development`, `agent-browser`).
 
 4. **Unfriendly skill name** — "leanspec-sdd" is jargon. Users don't search for "SDD."
 
 ### Goals
 
-1. Rename GitHub repo `codervisor/lean-spec` → `codervisor/leanspec`
-2. Rename CLI binary `lean-spec` → `leanspec`
-3. Rename npm package `lean-spec` → `leanspec`
+1. Rename GitHub repo `codervisor/harnspec` → `codervisor/leanspec`
+2. Rename CLI binary `harnspec` → `leanspec`
+3. Rename npm package `harnspec` → `leanspec`
 4. Create `codervisor/skills` repo for public skill distribution
 5. Name the user-facing skill simply `leanspec`
 6. Keep internal skills in the main repo, never distributed
@@ -46,9 +46,9 @@ Everything becomes `leanspec` (no hyphen):
 
 | Asset | Before | After |
 |-------|--------|-------|
-| GitHub repo | `codervisor/lean-spec` | `codervisor/leanspec` |
-| CLI command | `lean-spec` | `leanspec` |
-| npm package | `lean-spec` | `leanspec` |
+| GitHub repo | `codervisor/harnspec` | `codervisor/leanspec` |
+| CLI command | `harnspec` | `leanspec` |
+| npm package | `harnspec` | `leanspec` |
 | Skill name | `leanspec-sdd` | `leanspec` |
 | Skills repo | _(none)_ | `codervisor/skills` |
 | Rust crates | `leanspec-core`, `leanspec-http`, etc. | _(no change — already unhyphenated)_ |
@@ -57,7 +57,8 @@ Note: Rust crates already use `leanspec-*` naming, so this rename aligns everyth
 
 ### GitHub Repo Rename
 
-GitHub automatically redirects `codervisor/lean-spec` → `codervisor/leanspec` for:
+GitHub automatically redirects `codervisor/harnspec` → `codervisor/leanspec` for:
+
 - Web URLs
 - Git clone/fetch/push
 - API calls
@@ -65,6 +66,7 @@ GitHub automatically redirects `codervisor/lean-spec` → `codervisor/leanspec` 
 The redirect persists until another repo is created with the old name.
 
 **Action items:**
+
 - Rename via GitHub Settings > General > Repository name
 - Update CI workflows, badges, README links
 - Update `Cargo.toml` repository URLs
@@ -73,35 +75,37 @@ The redirect persists until another repo is created with the old name.
 ### CLI Binary Rename
 
 ```diff
-- lean-spec init
-- lean-spec list
-- lean-spec board
+- harnspec init
+- harnspec list
+- harnspec board
 + leanspec init
 + leanspec list
 + leanspec board
 ```
 
 **Backwards compatibility:**
-- Keep `lean-spec` as a shell alias/symlink in the npm package `bin` field for one major version
-- Deprecation warning: "lean-spec is deprecated, use leanspec instead"
+
+- Keep `harnspec` as a shell alias/symlink in the npm package `bin` field for one major version
+- Deprecation warning: "harnspec is deprecated, use leanspec instead"
 - Remove alias in next major version
 
 ### npm Package Rename
 
 ```diff
 # package.json
-- "name": "lean-spec",
+- "name": "harnspec",
 + "name": "leanspec",
   "bin": {
--   "lean-spec": "./bin/lean-spec"
+-   "harnspec": "./bin/harnspec"
 +   "leanspec": "./bin/leanspec",
-+   "lean-spec": "./bin/leanspec"   # backwards compat alias, remove in next major
++   "harnspec": "./bin/leanspec"   # backwards compat alias, remove in next major
   }
 ```
 
 **Migration path:**
+
 1. Publish `leanspec` package
-2. Publish final `lean-spec` version that depends on `leanspec` + prints deprecation notice
+2. Publish final `harnspec` version that depends on `leanspec` + prints deprecation notice
 3. Users run `npm install -g leanspec` (or `npx leanspec`)
 
 ### Skills Distribution via `codervisor/skills`
@@ -116,6 +120,7 @@ The redirect persists until another repo is created with the old name.
 #### `@` syntax confirmed
 
 Research confirms `@` in `npx skills add` is a **skill name selector**, not a git ref:
+
 - `npx skills add codervisor/skills@leanspec` → installs only the `leanspec` skill
 - Equivalent to `npx skills add codervisor/skills --skill leanspec`
 - The CLI matches against the `name` field in SKILL.md frontmatter
@@ -143,13 +148,15 @@ codervisor/skills
 #### Skill content
 
 Recover from git history (commit 926f1d2^) and update:
+
 - Rename frontmatter `name: leanspec-sdd` → `name: leanspec`
-- Update any `lean-spec` CLI references to `leanspec`
+- Update any `harnspec` CLI references to `leanspec`
 - Review and refresh content for accuracy
 
 ### What Stays in `codervisor/leanspec` (main repo)
 
 Internal skills remain in `.agents/skills/` — not distributed:
+
 - `leanspec-development` — contributor dev workflows
 - `agent-browser` — internal browser testing
 - `github-integration` (from `codervisor/forge`)
@@ -161,7 +168,7 @@ The MCP server name should also align:
 
 ```diff
 # MCP configuration
-- "lean-spec": {
+- "harnspec": {
 + "leanspec": {
     "command": "leanspec",
     "args": ["mcp"]
@@ -171,6 +178,7 @@ The MCP server name should also align:
 ## Plan
 
 ### Phase 1: Create `codervisor/skills` repo
+
 - [ ] Create `codervisor/skills` GitHub repository (public, MIT)
 - [ ] Recover `leanspec-sdd` skill content from git history
 - [ ] Rename to `leanspec` (frontmatter + any internal references)
@@ -179,14 +187,16 @@ The MCP server name should also align:
 - [ ] Verify `npx skills add codervisor/skills@leanspec` works
 
 ### Phase 2: Rename CLI and npm package
-- [ ] Rename binary entry point `lean-spec` → `leanspec`
-- [ ] Add `lean-spec` backwards-compat alias with deprecation warning
+
+- [ ] Rename binary entry point `harnspec` → `leanspec`
+- [ ] Add `harnspec` backwards-compat alias with deprecation warning
 - [ ] Update all internal references (scripts, docs, CI)
 - [ ] Publish `leanspec` npm package
-- [ ] Publish deprecation version of `lean-spec` package
+- [ ] Publish deprecation version of `harnspec` package
 
 ### Phase 3: Rename GitHub repo
-- [ ] Rename `codervisor/lean-spec` → `codervisor/leanspec` via GitHub Settings
+
+- [ ] Rename `codervisor/harnspec` → `codervisor/leanspec` via GitHub Settings
 - [ ] Update `Cargo.toml` repository URLs
 - [ ] Update `package.json` repository fields
 - [ ] Update CI workflow references and badges
@@ -194,6 +204,7 @@ The MCP server name should also align:
 - [ ] Verify GitHub redirect works for old URLs
 
 ### Phase 4: Update all references
+
 - [ ] Update AGENTS.md skill references
 - [ ] Update MCP config examples in docs
 - [ ] Update `leanspec init` templates to use new names
@@ -204,10 +215,10 @@ The MCP server name should also align:
 ## Test
 
 - [ ] `npx leanspec` works
-- [ ] `npx lean-spec` shows deprecation warning but still works
+- [ ] `npx harnspec` shows deprecation warning but still works
 - [ ] `npx skills add codervisor/skills@leanspec` installs correctly
 - [ ] `npx skills add codervisor/leanspec` does NOT expose internal skills
-- [ ] GitHub redirect: `codervisor/lean-spec` URLs → `codervisor/leanspec`
+- [ ] GitHub redirect: `codervisor/harnspec` URLs → `codervisor/leanspec`
 - [ ] All CI workflows pass after rename
 - [ ] MCP server works with new config name
 - [ ] `leanspec init` generates correct AGENTS.md references
@@ -217,6 +228,7 @@ The MCP server name should also align:
 ### Risk: npm package name availability
 
 Check if `leanspec` is available on npm before proceeding. If taken, alternatives:
+
 - `@leanspec/cli`
 - `@codervisor/leanspec`
 

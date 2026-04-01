@@ -1,12 +1,12 @@
 # Configuration
 
-Configuration options for the `lean-spec validate` command.
+Configuration options for the `harnspec validate` command.
 
 > See [CONFIGURATION-EXAMPLES.md](./CONFIGURATION-EXAMPLES.md) for practical examples
 
 ## Configuration File
 
-Configuration is stored in `.lean-spec/config.json`:
+Configuration is stored in `.harnspec/config.json`:
 
 ```json
 {
@@ -71,6 +71,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Modes:**
+
 - `"comprehensive"` - All validations (default)
 - `"quick"` - Basic checks only (faster)
 
@@ -91,6 +92,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Options:**
+
 - `required` - Required frontmatter fields (array of strings)
 - `allowedStatus` - Valid status values (array of strings)
 - `allowedPriority` - Valid priority values (array of strings)
@@ -112,6 +114,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Options:**
+
 - `requireReadme` - Spec must have README.md (boolean)
 - `requiredSections` - Section headers that must exist (array of strings)
 - `forbidEmptySections` - Empty sections are invalid (boolean)
@@ -133,6 +136,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Options:**
+
 - `minLength` - Minimum character count (number)
 - `forbidTodoInComplete` - No TODO/FIXME in complete specs (boolean)
 - `validateLinks` - Check internal links are valid (boolean)
@@ -155,6 +159,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Options:**
+
 - `detectDuplicateSections` - Find duplicate section headers (boolean)
 - `validateCodeBlocks` - Check code blocks are properly closed (boolean)
 - `validateJsonYaml` - Validate JSON/YAML syntax (boolean)
@@ -177,6 +182,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 **Options:**
+
 - `inProgressMaxDays` - Days before warning on in-progress specs (number)
 - `noUpdateMaxDays` - Days before warning on stale specs (number)
 - `plannedMaxDays` - Days before warning on old planned specs (number)
@@ -194,6 +200,7 @@ Configuration is stored in `.lean-spec/config.json`:
 ```
 
 Glob patterns to exclude from validation:
+
 - `archived/**` - Ignore all archived specs
 - `**/OLD_*.md` - Ignore files starting with OLD_
 - `experiments/` - Ignore entire directory
@@ -201,13 +208,14 @@ Glob patterns to exclude from validation:
 ## Configuration Precedence
 
 1. **Command-line flags** (highest priority)
-2. **Project config** (`.lean-spec/config.json`)
+2. **Project config** (`.harnspec/config.json`)
 3. **Built-in defaults** (lowest priority)
 
 Example:
+
 ```bash
 # CLI flag overrides config
-lean-spec validate --mode quick
+harnspec validate --mode quick
 ```
 
 ## Default Configuration
@@ -256,6 +264,7 @@ If no configuration file exists:
 ### Common Configurations
 
 **Strict (CI/CD):**
+
 ```json
 {
   "validate": {
@@ -270,6 +279,7 @@ If no configuration file exists:
 ```
 
 **Relaxed (Development):**
+
 ```json
 {
   "validate": {

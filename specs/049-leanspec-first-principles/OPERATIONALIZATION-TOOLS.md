@@ -6,7 +6,8 @@ Principles without operationalization are just nice words. This document outline
 
 ## The Problem
 
-**We discovered:** 
+**We discovered:**
+
 - We built sub-specs (spec 012) but never used them
 - Specs grew to 600-1,166 lines despite principles
 - Spec corruption from complex editing operations
@@ -23,15 +24,16 @@ Principles without operationalization are just nice words. This document outline
 ### Detection Tools
 
 **1. Complexity Checking**
+
 ```bash
 # Check if spec exceeds thresholds
-lean-spec validate --max-lines 400 <spec>
+harnspec validate --max-lines 400 <spec>
 
 # Check all specs in project
-lean-spec validate --max-lines 400 --all
+harnspec validate --max-lines 400 --all
 
 # Get complexity metrics for a spec
-lean-spec complexity <spec>
+harnspec complexity <spec>
 # Output:
 # Lines: 423
 # Sections: 12
@@ -41,9 +43,10 @@ lean-spec complexity <spec>
 ```
 
 **2. Project Health Check**
+
 ```bash
 # Overall project health
-lean-spec health
+harnspec health
 
 # Output:
 # 📊 Project Health Report
@@ -60,9 +63,10 @@ lean-spec health
 ```
 
 **3. Sub-Spec Navigation**
+
 ```bash
 # List sub-specs within a spec
-lean-spec files <spec>
+harnspec files <spec>
 
 # Output:
 # 📄 049-leanspec-first-principles
@@ -75,9 +79,10 @@ lean-spec files <spec>
 ### Guidance Tools
 
 **1. Splitting Assistance**
+
 ```bash
 # Interactive splitting guide
-lean-spec split <spec>
+harnspec split <spec>
 
 # Guided workflow:
 # 1. Analyze spec structure
@@ -88,9 +93,10 @@ lean-spec split <spec>
 ```
 
 **2. Simplification Suggestions**
+
 ```bash
 # AI-powered simplification
-lean-spec simplify <spec>
+harnspec simplify <spec>
 
 # Analyzes spec and suggests:
 # - Redundant sections to merge
@@ -100,9 +106,10 @@ lean-spec simplify <spec>
 ```
 
 **3. Template Recommendations**
+
 ```bash
 # Suggest appropriate template based on complexity
-lean-spec template --suggest
+harnspec template --suggest
 
 # Based on your needs:
 # - Team size: solo
@@ -115,13 +122,14 @@ lean-spec template --suggest
 ### Prevention Tools
 
 **1. Git Hooks**
+
 ```bash
 # Pre-commit hook
 .git/hooks/pre-commit
 
 #!/bin/bash
 # Check for overly complex specs
-lean-spec validate --max-lines 400 --staged
+harnspec validate --max-lines 400 --staged
 
 # Warn but don't block (allow with explanation)
 if [ $? -ne 0 ]; then
@@ -136,6 +144,7 @@ fi
 ```
 
 **2. PR Checks**
+
 ```yaml
 # .github/workflows/spec-quality.yml
 name: Spec Quality Check
@@ -148,17 +157,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install LeanSpec
-        run: npm install -g lean-spec
+        run: npm install -g harnspec
       - name: Validate Spec Complexity
         run: |
-          lean-spec validate --max-lines 400 --all
-          lean-spec health --ci
+          harnspec validate --max-lines 400 --all
+          harnspec health --ci
 ```
 
 **3. CI/CD Gates**
+
 ```bash
 # In CI pipeline
-lean-spec validate --max-lines 400 --all --strict
+harnspec validate --max-lines 400 --all --strict
 
 # --strict mode:
 # - Fails build if any spec >400 lines

@@ -25,7 +25,7 @@ pub fn install(agents: Option<&[String]>, skip_confirm: bool) -> Result<(), Box<
     let mut args = vec![
         "skills",
         "add",
-        "codervisor/lean-spec",
+        "codervisor/harnspec",
         "--skill",
         "leanspec-sdd",
     ];

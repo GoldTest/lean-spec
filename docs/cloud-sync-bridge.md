@@ -48,7 +48,7 @@ All Sync Bridge traffic must use HTTPS in production. The bridge rejects plain H
 When using API keys:
 
 1. Generate a new key and set `LEANSPEC_SYNC_API_KEY` on the server.
-2. Update bridges with `--api-key <new-key>` or update `~/.lean-spec/bridge.json`.
+2. Update bridges with `--api-key <new-key>` or update `~/.harnspec/bridge.json`.
 3. Restart bridge instances to pick up the new key.
 4. Revoke old keys by removing them from server configuration.
 
@@ -56,4 +56,4 @@ When using API keys:
 
 - The bridge queues events locally when offline and flushes on reconnect.
 - Metadata edits from the cloud include a content hash; the bridge rejects edits if the local file has changed.
-- Audit logs are stored at `~/.lean-spec/bridge-audit.log`.
+- Audit logs are stored at `~/.harnspec/bridge-audit.log`.

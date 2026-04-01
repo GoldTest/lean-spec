@@ -14,7 +14,7 @@ updated_at: 2026-02-02T08:18:11.068513807Z
 
 > **Status**: 🗓️ Planned · **Priority**: Medium · **Created**: 2025-11-28 · **Tags**: ui, feature, dx, crud
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -24,6 +24,7 @@ Add editing capabilities to `@leanspec/ui` to enable spec management directly fr
 ## Problem
 
 Currently `@leanspec/ui` is read-only. Users cannot:
+
 - Update spec metadata (status, priority, tags, assignee)
 - Edit spec content
 - Create new specs
@@ -36,17 +37,20 @@ This forces users to switch to CLI or MCP tools for any modifications.
 Implement progressive editing capabilities:
 
 ### Phase 1: Metadata Updates
+
 - Status transitions (planned → in-progress → complete)
 - Priority changes
 - Tag management
 - Assignee updates
 
 ### Phase 2: Content Editing
+
 - Inline editing of spec content
 - Markdown preview
 - Auto-save or explicit save
 
 ### Phase 3: Full CRUD
+
 - Create new specs from UI
 - Archive/delete specs
 - Link/unlink relationships

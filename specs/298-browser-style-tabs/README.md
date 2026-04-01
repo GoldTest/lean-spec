@@ -14,6 +14,7 @@ updated_at: 2026-02-03T14:03:24.157033Z
 Implement browser-style persistent tabs in LeanSpec UI, enabling users to open multiple specs, sessions, and pages without losing context.
 
 **Problem:**
+
 - Navigating away from a spec loses current scroll position and context
 - Comparing specs requires switching back and forth
 - No way to "bookmark" frequently accessed specs for quick access
@@ -52,6 +53,7 @@ Chrome/VS Code-style tab bar above the main content area. Tabs persist across se
 ### Tab Behavior
 
 **Opening Tabs:**
+
 - Clicking a spec in list → opens in new tab
 - Clicking a session → opens in new tab
 - Sidebar nav items (Home, Specs, etc.) → opens in new tab OR switches to existing
@@ -59,17 +61,20 @@ Chrome/VS Code-style tab bar above the main content area. Tabs persist across se
 - Cmd/Ctrl+Click → force open in new tab
 
 **Closing Tabs:**
+
 - Click × on tab
 - Middle-click tab
 - Cmd/Ctrl+W (closes active tab)
 - Right-click → Close / Close Others / Close All
 
 **Tab Persistence:**
+
 - Tabs saved to localStorage (web) / config (desktop) on change
 - Restored on app restart
 - Store: `{ path, title, icon, projectId, scrollPosition }`
 
 **Tab Limits:**
+
 - Max 20 tabs (configurable)
 - Oldest non-pinned tab auto-closes when limit exceeded
 - Warning before closing multiple tabs
@@ -77,6 +82,7 @@ Chrome/VS Code-style tab bar above the main content area. Tabs persist across se
 ### Visual Design
 
 **Tab States:**
+
 ```
 Active:    [███████████████████] - Accent color background
 Inactive:  [░░░░░░░░░░░░░░░░░░░] - Muted background
@@ -88,11 +94,13 @@ Error:     [⚠️ Error] - Red indicator, shows error on click
 
 **Tab Overflow:**
 When tabs exceed available width:
+
 - Horizontal scroll with arrows
 - OR dropdown menu showing all tabs
 - Scroll wheel on tab bar scrolls tabs
 
 **Responsive:**
+
 - Desktop: Full tab titles with truncation
 - Tablet: Shorter titles, fewer visible tabs
 - Mobile: Tab bar becomes dropdown selector OR hidden
@@ -112,6 +120,7 @@ When tabs exceed available width:
 ### Context Menu
 
 Right-click on tab:
+
 ```
 ┌─────────────────────┐
 │ Close               │
@@ -144,6 +153,7 @@ Right-click on tab:
   - Persist across sessions
 
 **Layout with pinned tabs:**
+
 ```
 [📌📄][📌🤖] [📄 168-orchestration...×] [📄 244-session-ui×] [+]
 ```
@@ -221,7 +231,7 @@ interface TabStorage {
   version: number;  // For migration
 }
 
-// Desktop: ~/.lean-spec/ui-state.json
+// Desktop: ~/.harnspec/ui-state.json
 // Include tab state alongside window state
 ```
 
@@ -323,6 +333,7 @@ useEffect(() => {
 ### Functional Tests
 
 **Tab Operations:**
+
 - [ ] Clicking spec opens in new tab
 - [ ] Clicking session opens in new tab
 - [ ] Close button closes tab
@@ -331,6 +342,7 @@ useEffect(() => {
 - [ ] Tabs restore after app restart
 
 **Keyboard Shortcuts:**
+
 - [ ] Cmd+T opens new tab / quick switcher
 - [ ] Cmd+W closes active tab
 - [ ] Cmd+Shift+T reopens closed tab
@@ -339,6 +351,7 @@ useEffect(() => {
 - [ ] Cmd+1-9 switches to specific tabs
 
 **Context Menu:**
+
 - [ ] Right-click shows context menu
 - [ ] Close works
 - [ ] Close Others works
@@ -347,6 +360,7 @@ useEffect(() => {
 - [ ] Duplicate Tab works
 
 **Edge Cases:**
+
 - [ ] Opening same spec twice reuses existing tab
 - [ ] Tab overflow scrolls correctly
 - [ ] Pinned tabs cannot be closed with Cmd+W
@@ -373,11 +387,13 @@ useEffect(() => {
 ### Dependencies
 
 **Uses:**
+
 - react-hotkeys-hook (or similar) for keyboard shortcuts
 - @dnd-kit/core for drag-to-reorder (optional)
 - Zustand or React Context for state
 
 **Packages to evaluate:**
+
 - `@radix-ui/react-tabs` - Base primitives
 - `react-use-gesture` - For drag interactions
 - Native browser/Tauri APIs for keyboard handling
@@ -385,16 +401,19 @@ useEffect(() => {
 ### Design Decisions
 
 **Why separate tabs from sidebar?**
+
 - Sidebar = Navigation to page types (like browser bookmarks bar)
 - Tabs = Open documents (like browser tabs)
 - Different mental models, both useful
 
 **Why not just browser tabs (Desktop)?**
+
 - Native app should have native tab UX
 - Share tab state between web and desktop
 - More control over behavior and shortcuts
 
 **Why limit to 20 tabs?**
+
 - Memory efficiency
 - Cognitive limit for most users
 - Prevents tab hoarding
@@ -403,11 +422,13 @@ useEffect(() => {
 ### Alternatives Considered
 
 **1. Breadcrumb history only**
+
 - Pros: Simpler, less UI
 - Cons: Can't see multiple items, no quick switching
 - Rejected: Doesn't solve multi-tasking need
 
 **2. Floating windows (Desktop only)**
+
 - Pros: True multi-tasking, side-by-side
 - Cons: Complex, desktop-only, harder to manage
 - Deferred: Consider for future after tabs

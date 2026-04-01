@@ -394,6 +394,7 @@ describe('Transformation Workflows', () => {
 ## Golden Tests
 
 ### Purpose
+
 Capture known-good transformations as regression tests.
 
 ### Structure
@@ -616,7 +617,7 @@ export async function runCLI(command: string): Promise<{
   stderr: string;
 }> {
   return new Promise((resolve) => {
-    exec(`npx lean-spec ${command}`, (error, stdout, stderr) => {
+    exec(`npx harnspec ${command}`, (error, stdout, stderr) => {
       resolve({
         code: error?.code ?? 0,
         stdout,

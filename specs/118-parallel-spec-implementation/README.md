@@ -24,19 +24,21 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-25 · **Tags**: workflow, documentation, git
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 Users need to work on multiple specs simultaneously in local development, but the current LeanSpec workflow assumes sequential development on a single branch. While GitHub's cloud coding agent handles parallelism through feature branches and PRs, local development lacks a clear pattern for code/branch isolation when implementing multiple specs concurrently.
 
-**Problem**: 
+**Problem**:
+
 - Single working directory = can only work on one spec at a time locally
 - Switching branches disrupts active work (uncommitted changes, context switching)
 - Need to implement multiple specs in parallel without conflicts or context loss
 
 **Goals**:
+
 1. Enable parallel local development of multiple specs
 2. Maintain code isolation between concurrent implementations
 3. Preserve LeanSpec's lightweight philosophy (no complex tooling overhead)
@@ -58,6 +60,7 @@ Use `git worktree` as the foundation for parallel spec implementation:
 ```
 
 **Why Git Worktrees?**
+
 - Native Git feature (no additional tools)
 - Complete code isolation per spec
 - Each worktree has independent working directory + branch
@@ -70,14 +73,14 @@ Use `git worktree` as the foundation for parallel spec implementation:
 
 ```bash
 # Start spec 045
-lean-spec update 045 --status in-progress
+harnspec update 045 --status in-progress
 git worktree add .worktrees/spec-045-dashboard -b feature/045-dashboard
 cd .worktrees/spec-045-dashboard
 # Implement spec 045...
 
 # While 045 is ongoing, start spec 047 in parallel
 cd ~/project  # Back to main worktree
-lean-spec update 047 --status in-progress
+harnspec update 047 --status in-progress
 git worktree add .worktrees/spec-047-timestamps -b feature/047-timestamps
 cd .worktrees/spec-047-timestamps
 # Implement spec 047...
@@ -92,12 +95,12 @@ cd .worktrees/spec-047-timestamps
 # Developer A works on spec 045
 git worktree add .worktrees/spec-045 -b feature/045-dashboard
 cd .worktrees/spec-045
-lean-spec update 045 --status in-progress --assignee "dev-a"
+harnspec update 045 --status in-progress --assignee "dev-a"
 
 # Developer B works on spec 047 (from their clone)
 git worktree add .worktrees/spec-047 -b feature/047-timestamps
 cd .worktrees/spec-047
-lean-spec update 047 --status in-progress --assignee "dev-b"
+harnspec update 047 --status in-progress --assignee "dev-b"
 
 # Each developer has isolated environment
 # Merge to main when complete
@@ -120,20 +123,20 @@ cd .worktrees/spec-048-experiment
 
 ### Helper Commands (Optional)
 
-Add convenience commands to `lean-spec` CLI:
+Add convenience commands to `harnspec` CLI:
 
 ```bash
 # Create worktree + update spec status in one command
-lean-spec worktree create 045 [--path .worktrees/spec-045]
+harnspec worktree create 045 [--path .worktrees/spec-045]
 
 # List active worktrees with associated specs
-lean-spec worktree list
+harnspec worktree list
 
 # Complete spec and clean up worktree
-lean-spec worktree complete 045 [--merge] [--remove]
+harnspec worktree complete 045 [--merge] [--remove]
 ```
 
-**Implementation**: Shell wrappers around `git worktree` + `lean-spec update`
+**Implementation**: Shell wrappers around `git worktree` + `harnspec update`
 
 ### Dependency Handling
 
@@ -162,6 +165,7 @@ git worktree add ../spec-048-analysis -b feature/048-from-045
 ### Documentation Updates
 
 Add new section to docs:
+
 - **Guide > Workflows > Parallel Development**: Comprehensive guide
 - **Reference > CLI > Worktree Commands**: If we add CLI helpers
 - **FAQ**: "How do I work on multiple specs at once?"
@@ -211,7 +215,8 @@ Add new section to docs:
 
 **Potential CLI Helpers (Low Priority)**:
 
-Could add `lean-spec worktree` commands, but risks violating "lean" philosophy:
+Could add `harnspec worktree` commands, but risks violating "lean" philosophy:
+
 - Native `git worktree` is already simple
 - Wrappers add maintenance burden
 - Documentation might be sufficient
@@ -219,6 +224,7 @@ Could add `lean-spec worktree` commands, but risks violating "lean" philosophy:
 **Decision**: Start with documentation-only approach. Add CLI helpers only if users request it.
 
 **Research**:
-- Git worktree docs: https://git-scm.com/docs/git-worktree
+
+- Git worktree docs: <https://git-scm.com/docs/git-worktree>
 - Used successfully in monorepo development (Nx, Turborepo)
 - Common pattern for kernel development (parallel builds)

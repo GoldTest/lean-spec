@@ -68,7 +68,7 @@ The simplest way to use HarnSpec with MCP is via the `@HarnSpec/mcp` package, wh
 - ✅ No installation required - npx auto-installs
 - ✅ Auto-detects workspace from where IDE runs
 - ✅ Simpler, more discoverable package name
-- ✅ Same functionality as `lean-spec mcp`
+- ✅ Same functionality as `harnspec mcp`
 
 ### Supported Tools
 
@@ -151,16 +151,16 @@ Most tools use the standard MCP configuration format:
 
 Refer to your tool's documentation for the exact configuration file location.
 
-### Option 2: Direct lean-spec Command
+### Option 2: Direct harnspec Command
 
-If you prefer to use the `lean-spec` CLI directly:
+If you prefer to use the `harnspec` CLI directly:
 
 ```json
 {
   "mcpServers": {
     "HarnSpec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"]
+      "args": ["-y", "harnspec", "mcp"]
     }
   }
 }
@@ -176,7 +176,7 @@ Ask your AI assistant:
 List all specs in this project.
 ```
 
-Expected: AI uses MCP to call `lean-spec list` and shows results.
+Expected: AI uses MCP to call `harnspec list` and shows results.
 
 ```
 What does spec 042 describe?
@@ -328,7 +328,7 @@ The HarnSpec MCP server provides these tools to AI assistants:
 **Check:**
 1. MCP server is configured in settings
 2. `cwd` points to correct project directory
-3. Project has specs (run `lean-spec list` manually)
+3. Project has specs (run `harnspec list` manually)
 4. Restart AI tool after config changes
 
 ### MCP Commands Not Working
@@ -338,7 +338,7 @@ The HarnSpec MCP server provides these tools to AI assistants:
 # Test MCP server directly
 npx @HarnSpec/mcp
 # or
-npx lean-spec mcp
+npx harnspec mcp
 
 # Verify it starts without errors
 ```
@@ -348,10 +348,10 @@ npx lean-spec mcp
 **Verify:**
 ```bash
 # Check specs exist
-lean-spec list
+harnspec list
 
 # Check search works
-lean-spec search "test query"
+harnspec search "test query"
 ```
 
 ## Best Practices

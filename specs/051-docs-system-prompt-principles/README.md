@@ -24,7 +24,7 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: Critical · **Created**: 2025-11-05 · **Tags**: documentation, ai-agents, first-principles, system-prompt, philosophy, v0.2.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -32,6 +32,7 @@ depends_on:
 **Purpose**: Embed the 5 LeanSpec first principles from spec 049 into AGENTS.md, README.md, and documentation so both AI agents and users understand and apply them consistently.
 
 **Why Now**:
+
 - First principles established in spec 049 but not integrated into guidance
 - AI agents need conflict resolution framework for spec decisions
 - Users need to understand philosophy driving LeanSpec design
@@ -46,18 +47,21 @@ depends_on:
 ### Current Documentation State
 
 **AGENTS.md**:
+
 - ✅ Has practical guidelines (line thresholds, when to split)
 - ❌ Missing WHY these guidelines exist
 - ❌ No conflict resolution framework
 - ❌ Doesn't connect practices to principles
 
 **README.md**:
+
 - ✅ Shows adaptive design, features
 - ❌ Philosophy implied but not explicit
 - ❌ First principles not stated clearly
 - ❌ Missing "decision framework" section
 
 **Docs Site**:
+
 - ✅ Good getting started guides
 - ❌ Philosophy buried or scattered
 - ❌ No clear "First Principles" page
@@ -66,6 +70,7 @@ depends_on:
 ### The Gap
 
 **Spec 049 identified 5 first principles**:
+
 1. Context Economy
 2. Signal-to-Noise Maximization
 3. Progressive Disclosure
@@ -79,12 +84,14 @@ depends_on:
 ### What Success Looks Like
 
 **AI Agents** can:
+
 - Resolve conflicts using principle priority order
 - Decide when to split specs (Context Economy > completeness)
 - Choose what to include/exclude (Signal-to-Noise test)
 - Make spec structure decisions without explicit rules
 
 **Users** can:
+
 - Understand why LeanSpec is designed this way
 - Make consistent decisions aligned with philosophy
 - Explain LeanSpec philosophy to teammates
@@ -95,6 +102,7 @@ depends_on:
 ### Core Approach: Principles as Foundation
 
 **Strategy**: Make principles discoverable at every level
+
 - README: Quick principle summary in "Why LeanSpec" section
 - AGENTS.md: Detailed guidance with conflict resolution
 - Docs site: Dedicated first principles page with examples
@@ -103,6 +111,7 @@ depends_on:
 ### AGENTS.md Updates
 
 **Section 1: First Principles Framework** (new)
+
 ```markdown
 ## First Principles (Decision Framework)
 
@@ -144,11 +153,13 @@ When making spec decisions, apply principles in priority order:
 ```
 
 **Section 2: Quality Checks** (enhanced)
+
 - Add principle validation to existing guidelines
 - Connect line thresholds to Context Economy
 - Link splitting guidance to Signal-to-Noise
 
 **Section 3: Common Patterns** (new)
+
 - Good vs bad examples annotated with principles
 - Show how principles resolve real conflicts
 - Include AI agent decision scenarios
@@ -156,6 +167,7 @@ When making spec decisions, apply principles in priority order:
 ### README.md Updates
 
 **Add "Core Principles" Section** (after "The LeanSpec Solution")
+
 ```markdown
 ## Core Principles
 
@@ -189,6 +201,7 @@ These aren't principles we chose—they're constraints we discovered.
 ```
 
 **Enhance "Why LeanSpec" Section**
+
 - Connect features to principles explicitly
 - Show how principles solve the stated problems
 - Add principle-driven design examples
@@ -196,12 +209,14 @@ These aren't principles we chose—they're constraints we discovered.
 ### Docs Site Updates
 
 **New Page: `/docs/guide/first-principles.md`**
+
 - Deep dive into each principle with examples
 - When principles conflict, how to resolve
 - How principles influenced LeanSpec design
 - Link to spec 049 for full analysis
 
 **Update Existing Pages**:
+
 - Getting Started: Add "Philosophy in 60 seconds"
 - Best Practices: Annotate with principle connections
 - FAQ: Add "Why these constraints?" section
@@ -210,6 +225,7 @@ These aren't principles we chose—they're constraints we discovered.
 ## Plan
 
 ### Phase 1: AGENTS.md (Week 1)
+
 **Goal**: AI agents can resolve conflicts using principles
 
 - [ ] Add "First Principles Framework" section at top
@@ -221,6 +237,7 @@ These aren't principles we chose—they're constraints we discovered.
 **Success**: AI can answer "should I...?" questions using principles
 
 ### Phase 2: README.md (Week 1)
+
 **Goal**: Users understand philosophy driving LeanSpec
 
 - [ ] Add "Core Principles" section after solution description
@@ -232,6 +249,7 @@ These aren't principles we chose—they're constraints we discovered.
 **Success**: New users understand "why" not just "what"
 
 ### Phase 3: Docs Site (Week 2)
+
 **Goal**: Comprehensive principle documentation with examples
 
 - [ ] Create `/docs/guide/first-principles.md` page
@@ -243,6 +261,7 @@ These aren't principles we chose—they're constraints we discovered.
 **Success**: Users can learn philosophy at any depth level
 
 ### Phase 4: Validation (Week 2)
+
 **Goal**: Verify principles are clear and actionable
 
 - [ ] Self-validation: Create test scenarios and apply framework
@@ -265,6 +284,7 @@ These aren't principles we chose—they're constraints we discovered.
 ### AI Agent Capability
 
 Test scenarios where AI must apply principles:
+
 - [ ] "This spec is 450 lines, what should I do?" → Correctly applies Context Economy
 - [ ] "Should I add these future considerations?" → Correctly applies Signal-to-Noise
 - [ ] "Should I add custom fields now?" → Correctly applies Progressive Disclosure
@@ -273,6 +293,7 @@ Test scenarios where AI must apply principles:
 ### User Understanding
 
 Test by simulating new user scenarios:
+
 - [ ] Reading README: Can extract 5 principles without searching
 - [ ] Given question "Why 400-line limit?": Docs clearly explain Context Economy
 - [ ] Decision scenario: "450-line spec" → Framework leads to "split" decision
@@ -288,6 +309,7 @@ Test by simulating new user scenarios:
 ## Success Metrics
 
 **Documentation Quality**:
+
 - All 5 principles documented in 3+ places (README, AGENTS.md, docs site)
 - Conflict resolution framework in AGENTS.md
 - Examples annotated with principles
@@ -299,6 +321,7 @@ Test by simulating new user scenarios:
 - Docs enable self-service philosophy understanding
 
 **Internal Quality** (measurable now):
+
 - First principles referenced in new spec work
 - Design decisions justified by principles
 - Team uses principle language in planning
@@ -311,7 +334,8 @@ Test by simulating new user scenarios:
 
 **Principle Priority Order**: Context Economy first because nothing else matters if spec doesn't fit in working memory.
 
-**Placement Strategy**: 
+**Placement Strategy**:
+
 - README: Quick summary for discovery
 - AGENTS.md: Detailed framework for decision-making
 - Docs site: Deep dive for comprehensive understanding

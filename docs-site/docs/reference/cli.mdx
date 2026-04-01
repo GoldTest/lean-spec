@@ -16,12 +16,12 @@ Available for all commands:
 
 ## Commands
 
-### `lean-spec init`
+### `harnspec init`
 
 Initialize HarnSpec in your project.
 
 ```bash
-lean-spec init [options]
+harnspec init [options]
 ```
 
 **Interactive prompts (new project):**
@@ -37,8 +37,8 @@ When HarnSpec is already initialized, you'll be asked how to proceed:
 4. **Cancel** - Exit without changes
 
 **What it creates:**
-- `.lean-spec/config.json` - Configuration file
-- `.lean-spec/templates/` - Custom templates directory
+- `.harnspec/config.json` - Configuration file
+- `.harnspec/templates/` - Custom templates directory
 - `specs/` - Specs directory
 - `AGENTS.md` - AI agent integration guidance (if not present)
 
@@ -52,19 +52,19 @@ When HarnSpec is already initialized, you'll be asked how to proceed:
 
 ```bash
 # Interactive initialization
-lean-spec init
+harnspec init
 
 # Quick start with defaults
-lean-spec init -y
+harnspec init -y
 
 # Force re-init (resets config, keeps specs)
-lean-spec init -f
+harnspec init -f
 
 # Use detailed template
-lean-spec init --template detailed
+harnspec init --template detailed
 
 # Create symlinks for all AI tools
-lean-spec init --agent-tools all
+harnspec init --agent-tools all
 ```
 
 **Re-initialization behavior:**
@@ -74,12 +74,12 @@ lean-spec init --agent-tools all
 
 ---
 
-### `lean-spec create`
+### `harnspec create`
 
 Create a new spec.
 
 ```bash
-lean-spec create <name> [options]
+harnspec create <name> [options]
 ```
 
 **Arguments:**
@@ -99,13 +99,13 @@ lean-spec create <name> [options]
 
 ```bash
 # Basic spec
-lean-spec create user-authentication
+harnspec create user-authentication
 
 # Spec with metadata
-lean-spec create user-auth --status=planned --priority=high --tags=security,api
+harnspec create user-auth --status=planned --priority=high --tags=security,api
 
 # Spec with custom fields
-lean-spec create user-auth --field epic=PROJ-123 --field sprint=42
+harnspec create user-auth --field epic=PROJ-123 --field sprint=42
 ```
 
 **Output:**
@@ -120,16 +120,16 @@ lean-spec create user-auth --field epic=PROJ-123 --field sprint=42
 - Assigns sequential number (NNN) globally across all specs
 - Sets frontmatter with metadata
 
-**Note**: Default is flat structure. For date-based grouping, configure `pattern: "custom"` in `.lean-spec/config.json`.
+**Note**: Default is flat structure. For date-based grouping, configure `pattern: "custom"` in `.harnspec/config.json`.
 
 ---
 
-### `lean-spec list`
+### `harnspec list`
 
 List all specs with optional filtering.
 
 ```bash
-lean-spec list [options]
+harnspec list [options]
 ```
 
 **Options:**
@@ -149,33 +149,33 @@ lean-spec list [options]
 
 ```bash
 # List all specs
-lean-spec list
+harnspec list
 
 # Filter by status
-lean-spec list --status=in-progress
-lean-spec list --status=planned
+harnspec list --status=in-progress
+harnspec list --status=planned
 
 # Filter by priority
-lean-spec list --priority=high
+harnspec list --priority=high
 
 # Filter by tag
-lean-spec list --tag api
+harnspec list --tag api
 
 # Filter by multiple tags
-lean-spec list --tag api --tag backend
+harnspec list --tag api --tag backend
 
 # Combine filters
-lean-spec list --status planned --priority high --tag api
+harnspec list --status planned --priority high --tag api
 
 # Filter by custom field
-lean-spec list --field epic=PROJ-123
+harnspec list --field epic=PROJ-123
 
 # JSON output for programmatic use
-lean-spec list --json
-lean-spec list --status planned --json
+harnspec list --json
+harnspec list --status planned --json
 
 # Hierarchy tree view
-lean-spec list --hierarchy
+harnspec list --hierarchy
 ```
 
 **Output:**
@@ -210,12 +210,12 @@ lean-spec list --hierarchy
 
 ---
 
-### `lean-spec update`
+### `harnspec update`
 
 Update spec metadata and content.
 
 ```bash
-lean-spec update <spec> [<spec> ...] [options]
+harnspec update <spec> [<spec> ...] [options]
 ```
 
 **Arguments:**
@@ -246,28 +246,28 @@ lean-spec update <spec> [<spec> ...] [options]
 
 ```bash
 # Update status (using spec number)
-lean-spec update 1 --status=in-progress
+harnspec update 1 --status=in-progress
 
 # Update priority (using spec name)
-lean-spec update user-auth --priority=critical
+harnspec update user-auth --priority=critical
 
 # Add tags
-lean-spec update 001-user-auth --add-tags=security,api,mvp
+harnspec update 001-user-auth --add-tags=security,api,mvp
 
 # Update multiple fields
-lean-spec update 1 --status=complete --priority=high
+harnspec update 1 --status=complete --priority=high
 
 # Batch update multiple specs
-lean-spec update 001-user-auth 002-password-reset --status=in-progress
+harnspec update 001-user-auth 002-password-reset --status=in-progress
 
 # Replace text
-lean-spec update 1 --replace "## Overview" "## Overview\n\nUpdated details."
+harnspec update 1 --replace "## Overview" "## Overview\n\nUpdated details."
 
 # Check off a checklist item while updating status
-lean-spec update 1 --status=in-progress --check "Task 1"
+harnspec update 1 --status=in-progress --check "Task 1"
 
 # Append to a section
-lean-spec update 1 --section "Notes" --append "Decision: Use option A."
+harnspec update 1 --section "Notes" --append "Decision: Use option A."
 ```
 
 **Output:**
@@ -283,12 +283,12 @@ lean-spec update 1 --section "Notes" --append "Decision: Use option A."
 
 ---
 
-### `lean-spec children`
+### `harnspec children`
 
-List child specs for a parent (deprecated in favor of `lean-spec rel view`).
+List child specs for a parent (deprecated in favor of `harnspec rel view`).
 
 ```bash
-lean-spec children <spec>
+harnspec children <spec>
 ```
 
 **Arguments:**
@@ -301,7 +301,7 @@ lean-spec children <spec>
 
 ```bash
 # List children of an umbrella spec
-lean-spec children 168
+harnspec children 168
 ```
 
 **Output:**
@@ -313,16 +313,16 @@ Children of 168-HarnSpec-orchestration-platform
   📅 249-sessions-sidebar-unified-ux - Unified Sessions UX with Right Drawer
 ```
 
-**Note**: Prefer `lean-spec rel view <spec>` for relationship details.
+**Note**: Prefer `harnspec rel view <spec>` for relationship details.
 
 ---
 
-### `lean-spec search`
+### `harnspec search`
 
 Full-text search across all specs.
 
 ```bash
-lean-spec search <query> [options]
+harnspec search <query> [options]
 ```
 
 **Arguments:**
@@ -340,15 +340,15 @@ lean-spec search <query> [options]
 
 ```bash
 # Basic search
-lean-spec search "authentication"
+harnspec search "authentication"
 
 # Search with filters
-lean-spec search "JWT token" --status=in-progress
-lean-spec search "API" --tag=security
-lean-spec search "password" --field epic=PROJ-123
+harnspec search "JWT token" --status=in-progress
+harnspec search "API" --tag=security
+harnspec search "password" --field epic=PROJ-123
 
 # JSON output for programmatic use
-lean-spec search "authentication" --json
+harnspec search "authentication" --json
 ```
 
 **Output:**
@@ -372,12 +372,12 @@ Found 2 specs matching "authentication":
 
 ---
 
-### `lean-spec archive`
+### `harnspec archive`
 
 Archive completed specs.
 
 ```bash
-lean-spec archive <spec> [<spec> ...]
+harnspec archive <spec> [<spec> ...]
 ```
 
 **Arguments:**
@@ -390,13 +390,13 @@ lean-spec archive <spec> [<spec> ...]
 
 ```bash
 # Archive by spec number
-lean-spec archive 1
+harnspec archive 1
 
 # Archive by name
-lean-spec archive user-auth
+harnspec archive user-auth
 
 # Archive multiple specs
-lean-spec archive 001-user-auth 002-password-reset
+harnspec archive 001-user-auth 002-password-reset
 ```
 
 **Output:**
@@ -409,7 +409,7 @@ lean-spec archive 001-user-auth 002-password-reset
 - Moves spec from `specs/` to `specs/archived/`
 - Preserves directory structure
 - Keeps all metadata
-- Spec no longer appears in `lean-spec list` by default
+- Spec no longer appears in `harnspec list` by default
 
 **Best Practice:**
 - Update status to `complete` before archiving
@@ -418,12 +418,12 @@ lean-spec archive 001-user-auth 002-password-reset
 
 ---
 
-### `lean-spec view`
+### `harnspec view`
 
 View spec content.
 
 ```bash
-lean-spec view <spec> [options]
+harnspec view <spec> [options]
 ```
 
 **Arguments:**
@@ -441,13 +441,13 @@ lean-spec view <spec> [options]
 
 ```bash
 # View formatted spec
-lean-spec view 001-user-authentication
+harnspec view 001-user-authentication
 
 # Get raw markdown (for scripting)
-lean-spec view 001-user-auth --raw | grep "TODO"
+harnspec view 001-user-auth --raw | grep "TODO"
 
 # Get structured JSON
-lean-spec view 001-user-auth --json | jq '.frontmatter.status'
+harnspec view 001-user-auth --json | jq '.frontmatter.status'
 ```
 
 **Default Output (formatted):**
@@ -506,12 +506,12 @@ tags:
 
 ---
 
-### `lean-spec open`
+### `harnspec open`
 
 Open spec in editor.
 
 ```bash
-lean-spec open <spec> [options]
+harnspec open <spec> [options]
 ```
 
 **Arguments:**
@@ -527,11 +527,11 @@ lean-spec open <spec> [options]
 
 ```bash
 # Open in default editor
-lean-spec open 001-user-authentication
+harnspec open 001-user-authentication
 
 # Open in specific editor
-lean-spec open 001-user-auth --editor=code
-lean-spec open 001-user-auth --editor=vim
+harnspec open 001-user-auth --editor=code
+harnspec open 001-user-auth --editor=vim
 ```
 
 **Editor Selection:**
@@ -547,23 +547,23 @@ lean-spec open 001-user-auth --editor=vim
 
 ---
 
-### `lean-spec templates`
+### `harnspec templates`
 
 Manage spec templates.
 
 ```bash
-lean-spec templates [command]
+harnspec templates [command]
 ```
 
 **Subcommands:**
 
-#### `lean-spec templates` or `lean-spec templates list`
+#### `harnspec templates` or `harnspec templates list`
 
 List available templates.
 
 ```bash
-lean-spec templates
-lean-spec templates list
+harnspec templates
+harnspec templates list
 ```
 
 **Output:**
@@ -581,48 +581,48 @@ Available files:
 Available directories (multi-file templates):
   detailed/ (4 files: README.md, DESIGN.md, PLAN.md, TEST.md)
 
-Use templates with: lean-spec create <name> --template=<template-name>
+Use templates with: harnspec create <name> --template=<template-name>
 ```
 
-#### `lean-spec templates show <name>`
+#### `harnspec templates show <name>`
 
 Show template content.
 
 ```bash
-lean-spec templates show default
-lean-spec templates show detailed
+harnspec templates show default
+harnspec templates show detailed
 ```
 
 For directory-based templates, shows all files in the template.
 
-#### `lean-spec templates add <name> <file>`
+#### `harnspec templates add <name> <file>`
 
 Register a template.
 
 ```bash
 # Single-file template
-lean-spec templates add api api-spec.md
+harnspec templates add api api-spec.md
 
 # Directory-based multi-file template
-lean-spec templates add enterprise enterprise/
+harnspec templates add enterprise enterprise/
 ```
 
 For directory templates, the directory must contain a `README.md` file as the main template.
 
-#### `lean-spec templates remove <name>`
+#### `harnspec templates remove <name>`
 
 Unregister a template (does not delete the file).
 
 ```bash
-lean-spec templates remove api
+harnspec templates remove api
 ```
 
-#### `lean-spec templates copy <source> <target>`
+#### `harnspec templates copy <source> <target>`
 
 Copy a template to create a new one.
 
 ```bash
-lean-spec templates copy default api-spec
+harnspec templates copy default api-spec
 ```
 
 **Template Types:**
@@ -638,12 +638,12 @@ lean-spec templates copy default api-spec
 
 ---
 
-### `lean-spec stats`
+### `harnspec stats`
 
 Show statistics about specs.
 
 ```bash
-lean-spec stats [options]
+harnspec stats [options]
 ```
 
 **Options:**
@@ -677,12 +677,12 @@ By Tag:
 
 ---
 
-### `lean-spec board`
+### `harnspec board`
 
 View specs organized by status (Kanban-style).
 
 ```bash
-lean-spec board [options]
+harnspec board [options]
 ```
 
 **Options:**
@@ -711,12 +711,12 @@ lean-spec board [options]
 
 ---
 
-### `lean-spec tokens`
+### `harnspec tokens`
 
 Count tokens in specifications for LLM context management.
 
 ```bash
-lean-spec tokens [spec] [options]
+harnspec tokens [spec] [options]
 ```
 
 **Arguments:**
@@ -737,21 +737,21 @@ lean-spec tokens [spec] [options]
 
 ```bash
 # Count tokens in a specific spec
-lean-spec tokens 045
-lean-spec tokens unified-dashboard
+harnspec tokens 045
+harnspec tokens unified-dashboard
 
 # Show detailed breakdown
-lean-spec tokens 045 --detailed
+harnspec tokens 045 --detailed
 
 # Include sub-spec files
-lean-spec tokens 045 --include-sub-specs
+harnspec tokens 045 --include-sub-specs
 
 # Show all specs sorted by token count
-lean-spec tokens
-lean-spec tokens --all
+harnspec tokens
+harnspec tokens --all
 
 # JSON output for programmatic use
-lean-spec tokens 045 --json
+harnspec tokens 045 --json
 ```
 
 **Output:**
@@ -795,12 +795,12 @@ Content Breakdown:
 
 ---
 
-### `lean-spec deps`
+### `harnspec deps`
 
 Show dependency graph for a spec.
 
 ```bash
-lean-spec deps <spec> [options]
+harnspec deps <spec> [options]
 ```
 
 **Arguments:**
@@ -822,16 +822,16 @@ lean-spec deps <spec> [options]
 
 ```bash
 # Show all relationships
-lean-spec deps 085
+harnspec deps 085
 
 # Show only upstream dependencies
-lean-spec deps 085 --upstream
+harnspec deps 085 --upstream
 
 # Show impact radius
-lean-spec deps 085 --impact
+harnspec deps 085 --impact
 
 # JSON output for programmatic use
-lean-spec deps 085 --json
+harnspec deps 085 --json
 ```
 
 **Output:**
@@ -848,12 +848,12 @@ Required By:
 
 ---
 
-### `lean-spec validate`
+### `harnspec validate`
 
 Validate specs for quality issues using token-based thresholds.
 
 ```bash
-lean-spec validate [specs...] [options]
+harnspec validate [specs...] [options]
 ```
 
 **Arguments:**
@@ -870,23 +870,23 @@ lean-spec validate [specs...] [options]
 
 ```bash
 # Validate all specs
-lean-spec validate
+harnspec validate
 
 # Validate specific specs
-lean-spec validate 045 unified-dashboard
+harnspec validate 045 unified-dashboard
 
 # Show all specs including passing
-lean-spec validate --verbose
+harnspec validate --verbose
 
 # Only show errors (suppress warnings)
-lean-spec validate --quiet
+harnspec validate --quiet
 
 # JSON output for CI/CD
-lean-spec validate --format json
+harnspec validate --format json
 
 # Check specific validation rule
-lean-spec validate --rule complexity
-lean-spec validate --rule frontmatter
+harnspec validate --rule complexity
+harnspec validate --rule frontmatter
 ```
 
 **Output:**
@@ -952,12 +952,12 @@ Summary:
 
 ---
 
-### `lean-spec files`
+### `harnspec files`
 
 List files in a spec directory.
 
 ```bash
-lean-spec files <spec> [options]
+harnspec files <spec> [options]
 ```
 
 **Arguments:**
@@ -975,13 +975,13 @@ lean-spec files <spec> [options]
 
 ```bash
 # List all files
-lean-spec files 045
+harnspec files 045
 
 # Filter by type
-lean-spec files 045 --type docs
+harnspec files 045 --type docs
 
 # JSON output
-lean-spec files 045 --json
+harnspec files 045 --json
 ```
 
 **Output:**
@@ -1003,12 +1003,12 @@ Total: 4 files, 65.8 KB
 
 ---
 
-### `lean-spec check`
+### `harnspec check`
 
 Check for sequence conflicts in spec numbering.
 
 ```bash
-lean-spec check [options]
+harnspec check [options]
 ```
 
 **Options:**
@@ -1019,10 +1019,10 @@ lean-spec check [options]
 
 ```bash
 # Check for conflicts
-lean-spec check
+harnspec check
 
 # JSON output for CI/CD
-lean-spec check --json
+harnspec check --json
 ```
 
 **Output (no conflicts):**
@@ -1039,7 +1039,7 @@ lean-spec check --json
     - 042-api-gateway
 
 Tip: Use date prefix to prevent conflicts:
-  Edit .lean-spec/config.json → structure.prefix: "{YYYYMMDD}-"
+  Edit .harnspec/config.json → structure.prefix: "{YYYYMMDD}-"
 
 Or rename folders manually to resolve.
 ```
@@ -1051,12 +1051,12 @@ Or rename folders manually to resolve.
 
 ---
 
-### `lean-spec backfill`
+### `harnspec backfill`
 
 Backfill timestamps from git history.
 
 ```bash
-lean-spec backfill [specs...] [options]
+harnspec backfill [specs...] [options]
 ```
 
 **Arguments:**
@@ -1074,16 +1074,16 @@ lean-spec backfill [specs...] [options]
 
 ```bash
 # Backfill all specs (dry run)
-lean-spec backfill --dry-run
+harnspec backfill --dry-run
 
 # Backfill specific specs
-lean-spec backfill 045 unified-dashboard
+harnspec backfill 045 unified-dashboard
 
 # Backfill with all metadata
-lean-spec backfill --all
+harnspec backfill --all
 
 # JSON output
-lean-spec backfill --json
+harnspec backfill --json
 ```
 
 **Output:**
@@ -1110,12 +1110,12 @@ Summary:
 
 ---
 
-### `lean-spec timeline`
+### `harnspec timeline`
 
 Show creation/completion timeline over time.
 
 ```bash
-lean-spec timeline [options]
+harnspec timeline [options]
 ```
 
 **Options:**
@@ -1128,16 +1128,16 @@ lean-spec timeline [options]
 
 ```bash
 # Show last 30 days
-lean-spec timeline
+harnspec timeline
 
 # Show last 90 days
-lean-spec timeline --days 90
+harnspec timeline --days 90
 
 # Group by tag
-lean-spec timeline --by-tag
+harnspec timeline --by-tag
 
 # JSON output
-lean-spec timeline --json
+harnspec timeline --json
 ```
 
 **Output:**
@@ -1161,12 +1161,12 @@ Date          Created  Completed
 
 ---
 
-### `lean-spec gantt`
+### `harnspec gantt`
 
 Show timeline with dependencies (Gantt chart style).
 
 ```bash
-lean-spec gantt [options]
+harnspec gantt [options]
 ```
 
 **Options:**
@@ -1179,13 +1179,13 @@ lean-spec gantt [options]
 
 ```bash
 # Show next 4 weeks
-lean-spec gantt
+harnspec gantt
 
 # Show next 8 weeks with completed specs
-lean-spec gantt --weeks 8 --show-complete
+harnspec gantt --weeks 8 --show-complete
 
 # JSON output
-lean-spec gantt --json
+harnspec gantt --json
 ```
 
 **Output:**
@@ -1210,12 +1210,12 @@ Legend:
 
 ---
 
-### `lean-spec ui`
+### `harnspec ui`
 
 Start a local web UI for visual spec management.
 
 ```bash
-lean-spec ui [options]
+harnspec ui [options]
 ```
 
 **Options:**
@@ -1229,16 +1229,16 @@ lean-spec ui [options]
 
 ```bash
 # Auto-detect specs, open on port 3000
-lean-spec ui
+harnspec ui
 
 # Custom directory and port
-lean-spec ui --specs ./docs/specs --port 3100
+harnspec ui --specs ./docs/specs --port 3100
 
 # Don't open browser automatically
-lean-spec ui --no-open
+harnspec ui --no-open
 
 # See what command would run
-lean-spec ui --dry-run
+harnspec ui --dry-run
 ```
 
 **Features:**
@@ -1276,7 +1276,7 @@ By default, the command opens your default browser. Use `--no-open` to prevent t
 If port 3000 is already in use:
 ```bash
 # Use a different port
-lean-spec ui --port 3100
+harnspec ui --port 3100
 
 # Or stop the process using port 3000
 # macOS/Linux:
@@ -1324,7 +1324,7 @@ HarnSpec will find the spec regardless of which format you use.
 
 ## Configuration
 
-Commands respect settings in `.lean-spec/config.json`:
+Commands respect settings in `.harnspec/config.json`:
 
 ```json
 {

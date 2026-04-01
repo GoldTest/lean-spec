@@ -26,7 +26,7 @@ We have confusing and overlapping terminology for two distinct concepts:
 
 2. **"Children" / "child specs"** (hierarchy.ts, spec-card.tsx):
    - Separate specs with parent-child relationships
-   - Uses `parent` field in frontmatter 
+   - Uses `parent` field in frontmatter
    - An "umbrella" spec has multiple child specs
 
 ### The Problem
@@ -88,16 +88,19 @@ Sub-Spec File Visibility in MCP Tools
 ### Migration Strategy
 
 **Phase 1: Documentation (non-breaking)**
+
 - Update all docs/skills to use "sections" terminology
 - Keep code names unchanged but document the mapping
 - Update spec 012 title to "Spec Section Files"
 
 **Phase 2: Code Transition (v0.3.0)**
+
 - Add `sections` as alias for `subSpecs` in API responses
 - Add `sectionsCount` as alias for `subSpecsCount`
 - Deprecate old names with console warnings
 
 **Phase 3: Breaking Change (v1.0.0)**
+
 - Remove deprecated names
 - Rename functions: `loadSubFiles()` → `loadSections()`
 - Update all internal references
@@ -105,6 +108,7 @@ Sub-Spec File Visibility in MCP Tools
 ## Plan
 
 ### Phase 1: Documentation Update
+
 - [ ] Update SKILL.md terminology section
 - [ ] Update spec 012 title and content
 - [ ] Update spec 084 to use "sections" language
@@ -112,13 +116,15 @@ Sub-Spec File Visibility in MCP Tools
 - [ ] Create migration guide in CHANGELOG
 
 ### Phase 2: API Aliasing
+
 - [ ] Add `sections` to MCP tool responses (alias)
 - [ ] Add `sectionsCount` to UI types (alias)
 - [ ] Add deprecation notices for old names
 - [ ] Update spec-card.tsx to use `sectionsCount` preference
 
 ### Phase 3: Full Migration
-- [ ] Rename `loadSubFiles()` → `loadSections()` 
+
+- [ ] Rename `loadSubFiles()` → `loadSections()`
 - [ ] Remove deprecated aliases
 - [ ] Update all internal variable names
 - [ ] Final docs cleanup
@@ -133,13 +139,14 @@ Sub-Spec File Visibility in MCP Tools
 ## Notes
 
 ### Related Specs
+
 - 012-sub-spec-files - Original sub-spec file implementation
 - 084-sub-spec-visibility-in-tools - MCP tool visibility for sub-specs
 - SDD SKILL.md - Parent/Child relationship documentation
 
 ### Open Questions
 
-1. Should we also rename the `lean-spec files` command to `lean-spec sections`?
+1. Should we also rename the `harnspec files` command to `harnspec sections`?
    - Recommendation: Yes, add alias and deprecate old name
 
 2. Should archived specs 012, 084 be updated?

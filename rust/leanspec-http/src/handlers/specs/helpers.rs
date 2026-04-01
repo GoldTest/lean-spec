@@ -243,7 +243,7 @@ pub(super) fn detect_sub_specs(readme_path: &str) -> Vec<SubSpec> {
 }
 
 pub(super) fn load_project_config(project_path: &FsPath) -> Option<LeanSpecConfig> {
-    let config_json = project_path.join(".lean-spec/config.json");
+    let config_json = project_path.join(".harnspec/config.json");
     if config_json.exists() {
         if let Ok(content) = std::fs::read_to_string(&config_json) {
             if let Ok(config) = serde_json::from_str::<LeanSpecConfig>(&content) {
@@ -252,7 +252,7 @@ pub(super) fn load_project_config(project_path: &FsPath) -> Option<LeanSpecConfi
         }
     }
 
-    let config_yaml = project_path.join(".lean-spec/config.yaml");
+    let config_yaml = project_path.join(".harnspec/config.yaml");
     if config_yaml.exists() {
         if let Ok(content) = std::fs::read_to_string(&config_yaml) {
             if let Ok(config) = serde_yaml::from_str::<LeanSpecConfig>(&content) {

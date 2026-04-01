@@ -22,34 +22,36 @@ completed: '2025-11-18'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-18 · **Tags**: mcp, integration, npm-package, developer-experience
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-Create a lightweight CLI wrapper that makes `lean-spec mcp` more discoverable and easier to use. The existing `lean-spec` CLI has many features, making MCP setup less obvious. This dedicated package provides a simple entry point for users to quickly onboard MCP with their preferred IDE/tools.
+Create a lightweight CLI wrapper that makes `harnspec mcp` more discoverable and easier to use. The existing `harnspec` CLI has many features, making MCP setup less obvious. This dedicated package provides a simple entry point for users to quickly onboard MCP with their preferred IDE/tools.
 
-**Problem**: `lean-spec` is a full-featured CLI tool. When users configure MCP servers in their IDE, they need to know to use `lean-spec mcp`, which isn't obvious. Also, the package name `lean-spec` doesn't clearly indicate MCP functionality.
+**Problem**: `harnspec` is a full-featured CLI tool. When users configure MCP servers in their IDE, they need to know to use `harnspec mcp`, which isn't obvious. Also, the package name `harnspec` doesn't clearly indicate MCP functionality.
 
-**Solution**: Ship `@leanspec/mcp` as a thin wrapper. IDEs can call `npx @leanspec/mcp` directly, which just delegates to `lean-spec mcp`. This makes the MCP server more discoverable and the package name more intuitive.
+**Solution**: Ship `@leanspec/mcp` as a thin wrapper. IDEs can call `npx @leanspec/mcp` directly, which just delegates to `harnspec mcp`. This makes the MCP server more discoverable and the package name more intuitive.
 
 ## Design
 
 ### Package Structure
+
 ```
 @leanspec/mcp/
 ├── bin/
 │   └── leanspec-mcp.js   # Thin wrapper CLI
-├── package.json          # Depends on lean-spec
+├── package.json          # Depends on harnspec
 └── README.md             # Quick start guide
 ```
 
 ### How It Works
 
 The package is a **simple passthrough**:
+
 1. User adds MCP server to their IDE config: `npx @leanspec/mcp`
-2. When IDE needs the server, npx auto-installs `@leanspec/mcp` and its `lean-spec` dependency
-3. Script delegates to: `lean-spec mcp`
+2. When IDE needs the server, npx auto-installs `@leanspec/mcp` and its `harnspec` dependency
+3. Script delegates to: `harnspec mcp`
 4. MCP server starts and IDE can communicate with it
 
 No interaction needed - the IDE handles everything.
@@ -57,6 +59,7 @@ No interaction needed - the IDE handles everything.
 ### Usage in IDE Configs
 
 **Claude Desktop** (`claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
@@ -69,6 +72,7 @@ No interaction needed - the IDE handles everything.
 ```
 
 **Cline** (VS Code `settings.json`):
+
 ```json
 {
   "cline.mcpServers": {
@@ -81,6 +85,7 @@ No interaction needed - the IDE handles everything.
 ```
 
 **Zed** (`settings.json`):
+
 ```json
 {
   "context_servers": {
@@ -94,11 +99,11 @@ No interaction needed - the IDE handles everything.
 
 ### Key Design Decisions
 
-**Pure passthrough**: Just delegates to `lean-spec mcp`, no logic needed.
+**Pure passthrough**: Just delegates to `harnspec mcp`, no logic needed.
 
-**Better naming**: `@leanspec/mcp` is more intuitive than `lean-spec mcp` for MCP use cases.
+**Better naming**: `@leanspec/mcp` is more intuitive than `harnspec mcp` for MCP use cases.
 
-**Auto-install**: npx automatically installs both `@leanspec/mcp` and its `lean-spec` dependency when needed.
+**Auto-install**: npx automatically installs both `@leanspec/mcp` and its `harnspec` dependency when needed.
 
 **No interaction**: MCP servers are called by IDEs, not by users directly. No wizard needed.
 
@@ -107,8 +112,8 @@ No interaction needed - the IDE handles everything.
 ## Plan
 
 - [ ] Create minimal package structure in `packages/mcp/`
-- [ ] Write simple passthrough script (delegates to `lean-spec mcp`)
-- [ ] Add `lean-spec` as dependency in package.json
+- [ ] Write simple passthrough script (delegates to `harnspec mcp`)
+- [ ] Add `harnspec` as dependency in package.json
 - [ ] Create README with config examples for different IDEs
 - [ ] Test with Claude Desktop, Cline, Zed
 - [ ] Publish to npm as `@leanspec/mcp`
@@ -134,7 +139,7 @@ No interaction needed - the IDE handles everything.
 
 **Better naming**: Package name clearly indicates MCP functionality.
 
-**Zero maintenance**: All logic lives in `lean-spec mcp`, wrapper just delegates.
+**Zero maintenance**: All logic lives in `harnspec mcp`, wrapper just delegates.
 
 **Discoverability**: Searching for "leanspec mcp" finds the right package immediately.
 
@@ -144,8 +149,8 @@ No interaction needed - the IDE handles everything.
 #!/usr/bin/env node
 const { spawn } = require('child_process');
 
-// Simply delegate to lean-spec mcp
-const child = spawn('lean-spec', ['mcp'], { stdio: 'inherit' });
+// Simply delegate to harnspec mcp
+const child = spawn('harnspec', ['mcp'], { stdio: 'inherit' });
 child.on('exit', (code) => process.exit(code));
 ```
 
@@ -154,8 +159,9 @@ child.on('exit', (code) => process.exit(code));
 Users see this in the docs:
 
 > **Quick Setup**
-> 
+>
 > Add to your Claude Desktop config:
+>
 > ```json
 > {
 >   "mcpServers": {
@@ -166,11 +172,13 @@ Users see this in the docs:
 >   }
 > }
 > ```
-> 
+>
 > Restart Claude Desktop. Done!
 
 ### Dependencies
-- `lean-spec` - The actual MCP server (peer dependency)
+
+- `harnspec` - The actual MCP server (peer dependency)
 
 ### Related
-- Existing `lean-spec mcp` command (what this delegates to)
+
+- Existing `harnspec mcp` command (what this delegates to)

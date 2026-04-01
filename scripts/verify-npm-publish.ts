@@ -32,7 +32,7 @@ async function checkPackageExists(packageName: string, version: string): Promise
     const versionArg = version === 'latest' ? '' : `@${version}`;
     const { stdout } = await execAsync(`npm view ${packageName}${versionArg} version 2>&1`);
     const publishedVersion = stdout.trim();
-    
+
     return {
       name: packageName,
       version: publishedVersion,
@@ -50,24 +50,24 @@ async function checkPackageExists(packageName: string, version: string): Promise
 
 async function verifyPlatformPackages(version: string): Promise<boolean> {
   console.log(`🔍 Verifying platform packages for version: ${version}\n`);
-  
+
   const checks: Promise<PackageInfo>[] = [];
-  
+
   for (const pkg of PACKAGES) {
     for (const platform of PLATFORMS) {
       const packageName = `@leanspec/${pkg}-${platform}`;
       checks.push(checkPackageExists(packageName, version));
     }
   }
-  
+
   const results = await Promise.all(checks);
-  
+
   // Group by package type
   const cliResults = results.filter(r => r.name.includes('cli'));
   const mcpResults = results.filter(r => r.name.includes('mcp'));
-  
+
   let allGood = true;
-  
+
   console.log('📦 CLI Platform Packages:');
   for (const result of cliResults) {
     if (result.exists) {
@@ -80,7 +80,7 @@ async function verifyPlatformPackages(version: string): Promise<boolean> {
       allGood = false;
     }
   }
-  
+
   console.log('\n📦 MCP Platform Packages:');
   for (const result of mcpResults) {
     if (result.exists) {
@@ -93,19 +93,19 @@ async function verifyPlatformPackages(version: string): Promise<boolean> {
       allGood = false;
     }
   }
-  
+
   return allGood;
 }
 
 async function verifyMainPackages(version: string): Promise<boolean> {
   console.log(`\n🔍 Verifying main packages for version: ${version}\n`);
-  
-  const mainPackages = ['lean-spec', '@leanspec/mcp'];
+
+  const mainPackages = ['harnspec', '@leanspec/mcp'];
   const checks = mainPackages.map(pkg => checkPackageExists(pkg, version));
   const results = await Promise.all(checks);
-  
+
   let allGood = true;
-  
+
   console.log('📦 Main Packages:');
   for (const result of results) {
     if (result.exists) {
@@ -118,39 +118,39 @@ async function verifyMainPackages(version: string): Promise<boolean> {
       allGood = false;
     }
   }
-  
+
   return allGood;
 }
 
 async function checkOptionalDependencies(packageName: string, version: string): Promise<void> {
   console.log(`\n🔍 Checking optionalDependencies in ${packageName}@${version}...\n`);
-  
+
   try {
     const versionArg = version === 'latest' ? '' : `@${version}`;
     const { stdout } = await execAsync(`npm view ${packageName}${versionArg} optionalDependencies --json`);
-    
+
     if (!stdout.trim()) {
       console.log(`⚠️  ${packageName} has no optionalDependencies`);
       console.log(`   This means users won't automatically get platform binaries!`);
       return;
     }
-    
+
     const optDeps = JSON.parse(stdout);
-    
+
     console.log(`📋 Optional Dependencies in ${packageName}:`);
     for (const [dep, depVersion] of Object.entries(optDeps)) {
       console.log(`  - ${dep}@${depVersion}`);
     }
-    
+
     // Check if all platforms are included
-    const expectedPrefixes = packageName === 'lean-spec' ? 
-      PLATFORMS.map(p => `lean-spec-${p}`) :
+    const expectedPrefixes = packageName === 'harnspec' ?
+      PLATFORMS.map(p => `harnspec-${p}`) :
       PLATFORMS.map(p => `@leanspec/mcp-${p}`);
-    
-    const missing = expectedPrefixes.filter(prefix => 
+
+    const missing = expectedPrefixes.filter(prefix =>
       !Object.keys(optDeps).some(dep => dep.includes(prefix))
     );
-    
+
     if (missing.length > 0) {
       console.log(`\n⚠️  Missing platform dependencies:`);
       for (const m of missing) {
@@ -167,31 +167,31 @@ async function checkOptionalDependencies(packageName: string, version: string): 
 async function main() {
   const args = process.argv.slice(2);
   const version = args[0] || 'latest';
-  
+
   console.log('═'.repeat(60));
   console.log('  LeanSpec npm Package Verification');
   console.log('═'.repeat(60));
   console.log('');
-  
+
   try {
     const platformsOk = await verifyPlatformPackages(version);
     const mainOk = await verifyMainPackages(version);
-    
+
     // Check optionalDependencies configuration
-    await checkOptionalDependencies('lean-spec', version);
+    await checkOptionalDependencies('harnspec', version);
     await checkOptionalDependencies('@leanspec/mcp', version);
-    
+
     console.log('\n' + '═'.repeat(60));
-    
+
     if (platformsOk && mainOk) {
       console.log('✅ SUCCESS: All packages are published correctly!');
       console.log('');
       console.log('Users can install with:');
       if (version === 'latest') {
-        console.log('  npm install -g lean-spec');
+        console.log('  npm install -g harnspec');
         console.log('  npm install -g @leanspec/mcp');
       } else {
-        console.log(`  npm install -g lean-spec@${version}`);
+        console.log(`  npm install -g harnspec@${version}`);
         console.log(`  npm install -g @leanspec/mcp@${version}`);
       }
       console.log('═'.repeat(60));

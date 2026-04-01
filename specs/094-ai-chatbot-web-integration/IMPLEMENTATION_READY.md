@@ -11,12 +11,14 @@ This document captures the CI and npm distribution refinements made to make spec
 **Decision**: Publish `@leanspec/chat-server` as standalone npm package
 
 **Rationale**:
+
 - Optional dependency model (users without AI don't need Node.js runtime)
 - Independent versioning and updates
 - Reusable across UI and Desktop
 - Smaller bundle sizes (~5MB vs 50MB+ inline)
 
 **Package Structure**:
+
 ```
 @leanspec/chat-server  ← NEW standalone package
 @leanspec/http-server  ← Existing Rust binary packages
@@ -26,34 +28,40 @@ This document captures the CI and npm distribution refinements made to make spec
 ### 2. CI/CD Build Pipeline ✅
 
 **New Jobs Added** to `.github/workflows/publish.yml`:
+
 1. `build-chat-server` - Build and test Node.js package
 2. `publish-chat-server` - Publish to npm (before main packages)
 
 **Testing Strategy**:
+
 - Unit tests: Tool schema validation with Zod
 - Integration tests: Mocked AI SDK streaming
 - Environment: Uses mock API keys for CI
 
 **Publishing Order** (critical for dependency resolution):
+
 ```
 1. Rust platform binaries (@leanspec/cli-*, @leanspec/mcp-*, @leanspec/http-*)
 2. @leanspec/chat-server (NEW)
-3. Main packages (@leanspec/ui, lean-spec, @leanspec/mcp)
+3. Main packages (@leanspec/ui, harnspec, @leanspec/mcp)
 ```
 
 ### 3. Process Management ✅
 
 **Development**:
+
 ```bash
 pnpm dev:all  # Runs HTTP server + chat server + UI concurrently
 ```
 
 **Production Options**:
+
 - **Docker Compose** (recommended): Separate containers with Unix socket
 - **Embedded** (advanced): Rust spawns Node.js subprocess
 - **Systemd** (self-hosted): Two systemd services
 
 **Health Monitoring**:
+
 - Rust HTTP server pings chat server `/health` every 30s
 - Auto-restart on failure
 - Graceful shutdown handling
@@ -68,18 +76,23 @@ pnpm dev:all  # Runs HTTP server + chat server + UI concurrently
 ## Implementation Risks Mitigated
 
 ### Risk 1: Circular Dependencies ✅
+
 **Solution**: Chat-server published before UI package
 
 ### Risk 2: Platform-Specific IPC ✅
+
 **Solution**: Unix socket (default) + HTTP fallback (Windows, cloud)
 
 ### Risk 3: Process Lifecycle Management ✅
+
 **Solution**: Health checks + auto-restart logic in Rust HTTP server
 
 ### Risk 4: Version Synchronization ✅
+
 **Solution**: `pnpm sync-versions` in CI before publish
 
 ### Risk 5: npm Package Not Found ✅
+
 **Solution**: CI waits for chat-server propagation before publishing UI
 
 ## Updated Plan Phases
@@ -114,6 +127,7 @@ Before starting implementation, ensure:
 **Status**: ✅ **YES** - All critical gaps addressed
 
 **Next Steps**:
+
 1. Review this spec with team
 2. Assign to engineer
 3. Start with Phase 1 (package setup)
@@ -137,6 +151,7 @@ Before starting implementation, ensure:
 ## Success Metrics
 
 After implementation:
+
 - [ ] `@leanspec/chat-server` published to npm
 - [ ] CI workflow publishes all packages successfully
 - [ ] Dev version workflow works end-to-end

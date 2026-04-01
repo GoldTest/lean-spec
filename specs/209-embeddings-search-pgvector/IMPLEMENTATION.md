@@ -59,6 +59,7 @@ LIMIT 10;
 ```
 
 **Distance metrics**:
+
 - `<=>` - Cosine distance (default, best for text)
 - `<->` - L2 (Euclidean) distance
 - `<#>` - Inner product (for normalized vectors)
@@ -68,6 +69,7 @@ LIMIT 10;
 ### Phase 1: Single Embedding per Spec
 
 **Approach**:
+
 ```typescript
 function prepareSpecForEmbedding(spec: Spec): string {
   const titleSection = spec.title ? `Title: ${spec.title}\n\n` : '';
@@ -80,12 +82,14 @@ function prepareSpecForEmbedding(spec: Spec): string {
 ```
 
 **Limitations**:
+
 - May lose context in long specs (>3500 tokens)
 - Single vector represents entire spec
 
 ### Phase 2: Chunk-Based Embeddings (Future)
 
 **Approach**:
+
 ```typescript
 function chunkSpec(spec: Spec): string[] {
   // Split by markdown sections (## headers)
@@ -113,6 +117,7 @@ function chunkSpec(spec: Spec): string[] {
 ```
 
 **Benefits**:
+
 - Better for long specs
 - More precise match location
 - Can return snippet from matching chunk
@@ -364,6 +369,7 @@ class APIError extends Error {
 2. Sees default mode: "Lexical (current)"
 3. Clicks "Try Embeddings Search" button
 4. Modal appears:
+
    ```
    Enable Semantic Search
    
@@ -385,6 +391,7 @@ class APIError extends Error {
    ```
 
 5. After enabling, background indexing starts with progress:
+
    ```
    Indexing specs... 45/68 (66%)
    [████████████░░░░] 
@@ -393,6 +400,7 @@ class APIError extends Error {
    ```
 
 6. Completion notification:
+
    ```
    ✓ Embeddings search enabled!
    
@@ -404,7 +412,7 @@ class APIError extends Error {
 
 ```bash
 # CLI command for manual re-indexing
-lean-spec search:index
+harnspec search:index
 
 # Output:
 # 🔍 Scanning specs directory...

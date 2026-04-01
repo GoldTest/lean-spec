@@ -52,7 +52,7 @@ Date when spec was created (ISO 8601 format).
 created: 2025-11-02
 ```
 
-This is auto-filled when you use `lean-spec create`.
+This is auto-filled when you use `harnspec create`.
 
 ## Optional Fields
 
@@ -67,7 +67,7 @@ tags: [api, security, mvp]
 
 **Usage:**
 ```bash
-lean-spec list --tag=api
+harnspec list --tag=api
 ```
 
 ### priority
@@ -87,7 +87,7 @@ priority: high
 
 **Usage:**
 ```bash
-lean-spec list --priority=high
+harnspec list --priority=high
 ```
 
 ### completed
@@ -105,7 +105,7 @@ This is automatically added when you set `status: complete`.
 
 ## Custom Fields
 
-You can define custom fields in `.lean-spec/config.json`:
+You can define custom fields in `.harnspec/config.json`:
 
 ```json
 {
@@ -129,8 +129,8 @@ You can define custom fields in `.lean-spec/config.json`:
 
 **Usage:**
 ```bash
-lean-spec create feature --field assignee=alice --field sprint=42
-lean-spec list --field epic=PROJ-123
+harnspec create feature --field assignee=alice --field sprint=42
+harnspec list --field epic=PROJ-123
 ```
 
 See [Custom Fields](/docs/guide/usage/advanced-features/custom-fields) for details.
@@ -149,7 +149,7 @@ HarnSpec auto-generates visual badges from frontmatter:
 - ✅ Complete
 - 📦 Archived
 
-These badges are automatically updated when you use `lean-spec update`.
+These badges are automatically updated when you use `harnspec update`.
 
 ## Full Example
 
@@ -181,7 +181,7 @@ sprint: 42
 Recommended approach:
 
 ```bash
-lean-spec update 001 --status=complete --priority=critical
+harnspec update 001 --status=complete --priority=critical
 ```
 
 This updates both frontmatter and visual badges.
@@ -194,7 +194,7 @@ You can also edit frontmatter directly in the file:
 2. Modify YAML between `---` markers
 3. Save file
 
-Note: Manual edits don't auto-update visual badges. Run `lean-spec update` to sync.
+Note: Manual edits don't auto-update visual badges. Run `harnspec update` to sync.
 
 ## Best Practices
 
@@ -207,7 +207,7 @@ Establish tag conventions for your team. Examples: `api`, `ui`, `backend`, `secu
 :::
 
 :::tip Update Status Regularly
-Keep status current. Use `lean-spec list` to see what's in progress.
+Keep status current. Use `harnspec list` to see what's in progress.
 :::
 
 :::tip Don't Over-Customize

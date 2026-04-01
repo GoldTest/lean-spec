@@ -20,12 +20,12 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-06 · **Tags**: validation, cli, ux, v0.2.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-Redesign `lean-spec validate` output to follow mainstream lint tool conventions (ESLint, TypeScript, Prettier, etc.) for better consistency, clarity, and developer familiarity.
+Redesign `harnspec validate` output to follow mainstream lint tool conventions (ESLint, TypeScript, Prettier, etc.) for better consistency, clarity, and developer familiarity.
 
 **Current Problems:**
 
@@ -84,7 +84,7 @@ The new validation output follows mainstream lint tool conventions (ESLint, Type
 **Example output:**
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 Validating 25 specs...
 
@@ -119,7 +119,7 @@ Complete design details are documented in sub-specs:
 - [ ] Phase 2: Implement new file-centric format
 - [ ] Phase 3: Add CLI flags (--verbose, --quiet, --format)
 - [ ] Phase 4: Update tests and documentation
-- [ ] Dogfood: Run on lean-spec repo and verify clarity
+- [ ] Dogfood: Run on harnspec repo and verify clarity
 - [ ] Update CHANGELOG and migration guide
 
 **Estimated Effort:** 1-2 days
@@ -137,7 +137,7 @@ Complete design details are documented in sub-specs:
 - [ ] `--format=json` produces valid JSON output
 - [ ] Exit code 0 for warnings-only, 1 for errors (unchanged)
 - [ ] Snapshot tests for output format stability
-- [ ] Real repository test: `lean-spec validate` on lean-spec itself
+- [ ] Real repository test: `harnspec validate` on harnspec itself
 
 **Success Criteria:**
 
@@ -158,16 +158,18 @@ Complete design details are documented in sub-specs:
 ### Success Metrics
 
 **Quantitative:**
+
 - Output size: 60% reduction for clean runs
 - Time to find issue: <5 seconds (vs 10-15s currently)
 
 **Qualitative:**
+
 - Output "feels like" ESLint/TypeScript
 - Beta tester feedback: "Looks like ESLint" positive sentiment
 
 ### Future Enhancements (Post v0.2.0)
 
-- **Auto-fix:** `lean-spec validate --fix`
-- **Watch mode:** `lean-spec validate --watch`
+- **Auto-fix:** `harnspec validate --fix`
+- **Watch mode:** `harnspec validate --watch`
 - **Custom formatters:** Plugin system for CI-specific formats
-- **Rule configuration:** `.lean-spec/rules.json` to disable/configure rules
+- **Rule configuration:** `.harnspec/rules.json` to disable/configure rules

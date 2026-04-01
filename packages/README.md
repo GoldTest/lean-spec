@@ -6,7 +6,7 @@ This directory contains the LeanSpec monorepo packages.
 
 ```
 packages/
-├── cli/               - lean-spec: CLI wrapper for Rust binary
+├── cli/               - harnspec: CLI wrapper for Rust binary
 ├── mcp/               - @leanspec/mcp: MCP server wrapper
 └── ui/                - @leanspec/ui: Primary Vite SPA (web + desktop + shared UI library)
 ```
@@ -26,18 +26,18 @@ packages/
 
 - Rust provides backend for both HTTP server and CLI/MCP commands
 
-## lean-spec (CLI)
+## harnspec (CLI)
 
 **JavaScript wrapper for Rust CLI binary.**
 
-Provides platform detection, binary resolution, and templates for `lean-spec init`.
+Provides platform detection, binary resolution, and templates for `harnspec init`.
 
 ### Usage
 
 ```bash
-npm install -g lean-spec
-npx lean-spec list
-npx lean-spec create my-feature
+npm install -g harnspec
+npx harnspec list
+npx harnspec create my-feature
 ```
 
 ### Development
@@ -45,7 +45,7 @@ npx lean-spec create my-feature
 ```bash
 cd rust && cargo build --release
 node scripts/copy-rust-binaries.mjs
-node bin/lean-spec.js --version
+node bin/harnspec.js --version
 ```
 
 ## @leanspec/mcp
@@ -58,11 +58,12 @@ Delegates to the Rust MCP binary and makes MCP setup discoverable.
 npx -y @leanspec/mcp
 ```
 
-See [MCP Integration docs](https://lean-spec.dev/docs/guide/usage/ai-assisted/mcp-integration).
+See [MCP Integration docs](https://harnspec.dev/docs/guide/usage/ai-assisted/mcp-integration).
 
 ## @leanspec/ui (Vite SPA)
 
 Primary web UI package:
+
 - Vite 7 + React 19 + TypeScript 5
 - Shared components exported from `@leanspec/ui`
 - Served by Rust HTTP server or bundled in Tauri
@@ -79,7 +80,7 @@ pnpm --filter @leanspec/ui preview   # preview production build
 
 The desktop application now lives in a dedicated repository:
 
-- https://github.com/codervisor/lean-spec-desktop
+- <https://github.com/codervisor/harnspec-desktop>
 
 ## Building
 
@@ -108,15 +109,17 @@ pnpm --filter @leanspec/ui test
 ## Publishing
 
 Published packages:
-- `lean-spec` - CLI (wrapper + Rust binary via optional dependencies)
+
+- `harnspec` - CLI (wrapper + Rust binary via optional dependencies)
 - `@leanspec/mcp` - MCP server wrapper
 - `@leanspec/ui` - Vite SPA bundle
 
 Platform-specific binary packages (published separately):
-- `lean-spec-darwin-arm64`
-- `lean-spec-darwin-x64`
-- `lean-spec-linux-x64`
-- `lean-spec-windows-x64`
+
+- `harnspec-darwin-arm64`
+- `harnspec-darwin-x64`
+- `harnspec-linux-x64`
+- `harnspec-windows-x64`
 
 ## Migration Notes
 

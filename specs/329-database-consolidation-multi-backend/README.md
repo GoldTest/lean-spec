@@ -29,17 +29,18 @@ There are currently multiple separate database files on disk:
 
 | File | Purpose |
 |---|---|
-| `~/.lean-spec/sessions.db` | Sessions, session logs, events, specs |
-| `~/.lean-spec/chat.db` | Conversations, messages, sync metadata |
-| `~/.lean-spec/runners.json` | Runner config (JSON, not yet in DB — see spec 329) |
-| `~/.lean-spec/projects.json` | Projects (JSON) |
-| `~/.lean-spec/config.json` | Server config (JSON) |
+| `~/.harnspec/sessions.db` | Sessions, session logs, events, specs |
+| `~/.harnspec/chat.db` | Conversations, messages, sync metadata |
+| `~/.harnspec/runners.json` | Runner config (JSON, not yet in DB — see spec 329) |
+| `~/.harnspec/projects.json` | Projects (JSON) |
+| `~/.harnspec/config.json` | Server config (JSON) |
 
 Fragmented DB files make it hard to reason about data as a whole, complicate backup/restore, and prevent cross-table queries (e.g. joining sessions with conversations).
 
 ### 2. Locked to SQLite / No Proper Connection Pooling
 
 The current implementation uses `rusqlite` (sync) wrapped in `Mutex<Connection>`, one per DB file. This means:
+
 - All DB concurrent access is serialized through a single mutex — a bottleneck
 - No connection pooling
 - Blocking synchronous I/O mixed into an async Tokio runtime (blocks worker threads)
@@ -66,19 +67,20 @@ The current implementation uses `rusqlite` (sync) wrapped in `Mutex<Connection>`
 
 ### Database URL Configuration
 
-Add to `~/.lean-spec/config.json` (`ServerConfig`):
+Add to `~/.harnspec/config.json` (`ServerConfig`):
 
 ```json
 {
-  "database_url": "sqlite://~/.lean-spec/leanspec.db"
+  "database_url": "sqlite://~/.harnspec/leanspec.db"
 }
 ```
 
 Default (when missing): `sqlite://{config_dir}/leanspec.db`
 
 Supported formats:
+
 - `sqlite:///absolute/path/to/db.db`
-- `sqlite://~/.lean-spec/leanspec.db` (home-dir expansion)
+- `sqlite://~/.harnspec/leanspec.db` (home-dir expansion)
 - `postgres://user:pass@host:5432/leanspec` (Phase 3)
 - `mysql://user:pass@host:3306/leanspec` (Phase 3)
 
@@ -104,12 +106,14 @@ leanspec.db  (or the configured URL)
 Replace `rusqlite` with `sqlx` using `SqlitePool` first (phases 1–2). `AnyPool` is deferred to phase 3 when multi-backend support is actually needed — this avoids the runtime driver registration complexity and debugging overhead of `AnyPool` before it's required.
 
 **Phases 1–2 dependency (SQLite only):**
+
 ```toml
 [dependencies]
 sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "migrate", "chrono", "uuid"] }
 ```
 
 **Phase 3 (multi-backend):**
+
 ```toml
 [dependencies]
 sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "postgres", "mysql", "migrate", "chrono", "uuid"] }
@@ -126,6 +130,7 @@ migrations/
 ```
 
 Applied via:
+
 ```rust
 sqlx::migrate!("./migrations").run(&pool).await?;
 ```
@@ -158,6 +163,7 @@ pub struct RunnerStore<'a>  { db: &'a Database }
 ### Backward Compatibility / Data Migration
 
 On first startup with this version:
+
 1. Detect if old `sessions.db` or `chat.db` exists
 2. If so, run an in-process migration: read all rows from old SQLite, insert into new DB
 3. Rename old files to `sessions.db.migrated`, `chat.db.migrated`
@@ -166,12 +172,14 @@ On first startup with this version:
 ## Migration Path (Implementation Phases)
 
 ### Phase 1 — Consolidate SQLite (no sqlx yet)
+
 - Merge `sessions.db` and `chat.db` schemas into `leanspec.db` using rusqlite `ATTACH DATABASE`
 - Add runners table (spec 329)
 - Update all store structs to point at the single DB
 - Verify data migration works
 
 ### Phase 2 — Migrate to sqlx + async
+
 - Replace `rusqlite` with `sqlx` (SQLite backend first)
 - Convert all queries to `sqlx::query` / `sqlx::query_as`
 - Replace `Mutex<Connection>` with `SqlitePool` / `AnyPool`
@@ -179,6 +187,7 @@ On first startup with this version:
 - All queries become async
 
 ### Phase 3 — Multi-backend
+
 - Enable `AnyPool` with URL-dispatch
 - Test with PostgreSQL and MySQL
 - Document self-hosted database setup

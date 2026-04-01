@@ -21,7 +21,7 @@ Umbrella spec for the Agent Skills ecosystem initiative. This groups all work re
 
 1. **Universal Compatibility**: Skills work across all mainstream AI coding tools
 2. **Public Repository**: Host skills in dedicated `codervisor/leanspec-skills` repo
-3. **Smooth Installation**: `lean-spec init` correctly references installed skill paths
+3. **Smooth Installation**: `harnspec init` correctly references installed skill paths
 4. **Community Contribution**: Enable external contributions to skills
 
 ### Child Specs
@@ -47,7 +47,7 @@ codervisor/leanspec-skills (new repo)
 │       └── validate.yml    # skills-ref validate
 └── README.md
 
-codervisor/lean-spec (this repo)
+codervisor/harnspec (this repo)
 ├── packages/cli/
 │   └── templates/          # skills installed from leanspec-skills
 └── .github/skills/
@@ -72,7 +72,7 @@ codervisor/lean-spec (this repo)
 ## Test
 
 - [ ] Skills work in Claude, Cursor, Copilot, and CLI-based tools
-- [ ] `lean-spec init` generates correct AGENTS.md paths
+- [ ] `harnspec init` generates correct AGENTS.md paths
 - [ ] leanspec-skills repo contains validated skills
 - [ ] Skills can be installed from public repo
 

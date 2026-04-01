@@ -22,6 +22,7 @@ Foundation for velocity metrics:
 ## Part 1: Unified Analytics (Week 1-2)
 
 ### Part A: Merge timeline into stats
+
 - [ ] Create `utils/vis.ts` with shared visualization helpers
   - [ ] `createBar(count, max, width, char)` - reusable bar charts
   - [ ] `formatMetric(label, value, color)` - metric formatting
@@ -37,6 +38,7 @@ Foundation for velocity metrics:
 - [ ] Mark `timeline.ts` as deprecated (but keep working)
 
 ### Part B: Velocity Calculations
+
 - [ ] Create `utils/velocity.ts` with velocity analysis
   - [ ] `calculateCycleTime(spec)` - created_at → completed_at
   - [ ] `calculateStageDuration(spec, status)` - time in each status
@@ -55,11 +57,12 @@ Foundation for velocity metrics:
   - [ ] `velocity.max_wip: 5` (concurrent specs)
 
 ### Part C: Testing
-- [ ] Test `lean-spec stats` (default behavior unchanged)
-- [ ] Test `lean-spec stats --timeline` (integrated view)
-- [ ] Test `lean-spec stats --history` (full timeline)
-- [ ] Test `lean-spec stats --velocity` (cycle time analysis)
-- [ ] Test `lean-spec stats --all` (comprehensive)
+
+- [ ] Test `harnspec stats` (default behavior unchanged)
+- [ ] Test `harnspec stats --timeline` (integrated view)
+- [ ] Test `harnspec stats --history` (full timeline)
+- [ ] Test `harnspec stats --velocity` (cycle time analysis)
+- [ ] Test `harnspec stats --all` (comprehensive)
 - [ ] Test velocity calculations with mock data
 - [ ] Test graceful degradation (specs without timestamps)
 - [ ] Verify backward compatibility
@@ -67,6 +70,7 @@ Foundation for velocity metrics:
 ## Part 2: Dashboard Command (Week 2)
 
 ### Part A: Core dashboard implementation
+
 - [ ] Create `src/commands/dashboard.ts`
 - [ ] Implement Summary section (project health)
 - [ ] Implement Needs Attention section (smart insights)
@@ -77,13 +81,15 @@ Foundation for velocity metrics:
 - [ ] Add helpful footer with command hints
 
 ### Part B: CLI integration
-- [ ] Make `lean-spec` (no args) default to dashboard
-- [ ] Add explicit `lean-spec dashboard` command
+
+- [ ] Make `harnspec` (no args) default to dashboard
+- [ ] Add explicit `harnspec dashboard` command
 - [ ] Support all filter options (--tag, --status, etc.)
 - [ ] Add display options (--compact, --expand-active)
 - [ ] Add JSON output mode (--json)
 
 ### Part C: Smart insights
+
 - [ ] Detect overdue specs (due < today, status != complete)
 - [ ] Highlight critical priority specs
 - [ ] Show user's assigned work (from git config or --assignee)
@@ -94,12 +100,14 @@ Foundation for velocity metrics:
 ## Phase 3: Testing & Polish (Week 2-3)
 
 ### Unit tests
+
 - [ ] Dashboard section rendering
 - [ ] Smart insights logic
 - [ ] Filter application
 - [ ] JSON output structure
 
 ### Integration tests
+
 - [ ] Empty project (show helpful init message)
 - [ ] Small project (< 10 specs)
 - [ ] Medium project (10-50 specs)
@@ -108,6 +116,7 @@ Foundation for velocity metrics:
 - [ ] With display options
 
 ### Visual regression
+
 - [ ] Compare dashboard output across sizes
 - [ ] Verify Unicode characters render correctly
 - [ ] Test color output (with/without color support)
@@ -116,29 +125,34 @@ Foundation for velocity metrics:
 ## Phase 4: Documentation (Week 3)
 
 ### README updates
+
 - [ ] Feature dashboard as primary command
 - [ ] Add dashboard screenshot/GIF
 - [ ] Update command reference table
 - [ ] Show dashboard → drill-down workflow
 
 ### AGENTS.md updates
+
 - [ ] Update AI instructions to use dashboard first
-- [ ] Document `lean-spec stats --timeline` pattern
+- [ ] Document `harnspec stats --timeline` pattern
 - [ ] Update command examples
 
 ### Help text
-- [ ] Update `lean-spec --help` to show dashboard first
-- [ ] Add examples to `lean-spec dashboard --help`
-- [ ] Update `lean-spec stats --help` with new flags
+
+- [ ] Update `harnspec --help` to show dashboard first
+- [ ] Add examples to `harnspec dashboard --help`
+- [ ] Update `harnspec stats --help` with new flags
 
 ## Phase 5: Migration & Deprecation (v0.3.0)
 
 ### Add deprecation warnings
-- [ ] `lean-spec timeline` → "Use 'lean-spec stats --history' instead"
+
+- [ ] `harnspec timeline` → "Use 'harnspec stats --history' instead"
 - [ ] Show migration hints in output
 - [ ] Update CHANGELOG with deprecation notice
 
 ### Remove in v0.4.0
+
 - [ ] Delete `src/commands/timeline.ts`
 - [ ] Remove from CLI registration
 - [ ] Archive any timeline-specific tests

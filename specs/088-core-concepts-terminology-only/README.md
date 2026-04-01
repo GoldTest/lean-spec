@@ -22,7 +22,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -30,11 +30,13 @@ completed: '2025-11-17'
 Users report that the current "Core Concepts" section in docs-site contains philosophy and principles rather than actual terminology definitions. This creates confusion for newcomers trying to understand SDD basics.
 
 **Problem**: Current Core Concepts mixes:
+
 - Philosophical principles (first principles, progressive disclosure)
 - Process guidance (workflow, decision-making)
 - Actual SDD terminology (specs, tokens, context)
 
 **Goal**: Restructure Core Concepts to be a **glossary of essential SDD terms** only:
+
 - **Spec**: What is a specification in SDD context
 - **Context**: What context means (human + AI working memory)
 - **Tokens**: Why tokens matter for AI + human cognition
@@ -43,7 +45,8 @@ Users report that the current "Core Concepts" section in docs-site contains phil
 - **Dependencies**: Relationship between specs
 - Other concrete terms users encounter when using LeanSpec
 
-**Non-Goals**: 
+**Non-Goals**:
+
 - Philosophy content → move to "Philosophy & Principles" section
 - Workflow guidance → move to tutorials/guides
 - Decision frameworks → keep in methodology docs
@@ -53,23 +56,27 @@ Users report that the current "Core Concepts" section in docs-site contains phil
 **Restructure Core Concepts as a terminology glossary with definitions only.**
 
 Each concept entry should:
+
 1. **Definition**: What it is (1-2 sentences)
 2. **Why it matters**: Practical importance for SDD
 3. **Example**: Concrete example from LeanSpec usage
 4. **Related**: Links to deeper explanations
 
 **Priority order for inclusion**:
+
 1. Terms users encounter in first 5 minutes (spec, status, tokens)
 2. Terms in CLI/UI (tags, priority, dependencies)
 3. SDD methodology terms (context, agent, signal-to-noise)
 4. Advanced concepts (progressive disclosure, templates)
 
 **Content reorganization**:
+
 - Philosophy → New "Philosophy & Principles" section
 - Workflow → Move to step-by-step tutorials (spec 089)
 - Decision frameworks → Keep in "Methodology" docs
 
 **Term structure template**:
+
 ```markdown
 ### [Term Name]
 

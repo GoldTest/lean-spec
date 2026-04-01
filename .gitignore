@@ -32,8 +32,8 @@ rust/target/
 .idea/
 
 # Binaries and auto-generated platform package files
-packages/cli/binaries/*/lean-spec
-packages/cli/binaries/*/lean-spec.exe
+packages/cli/binaries/*/harnspec
+packages/cli/binaries/*/harnspec.exe
 packages/cli/binaries/*/package.json
 packages/cli/binaries/*/postinstall.js
 packages/mcp/binaries/*/leanspec-mcp

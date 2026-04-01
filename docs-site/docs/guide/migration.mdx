@@ -12,7 +12,7 @@ This guide helps you migrate from existing SDD tools and documentation systems t
 
 HarnSpec migration focuses on two main areas:
 
-1. **Metadata/Frontmatter** (PRIMARY) - Use `lean-spec backfill` to extract from git history
+1. **Metadata/Frontmatter** (PRIMARY) - Use `harnspec backfill` to extract from git history
 2. **Folder Organization** (VARIES) - Depends on your source tool
 
 **Good news**: HarnSpec is flexible about content format—you can keep your existing writing style!
@@ -28,10 +28,10 @@ OpenSpec is currently the most widely adopted SDD tool. Migration requires mergi
 **Quick migration with `--auto`**:
 ```bash
 # One-shot automatic migration
-lean-spec migrate ./openspec --auto
+harnspec migrate ./openspec --auto
 
 # Preview first
-lean-spec migrate ./openspec --auto --dry-run
+harnspec migrate ./openspec --auto --dry-run
 ```
 
 **Manual migration steps**:
@@ -48,14 +48,14 @@ mv specs/api-gateway specs/002-api-gateway
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 4. Generate frontmatter from git history
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 5. Update AGENTS.md commands
-sed -i 's/openspec/lean-spec/g' AGENTS.md
+sed -i 's/openspec/harnspec/g' AGENTS.md
 
 # 6. Validate
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **Time**: ~15-30 minutes for 20 specs (or < 1 minute with `--auto`)
@@ -68,7 +68,7 @@ lean-spec board
 
 **Quick migration with `--auto`**:
 ```bash
-lean-spec migrate ./.specify/specs --auto
+harnspec migrate ./.specify/specs --auto
 ```
 
 **Manual migration steps**:
@@ -80,11 +80,11 @@ mv .specify/specs specs/
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. Generate frontmatter from git history
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. Validate
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **Time**: ~5 minutes for 20 specs (or < 30 seconds with `--auto`)
@@ -97,7 +97,7 @@ Kiro uses a similar structure to spec-kit with some AWS-specific conventions.
 
 **Quick migration with `--auto`**:
 ```bash
-lean-spec migrate ./.kiro/specs --auto
+harnspec migrate ./.kiro/specs --auto
 ```
 
 **Manual migration steps**:
@@ -109,11 +109,11 @@ mv .kiro/specs specs/
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. Generate frontmatter from git history
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. Validate
-lean-spec validate
-lean-spec board
+harnspec validate
+harnspec board
 ```
 
 **Time**: ~5 minutes for 20 specs
@@ -126,13 +126,13 @@ For Architecture Decision Records or RFCs stored as flat markdown files:
 
 ```bash
 # Auto migration handles generic markdown
-lean-spec migrate ./docs/adr --auto
+harnspec migrate ./docs/adr --auto
 
 # Or manual: each ADR becomes a spec folder
 # 0001-use-typescript.md → specs/001-use-typescript/README.md
 ```
 
-## The `lean-spec backfill` Command
+## The `harnspec backfill` Command
 
 This is your primary migration tool for generating frontmatter from git history.
 
@@ -140,16 +140,16 @@ This is your primary migration tool for generating frontmatter from git history.
 
 ```bash
 # Extract timestamps from git history
-lean-spec backfill
+harnspec backfill
 
 # Include assignee from git author
-lean-spec backfill --assignee
+harnspec backfill --assignee
 
 # Extract all available metadata
-lean-spec backfill --all
+harnspec backfill --all
 
 # Preview changes without applying
-lean-spec backfill --dry-run
+harnspec backfill --dry-run
 ```
 
 ### What It Extracts
@@ -162,8 +162,8 @@ lean-spec backfill --dry-run
 - `transitions` - Full status change history (with `--transitions`)
 
 **Set manually after**:
-- `priority` - Defaults to 'medium', adjust with `lean-spec update --priority`
-- `tags` - Defaults from folder names, adjust with `lean-spec update --tags`
+- `priority` - Defaults to 'medium', adjust with `harnspec update --priority`
+- `tags` - Defaults from folder names, adjust with `harnspec update --tags`
 - `status` - Inferred from content/history, adjust if needed
 
 ### Example Output
@@ -182,9 +182,9 @@ tags:
 ---
 ```
 
-## Using `lean-spec migrate`
+## Using `harnspec migrate`
 
-For more complex migrations or AI-assisted workflows, use the `lean-spec migrate` command.
+For more complex migrations or AI-assisted workflows, use the `harnspec migrate` command.
 
 ### Auto Mode (Recommended) ✅
 
@@ -192,10 +192,10 @@ One-shot migration that detects format, restructures, and backfills automaticall
 
 ```bash
 # Automatic migration - detects format and handles everything
-lean-spec migrate ./openspec --auto
+harnspec migrate ./openspec --auto
 
 # Preview without making changes
-lean-spec migrate ./openspec --auto --dry-run
+harnspec migrate ./openspec --auto --dry-run
 ```
 
 **What `--auto` does**:
@@ -211,7 +211,7 @@ This is the recommended approach for most migrations.
 Outputs migration instructions for any AI tool:
 
 ```bash
-lean-spec migrate ./openspec
+harnspec migrate ./openspec
 ```
 
 This generates a prompt you can copy to ChatGPT, Claude, Copilot, or any AI assistant:
@@ -225,9 +225,9 @@ Your Task:
 1. Analyze the source documents
 2. Extract metadata (title, status, dates, priority)
 3. For each document:
-   - Run: lean-spec create <name>
-   - Run: lean-spec update <name> --status <status>
-   - Run: lean-spec update <name> --priority <priority>
+   - Run: harnspec create <name>
+   - Run: harnspec update <name> --status <status>
+   - Run: harnspec update <name> --priority <priority>
    - Edit content to match HarnSpec structure
 4. Preserve decision rationale and relationships
 5. Keep specs under 400 lines
@@ -241,13 +241,13 @@ Automated migration using AI CLI tools:
 
 ```bash
 # Using GitHub Copilot CLI
-lean-spec migrate ./openspec --with copilot
+harnspec migrate ./openspec --with copilot
 
 # Using Claude CLI
-lean-spec migrate ./openspec --with claude
+harnspec migrate ./openspec --with claude
 
 # Using Gemini CLI
-lean-spec migrate ./openspec --with gemini
+harnspec migrate ./openspec --with gemini
 ```
 
 **Prerequisites**:
@@ -257,13 +257,13 @@ lean-spec migrate ./openspec --with gemini
 **Options**:
 ```bash
 # Preview without changes
-lean-spec migrate ./openspec --dry-run
+harnspec migrate ./openspec --dry-run
 
 # Process in batches
-lean-spec migrate ./openspec --batch-size 10
+harnspec migrate ./openspec --batch-size 10
 
 # Auto-run backfill after migration
-lean-spec migrate ./openspec --backfill
+harnspec migrate ./openspec --backfill
 ```
 
 ## Migration Checklist
@@ -275,23 +275,23 @@ Use this checklist to ensure a complete migration:
 - [ ] Backup your existing documentation
 - [ ] Review source folder structure
 - [ ] Check git history is available (for `backfill`)
-- [ ] Install HarnSpec: `npm install -g lean-spec`
-- [ ] Initialize HarnSpec: `lean-spec init`
+- [ ] Install HarnSpec: `npm install -g harnspec`
+- [ ] Initialize HarnSpec: `harnspec init`
 
 ### During Migration
 
 - [ ] Reorganize folders (if needed for your source tool)
 - [ ] Rename main spec files to `README.md`
-- [ ] Run `lean-spec backfill --assignee --all`
+- [ ] Run `harnspec backfill --assignee --all`
 - [ ] Manually adjust priorities if needed
 - [ ] Manually adjust tags if needed
 - [ ] Verify status values are correct
 
 ### After Migration
 
-- [ ] Run `lean-spec validate` to check for issues
-- [ ] Run `lean-spec board` to visualize migration
-- [ ] Test spec discovery: `lean-spec list`, `lean-spec search`
+- [ ] Run `harnspec validate` to check for issues
+- [ ] Run `harnspec board` to visualize migration
+- [ ] Test spec discovery: `harnspec list`, `harnspec search`
 - [ ] Update any broken relationships (`depends_on`, `related`)
 - [ ] Migrate system prompts (AGENTS.md, .cursorrules)
 
@@ -320,7 +320,7 @@ AGENTS.md (in project root)
 HarnSpec supports **Agent Skills** via SKILL.md. This lets you keep AGENTS.md short and project-specific.
 
 **Recommended steps:**
-1. Install the skill via `lean-spec skill install`
+1. Install the skill via `harnspec skill install`
 2. Use the installed SKILL.md at .github/skills/HarnSpec-sdd/
 3. Reduce AGENTS.md to project-specific rules only (`<100` lines)
 4. Add a short note in AGENTS.md that references the skill
@@ -343,8 +343,8 @@ Core SDD workflow is defined in .github/skills/HarnSpec-sdd/SKILL.md.
 
 1. **Review existing AI guidance** from source tool
 2. **Preserve project-specific conventions**
-3. **Merge with HarnSpec AGENTS.md** (created by `lean-spec init`)
-4. **Update commands**: `openspec` → `lean-spec`, etc.
+3. **Merge with HarnSpec AGENTS.md** (created by `harnspec init`)
+4. **Update commands**: `openspec` → `harnspec`, etc.
 5. **Keep team workflows intact**
 
 This ensures AI agents maintain continuity during the transition.
@@ -371,14 +371,14 @@ This ensures AI agents maintain continuity during the transition.
 mv .specify/specs specs/
 mv specs/001-task-management/spec.md specs/001-task-management/README.md
 # Keep plan.md, tasks.md, contracts/ as-is
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 ```
 
 **Option B: Consolidate** (for simpler features)
 ```bash
 # Merge spec.md + plan.md into README.md manually
 # Then run backfill
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 ```
 
 ### Scenario 2: OpenSpec with Separate Directories
@@ -401,10 +401,10 @@ mv specs/auth specs/001-authentication
 find specs -name 'spec.md' -execdir mv {} README.md \;
 
 # 3. Backfill metadata
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # 4. Update AGENTS.md commands
-sed -i 's/openspec/lean-spec/g' AGENTS.md
+sed -i 's/openspec/harnspec/g' AGENTS.md
 ```
 
 ## Migrating from External Systems
@@ -419,7 +419,7 @@ For systems like Linear, Jira, Confluence, or Notion:
 
 ```bash
 # Export from Linear, Jira, etc. to ./exports/
-lean-spec migrate ./exports/
+harnspec migrate ./exports/
 ```
 
 ### Why No Direct API Integration?
@@ -440,17 +440,17 @@ Export workflows are well-established and let you maintain control.
 **Solution**: Set timestamps manually or use current date
 ```bash
 # backfill will use current timestamp for specs without git history
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # Or set manually
-lean-spec update 001 --priority high
+harnspec update 001 --priority high
 ```
 
 ### Issue: Duplicate sequence numbers
 
-**Solution**: Use `lean-spec check` to detect conflicts
+**Solution**: Use `harnspec check` to detect conflicts
 ```bash
-lean-spec check
+harnspec check
 # Fix conflicts by renaming folders manually
 ```
 
@@ -471,7 +471,7 @@ related: [010, 012]
 ---
 
 # Verify relationships
-lean-spec deps 001
+harnspec deps 001
 ```
 
 ## Migration Time Estimates
@@ -493,9 +493,9 @@ Based on real migrations:
 
 Need migration support?
 
-- **GitHub Issues**: [Report migration issues](https://github.com/codervisor/lean-spec/issues)
-- **Examples**: See [spec 063](https://web.lean-spec.dev/specs/063-migration-from-existing-tools) for detailed examples
-- **Command Help**: Run `lean-spec migrate --help` or `lean-spec backfill --help`
+- **GitHub Issues**: [Report migration issues](https://github.com/codervisor/harnspec/issues)
+- **Examples**: See [spec 063](https://harnspec.gitub.io/specs/063-migration-from-existing-tools) for detailed examples
+- **Command Help**: Run `harnspec migrate --help` or `harnspec backfill --help`
 
 ## Next Steps
 

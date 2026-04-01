@@ -36,25 +36,29 @@ Add LeanSpec integration directly into Cursor IDE via slash commands, enabling d
 **Implementation Options:**
 
 **Option A: Cursor Rules File** (Simplest)
+
 - Create `.cursorrules` template with LeanSpec context
 - Include spec discovery, creation, and management prompts
 - Users copy template to their projects
 
-**Option B: Custom Slash Commands** 
+**Option B: Custom Slash Commands**
+
 - Implement via Cursor's custom slash command API (if available)
-- Register commands like `/lean-spec-search`, `/lean-spec-create`, `/lean-spec-board`
+- Register commands like `/harnspec-search`, `/harnspec-create`, `/harnspec-board`
 
 **Option C: MCP Integration** (Recommended)
+
 - Cursor supports MCP servers natively
 - LeanSpec already has MCP server (`@leanspec/mcp`)
 - Users just need to configure MCP in Cursor settings
 
 **Proposed Commands:**
-- `/lean-spec-board` - Show Kanban board of specs
-- `/lean-spec-search <query>` - Search specs
-- `/lean-spec-create <name>` - Create new spec
-- `/lean-spec-view <spec>` - View spec content
-- `/lean-spec-update <spec> --status <status>` - Update spec status
+
+- `/harnspec-board` - Show Kanban board of specs
+- `/harnspec-search <query>` - Search specs
+- `/harnspec-create <name>` - Create new spec
+- `/harnspec-view <spec>` - View spec content
+- `/harnspec-update <spec> --status <status>` - Update spec status
 
 ## Plan
 
@@ -75,14 +79,17 @@ Add LeanSpec integration directly into Cursor IDE via slash commands, enabling d
 ## Notes
 
 **Competitive Context:**
+
 - OpenSpec reportedly supports Cursor slash commands
 - Need to research their implementation approach
 
 **Related:**
+
 - Spec 034: GitHub Copilot Chat slash commands (similar concept, different IDE)
 - LeanSpec MCP server already exists - may just need configuration docs
 
 **Open Questions:**
+
 - Does Cursor support custom slash commands natively, or only via MCP?
 - What's the exact implementation OpenSpec uses?
 - Can we provide a one-click setup experience?

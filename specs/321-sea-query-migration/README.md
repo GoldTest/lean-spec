@@ -20,14 +20,14 @@ transitions:
 
 > **Cancelled** — Superseded by spec 329 (Database Consolidation and Multi-Backend Support). The consolidation goal is preserved in 329, which uses `sqlx` for proper async support and connection pooling instead of sea-query on top of sync rusqlite. See spec 329 for rationale.
 
-
 Replace raw SQL strings and ad-hoc schema management in `leanspec-core` with **sea-query** (type-safe query builder) and **rusqlite_migration** (versioned migrations). **Consolidate `sessions.db` and `chat.db` into a single `leanspec.db`** to simplify connection management and enable a clean Postgres migration path.
 
 ## Context
 
 Current state in `leanspec-core`:
+
 - **2 separate SQLite databases** with inconsistent settings:
-  - `sessions.db` (`~/.lean-spec/`) — 4 tables, no WAL, no FK pragma, RFC3339 TEXT timestamps
+  - `sessions.db` (`~/.harnspec/`) — 4 tables, no WAL, no FK pragma, RFC3339 TEXT timestamps
   - `chat.db` (platform data dir) — 3 tables, WAL enabled, epoch-ms INTEGER timestamps
 - 3 different connection patterns: `SessionDatabase`, `ChatStore`, and unused `Database` struct
 - Schema managed via `CREATE TABLE IF NOT EXISTS` (sessions) + `PRAGMA user_version` + `ensure_column()` hack (chat)
@@ -56,7 +56,7 @@ When Postgres support is added later, enable `backend-postgres` and swap `Sqlite
 
 ### Consolidated Database
 
-**Single file:** `~/.lean-spec/leanspec.db` (7 tables)
+**Single file:** `~/.harnspec/leanspec.db` (7 tables)
 
 | Domain | Tables |
 |--------|--------|
@@ -81,7 +81,8 @@ leanspec-core/src/db/
 ### Legacy Data Migration
 
 On first open of `leanspec.db`:
-1. Check for `~/.lean-spec/sessions.db` and platform-specific `chat.db`
+
+1. Check for `~/.harnspec/sessions.db` and platform-specific `chat.db`
 2. If found, ATTACH each old DB and INSERT INTO new tables (with timestamp normalization for chat)
 3. Rename old files to `*.backup` to prevent re-import
 4. Log migration summary
@@ -184,6 +185,6 @@ pub trait DbBackend {
 - `rusqlite_migration` uses `PRAGMA user_version` internally — same as our current chat_store approach, so migration is seamless
 - Postgres support is a future goal — consolidation + sea-query's backend-agnostic query building make this straightforward
 - No async migration needed — current codebase is fully sync
-- **DB location**: `~/.lean-spec/leanspec.db` chosen over platform data dir for discoverability and consistency with existing `sessions.db` location
+- **DB location**: `~/.harnspec/leanspec.db` chosen over platform data dir for discoverability and consistency with existing `sessions.db` location
 - **Feature gates**: `SessionDatabase` and `ChatStore` keep their respective feature gates but share the underlying `Database` connection
 - No table name collisions between the two domains — merge is structurally clean

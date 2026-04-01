@@ -20,16 +20,16 @@ The CLI gives you command-line control over your specs:
 Quick example workflow:
 ```bash
 # Create new spec
-lean-spec create auth-refactor --tags security
+harnspec create auth-refactor --tags security
 
 # Start working
-lean-spec update 042 --status in-progress
+harnspec update 042 --status in-progress
 
 # Check project health
-lean-spec board
+harnspec board
 
 # Validate before committing
-lean-spec validate
+harnspec validate
 ```
 
 ## For AI Agents
@@ -45,16 +45,16 @@ AI agents can use HarnSpec CLI commands directly as tools:
 
 ```bash
 # Agent searches for relevant context
-lean-spec search "authentication decision"
+harnspec search "authentication decision"
 
 # Agent retrieves specific spec
-lean-spec view 042
+harnspec view 042
 
 # Agent checks dependencies
-lean-spec deps 042
+harnspec deps 042
 
 # Agent updates status after implementation
-lean-spec update 042 --status complete
+harnspec update 042 --status complete
 ```
 
 **MCP Server Integration**: For seamless AI agent access, HarnSpec provides an [MCP (Model Context Protocol) server](/docs/reference/mcp-server) that exposes CLI functionality as structured tools.
@@ -103,19 +103,19 @@ The CLI design follows HarnSpec's [First Principles](/docs/advanced/first-princi
 **Most common commands:**
 
 ```bash
-lean-spec create <name>           # Create new spec
-lean-spec list                    # View all specs
-lean-spec search "query"          # Find relevant specs
-lean-spec view <spec>             # Read spec content
-lean-spec update <spec> --status  # Update status
-lean-spec board                   # Visual overview
-lean-spec validate                # Check quality
+harnspec create <name>           # Create new spec
+harnspec list                    # View all specs
+harnspec search "query"          # Find relevant specs
+harnspec view <spec>             # Read spec content
+harnspec update <spec> --status  # Update status
+harnspec board                   # Visual overview
+harnspec validate                # Check quality
 ```
 
 **Get help anytime:**
 ```bash
-lean-spec --help                  # All commands
-lean-spec <command> --help        # Command details
+harnspec --help                  # All commands
+harnspec <command> --help        # Command details
 ```
 
 ## Integration Points
@@ -130,13 +130,13 @@ HarnSpec plays well with Git:
 Automate validation:
 ```yaml
 # GitHub Actions example
-- run: lean-spec validate
+- run: harnspec validate
 ```
 
 ### Editors
 Open specs in your preferred editor:
 ```bash
-lean-spec open 042
+harnspec open 042
 ```
 
 ### AI Tools
@@ -147,8 +147,8 @@ lean-spec open 042
 ## Best Practices
 
 **For Humans:**
-- Start your day with `lean-spec board`
-- Use `lean-spec search` instead of grep
+- Start your day with `harnspec board`
+- Use `harnspec search` instead of grep
 - Validate before committing
 - Keep specs under 3,500 tokens
 
@@ -156,7 +156,7 @@ lean-spec open 042
 - Search before creating new specs
 - Check dependencies before starting work
 - Update status after implementation
-- Use `lean-spec deps` for context
+- Use `harnspec deps` for context
 
 ## Next Steps
 

@@ -31,7 +31,7 @@ completed: '2025-12-18'
 
 ### Problem Statement
 
-The Rust CLI and MCP binaries need to be distributed via npm for easy installation (`npm install -g lean-spec`), but npm doesn't natively support Rust binaries. We need a distribution strategy that:
+The Rust CLI and MCP binaries need to be distributed via npm for easy installation (`npm install -g harnspec`), but npm doesn't natively support Rust binaries. We need a distribution strategy that:
 
 - Downloads only the binary for the user's platform (not all platforms)
 - Works with `npm`, `yarn`, `pnpm`, and `npx`
@@ -43,26 +43,27 @@ The Rust CLI and MCP binaries need to be distributed via npm for easy installati
 **Industry Standard** (used by `esbuild`, `swc`, `@tauri-apps/cli`):
 
 ```
-Main Package (lean-spec)
-├── bin/lean-spec (Node.js wrapper script)
+Main Package (harnspec)
+├── bin/harnspec (Node.js wrapper script)
 └── optionalDependencies:
-    ├── lean-spec-darwin-x64
-    ├── lean-spec-darwin-arm64
-    ├── lean-spec-linux-x64
-    ├── lean-spec-linux-arm64
-    └── lean-spec-windows-x64
+    ├── harnspec-darwin-x64
+    ├── harnspec-darwin-arm64
+    ├── harnspec-linux-x64
+    ├── harnspec-linux-arm64
+    └── harnspec-windows-x64
 ```
 
 **How It Works:**
-1. User runs `npm install -g lean-spec`
+
+1. User runs `npm install -g harnspec`
 2. npm detects platform and installs matching optional dependency
-3. Wrapper script (`bin/lean-spec`) detects platform and spawns Rust binary
+3. Wrapper script (`bin/harnspec`) detects platform and spawns Rust binary
 4. Other platform packages are ignored (saves bandwidth)
 
 ### Benefits
 
-- ✅ One command: `npm install -g lean-spec` works everywhere
-- ✅ Works with `npx lean-spec` (no global install needed)
+- ✅ One command: `npm install -g harnspec` works everywhere
+- ✅ Works with `npx harnspec` (no global install needed)
 - ✅ Only downloads needed binary (~4-10MB vs ~50MB Node.js)
 - ✅ Familiar npm workflow for users
 - ✅ Compatible with monorepos and lockfiles
@@ -74,60 +75,64 @@ Main Package (lean-spec)
 
 **7 npm packages total:**
 
-1. **Main Package** (`lean-spec`):
+1. **Main Package** (`harnspec`):
    - Contains wrapper script
    - Lists platform packages as optional dependencies
    - Users install this directly
 
 2. **Platform Packages** (6):
-   - `lean-spec-darwin-x64` - macOS Intel binary
-   - `lean-spec-darwin-arm64` - macOS Apple Silicon binary
-   - `lean-spec-linux-x64` - Linux x86_64 binary
-   - `lean-spec-linux-arm64` - Linux ARM64 binary (Raspberry Pi, etc.)
-   - `lean-spec-windows-x64` - Windows x64 binary
-   - (Future: `lean-spec-windows-arm64` - Windows ARM)
+   - `harnspec-darwin-x64` - macOS Intel binary
+   - `harnspec-darwin-arm64` - macOS Apple Silicon binary
+   - `harnspec-linux-x64` - Linux x86_64 binary
+   - `harnspec-linux-arm64` - Linux ARM64 binary (Raspberry Pi, etc.)
+   - `harnspec-windows-x64` - Windows x64 binary
+   - (Future: `harnspec-windows-arm64` - Windows ARM)
 
 **Same structure for MCP:**
+
 - Main: `@leanspec/mcp`
 - Platforms: `@leanspec/mcp-darwin-x64`, `@leanspec/mcp-darwin-arm64`, etc.
 
 ### Main Package Configuration
 
 **packages/cli/package.json:**
+
 ```json
 {
-  "name": "lean-spec",
+  "name": "harnspec",
   "version": "0.3.0",
   "description": "Lightweight spec methodology for AI-powered development",
   "bin": {
-    "lean-spec": "./bin/lean-spec"
+    "harnspec": "./bin/harnspec"
   },
   "optionalDependencies": {
-    "lean-spec-darwin-x64": "0.3.0",
-    "lean-spec-darwin-arm64": "0.3.0",
-    "lean-spec-linux-x64": "0.3.0",
-    "lean-spec-linux-arm64": "0.3.0",
-    "lean-spec-windows-x64": "0.3.0"
+    "harnspec-darwin-x64": "0.3.0",
+    "harnspec-darwin-arm64": "0.3.0",
+    "harnspec-linux-x64": "0.3.0",
+    "harnspec-linux-arm64": "0.3.0",
+    "harnspec-windows-x64": "0.3.0"
   },
   "engines": {
     "node": ">=18"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   },
   "license": "MIT"
 }
 ```
 
 **Why Optional Dependencies?**
+
 - npm installs them if available for the platform
 - Installation doesn't fail if platform package is missing
 - Users can override with environment variables if needed
 
 ### Wrapper Script Implementation
 
-**packages/cli/bin/lean-spec:**
+**packages/cli/bin/harnspec:**
+
 ```javascript
 #!/usr/bin/env node
 const { spawn } = require('child_process');
@@ -153,20 +158,20 @@ function getBinaryPath() {
   }
 
   // Try to resolve platform package
-  const packageName = `lean-spec-${platformKey}`;
+  const packageName = `harnspec-${platformKey}`;
   try {
     // Check if platform package is installed
-    const binaryPath = require.resolve(`${packageName}/lean-spec${platform === 'win32' ? '.exe' : ''}`);
+    const binaryPath = require.resolve(`${packageName}/harnspec${platform === 'win32' ? '.exe' : ''}`);
     return binaryPath;
   } catch (e) {
     console.error(`Binary not found for ${platform}-${arch}`);
     console.error(`Expected package: ${packageName}`);
     console.error('');
     console.error('To install:');
-    console.error(`  npm install -g lean-spec`);
+    console.error(`  npm install -g harnspec`);
     console.error('');
     console.error('If you installed globally, try:');
-    console.error(`  npm uninstall -g lean-spec && npm install -g lean-spec`);
+    console.error(`  npm uninstall -g harnspec && npm install -g harnspec`);
     process.exit(1);
   }
 }
@@ -183,12 +188,13 @@ child.on('exit', (code) => {
 });
 
 child.on('error', (err) => {
-  console.error('Failed to start lean-spec:', err.message);
+  console.error('Failed to start harnspec:', err.message);
   process.exit(1);
 });
 ```
 
 **Key Features:**
+
 - ✅ Platform detection (OS + architecture)
 - ✅ Clear error messages if binary missing
 - ✅ Passes all args/stdio to Rust binary
@@ -198,26 +204,28 @@ child.on('error', (err) => {
 ### Platform Package Configuration
 
 **Example: packages/cli/binaries/darwin-x64/package.json:**
+
 ```json
 {
-  "name": "lean-spec-darwin-x64",
+  "name": "harnspec-darwin-x64",
   "version": "0.3.0",
   "description": "LeanSpec CLI binary for macOS x64",
   "os": ["darwin"],
   "cpu": ["x64"],
-  "main": "lean-spec",
+  "main": "harnspec",
   "files": [
-    "lean-spec"
+    "harnspec"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   },
   "license": "MIT"
 }
 ```
 
 **Key Fields:**
+
 - `os` / `cpu` - npm uses these to auto-select correct package
 - `main` - Points to binary (no extension on Unix)
 - `files` - Only includes binary (no source code)
@@ -225,28 +233,29 @@ child.on('error', (err) => {
 ### Directory Structure
 
 **After building:**
+
 ```
 packages/
 ├── cli/
 │   ├── package.json          # Main package
 │   ├── bin/
-│   │   └── lean-spec         # Wrapper script
+│   │   └── harnspec         # Wrapper script
 │   └── binaries/
 │       ├── darwin-x64/
 │       │   ├── package.json
-│       │   └── lean-spec     # Rust binary (from CI)
+│       │   └── harnspec     # Rust binary (from CI)
 │       ├── darwin-arm64/
 │       │   ├── package.json
-│       │   └── lean-spec
+│       │   └── harnspec
 │       ├── linux-x64/
 │       │   ├── package.json
-│       │   └── lean-spec
+│       │   └── harnspec
 │       ├── linux-arm64/
 │       │   ├── package.json
-│       │   └── lean-spec
+│       │   └── harnspec
 │       └── windows-x64/
 │           ├── package.json
-│           └── lean-spec.exe
+│           └── harnspec.exe
 └── mcp/
     ├── package.json          # Main MCP package
     ├── bin/
@@ -260,6 +269,7 @@ packages/
 **Two-phase publishing process:**
 
 **Phase 1: Publish Platform Packages** (from CI):
+
 ```bash
 # After building binaries in CI (spec 173)
 cd packages/cli/binaries/darwin-x64
@@ -272,12 +282,14 @@ npm publish --access public
 ```
 
 **Phase 2: Publish Main Package** (after all platforms):
+
 ```bash
 cd packages/cli
 npm publish --access public
 ```
 
 **Critical Order:**
+
 - Platform packages **MUST** be published first
 - Main package references specific versions of platform packages
 - Users get broken installs if main package publishes before platform packages
@@ -285,21 +297,24 @@ npm publish --access public
 ### Version Synchronization
 
 **All packages use same version:**
+
 ```json
 {
-  "lean-spec": "0.3.0",
-  "lean-spec-darwin-x64": "0.3.0",
-  "lean-spec-darwin-arm64": "0.3.0",
+  "harnspec": "0.3.0",
+  "harnspec-darwin-x64": "0.3.0",
+  "harnspec-darwin-arm64": "0.3.0",
   // ...
 }
 ```
 
 **Why?**
+
 - Easier to reason about (one version = one release)
 - Main package can use exact version match
 - Users know what version they have
 
 **Automation:** Use workspace script to sync versions:
+
 ```bash
 pnpm sync-versions  # Updates all package.json files
 ```
@@ -307,12 +322,13 @@ pnpm sync-versions  # Updates all package.json files
 ### Fallback Strategy
 
 **If binary not found:**
+
 ```javascript
 try {
-  binaryPath = require.resolve(`${packageName}/lean-spec`);
+  binaryPath = require.resolve(`${packageName}/harnspec`);
 } catch (e) {
   // Option A: Helpful error message (recommended)
-  console.error('Binary not found. Please reinstall: npm install -g lean-spec');
+  console.error('Binary not found. Please reinstall: npm install -g harnspec');
   process.exit(1);
   
   // Option B: Fallback to TypeScript (adds complexity)
@@ -322,6 +338,7 @@ try {
 ```
 
 **Recommendation:** Error-only approach
+
 - Keeps wrapper simple
 - Forces users to fix installation issues
 - No maintenance burden of two implementations
@@ -329,6 +346,7 @@ try {
 ## Plan
 
 ### Phase 1: Package Structure Setup
+
 - [ ] Create `packages/cli/binaries/` directory structure
 - [ ] Create `package.json` for each platform package (6 total)
 - [ ] Create `packages/mcp/binaries/` directory structure
@@ -336,7 +354,8 @@ try {
 - [ ] Update main `package.json` files with optional dependencies
 
 ### Phase 2: Wrapper Script Implementation
-- [ ] Implement CLI wrapper (`packages/cli/bin/lean-spec`)
+
+- [ ] Implement CLI wrapper (`packages/cli/bin/harnspec`)
   - [ ] Platform detection logic
   - [ ] Binary path resolution
   - [ ] Error handling and messages
@@ -347,6 +366,7 @@ try {
 - [ ] Test wrappers locally with mock binaries
 
 ### Phase 3: Version Synchronization
+
 - [ ] Create `scripts/sync-versions.ts` script
   - [ ] Read version from root `package.json`
   - [ ] Update all platform package versions
@@ -355,6 +375,7 @@ try {
 - [ ] Test version syncing across all packages
 
 ### Phase 4: Publishing Scripts
+
 - [ ] Create `scripts/publish-platform-packages.ts`
   - [ ] Iterate through all platform packages
   - [ ] Run `npm publish` for each
@@ -367,14 +388,16 @@ try {
 - [ ] Add `pnpm publish:platforms` and `pnpm publish:main` commands
 
 ### Phase 5: Local Testing
+
 - [ ] Build Rust binaries for local platform
 - [ ] Copy binaries to platform package directories
 - [ ] Test `npm install` locally (using file: protocol)
-- [ ] Test `npx lean-spec` without global install
+- [ ] Test `npx harnspec` without global install
 - [ ] Test global install: `npm install -g ./packages/cli`
 - [ ] Verify binary detection and execution
 
 ### Phase 6: Documentation
+
 - [ ] Document package structure in `packages/cli/README.md`
 - [ ] Document publishing process in `docs/publishing.md`
 - [ ] Add troubleshooting guide for installation issues
@@ -384,14 +407,16 @@ try {
 ## Test
 
 ### Installation Testing
-- [ ] Fresh install: `npm install -g lean-spec` on all platforms
-- [ ] Update install: `npm update -g lean-spec` with existing version
-- [ ] npx usage: `npx lean-spec list` without global install
-- [ ] pnpm install: `pnpm install -g lean-spec`
-- [ ] yarn install: `yarn global add lean-spec`
+
+- [ ] Fresh install: `npm install -g harnspec` on all platforms
+- [ ] Update install: `npm update -g harnspec` with existing version
+- [ ] npx usage: `npx harnspec list` without global install
+- [ ] pnpm install: `pnpm install -g harnspec`
+- [ ] yarn install: `yarn global add harnspec`
 - [ ] Monorepo install: Add to `package.json` and install
 
 ### Platform Detection
+
 - [ ] macOS Intel: Installs `darwin-x64` package
 - [ ] macOS Apple Silicon: Installs `darwin-arm64` package
 - [ ] Linux x64: Installs `linux-x64` package
@@ -400,47 +425,54 @@ try {
 - [ ] Unsupported platform: Shows clear error message
 
 ### Binary Execution
+
 - [ ] Wrapper correctly finds binary path
-- [ ] All CLI commands work: `lean-spec list`, `lean-spec create`, etc.
+- [ ] All CLI commands work: `harnspec list`, `harnspec create`, etc.
 - [ ] All MCP commands work: `leanspec-mcp` starts server
 - [ ] Arguments pass through correctly
 - [ ] Exit codes preserved
 - [ ] Stdio (stdout/stderr) works correctly
 
 ### Error Handling
+
 - [ ] Missing binary shows helpful error message
 - [ ] Wrong platform shows supported platforms
 - [ ] Installation failure has recovery instructions
 - [ ] Binary execution failure is reported clearly
 
 ### Version Synchronization
+
 - [ ] `sync-versions` script updates all packages
 - [ ] All platform packages use same version
 - [ ] Main package references correct versions in optional dependencies
 - [ ] Versions match across CLI and MCP packages
 
 ### Publishing Workflow
+
 - [ ] Platform packages publish successfully
 - [ ] Main package publishes after platforms
 - [ ] Published packages are downloadable
 - [ ] Package sizes are reasonable (<10MB per platform)
-- [ ] npm search finds `lean-spec` package
+- [ ] npm search finds `harnspec` package
 
 ## Notes
 
 ### Alternative Approaches Considered
 
 **1. Single Package with All Binaries**
+
 - ✅ Pros: Simpler package structure
 - ❌ Cons: Large download (~50MB with all platforms)
 - **Decision**: Rejected - wastes bandwidth
 
 **2. Postinstall Script with Downloads**
+
 - ✅ Pros: Flexible, can download from GitHub
 - ❌ Cons: Requires network access, slow, unreliable, security concerns
 - **Decision**: Rejected - npm ecosystem standard is optional dependencies
 
 **3. Native Node Modules (NAPI)**
+
 - ✅ Pros: npm handles binaries automatically
 - ❌ Cons: Requires C bindings, complex build, harder to maintain
 - **Decision**: Rejected - wrapper script is simpler
@@ -448,12 +480,14 @@ try {
 ### References
 
 **Successful Implementations:**
+
 - [esbuild](https://github.com/evanw/esbuild/tree/master/npm) - Original pattern
 - [@swc/core](https://github.com/swc-project/swc/tree/main/npm) - Rust compiler
 - [@tauri-apps/cli](https://github.com/tauri-apps/tauri/tree/dev/tooling/cli/node) - Tauri CLI
 - [prisma](https://github.com/prisma/prisma/tree/main/packages/cli) - Database toolkit
 
 **npm Documentation:**
+
 - [Optional Dependencies](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#optionaldependencies)
 - [OS and CPU](https://docs.npmjs.com/cli/v8/configuring-npm/package-json#os)
 - [Publishing Packages](https://docs.npmjs.com/cli/v8/commands/npm-publish)
@@ -461,11 +495,13 @@ try {
 ### Security Considerations
 
 **Binary Integrity:**
+
 - Use checksums to verify binaries (spec 173 generates these)
 - Sign npm packages with `npm publish` (uses npm's infrastructure)
 - Consider GitHub Releases as source of truth
 
 **Supply Chain:**
+
 - Platform packages only contain binaries (no source code)
 - Wrapper script is simple and auditable
 - All packages published from CI (spec 173)
@@ -473,16 +509,19 @@ try {
 ### Future Enhancements
 
 **Auto-Update Support:**
+
 - Add update checker in wrapper script
 - Notify users of new versions
-- `lean-spec update` command to self-update
+- `harnspec update` command to self-update
 
 **Binary Caching:**
+
 - Cache downloaded binaries globally
 - Share binaries across projects
 - Reduce installation time
 
 **Fallback to TypeScript:**
+
 - Keep TypeScript implementation as fallback
 - Detect when Rust binary unavailable
 - Warn about performance degradation
@@ -490,17 +529,20 @@ try {
 ### Success Criteria
 
 **Must Have:**
-- ✅ One-command installation: `npm install -g lean-spec`
+
+- ✅ One-command installation: `npm install -g harnspec`
 - ✅ Works on all target platforms
 - ✅ Only downloads needed binary
 - ✅ Clear error messages
 
 **Nice to Have:**
+
 - ✅ Works with npx (no global install)
 - ✅ Fast installation (<5 seconds)
 - ✅ Small package sizes (<10MB per platform)
 
 **Optional:**
+
 - Auto-update notifications
 - Binary caching
 - Fallback to TypeScript

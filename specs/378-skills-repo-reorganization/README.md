@@ -22,7 +22,7 @@ updated_at: 2026-03-25T00:00:00Z
 
 Three issues with the current skills setup:
 
-1. **Missing user-facing skill** — The `leanspec-sdd` skill was deleted in commit 926f1d2 (delegated to `npx skills add codervisor/lean-spec`), but the repo has no public skill to serve. Running `npx skills add codervisor/lean-spec` would pick up internal skills (`leanspec-development`, `agent-browser`) instead.
+1. **Missing user-facing skill** — The `leanspec-sdd` skill was deleted in commit 926f1d2 (delegated to `npx skills add codervisor/harnspec`), but the repo has no public skill to serve. Running `npx skills add codervisor/harnspec` would pick up internal skills (`leanspec-development`, `agent-browser`) instead.
 
 2. **Internal skills leak** — `.agents/skills/` contains 4 skills, all internal:
    - `leanspec-development` — CI/CD, publishing, dev workflows
@@ -39,7 +39,7 @@ Three issues with the current skills setup:
 1. Create `codervisor/skills` as the canonical public skills repository
 2. Rename `leanspec-sdd` → `leanspec` for user-friendliness
 3. Restore the deleted SDD methodology skill content under the new name
-4. Keep internal skills in `codervisor/lean-spec` — never distribute them
+4. Keep internal skills in `codervisor/harnspec` — never distribute them
 5. Update spec 290 references and AGENTS.md
 
 ## Design
@@ -88,6 +88,7 @@ npx skills add codervisor/skills@some-future-skill
 ### Skill Naming: `leanspec` (not `leanspec-sdd`)
 
 The skill name `leanspec` is:
+
 - **Discoverable** — matches the product name
 - **Concise** — no jargon suffix
 - **Unambiguous** — there's only one user-facing LeanSpec skill
@@ -95,15 +96,16 @@ The skill name `leanspec` is:
 
 The SDD methodology is simply what LeanSpec *is* — no need to spell it out in the skill name.
 
-### What Stays in `codervisor/lean-spec`
+### What Stays in `codervisor/harnspec`
 
 Internal skills remain in `.agents/skills/` with no changes:
+
 - `leanspec-development` — for contributors to this repo
 - `agent-browser` — for testing this project's web UI
 - `github-integration` (symlink from forge)
 - `parallel-worktrees` (symlink from forge)
 
-These are never distributed. The `npx skills` framework reads from `codervisor/skills`, not `codervisor/lean-spec`.
+These are never distributed. The `npx skills` framework reads from `codervisor/skills`, not `codervisor/harnspec`.
 
 ### AGENTS.md Update
 
@@ -137,6 +139,7 @@ Then rename the frontmatter `name: leanspec-sdd` → `name: leanspec` in SKILL.m
 ## Plan
 
 ### Phase 1: Create `codervisor/skills` repo
+
 - [ ] Create `codervisor/skills` GitHub repository (public, MIT)
 - [ ] Add README.md with skill catalog and installation instructions
 - [ ] Set up `.agents/skills/leanspec/` directory structure
@@ -144,22 +147,24 @@ Then rename the frontmatter `name: leanspec-sdd` → `name: leanspec` in SKILL.m
 - [ ] Update SKILL.md frontmatter: `name: leanspec`
 - [ ] Add CI workflow for skill validation
 
-### Phase 2: Update `codervisor/lean-spec` (this repo)
+### Phase 2: Update `codervisor/harnspec` (this repo)
+
 - [ ] Update AGENTS.md — point `leanspec` to external install
 - [ ] Remove stale `leanspec-sdd` references from AGENTS.md
 - [ ] Update skills-lock.json if the lock file should track the new source
 - [ ] Mark spec 290 as superseded by this spec
 
 ### Phase 3: Validate distribution
+
 - [ ] Verify `npx skills add codervisor/skills@leanspec` works
-- [ ] Verify `npx skills add codervisor/lean-spec` does NOT expose internal skills
+- [ ] Verify `npx skills add codervisor/harnspec` does NOT expose internal skills
 - [ ] Test installation across tools (Claude, Cursor, Copilot)
 
 ## Test
 
 - [ ] `npx skills add codervisor/skills@leanspec` installs the skill correctly
 - [ ] Installed SKILL.md has `name: leanspec` (not `leanspec-sdd`)
-- [ ] Internal skills (`leanspec-development`, `agent-browser`) are not accessible via `npx skills add codervisor/lean-spec`
+- [ ] Internal skills (`leanspec-development`, `agent-browser`) are not accessible via `npx skills add codervisor/harnspec`
 - [ ] AGENTS.md references the correct install command
 - [ ] Skill content matches the recovered 926f1d2^ version (with name update)
 - [ ] CI validates skill structure on PRs to `codervisor/skills`
@@ -175,6 +180,7 @@ Then rename the frontmatter `name: leanspec-sdd` → `name: leanspec` in SKILL.m
 ### Future Skills in `codervisor/skills`
 
 The repo structure supports adding more skills over time:
+
 ```
 .agents/skills/
 ├── leanspec/          # SDD methodology (this spec)

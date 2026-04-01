@@ -28,6 +28,7 @@ Remove the legacy single-project mode (`SPECS_MODE=filesystem`) and treat all in
 ### Current State
 
 LeanSpec currently supports two modes:
+
 - **Single-project mode** (`SPECS_MODE=filesystem` or default): One local specs directory, accessed via `/projects/default/*`
 - **Multi-project mode** (`SPECS_MODE=multi-project`): Multiple tracked projects with explicit IDs
 
@@ -43,7 +44,8 @@ Spec 151 unified the architecture by treating single-project as "multi-project w
 ### Proposal
 
 **Treat every installation as multi-project mode by default:**
-- First-time users: Automatically create a project when running `lean-spec init`
+
+- First-time users: Automatically create a project when running `harnspec init`
 - Existing single-project users: Auto-migrate their specs directory to a real project on upgrade
 - Remove `SPECS_MODE` environment variable entirely
 - Use meaningful project IDs (slugified directory name) instead of 'default'
@@ -69,11 +71,12 @@ When a user upgrades to the new version:
 if [ -d "specs" ] && [ ! -f ".leanspec/projects.json" ]; then
   # Auto-create project from current directory
   PROJECT_NAME=$(basename "$PWD")
-  lean-spec project add . --name "$PROJECT_NAME" --auto-migrate
+  harnspec project add . --name "$PROJECT_NAME" --auto-migrate
 fi
 ```
 
 **Migration creates:**
+
 ```json
 // .leanspec/projects.json
 {
@@ -93,11 +96,11 @@ fi
 
 ```bash
 # Old behavior
-lean-spec init
+harnspec init
 # → Creates specs/ directory, uses single-project mode
 
 # New behavior
-lean-spec init
+harnspec init
 # → Prompts: "Project name (detected: my-app): "
 # → Creates specs/ directory
 # → Registers project in .leanspec/projects.json
@@ -106,16 +109,19 @@ lean-spec init
 #### Phase 3: Remove Legacy Code
 
 **Files to remove/simplify:**
+
 - Legacy default-project constants (remove any remaining `DEFAULT_PROJECT_ID` usage)
 - All `isDefaultProject()` checks
 - All `SPECS_MODE` environment variable checks
 - All mode branching logic
 
 **API routes to simplify:**
+
 - `/api/projects` - Remove mode check, always return project registry
 - `/api/projects/[id]/*` - Remove special handling for 'default' ID
 
 **Frontend changes:**
+
 - Remove conditional rendering based on mode
 - Always show project switcher (even for single project)
 - Update routing to never use 'default' as fallback
@@ -138,19 +144,21 @@ http://localhost:3000/ → /projects/my-app-specs/specs
 ### Backward Compatibility
 
 **CLI environment variables:**
+
 ```bash
 # Deprecated (warning shown, but still works during grace period)
-SPECS_MODE=filesystem lean-spec ui
+SPECS_MODE=filesystem harnspec ui
 # → Warning: SPECS_MODE is deprecated. All projects use multi-project mode.
 # → Automatically migrates to multi-project
 
 # Deprecated
-SPECS_DIR=./custom-specs lean-spec ui
+SPECS_DIR=./custom-specs harnspec ui
 # → Warning: SPECS_DIR is deprecated. Use .leanspec/projects.json instead.
 # → Auto-creates project with custom specs directory
 ```
 
 **Config files:**
+
 ```yaml
 # Old .leanspec/config.yaml (deprecated)
 specsDir: ./specs
@@ -167,6 +175,7 @@ specsDir: ./specs
 ## Plan
 
 ### Phase 1: Auto-Migration Logic
+
 - [x] Add migration detection logic to CLI (auto-registers projects when specs exist and registry is empty)
 - [x] Create project from SPECS_DIR on first run (CLI bootstrap writes registry entry)
 - [x] Generate meaningful project ID (slug of directory name)
@@ -174,12 +183,14 @@ specsDir: ./specs
 - [ ] Add migration test cases
 
 ### Phase 2: Update Init Command
+
 - [x] Prompt for project name during init
 - [x] Register project in `.leanspec/projects.json`
 - [ ] Update init tests
 - [ ] Update documentation
 
 ### Phase 3: Remove Legacy Mode Code
+
 - [x] Remove `SPECS_MODE` checks from CLI UI launcher; always run multi-project
 - [x] Remove `SPECS_MODE` checks from UI server
 - [x] Remove `isDefaultProject()` utility
@@ -188,24 +199,28 @@ specsDir: ./specs
 - [x] Remove fallback to 'default' in frontend
 
 ### Phase 4: Update Desktop & Web UI
+
 - [ ] Remove mode conditional rendering
 - [ ] Always show project switcher
 - [x] Update root redirect logic
 - [ ] Test single-project user experience
 
 ### Phase 5: Documentation & Communication
+
 - [ ] Add migration guide to docs
 - [ ] Update all tutorials to reflect new model
 - [ ] Add release notes with migration instructions
 - [ ] Update AGENTS.md
 
 ### Phase 6: Deprecation Period
+
 - [ ] Show deprecation warnings for SPECS_MODE
 - [ ] Show deprecation warnings for SPECS_DIR
 - [ ] Provide grace period (1-2 releases)
 - [ ] Auto-migrate on first run
 
 ### Phase 7: Complete Removal
+
 - [ ] Remove all deprecated code paths
 - [ ] Remove environment variable support
 - [ ] Final cleanup and simplification
@@ -226,13 +241,15 @@ specsDir: ./specs
 ### Completed Work (2026-01-16)
 
 **Core Migration (100% Complete)**:
+
 - ✅ CLI auto-registers projects when specs exist but registry is empty
-- ✅ `lean-spec init` prompts for project name and registers project in `.leanspec/projects.json`
+- ✅ `harnspec init` prompts for project name and registers project in `.leanspec/projects.json`
 - ✅ CLI UI command always runs in multi-project mode
 - ✅ Generate meaningful project IDs (slug of directory name instead of 'default')
 - ✅ Auto-migration on first run (seamless for existing users)
 
 **Code Cleanup (90% Complete)**:
+
 - ✅ Removed `SPECS_MODE` checks from CLI and UI launcher
 - ✅ Removed `isDefaultProject()` utility (no references found in codebase)
 - ✅ Removed `DEFAULT_PROJECT_ID` constant (no references found in codebase)
@@ -241,12 +258,14 @@ specsDir: ./specs
 - ✅ API routes use uniform `/api/projects/{id}/*` structure (no mode branching detected)
 
 **UI Updates (100% Complete)**:
+
 - ✅ Root redirect logic updated ([RootRedirect.tsx](../../packages/ui/src/components/RootRedirect.tsx))
 - ✅ Project switcher always visible in both web UI and desktop app
 - ✅ No conditional rendering based on mode found in codebase
 - ✅ All routes use `/projects/{projectId}/*` pattern
 
 **MCP Environment Variable (Intentional)**:
+
 - ⚠️ `LEANSPEC_SPECS_DIR` still used in MCP server code:
   - [rust/leanspec-mcp/src/tools.rs](../../rust/leanspec-mcp/src/tools.rs)
   - [rust/npm-dist/mcp-wrapper.js](../../rust/npm-dist/mcp-wrapper.js)
@@ -259,6 +278,7 @@ specsDir: ./specs
 The core goal is **complete**: LeanSpec now treats every installation as multi-project mode by default. No mode branching, no 'default' project IDs, cleaner architecture.
 
 **Key Improvements**:
+
 - ✅ Simpler mental model (everything is a project)
 - ✅ Better URLs (`/projects/my-app` instead of `/projects/default`)
 - ✅ Less code (no mode checks or branching logic)
@@ -277,6 +297,7 @@ The core goal is **complete**: LeanSpec now treats every installation as multi-p
 ### Production Status
 
 This architecture has been running in production since v0.2.x releases:
+
 - Desktop app uses multi-project mode exclusively
 - Web UI uses multi-project mode exclusively  
 - CLI auto-migrates legacy setups on first run
@@ -295,11 +316,13 @@ This architecture has been running in production since v0.2.x releases:
 **Major version bump required (v1.0.0)**
 
 **What breaks:**
+
 - `SPECS_MODE` environment variable no longer supported (after grace period)
 - `SPECS_DIR` environment variable deprecated (auto-migrated)
 - Direct `/projects/default/*` URLs (auto-redirected)
 
 **What doesn't break:**
+
 - Existing specs content (untouched)
 - CLI commands (auto-migrate on first run)
 - Desktop/Web UI (auto-migration built-in)
@@ -307,6 +330,7 @@ This architecture has been running in production since v0.2.x releases:
 ### User Communication
 
 **Migration announcement:**
+
 ```
 🎉 LeanSpec now treats everything as projects!
 
@@ -324,6 +348,7 @@ Learn more: https://leanspec.dev/docs/migration/v1
 ### Alternative Considered: Keep Single-Project Mode
 
 **Why we're not doing this:**
+
 - Adds permanent complexity to maintain two modes
 - Users inevitably need multi-project (work, side projects, examples)
 - Desktop app benefits from consistent multi-project model

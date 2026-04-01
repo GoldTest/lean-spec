@@ -20,12 +20,13 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-06 · **Tags**: documentation, ux, conversion, marketing
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 **Problem**: Current README doesn't effectively convey LeanSpec's value proposition or drive adoption:
+
 - **Buried lede**: Best value prop ("specs clear enough for AI to implement") is in paragraph 3
 - **Weak hook**: Generic tagline doesn't capture attention or communicate differentiation
 - **Abstract pain**: Problem statements are vague ("too heavy or too light")
@@ -34,7 +35,8 @@ transitions:
 
 **Solution**: Redesign README with AI-first developers as primary audience, leading with concrete context overflow pain, showing real examples, and demonstrating first principles through the README itself.
 
-**Why Now**: 
+**Why Now**:
+
 - Post-launch timing (spec 043) - need strong positioning for growth
 - First principles documented (spec 049) - can now communicate them effectively
 - Dogfooding data available - 54 specs, 0 over 400 lines, proven methodology
@@ -65,6 +67,7 @@ This spec includes detailed analysis and drafts in sub-specs:
 ### Target Audience (Primary)
 
 **AI-First Developers** - Cursor, Copilot, Aider users who:
+
 - Experience AI context overflow daily
 - Want specs AI agents can act on
 - Need structure without heavyweight processes
@@ -109,18 +112,21 @@ This spec includes detailed analysis and drafts in sub-specs:
 ### Content Strategy
 
 **Emotional Hooks:**
+
 1. **Pain**: "Your specs overflow AI context"
 2. **Frustration**: "Specs that nobody maintains"
 3. **Possibility**: "AI agents that implement features correctly"
 4. **Relief**: "5-minute updates, actually maintainable"
 
 **Persuasion Principles:**
+
 - **Specificity**: "300 lines" not "keep it lean"
 - **Contrast**: Before/after, old way vs. new
 - **Social proof**: Dogfooding stats, real examples
 - **Progressive commitment**: Small first step (5 minutes)
 
 **Key Messages:**
+
 - Primary: "Specs optimized for AI context windows"
 - Secondary: "Light enough to maintain, structured enough to work"
 - Tertiary: "Grows from solo dev to enterprise"
@@ -137,6 +143,7 @@ This spec includes detailed analysis and drafts in sub-specs:
 ## Plan
 
 ### Phase 1: Quick Wins (High Impact, 2-3 hours)
+
 - [ ] Rewrite hero section with "specs too big" hook
 - [ ] Add before/after visual (2000 lines vs. 300)
 - [ ] Replace abstract bullets with 3 concrete scenarios
@@ -145,6 +152,7 @@ This spec includes detailed analysis and drafts in sub-specs:
 - [ ] Update frontmatter (tags: documentation, ux, conversion, marketing)
 
 ### Phase 2: Show Don't Tell (Medium Impact, 3-4 hours)
+
 - [ ] Add real spec example (pick best 287-line spec)
 - [ ] Annotate example to highlight principles
 - [ ] Enhance principles section with icons + "why fundamental"
@@ -153,6 +161,7 @@ This spec includes detailed analysis and drafts in sub-specs:
 - [ ] Add "When to Use/Skip" comparison table
 
 ### Phase 3: Visual Enhancement (Medium Impact, 4-5 hours)
+
 - [ ] Create or find icons for 5 principles
 - [ ] Improve table layouts
 - [ ] Add emoji landmarks strategically
@@ -160,12 +169,14 @@ This spec includes detailed analysis and drafts in sub-specs:
 - [ ] Optimize for mobile viewing
 
 ### Phase 4: Social Proof (Collect Over Time)
+
 - [ ] Gather user testimonials
 - [ ] Add "Used by" section if applicable
 - [ ] Create case studies
 - [ ] Track and display usage stats
 
 ### Phase 5: Measure & Iterate
+
 - [ ] Track npm install rate (before/after)
 - [ ] Monitor GitHub stars growth
 - [ ] Track documentation engagement
@@ -177,18 +188,21 @@ This spec includes detailed analysis and drafts in sub-specs:
 ### Success Criteria
 
 **Leading Indicators (Week 1-2):**
+
 - [ ] ⬆️ 40-60% increase in npm install rate
 - [ ] ⬆️ Improved scroll depth (% who read to CTA)
 - [ ] ⬆️ Higher click-through to documentation
 - [ ] User feedback: "I installed because..." mentions concrete hook
 
 **Lagging Indicators (Month 1-3):**
+
 - [ ] ⬆️ 30-50% better retention (% who create 5+ specs)
 - [ ] ⬆️ Increased GitHub stars
 - [ ] ⬆️ Word of mouth (Twitter mentions, blog posts)
 - [ ] ⬇️ 20-30% reduction in "what is this?" questions
 
 **Quality Check:**
+
 - [ ] README demonstrates LeanSpec principles (context economy, signal-to-noise)
 - [ ] Primary audience (AI-first developers) can identify themselves immediately
 - [ ] Value proposition is clear within 10 seconds
@@ -198,6 +212,7 @@ This spec includes detailed analysis and drafts in sub-specs:
 ### Validation Questions
 
 Before launching:
+
 - [ ] Does hero hook grab attention in 3 seconds?
 - [ ] Are problem scenarios relatable and concrete?
 - [ ] Does the example spec prove it works?
@@ -210,6 +225,7 @@ Before launching:
 ### Analysis Documents
 
 Created comprehensive analysis in:
+
 - **[ANALYSIS.md](ANALYSIS.md)** - 12-part deep dive (6,500 words)
   - Critical analysis of current README
   - User journey & conversion funnel
@@ -247,18 +263,22 @@ Created comprehensive analysis in:
 ### Alternatives Considered
 
 **Option A: Manifesto Style**
+
 - Lead with bold statement, challenge status quo
 - **Rejected**: Too confrontational, alienates some users
 
 **Option B: Tutorial Style**
+
 - Walk through creating first spec
 - **Rejected**: Too long, README isn't tutorial
 
 **Option C: Technical Deep-Dive**
+
 - Explain architecture, how it works
 - **Rejected**: Wrong audience for README
 
 **Option D: Problem-Solution-Principles** ✅
+
 - Hook with pain → Show solution → Ground in principles → CTA
 - **Selected**: Best balance of persuasion + philosophy
 

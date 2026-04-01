@@ -1,5 +1,5 @@
 {
-  "name": "lean-spec",
+  "name": "harnspec",
   "version": "0.2.28",
   "private": true,
   "license": "MIT AND Commons-Clause-1.0",
@@ -47,6 +47,6 @@
     "validate-binaries": "tsx scripts/validate-platform-binaries.ts",
     "publish:platforms": "tsx scripts/publish-platform-packages.ts",
     "publish:main": "tsx scripts/publish-main-packages.ts",
-    "cli": "node bin/lean-spec.js"
+    "cli": "node bin/harnspec.js"
   }
 }

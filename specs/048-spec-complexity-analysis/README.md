@@ -69,6 +69,7 @@ We built sub-spec files (spec 012) to solve this exact problem, but never used t
 ### The Solution
 
 Apply our own principles:
+
 1. Establish clear complexity thresholds (Context Economy)
 2. Use sub-spec files when specs exceed 400 lines
 3. Add validation to catch violations automatically
@@ -93,6 +94,7 @@ Single file OK: <300 lines, single concern, <6 phases
 Consider splitting: >400 lines, multiple concerns, >6 phases
 
 Use sub-specs:
+
 - README.md: Overview + decision
 - DESIGN.md: Detailed design
 - IMPLEMENTATION.md: Implementation plan
@@ -113,33 +115,39 @@ Detailed information split for Context Economy (<400 lines per file):
 ### Implementation Summary
 
 **Phase 1: Establish Guidelines** ✅
+
 - Defined complexity thresholds (300/400/600 lines)
 - Created decision tree for when to split
 - Documented in AGENTS.md
 
 **Phase 2: Add Detection** ✅  
-- Line count detection in `lean-spec validate`
+
+- Line count detection in `harnspec validate`
 - Warnings for specs >400 lines
 - Sub-spec validation
 
 **Phase 3: Dogfood** ✅
+
 - Spec 018 split into 6 focused sub-specs
 - Spec 045 split into 5 focused sub-specs
 - Spec 048 (this spec) split into sub-specs
 
 **Phase 4: Future Enhancements** (v0.3.0+)
-- `lean-spec split` command for guided splitting
-- `lean-spec check --complexity` for detailed analysis
+
+- `harnspec split` command for guided splitting
+- `harnspec check --complexity` for detailed analysis
 - Advanced sub-spec navigation
 
 ## Impact
 
 ### Before Dogfooding
+
 - 3 specs >600 lines (Context Economy violations)
 - No enforcement mechanism
 - AI corruption incidents
 
 ### After Dogfooding
+
 - All specs <400 lines (or split into sub-specs)
 - Automatic validation catches violations
 - Practicing what we preach ✅

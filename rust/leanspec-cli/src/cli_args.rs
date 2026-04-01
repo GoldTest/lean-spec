@@ -1,7 +1,7 @@
 use clap::{ArgAction, Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "lean-spec")]
+#[command(name = "harnspec")]
 #[command(
     author,
     version,
@@ -193,9 +193,9 @@ pub(crate) enum Commands {
     /// Never use both for the same spec pair.
     ///
     /// Examples:
-    ///   lean-spec rel add 257 --parent 250
-    ///   lean-spec rel add 257 --depends-on 254
-    ///   lean-spec rel rm 257 --depends-on 254
+    ///   harnspec rel add 257 --parent 250
+    ///   harnspec rel add 257 --depends-on 254
+    ///   harnspec rel rm 257 --depends-on 254
     Rel {
         /// Arguments: <spec> or <action> <spec>
         #[arg(required = true, num_args = 1..=2)]

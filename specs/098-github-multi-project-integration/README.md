@@ -21,27 +21,30 @@ transitions:
 
 > **Status**: 🗓️ Planned · **Priority**: High · **Created**: 2025-11-17 · **Tags**: web, github, integration, v0.3
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development  
 **Depends On**: Spec 082 (web-realtime-sync-architecture)
 
 ## Overview
 
-**The Problem**: LeanSpec Web currently only displays specs from the LeanSpec monorepo itself. We need to support **external GitHub repositories** so teams can showcase their specs on https://lean-spec-web.vercel.app, creating a community discovery platform.
+**The Problem**: LeanSpec Web currently only displays specs from the LeanSpec monorepo itself. We need to support **external GitHub repositories** so teams can showcase their specs on <https://harnspec-web.vercel.app>, creating a community discovery platform.
 
 **Current Limitation:**
+
 - Web app only reads local `specs/` directory (filesystem mode from spec 082)
 - No way to add external GitHub repositories
 - Can't showcase how other teams use LeanSpec
 - Misses opportunity for community growth and real-world examples
 
 **Why This Matters:**
+
 - **Community Growth**: Let teams showcase their LeanSpec usage publicly
 - **Social Proof**: Real-world examples help adoption
 - **Discovery**: Find projects using LeanSpec methodology
 - **Validation**: See how different teams adapt the framework
 
 **What We Need**: Implement Phase 2 of spec 082's dual-mode architecture:
+
 1. Database-backed storage for external repo specs
 2. GitHub API integration for syncing specs
 3. Project management UI (add/remove repos)
@@ -200,12 +203,14 @@ class GitHubSyncService {
 ### Project Management UI
 
 **Pages to create:**
+
 1. `/admin/projects` - List all projects with sync status
 2. `/admin/projects/add` - Add new GitHub repository
 3. `/admin/projects/[id]` - Project details and sync history
 4. `/projects/[id]` - Public view of project specs (multi-project showcase)
 
 **UI Components:**
+
 - Project card with sync status indicator
 - Add project form with validation
 - Sync now button (manual trigger)
@@ -215,11 +220,13 @@ class GitHubSyncService {
 ### Performance & Rate Limiting
 
 **GitHub API Limits:**
+
 - 5000 requests/hour (authenticated)
 - ~1 file per request for content fetching
 - Need to batch and parallelize efficiently
 
 **Optimization Strategies:**
+
 1. Use tree API to discover all specs in 1 request
 2. Fetch README.md files in parallel (limit: 10 concurrent)
 3. Cache responses with appropriate TTL
@@ -227,6 +234,7 @@ class GitHubSyncService {
 5. Graceful degradation on rate limit hit
 
 **Sync Schedule:**
+
 - Default: Every 30 minutes
 - Configurable per project
 - Manual sync available via UI
@@ -235,6 +243,7 @@ class GitHubSyncService {
 ## Plan
 
 ### Phase 1: Database & Schema (Days 1-2)
+
 - [ ] Set up PostgreSQL on Vercel
 - [ ] Create database migration script
 - [ ] Implement schema (projects, specs, sync_logs)
@@ -242,6 +251,7 @@ class GitHubSyncService {
 - [ ] Test CRUD operations
 
 ### Phase 2: GitHub Sync Service (Days 3-5)
+
 - [ ] Implement `GitHubSyncService` class
 - [ ] Add Octokit integration
 - [ ] Implement spec discovery (tree API)
@@ -252,6 +262,7 @@ class GitHubSyncService {
 - [ ] Test with real GitHub repos
 
 ### Phase 3: Database Source Integration (Day 6)
+
 - [ ] Implement `DatabaseSource.getAllSpecs(projectId)`
 - [ ] Implement `DatabaseSource.getSpec(projectId, specId)`
 - [ ] Update `SpecsService` routing logic
@@ -259,6 +270,7 @@ class GitHubSyncService {
 - [ ] Test database source performance
 
 ### Phase 4: Project Management UI (Days 7-9)
+
 - [ ] Create `/admin/projects` list page
 - [ ] Create add project form with validation
 - [ ] Add GitHub URL parser (extract owner/repo)
@@ -269,6 +281,7 @@ class GitHubSyncService {
 - [ ] Test project management flow
 
 ### Phase 5: Scheduled Sync (Days 10-11)
+
 - [ ] Create Vercel Cron endpoint (`/api/cron/sync`)
 - [ ] Configure `vercel.json` with cron schedule
 - [ ] Implement sync job logic (iterate projects)
@@ -278,6 +291,7 @@ class GitHubSyncService {
 - [ ] Test cron execution
 
 ### Phase 6: Multi-Project Showcase (Days 12-13)
+
 - [ ] Create `/projects` landing page (all projects)
 - [ ] Create `/projects/[id]` project view
 - [ ] Add project selector in navigation
@@ -287,6 +301,7 @@ class GitHubSyncService {
 - [ ] Test multi-project navigation
 
 ### Phase 7: Testing & Polish (Days 14-15)
+
 - [ ] End-to-end testing with 3+ real repos
 - [ ] Performance testing (100+ specs)
 - [ ] Error scenario testing
@@ -298,6 +313,7 @@ class GitHubSyncService {
 ## Test
 
 ### Database & Schema
+
 - [ ] Migrations run successfully
 - [ ] Can create/read/update/delete projects
 - [ ] Can store and retrieve specs
@@ -305,6 +321,7 @@ class GitHubSyncService {
 - [ ] Indexes improve query performance (<50ms)
 
 ### GitHub Sync Service
+
 - [ ] Can discover specs in test repo
 - [ ] Fetches all README.md files correctly
 - [ ] Parses frontmatter accurately
@@ -315,6 +332,7 @@ class GitHubSyncService {
 - [ ] Can sync 50+ specs in <30 seconds
 
 ### Integration
+
 - [ ] `SpecsService` routes to correct source
 - [ ] Filesystem mode still works (LeanSpec specs)
 - [ ] Database mode works (external repos)
@@ -322,6 +340,7 @@ class GitHubSyncService {
 - [ ] Cache invalidation works correctly
 
 ### Project Management UI
+
 - [ ] Can add new project via form
 - [ ] GitHub URL validation works
 - [ ] Manual sync triggers correctly
@@ -331,6 +350,7 @@ class GitHubSyncService {
 - [ ] Can delete projects (cascades to specs)
 
 ### Scheduled Sync
+
 - [ ] Cron job executes on schedule
 - [ ] Syncs all enabled projects
 - [ ] Skips disabled projects
@@ -339,6 +359,7 @@ class GitHubSyncService {
 - [ ] Doesn't run concurrent syncs
 
 ### Multi-Project Showcase
+
 - [ ] Projects list displays all repos
 - [ ] Project page shows only that project's specs
 - [ ] Navigation between projects works
@@ -347,6 +368,7 @@ class GitHubSyncService {
 - [ ] URLs are shareable and bookmarkable
 
 ### Performance
+
 - [ ] Database queries <50ms
 - [ ] GitHub sync <30s for typical repo
 - [ ] Multi-project page loads <200ms
@@ -358,27 +380,32 @@ class GitHubSyncService {
 ### Key Design Decisions
 
 **Why Database for External Repos?**
+
 - GitHub API rate limits (5000 req/hour)
 - API latency too high for good UX (200-500ms per file)
 - Need scheduled sync, not on-demand fetching
 - Enables advanced features (search across projects, analytics)
 
 **Why PostgreSQL?**
+
 - Vercel has native Postgres support
 - Better JSONB support for frontmatter
 - Scales better than SQLite for multi-project
 
 **Sync Interval Trade-offs:**
+
 - **5 min**: More realtime, higher API usage
 - **30 min**: Balanced (recommended)
 - **60 min**: Lower API usage, less fresh
 
 **Alternative Considered: Direct GitHub API**
+
 - Pros: No database, always fresh
 - Cons: Rate limits, slow UX, no caching
 - Decision: Database mode better for multi-project
 
 ### Future Enhancements (Phase 3)
+
 - GitHub webhooks for near-realtime sync (<10s)
 - Private repo support (GitHub OAuth)
 - Incremental sync (only changed files)
@@ -386,6 +413,7 @@ class GitHubSyncService {
 - Featured projects and discovery feed
 
 ### Related Specs
+
 - **082**: Dual-mode architecture foundation (complete)
 - **035**: Live specs showcase vision (complete)
 - **068**: Live specs UX enhancements (complete)

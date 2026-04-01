@@ -12,16 +12,17 @@ Show the **complete workflow** from AI-assisted spec creation through working im
 
 ---
 
-## Demo Feature: Add `--json` Output to `lean-spec list`
+## Demo Feature: Add `--json` Output to `harnspec list`
 
 **Why this feature?**
+
 - ✅ Simple enough to implement in 5 minutes
 - ✅ Real feature users would want
 - ✅ Shows actual code changes
 - ✅ Has testable success criteria
 - ✅ Demonstrates validation workflow
 
-**Current state:** `lean-spec list` outputs formatted table  
+**Current state:** `harnspec list` outputs formatted table  
 **Goal:** Add `--json` flag for machine-readable output
 
 ---
@@ -31,13 +32,15 @@ Show the **complete workflow** from AI-assisted spec creation through working im
 ### SCENE 1: Project Context (30 seconds)
 
 **[Terminal]**
+
 ```bash
-cd ~/lean-spec
-npx lean-spec list
+cd ~/harnspec
+npx harnspec list
 # Shows formatted table output
 ```
 
 **[AI Chat]**
+
 ```
 Human: "I need to add a --json flag to the 'list' command 
         for machine-readable output. Help me create a spec."
@@ -55,6 +58,7 @@ AI: "Let me check the existing specs first..."
 ### SCENE 2: AI-Assisted Spec Creation (90 seconds)
 
 **[AI Chat]**
+
 ```
 AI: [Uses MCP: create("json-output-flag")]
     
@@ -71,7 +75,7 @@ AI: [Uses MCP: create("json-output-flag")]
     - Preserve existing formatting as default
     
     **Success Criteria**:
-    - [ ] lean-spec list --json outputs valid JSON
+    - [ ] harnspec list --json outputs valid JSON
     - [ ] JSON includes all spec metadata (name, status, tags, etc.)
     - [ ] Existing behavior unchanged without flag
     - [ ] Can pipe to jq successfully

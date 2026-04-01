@@ -70,16 +70,19 @@ src/
 ### Migration Strategy
 
 **Phase 1**: Infrastructure
+
 - Add Ink, ora, cli-table3 to dependencies
 - Create components/ directory
 - Build basic Ink component wrapper utilities
 
 **Phase 2**: High-Impact Commands
+
 - `board` → Ink component with real-time updates
 - `stats` → Dashboard-style Ink component
 - `list` → Better table formatting
 
 **Phase 3**: Loading States
+
 - Add ora spinners to:
   - `create` (when creating directories)
   - `list` (when scanning specs)
@@ -87,6 +90,7 @@ src/
   - `archive` (when moving files)
 
 **Phase 4**: Enhanced Visualizations
+
 - `deps` → Interactive graph (expandable nodes)
 - `timeline` → Better timeline visualization
 - `gantt` → Richer gantt chart
@@ -106,15 +110,17 @@ src/
 ## Test
 
 **Manual Testing**:
-- [ ] `lean-spec board` shows clean, aligned Kanban board
-- [ ] `lean-spec stats` displays formatted dashboard with colors
-- [ ] `lean-spec list` shows well-formatted table with all metadata
+
+- [ ] `harnspec board` shows clean, aligned Kanban board
+- [ ] `harnspec stats` displays formatted dashboard with colors
+- [ ] `harnspec list` shows well-formatted table with all metadata
 - [ ] Long-running commands show spinners (e.g., when scanning many specs)
 - [ ] Commands feel snappy and responsive
 - [ ] Error messages are clear and helpful
 - [ ] All existing commands still work (no regressions)
 
 **Visual QA**:
+
 - [ ] Colors are consistent across commands
 - [ ] Text alignment is proper (no overflow/wrapping issues)
 - [ ] Tables/boards render correctly at different terminal widths
@@ -143,7 +149,7 @@ src/
 
 ### Open Questions
 
-- Should we use TypeScript JSX (.tsx) for Ink components? 
+- Should we use TypeScript JSX (.tsx) for Ink components?
   → Yes, better type safety
 - Do we need custom themes/config for colors?
   → Start simple, add later if needed
@@ -153,6 +159,7 @@ src/
 ### Dependencies
 
 This spec has no dependencies on other specs, but:
+
 - Complements `005-commander-migration` (commander + Ink = great combo)
 - May benefit from frontmatter structure in `002-structured-frontmatter`
 
@@ -161,12 +168,14 @@ This spec has no dependencies on other specs, but:
 ### Completed ✅
 
 **Phase 1: Infrastructure** - All completed
+
 - ✅ Installed Ink, React, Ora, Chalk, and cli-spinners packages
 - ✅ Created `src/utils/ui.ts` with spinner helpers and logging utilities
 - ✅ Enhanced existing Ink components (Board, StatsDisplay)
 - ✅ Created new `SpecList` component for flexible spec display
 
 **Phase 2: Command Migration** - All completed
+
 - ✅ Migrated `board` command to use Ink rendering
 - ✅ Migrated `stats` command to use Ink rendering
 - ✅ Enhanced `search` command with better output formatting
@@ -174,11 +183,12 @@ This spec has no dependencies on other specs, but:
 - ✅ Added spinners to all async operations (spec loading)
 
 **Phase 3: Testing** - All verified
-- ✅ `lean-spec stats` - Clean table output with emojis and colors
-- ✅ `lean-spec board` - Professional kanban-style board with proper borders
-- ✅ `lean-spec board --show-complete` - Expands complete specs
-- ✅ `lean-spec search "CLI"` - Enhanced search results with metadata
-- ✅ `lean-spec list --tag=cli` - Fast filtering with spinner feedback
+
+- ✅ `harnspec stats` - Clean table output with emojis and colors
+- ✅ `harnspec board` - Professional kanban-style board with proper borders
+- ✅ `harnspec board --show-complete` - Expands complete specs
+- ✅ `harnspec search "CLI"` - Enhanced search results with metadata
+- ✅ `harnspec list --tag=cli` - Fast filtering with spinner feedback
 
 ### Key Improvements
 
@@ -201,6 +211,7 @@ This spec has no dependencies on other specs, but:
 ### Future Enhancements (Phase 4 - Deferred)
 
 The following enhancements were planned but deferred as the current implementation meets requirements:
+
 - Interactive mode with keyboard navigation (not essential for CLI tool)
 - Progress bars for long operations (operations are fast enough)
 - Advanced table formatting (current formatting is sufficient)
@@ -209,4 +220,3 @@ The following enhancements were planned but deferred as the current implementati
 ### Conclusion
 
 The CLI UX has been successfully enhanced with professional-looking output, consistent styling, and proper user feedback. The implementation uses industry-standard packages (Ink, Ora, Chalk) while maintaining excellent performance and the lean philosophy of the project.
-

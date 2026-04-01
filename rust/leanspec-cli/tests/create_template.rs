@@ -426,7 +426,7 @@ fn test_template_consistency_with_init() {
 
     // Read the template file created by init
     let template_path = cwd
-        .join(".lean-spec")
+        .join(".harnspec")
         .join("templates")
         .join("spec-template.md");
     assert!(

@@ -24,7 +24,7 @@ completed: '2025-11-26'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-26 · **Tags**: search, cli, mcp, core, dx, power-users
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -75,25 +75,25 @@ function specContainsAllTerms(spec: SearchableSpec, terms: string[]): boolean {
 
 ```bash
 # Boolean operators
-lean-spec search "api AND authentication"
-lean-spec search "frontend OR backend"  
-lean-spec search "api NOT deprecated"
+harnspec search "api AND authentication"
+harnspec search "frontend OR backend"  
+harnspec search "api NOT deprecated"
 
 # Field-specific search
-lean-spec search "status:in-progress"
-lean-spec search "tag:api priority:high"
-lean-spec search "assignee:marvin"
-lean-spec search "title:dashboard"
+harnspec search "status:in-progress"
+harnspec search "tag:api priority:high"
+harnspec search "assignee:marvin"
+harnspec search "title:dashboard"
 
 # Date range filters
-lean-spec search "created:>2025-11-01"
-lean-spec search "created:2025-11-01..2025-11-15"
+harnspec search "created:>2025-11-01"
+harnspec search "created:2025-11-01..2025-11-15"
 
 # Fuzzy matching
-lean-spec search "authetication~"  # matches "authentication"
+harnspec search "authetication~"  # matches "authentication"
 
 # Combined
-lean-spec search "tag:api status:planned created:>2025-11"
+harnspec search "tag:api status:planned created:>2025-11"
 ```
 
 ### Approach
@@ -106,11 +106,13 @@ lean-spec search "tag:api status:planned created:>2025-11"
 ## Plan
 
 ### Phase 1: Fix cross-field matching (High Priority) ✅
+
 - [x] Change `containsAllTerms` to check across entire spec, not per-field
 - [x] Keep per-field scoring but allow spec-level term matching
 - [x] Add unit tests for multi-term queries
 
 ### Phase 2: Advanced query syntax ✅
+
 - [x] Design query grammar and AST structure
 - [x] Implement query parser with field extraction
 - [x] Add boolean operator support (AND/OR/NOT)
@@ -123,11 +125,13 @@ lean-spec search "tag:api status:planned created:>2025-11"
 ## Test
 
 ### Phase 1 tests ✅
+
 - [x] `"AI agent integration coding orchestration"` finds spec 123
 - [x] Multi-term queries return relevant specs even if terms span fields
 - [x] Scoring still reflects per-field relevance
 
 ### Phase 2 tests ✅
+
 - [x] Parse `"tag:api AND status:planned"` correctly
 - [x] Date range `created:>2025-11-01` filters as expected
 - [x] Fuzzy `authetication~` matches `authentication`
@@ -143,6 +147,7 @@ lean-spec search "tag:api status:planned created:>2025-11"
 ### Implemented: Query guidance for AI agents
 
 Updated MCP search tool description and AGENTS.md with search query best practices:
+
 - Use 2-4 specific terms
 - Use filters instead of long queries
 - Good/poor query examples

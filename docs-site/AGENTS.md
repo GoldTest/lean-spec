@@ -16,6 +16,7 @@ When working with the HarnSpec documentation site:
 Documentation folder structure must exactly match the sidebar hierarchy in `sidebars.ts`.
 
 **Example:**
+
 - Sidebar: `Usage → CLI Usage → Creating & Managing Specs`
 - File: `./docs/guide/usage/cli/creating-managing.mdx` ✅
 
@@ -34,14 +35,15 @@ Every English `.mdx` file needs a Chinese translation in `i18n/zh-Hans/docusauru
 Never translate these terms - they are technical concepts with established English usage:
 
 - **Core terms**: Spec, HarnSpec, CLI, Token, README, frontmatter, MCP
-- **Commands**: `lean-spec create`, `lean-spec update`, `lean-spec board`, etc.
+- **Commands**: `harnspec create`, `harnspec update`, `harnspec board`, etc.
 - **Status values**: `draft`, `planned`, `in-progress`, `complete`, `archived`
 - **File types**: `.md`, `.mdx`, `.json`, `.yaml`
 - **Technical terms**: SDD (Spec-Driven Development), API, JWT, URL, JSON
 
 **Examples:**
+
 ```markdown
-✅ "使用 `lean-spec create` 创建新 Spec"
+✅ "使用 `harnspec create` 创建新 Spec"
 ❌ "使用 `精益规范创建` 创建新规格说明"
 
 ✅ "Spec 文件使用 Markdown 格式"
@@ -164,8 +166,8 @@ Balance readability with precision:
 ✅ "HarnSpec 是一种轻量级的规格驱动开发 (SDD) 方法论"
 ❌ "HarnSpec 是一个轻量级规范驱动的开发方法"
 
-✅ "使用 `lean-spec board` 查看 Spec 看板"
-❌ "使用 `lean-spec board` 查看规格说明看板"
+✅ "使用 `harnspec board` 查看 Spec 看板"
+❌ "使用 `harnspec board` 查看规格说明看板"
 ```
 
 **Technical Explanations:**
@@ -183,7 +185,7 @@ Balance readability with precision:
 Before committing Chinese translations, verify:
 
 - [ ] All "Spec" references use "Spec" (not "规格" or "规范")
-- [ ] All commands remain in English (e.g., `lean-spec create`)
+- [ ] All commands remain in English (e.g., `harnspec create`)
 - [ ] Technical terms have English references on first use
 - [ ] Chinese text reads naturally (not word-by-word translation)
 - [ ] Full-width punctuation used consistently
@@ -196,11 +198,13 @@ Before committing Chinese translations, verify:
 ### MDX Formatting
 
 **Chinese text with multiple bolds:**
+
 ```markdown
 这与 **语法属性（Syntactic Properties）** 形成对比  ✅ (space before second **)
 ```
 
 **Bold with quotes:**
+
 ```markdown
 ** "quoted text" **  ✅ (spaces inside bold markers)
 ```
@@ -210,6 +214,7 @@ Before committing Chinese translations, verify:
 **CRITICAL**: Mermaid diagrams MUST have custom styling for dark theme contrast. Default colors are unreadable in dark mode.
 
 **Always apply styles to Mermaid nodes:**
+
 ```markdown
 ```mermaid
 graph LR
@@ -218,6 +223,7 @@ graph LR
     style A fill:#e1f5ff,stroke:#1e3a8a,stroke-width:2px,color:#1e3a8a
     style B fill:#fff4e1,stroke:#92400e,stroke-width:2px,color:#92400e
 ```
+
 ```
 
 **Use color palette:** Light background + dark text for contrast in both themes. See `agents/documentation-quality-standards.md` section 6 for full color palette and examples.
@@ -234,11 +240,13 @@ Must pass with no broken links, MDX errors, or missing translations.
 ### MDX Syntax Validation
 
 Validate source MDX files for syntax issues that cause build failures:
+
 ```bash
 cd docs-site && pnpm validate:mdx
 ```
 
 This checks Chinese docs and blogs for:
+
 - Unescaped special characters (`<` `>` `{` `}`)
 - Bold formatting spacing issues
 - Other MDX syntax problems

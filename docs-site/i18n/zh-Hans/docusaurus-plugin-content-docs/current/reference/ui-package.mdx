@@ -130,7 +130,7 @@ npx @HarnSpec/ui --specs ./specs --port 3100 --no-open
 
 ```mermaid
 graph TD
-    CLI[lean-spec ui] -->|委托| NPX[npx @HarnSpec/ui]
+    CLI[harnspec ui] -->|委托| NPX[npx @HarnSpec/ui]
     NPX -->|运行| Next[Next.js 服务器]
     Next -->|读取| Specs[specs/ 目录]
     Browser[Web 浏览器] -->|HTTP :3000| Next
@@ -284,8 +284,8 @@ function detectSpecsDir() {
 
 ```bash
 # 克隆 HarnSpec monorepo
-git clone https://github.com/codervisor/lean-spec.git
-cd lean-spec
+git clone https://github.com/codervisor/harnspec.git
+cd harnspec
 
 # 安装依赖
 pnpm install
@@ -394,7 +394,7 @@ npx @HarnSpec/ui 2>&1 | tee ui-error.log
 
 ## 与 CLI 的比较
 
-| 功能 | `@HarnSpec/ui` | `lean-spec ui`（CLI） |
+| 功能 | `@HarnSpec/ui` | `harnspec ui`（CLI） |
 |------|----------------|---------------------|
 | 安装 | 无需安装（npx） | 需要 CLI 安装 |
 | Spec创建 | 否 | 是 |
@@ -408,7 +408,7 @@ npx @HarnSpec/ui 2>&1 | tee ui-error.log
 **何时使用：**
 
 - **使用 `@HarnSpec/ui`** 用于无需安装任何内容的快速查看
-- **使用 `lean-spec ui`** 如果您已经有 CLI 并希望命令一致
+- **使用 `harnspec ui`** 如果您已经有 CLI 并希望命令一致
 
 两者都启动相同的网页界面 - 区别在于您如何启动它。
 
@@ -420,18 +420,18 @@ npx @HarnSpec/ui 2>&1 | tee ui-error.log
 - **Minor**：新功能、非破坏性更改
 - **Patch**：错误修复、性能改进
 
-查看 [CHANGELOG](https://github.com/codervisor/lean-spec/blob/main/CHANGELOG.md) 了解版本详情。
+查看 [CHANGELOG](https://github.com/codervisor/harnspec/blob/main/CHANGELOG.md) 了解版本详情。
 
 ## 包信息
 
 - **npm**：https://www.npmjs.com/package/@HarnSpec/ui
-- **仓库**：https://github.com/codervisor/lean-spec
-- **错误报告**：https://github.com/codervisor/lean-spec/issues
+- **仓库**：https://github.com/codervisor/harnspec
+- **错误报告**：https://github.com/codervisor/harnspec/issues
 - **许可证**：MIT
 
 ## 相关文档
 
 - [可视化模式指南](/docs/guide/visual-mode) - 全面的使用指南
-- [CLI 参考](/docs/reference/cli#lean-spec-ui) - `lean-spec ui` 命令
+- [CLI 参考](/docs/reference/cli#harnspec-ui) - `harnspec ui` 命令
 - [入门指南](/docs/guide/getting-started) - 设置 HarnSpec
 - [配置](/docs/reference/config) - 配置 HarnSpec 设置

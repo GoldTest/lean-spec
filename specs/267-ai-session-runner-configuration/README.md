@@ -37,20 +37,22 @@ Refactor the tool adapter system into a **configurable AI Agent Runner** system:
 
 1. Rename "tool" → "runner" throughout the codebase
 2. Define all runners in a single `runners.json` config file
-3. Allow per-project customization via `.lean-spec/runners.json`
+3. Allow per-project customization via `.harnspec/runners.json`
 4. Ship sensible built-in defaults for common tools
 
 ### Scope
 
 **In Scope**:
+
 - Terminology refactoring: tool → runner
 - Single-file configuration schema (`runners.json`)
-- Global (~/.lean-spec/) + project-level (.lean-spec/) config
+- Global (~/.harnspec/) + project-level (.harnspec/) config
 - CLI commands for runner listing and validation
 - Migration path for existing sessions
 - UI for runner configuration
 
 **Out of Scope**:
+
 - Changing session management core (spec 239)
 - Runner marketplace/sharing (future spec)
 
@@ -121,8 +123,8 @@ Only `command` is required. Everything else is optional:
 ### Configuration File Locations
 
 ```
-~/.lean-spec/runners.json       # Global runners (user-level)
-.lean-spec/runners.json         # Project-level (merges with global)
+~/.harnspec/runners.json       # Global runners (user-level)
+.harnspec/runners.json         # Project-level (merges with global)
 ```
 
 Project-level config merges with global - same runner IDs override, new ones are added.
@@ -130,6 +132,7 @@ Project-level config merges with global - same runner IDs override, new ones are
 ### Built-in Defaults
 
 LeanSpec includes sensible defaults for common tools. Users only need to configure if they want to:
+
 - Add a new runner not in defaults
 - Override default args/env for existing runner
 - Set a different default runner
@@ -143,7 +146,7 @@ pub struct RunnerRegistry {
 }
 
 impl RunnerRegistry {
-    /// Load: builtins → ~/.lean-spec/runners.json → .lean-spec/runners.json
+    /// Load: builtins → ~/.harnspec/runners.json → .harnspec/runners.json
     pub fn load(project_path: &Path) -> Result<Self>;
     
     pub fn get(&self, id: &str) -> Option<&RunnerDefinition>;
@@ -156,29 +159,29 @@ impl RunnerRegistry {
 
 ```bash
 # List available runners
-lean-spec runner list
+harnspec runner list
 
 # Show runner config
-lean-spec runner show <runner-id>
+harnspec runner show <runner-id>
 
 # Validate runner (check if command exists)
-lean-spec runner validate [runner-id]
+harnspec runner validate [runner-id]
 
 # Open config file in editor
-lean-spec runner config [--global]
+harnspec runner config [--global]
 ```
 
 ### Session Command Updates
 
 ```bash
 # Old (deprecated but still works)
-lean-spec session create --tool claude --spec 239
+harnspec session create --tool claude --spec 239
 
 # New
-lean-spec session create --runner claude --spec 239
+harnspec session create --runner claude --spec 239
 
 # Use default runner (from config)
-lean-spec session create --spec 239
+harnspec session create --spec 239
 ```
 
 ### Database Migration
@@ -205,6 +208,7 @@ PUT    /api/runners/default      # Set default runner
 ## Plan
 
 ### Phase 1: Terminology Refactoring
+
 - [ ] Rename ToolAdapter → RunnerDefinition in Rust
 - [ ] Rename ToolManager → RunnerRegistry
 - [ ] Update database schema (tool → runner)
@@ -213,25 +217,29 @@ PUT    /api/runners/default      # Set default runner
 - [ ] Update HTTP API endpoints
 
 ### Phase 2: Configuration Schema
+
 - [ ] Define JSON schema for runners.json
 - [ ] Implement RunnerDefinition struct (command, args, env, name)
 - [ ] Add configuration validation
 - [ ] Support environment variable interpolation (${VAR})
 
 ### Phase 3: Configuration Loading
-- [ ] Implement global config loading (~/.lean-spec/runners.json)
-- [ ] Implement project config loading (.lean-spec/runners.json)
+
+- [ ] Implement global config loading (~/.harnspec/runners.json)
+- [ ] Implement project config loading (.harnspec/runners.json)
 - [ ] Implement merge logic (project overrides global)
 - [ ] Bundle built-in defaults in code
 - [ ] Write loading tests
 
 ### Phase 4: Runner Commands
-- [ ] Implement `lean-spec runner list`
-- [ ] Implement `lean-spec runner show`
-- [ ] Implement `lean-spec runner validate`
-- [ ] Implement `lean-spec runner config`
+
+- [ ] Implement `harnspec runner list`
+- [ ] Implement `harnspec runner show`
+- [ ] Implement `harnspec runner validate`
+- [ ] Implement `harnspec runner config`
 
 ### Phase 5: UI Integration
+
 - [ ] Add Runners page in Settings
 - [ ] Runner list with status badges (installed/not found)
 - [ ] Add Runner dialog (name, command, args, env fields)
@@ -242,6 +250,7 @@ PUT    /api/runners/default      # Set default runner
 - [ ] Update session create dialog (tool → runner dropdown)
 
 ### Phase 6: Documentation & Migration
+
 - [ ] Update all documentation (tool → runner)
 - [ ] Write migration guide for existing users
 - [ ] Add runner configuration examples
@@ -250,18 +259,21 @@ PUT    /api/runners/default      # Set default runner
 ## Test
 
 ### Unit Tests
+
 - [ ] RunnerDefinition parsing from JSON
 - [ ] RunnerRegistry loading and merging
 - [ ] Environment variable interpolation
 - [ ] Default runner selection
 
 ### Integration Tests
+
 - [ ] Database migration (tool → runner)
 - [ ] CLI command functionality
 - [ ] Session creation with custom runner
 - [ ] Config file merge behavior
 
 ### User Acceptance
+
 - [ ] Add new runner from UI
 - [ ] Edit existing runner from UI
 - [ ] Delete custom runner from UI
@@ -286,7 +298,8 @@ PUT    /api/runners/default      # Set default runner
 
 ### Configuration Examples
 
-**Add a custom runner** (in `~/.lean-spec/runners.json` or `.lean-spec/runners.json`):
+**Add a custom runner** (in `~/.harnspec/runners.json` or `.harnspec/runners.json`):
+
 ```json
 {
   "runners": {
@@ -300,6 +313,7 @@ PUT    /api/runners/default      # Set default runner
 ```
 
 **Override default Claude args**:
+
 ```json
 {
   "runners": {

@@ -22,11 +22,13 @@ Migrate public LeanSpec skills (starting with `leanspec-sdd`) to a dedicated Git
 
 ### Problem
 
-Currently, skills live inside the main `lean-spec` repository:
+Currently, skills live inside the main `harnspec` repository:
+
 - `.github/skills/leanspec-sdd/` - project-specific copy
 - `packages/cli/templates/skills/` - bundled with CLI
 
 This creates issues:
+
 1. Skills versioning tied to CLI releases
 2. Higher barrier for community skill contributions
 3. Duplicate copies need manual synchronization
@@ -66,11 +68,13 @@ codervisor/leanspec-skills
 ### Source of Truth Strategy
 
 **Option A: External Repo as Source (Recommended)**
+
 - `codervisor/leanspec-skills` is the source
-- `lean-spec` CLI fetches/bundles during build
-- `lean-spec` repo keeps dev copy via git submodule or sync script
+- `harnspec` CLI fetches/bundles during build
+- `harnspec` repo keeps dev copy via git submodule or sync script
 
 **Option B: Bidirectional Sync**
+
 - Both repos maintain copies
 - GitHub Action syncs changes
 - More complex, higher risk of conflicts
@@ -104,7 +108,7 @@ const skillPath = await resolveSkillPath('leanspec-sdd', {
 - [ ] Set up GitHub Actions for validation
 - [ ] Add CONTRIBUTING.md with skill contribution guide
 - [ ] Update CLI to support external skill sources
-- [ ] Add sync mechanism for dev copy in lean-spec repo
+- [ ] Add sync mechanism for dev copy in harnspec repo
 - [ ] Update documentation
 
 ## Test
@@ -112,7 +116,7 @@ const skillPath = await resolveSkillPath('leanspec-sdd', {
 - [ ] New repo passes `skills-ref validate`
 - [ ] CLI can install skills from new repo
 - [ ] GitHub Actions run on PR
-- [ ] Dev copy in lean-spec stays in sync
+- [ ] Dev copy in harnspec stays in sync
 - [ ] Old installations continue working
 
 ## Notes
@@ -126,7 +130,7 @@ gh repo create codervisor/leanspec-skills --public --description "LeanSpec Agent
 # Clone and add skills
 git clone git@github.com:codervisor/leanspec-skills.git
 mkdir -p skills
-cp -r ../lean-spec/.github/skills/leanspec-sdd skills/
+cp -r ../harnspec/.github/skills/leanspec-sdd skills/
 
 # Commit and push
 git add .
@@ -137,6 +141,7 @@ git push origin main
 ### Future Skills
 
 The new repo structure supports additional skills:
+
 - `leanspec-development` - Development workflow skill
 - `leanspec-publishing` - Publishing workflow skill
 - Community-contributed skills

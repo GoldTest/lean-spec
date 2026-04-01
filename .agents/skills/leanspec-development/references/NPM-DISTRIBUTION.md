@@ -7,28 +7,28 @@ This document describes how LeanSpec distributes Rust CLI and MCP binaries via n
 LeanSpec uses the **optional dependencies pattern** (used by `esbuild`, `swc`, `@tauri-apps/cli`) to distribute platform-specific Rust binaries:
 
 ```
-Main Package (lean-spec)
-├── bin/lean-spec.js (wrapper script)
+Main Package (harnspec)
+├── bin/harnspec.js (wrapper script)
 └── optionalDependencies:
-    ├── lean-spec-darwin-x64
-    ├── lean-spec-darwin-arm64
-    ├── lean-spec-linux-x64
-    ├── lean-spec-linux-arm64
-    └── lean-spec-windows-x64
+    ├── harnspec-darwin-x64
+    ├── harnspec-darwin-arm64
+    ├── harnspec-linux-x64
+    ├── harnspec-linux-arm64
+    └── harnspec-windows-x64
 ```
 
 ## How It Works
 
-1. User runs `npm install -g lean-spec`
+1. User runs `npm install -g harnspec`
 2. npm detects platform and installs matching optional dependency
-3. Wrapper script (`bin/lean-spec.js`) detects platform and spawns Rust binary
+3. Wrapper script (`bin/harnspec.js`) detects platform and spawns Rust binary
 4. Other platform packages are ignored (saves bandwidth)
 
 ## Package Structure
 
 ### Main Packages
 
-- **`lean-spec`** - CLI main package with wrapper script
+- **`harnspec`** - CLI main package with wrapper script
 - **`@leanspec/mcp`** - MCP server main package with wrapper script
 
 ### Platform Packages (CLI)
@@ -58,12 +58,12 @@ packages/
 ├── cli/
 │   ├── package.json          # Main package
 │   ├── bin/
-│   │   ├── lean-spec.js      # Current TypeScript wrapper
-│   │   └── lean-spec-rust.js # Rust binary wrapper
+│   │   ├── harnspec.js      # Current TypeScript wrapper
+│   │   └── harnspec-rust.js # Rust binary wrapper
 │   └── binaries/
 │       ├── darwin-x64/
 │       │   ├── package.json
-│       │   └── lean-spec     # Rust binary
+│       │   └── harnspec     # Rust binary
 │       ├── darwin-arm64/
 │       ├── linux-x64/
 │       ├── linux-arm64/
@@ -92,6 +92,7 @@ pnpm sync-versions
 ```
 
 This updates:
+
 - All workspace package versions
 - All platform package versions
 
@@ -117,7 +118,7 @@ This publishes all platform-specific binary packages. Platform packages **must**
 pnpm publish:main [--dry-run]
 ```
 
-This publishes `lean-spec` and `@leanspec/mcp` main packages.
+This publishes `harnspec` and `@leanspec/mcp` main packages.
 
 ## Version Synchronization
 
@@ -125,7 +126,7 @@ All packages use the same version (from root `package.json`):
 
 ```json
 {
-  "lean-spec": "0.3.0",
+  "harnspec": "0.3.0",
   "@leanspec/cli-darwin-x64": "0.3.0",
   "@leanspec/cli-darwin-arm64": "0.3.0",
   ...
@@ -136,7 +137,7 @@ Use `pnpm sync-versions` to synchronize all package versions.
 
 ## Wrapper Scripts
 
-### CLI Wrapper (`packages/cli/bin/lean-spec-rust.js`)
+### CLI Wrapper (`packages/cli/bin/harnspec-rust.js`)
 
 ```javascript
 #!/usr/bin/env node
@@ -149,7 +150,7 @@ const PLATFORM_MAP = {
 
 // Resolve binary from platform package
 const packageName = `@leanspec/cli-${platformKey}`;
-const binaryPath = require.resolve(`${packageName}/lean-spec`);
+const binaryPath = require.resolve(`${packageName}/harnspec`);
 
 // Spawn binary with all args
 spawn(binaryPath, process.argv.slice(2), { stdio: 'inherit' });
@@ -171,7 +172,7 @@ This means the binary doesn't have execute permissions. This should be automatic
 
 ```bash
 # Manual fix
-chmod +x /path/to/node_modules/@leanspec/cli-darwin-arm64/lean-spec
+chmod +x /path/to/node_modules/@leanspec/cli-darwin-arm64/harnspec
 ```
 
 **Root cause:** npm strips file permissions when creating tarballs. The `postinstall.js` script (included in platform packages) runs `chmod 0o755` on the binary after installation.
@@ -183,10 +184,10 @@ Binary not found for darwin-arm64
 Expected package: @leanspec/cli-darwin-arm64
 
 To install:
-  npm install -g lean-spec
+  npm install -g harnspec
 
 If you installed globally, try:
-  npm uninstall -g lean-spec && npm install -g lean-spec
+  npm uninstall -g harnspec && npm install -g harnspec
 ```
 
 ### Unsupported platform
@@ -200,13 +201,13 @@ Supported: macOS (x64/arm64), Linux (x64/arm64), Windows (x64)
 
 1. Check npm/node versions meet requirements (`node >= 18`)
 2. Try clearing npm cache: `npm cache clean --force`
-3. Try reinstalling: `npm uninstall -g lean-spec && npm install -g lean-spec`
+3. Try reinstalling: `npm uninstall -g harnspec && npm install -g harnspec`
 
 ## Migration from TypeScript
 
 The current TypeScript CLI remains the default. When Rust binaries are ready:
 
-1. Switch wrapper from `lean-spec.js` to `lean-spec-rust.js`
+1. Switch wrapper from `harnspec.js` to `harnspec-rust.js`
 2. Add optionalDependencies to `packages/cli/package.json`
 3. Publish platform packages first, then main package
 

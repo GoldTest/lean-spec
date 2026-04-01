@@ -19,10 +19,12 @@ updated_at: 2026-02-01T15:40:20.363790Z
 ## Overview
 
 **Problem**: Currently, `@leanspec/ui` runs two separate services:
+
 1. **Rust HTTP Server** (leanspec-http) - API backend on port 3333
 2. **Node.js Static Server** - UI frontend on port 3000
 
 This creates unnecessary complexity:
+
 - Two processes to manage and coordinate
 - Two ports to configure
 - More failure points (either service can fail independently)
@@ -31,6 +33,7 @@ This creates unnecessary complexity:
 - Network overhead (browser ↔ UI server ↔ API server)
 
 **Solution**: Embed the Vite UI build into the Rust HTTP server using `tower-http::ServeDir`, creating a single unified service that:
+
 - Serves the UI on root path (`/`, `/projects`, etc.)
 - Serves API on `/api/*` routes
 - Runs on a single port (default 3000)
@@ -38,6 +41,7 @@ This creates unnecessary complexity:
 - **Note**: Chat integration via IPC worker is covered in [Spec 237](../237-rust-ipc-ai-chat-bridge/)
 
 **Benefits**:
+
 - Simpler deployment and operation (one command, one process)
 - Better performance (no Node.js overhead)
 - Smaller bundle size (eliminate Node.js server code)
@@ -52,6 +56,7 @@ This creates unnecessary complexity:
 ### Architecture Changes
 
 **Before**:
+
 ```
 User runs: npx @leanspec/ui
   ↓
@@ -66,6 +71,7 @@ Browser: http://localhost:3000
 ```
 
 **After**:
+
 ```
 User runs: npx @leanspec/ui (or just leanspec-http)
   ↓
@@ -185,18 +191,21 @@ Router::new()
 ### Package Structure
 
 **User-Facing Package**: `@leanspec/ui` (unchanged for users)
+
 - Contains Vite build (`dist/`)
 - Contains launcher (`bin/leanspec-ui.js`)
 - Depends on `@leanspec/http-server` and `@leanspec/ai-worker`
 - Users install: `npx @leanspec/ui`
 
 **Backend Package**: `@leanspec/http-server`
+
 - Contains Rust binary
 - Discovers UI files from `@leanspec/ui/dist`
 - Spawns `@leanspec/ai-worker` for AI chat (see spec 237)
 - Can be used standalone for API-only scenarios
 
 **AI Worker Package**: `@leanspec/ai-worker` (new in spec 237)
+
 - IPC-based worker for AI SDK streaming
 - Spawned by Rust HTTP server via stdin/stdout
 - Replaces standalone `@leanspec/chat-server`
@@ -313,6 +322,7 @@ build:
 ```
 
 **Flow**:
+
 1. User runs: `npx @leanspec/ui`
 2. Launcher starts: `@leanspec/http-server` with `LEANSPEC_UI_DIST` env var
 3. Rust server discovers UI files from `@leanspec/ui/dist`
@@ -334,31 +344,35 @@ build:
 ### Development Mode
 
 **Option 1: Separate Dev Servers (Current)**
+
 - UI: `cd packages/ui && pnpm dev` (Vite on 5173)
 - API: `cd rust/leanspec-http && cargo run` (on 3000)
 - Vite proxy config handles CORS
 
 **Option 2: Unified Dev Mode**
+
 - Build UI: `cd packages/ui && pnpm build --watch`
 - Run Rust: `cd rust/leanspec-http && cargo watch -x run`
-- Access: http://localhost:3000
+- Access: <http://localhost:3000>
 
 **Recommendation**: Keep Option 1 for development (faster HMR)
 
 ### System Requirements
 
 **Runtime Dependencies**:
+
 - **Rust binary**: Included in `@leanspec/http-server` package (no separate install)
 - **Node.js**: Required for AI chat features (via `@leanspec/ai-worker`)
   - **Hard Minimum**: v20.0.0 (works with EOL warning)
   - **Recommended**: v22.0.0+ (Jod LTS, supported until April 2027)
   - **Best**: v24.0.0+ (Krypton LTS, supported until April 2028)
   - **Note**: v20 reaches EOL April 30, 2026 - will show warnings but continue to work
-  - Download from: https://nodejs.org
+  - Download from: <https://nodejs.org>
   - Check version: `node --version`
   - Graceful degradation: AI features disabled if <v20 or not installed
 
 **Why Node.js?**
+
 - AI SDK ecosystem is JavaScript-native (Vercel AI SDK)
 - IPC worker provides clean separation (Rust manages process)
 - Future: May compile to WASM when ecosystem matures (see spec 237)
@@ -368,6 +382,7 @@ build:
 The unified server supports comprehensive CLI arguments, making it flexible for different deployment scenarios:
 
 **Network Configuration:**
+
 ```bash
 npx @leanspec/ui --port 3001              # Custom port
 npx @leanspec/ui --host 0.0.0.0           # Bind to all interfaces (for Docker/remote access)
@@ -375,6 +390,7 @@ npx @leanspec/ui -H 0.0.0.0 -p 8080       # Short flags
 ```
 
 **Project Management:**
+
 ```bash
 # Auto-add project and set as current (if not already in registry)
 npx @leanspec/ui --project /path/to/specs  
@@ -382,12 +398,14 @@ npx @leanspec/ui -P ~/my-project           # Short flag
 ```
 
 **Configuration:**
+
 ```bash
 npx @leanspec/ui --config ~/custom-config.json  # Custom config file location
 npx @leanspec/ui --no-config                    # Skip loading config file (use defaults)
 ```
 
 **Development & Debugging:**
+
 ```bash
 npx @leanspec/ui --verbose                # Enable verbose logging (debug level)
 npx @leanspec/ui -v                       # Short flag
@@ -395,6 +413,7 @@ npx @leanspec/ui --log-level trace        # More granular: trace, debug, info, w
 ```
 
 **Browser Control:**
+
 ```bash
 npx @leanspec/ui --open                   # Auto-open browser (default)
 npx @leanspec/ui --no-open                # Don't open browser
@@ -402,6 +421,7 @@ npx @leanspec/ui --browser firefox        # Specify browser to use
 ```
 
 **Security & Access:**
+
 ```bash
 npx @leanspec/ui --readonly               # Read-only mode (no modifications allowed)
 npx @leanspec/ui --cors-origins "https://example.com"  # Specify CORS origins
@@ -409,6 +429,7 @@ npx @leanspec/ui --no-cors                # Disable CORS entirely (same-origin o
 ```
 
 **UI Customization:**
+
 ```bash
 npx @leanspec/ui --ui-dist /custom/path   # Override UI files location (for testing)
 npx @leanspec/ui --theme dark             # Force theme: light, dark, auto
@@ -436,7 +457,7 @@ struct Args {
     #[arg(short = 'P', long, env = "LEANSPEC_PROJECT")]
     project: Option<PathBuf>,
 
-    /// Config file path (default: ~/.lean-spec/config.json)
+    /// Config file path (default: ~/.harnspec/config.json)
     #[arg(short = 'c', long, env = "LEANSPEC_CONFIG")]
     config: Option<PathBuf>,
 
@@ -487,6 +508,7 @@ struct Args {
 ```
 
 **Benefits of CLI Args:**
+
 - ✅ Flexible deployment (Docker, CI/CD, remote servers)
 - ✅ No config file needed for simple use cases
 - ✅ Environment variable support for containerized environments
@@ -494,12 +516,13 @@ struct Args {
 - ✅ Easier testing (override settings per invocation)
 
 **Project Behavior:**
+
 - **Without `--project`**: Loads project registry, shows all registered projects
 - **With `--project`**: Auto-adds project to registry if not present, sets as current project
 
 ### Configuration
 
-Update `~/.lean-spec/config.json` structure for unified server:
+Update `~/.harnspec/config.json` structure for unified server:
 
 ```json
 {
@@ -524,9 +547,10 @@ Update `~/.lean-spec/config.json` structure for unified server:
 ```
 
 **Priority order:**
+
 1. CLI arguments (highest priority)
 2. Environment variables
-3. Config file (`~/.lean-spec/config.json`)
+3. Config file (`~/.harnspec/config.json`)
 4. Built-in defaults (lowest priority)
 
 ### Backward Compatibility
@@ -534,11 +558,13 @@ Update `~/.lean-spec/config.json` structure for unified server:
 **Breaking Change**: None! Port 3000 remains the default
 
 **Migration Path**:
+
 1. Users continue using `http://localhost:3000`
 2. API moves from `:3333` to `:3000/api`
 3. Node.js server replaced with Rust server (transparent to users)
 
 **User Impact**:
+
 - Users running `npx @leanspec/ui`: Works exactly the same (port 3000)
 - Users with bookmarks to `:3000`: No change needed
 - Users accessing API directly on `:3333`: Need to update to `:3000/api`
@@ -547,6 +573,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 ## Plan
 
 ### Prerequisites
+
 - [x] Build UI first: `cd packages/ui && pnpm build`
 - [x] Build Rust HTTP server: `cd rust/leanspec-http && cargo build --release`
 - [x] No bundling needed - packages stay separate
@@ -554,6 +581,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] Test: Build both, verify they work together
 
 ### Phase 1: Rust HTTP Server Static File Serving (Day 1-2)
+
 - [x] Add `tower-http` dependency to `leanspec-http/Cargo.toml`
 - [x] Implement `get_ui_dist_path()` function with env var support
 - [x] Add `ServeDir` route to router with SPA fallback
@@ -568,18 +596,21 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] Ensure API routes take precedence
 
 ### Phase 2: Build Pipeline Integration (Day 2-3)
+
 - [x] Create `rust/leanspec-http/ui-dist/` directory
 - [x] Add script to copy `packages/ui/dist` → `rust/leanspec-http/ui-dist`
 - [x] Update CI build workflow
 - [x] Test: Build UI, copy, build Rust, verify binary includes UI
 
 ### Phase 3: npm Distribution (Day 3-4)
+
 - [x] Update `scripts/copy-rust-binaries.mjs` to include ui-dist/
 - [x] Verify npm package structure
 - [ ] Test: `npm pack` and inspect tarball
 - [ ] Test: Install from tarball and run
 
 ### Phase 4: UI Package Updates (Day 4-5)
+
 - [x] Update `@leanspec/ui` launcher to pass through all CLI args to Rust server
 - [x] Update API client to use relative URLs (`/api`)
 - [x] Remove port 3333 references
@@ -587,17 +618,20 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] Test all CLI arguments work correctly through launcher
 
 ### Phase 5: Configuration & Documentation (Day 5-6)
+
 - [x] Keep default port as 3000 in all configs
 - [x] Update README and docs
 - [ ] Add migration guide for API-only users (port 3333 → 3000)
-- [x] Update `lean-spec ui` command output messages
+- [x] Update `harnspec ui` command output messages
 
 ### Phase 6: Development Experience (Day 6)
+
 - [x] Update Vite proxy config (if needed)
 - [x] Document dev vs prod modes
 - [x] Update CONTRIBUTING.md
 
 ### Phase 7: Testing (Day 7-8)
+
 - [x] Test unified server serves UI correctly
 - [x] Test SPA routing works (fallback to index.html)
 - [x] Test API routes still work
@@ -606,7 +640,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] Test 404 handling
 - [x] **Test all CLI arguments:**
   - [x] `--port`, `--host`
-  - [x] `--project` 
+  - [x] `--project`
   - [x] `--config`, `--no-config`
   - [x] `--verbose`, `--log-level`
   - [x] `--open`, `--no-open`, `--browser`
@@ -619,6 +653,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] Test both dev and prod builds
 
 ### Phase 8: Cleanup (Day 8-9)
+
 - [ ] Remove old Node.js server code
 - [ ] Update Rust HTTP server default port from 3333 to 3000
 - [ ] Archive spec 103 (UI Standalone Consolidation) as superseded
@@ -627,11 +662,13 @@ Update `~/.lean-spec/config.json` structure for unified server:
 ## Test
 
 ### Unit Tests
+
 - [x] `get_ui_dist_path()` returns correct path in dev/prod
 - [x] Router ordering: API routes match before static files
 - [x] SPA fallback serves index.html for unknown routes
 
 ### Integration Tests
+
 - [x] `GET /` returns index.html (200)
 - [x] `GET /index.html` returns index.html (200)
 - [x] `GET /assets/main.js` returns JS file (200)
@@ -642,6 +679,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [x] API responses have correct Content-Type: application/json
 
 ### E2E Tests
+
 - [ ] Install from npm: `npm install @leanspec/ui`
 - [x] Run: `npx @leanspec/ui`
 - [x] Verify browser auto-opens to `http://localhost:3000`
@@ -654,6 +692,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - [ ] Test Docker deployment: `docker run -p 8080:8080 leanspec --host 0.0.0.0 --port 8080`
 
 ### Performance Tests
+
 - [ ] Static file serving < 10ms for small files
 - [ ] Gzip compression works (if enabled)
 - [ ] Caching headers present (if configured)
@@ -663,6 +702,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 ### Why Embed UI in Rust HTTP Server?
 
 **Pros**:
+
 - Single process, single port (simpler UX)
 - No Node.js runtime needed for static serving
 - Same-origin requests (no CORS complexity)
@@ -671,11 +711,13 @@ Update `~/.lean-spec/config.json` structure for unified server:
 - Better performance (Rust is faster than Node.js)
 
 **Cons**:
+
 - Requires rebuilding Rust binary when UI changes
 - Slightly more complex build pipeline
 - UI dist must be available during Rust build
 
 **Alternatives Considered**:
+
 1. **Keep separate servers**: Current approach, too complex
 2. **Reverse proxy**: Adds another layer, overkill
 3. **Embed UI at compile-time** (include_dir!): Binary too large
@@ -686,6 +728,7 @@ Update `~/.lean-spec/config.json` structure for unified server:
 **Chosen**: Bundle UI next to binary (ui-dist/ folder)
 
 **Why**:
+
 - UI can be updated without rebuilding Rust
 - Binary stays small
 - Easy to verify what UI version is bundled
@@ -699,6 +742,7 @@ node_modules/
 │       └── assets/
 └── @leanspec/http-server/
     └── bin/leanspec-http     (Rust binary)
+
 ```
 
 **Why This Approach?**
@@ -753,6 +797,7 @@ Router::new()
 ```
 
 This ensures:
+
 - `/projects` → `index.html` (SPA handles routing)
 - `/api/projects` → API handler (not index.html)
 - `/assets/main.js` → `ui-dist/assets/main.js`
@@ -773,6 +818,7 @@ let cors = CorsLayer::new()
 ### Desktop App Consistency
 
 This change aligns web UI with desktop app architecture:
+
 - **Desktop**: Tauri serves UI, Rust commands handle API
 - **Web**: Rust HTTP serves UI, Rust handlers handle API
 
@@ -783,6 +829,7 @@ Both use Rust for backend, UI is a static asset.
 [Spec 103](../103-ui-standalone-consolidation/) consolidated Next.js into `@leanspec/ui`. This spec goes further by eliminating the Node.js server entirely.
 
 **Evolution**:
+
 1. Spec 103: Two packages → One package (UI + Next.js)
 2. This spec: Two processes → One process (Rust serves both)
 

@@ -129,7 +129,7 @@ The package uses these environment variables internally:
 
 ```mermaid
 graph TD
-    CLI[lean-spec ui] -->|Delegates| NPX[npx @HarnSpec/ui]
+    CLI[harnspec ui] -->|Delegates| NPX[npx @HarnSpec/ui]
     NPX -->|Runs| Next[Next.js Server]
     Next -->|Reads| Specs[specs/ directory]
     Browser[Web Browser] -->|HTTP :3000| Next
@@ -282,8 +282,8 @@ If you're contributing to HarnSpec, you can work with the UI package locally:
 
 ```bash
 # Clone the HarnSpec monorepo
-git clone https://github.com/codervisor/lean-spec.git
-cd lean-spec
+git clone https://github.com/codervisor/harnspec.git
+cd harnspec
 
 # Install dependencies
 pnpm install
@@ -392,7 +392,7 @@ npx @HarnSpec/ui 2>&1 | tee ui-error.log
 
 ## Comparison with CLI
 
-| Feature | `@HarnSpec/ui` | `lean-spec ui` (CLI) |
+| Feature | `@HarnSpec/ui` | `harnspec ui` (CLI) |
 |---------|----------------|---------------------|
 | Installation | No install needed (npx) | Requires CLI install |
 | Spec creation | No | Yes |
@@ -406,7 +406,7 @@ npx @HarnSpec/ui 2>&1 | tee ui-error.log
 **When to use each:**
 
 - **Use `@HarnSpec/ui`** for quick viewing without installing anything
-- **Use `lean-spec ui`** if you already have the CLI and want consistent commands
+- **Use `harnspec ui`** if you already have the CLI and want consistent commands
 
 Both launch the same web interface - the difference is how you start it.
 
@@ -436,18 +436,18 @@ The `@HarnSpec/ui` package follows semantic versioning:
 - **Minor**: New features, non-breaking changes
 - **Patch**: Bug fixes, performance improvements
 
-Check the [CHANGELOG](https://github.com/codervisor/lean-spec/blob/main/CHANGELOG.md) for version details.
+Check the [CHANGELOG](https://github.com/codervisor/harnspec/blob/main/CHANGELOG.md) for version details.
 
 ## Package Information
 
 - **npm**: https://www.npmjs.com/package/@HarnSpec/ui
-- **Repository**: https://github.com/codervisor/lean-spec
-- **Bug Reports**: https://github.com/codervisor/lean-spec/issues
+- **Repository**: https://github.com/codervisor/harnspec
+- **Bug Reports**: https://github.com/codervisor/harnspec/issues
 - **License**: MIT
 
 ## Related Documentation
 
 - [Visual Mode Guide](/docs/guide/visual-mode) - Comprehensive usage guide
-- [CLI Reference](/docs/reference/cli#lean-spec-ui) - `lean-spec ui` command
+- [CLI Reference](/docs/reference/cli#harnspec-ui) - `harnspec ui` command
 - [Getting Started](/docs/guide/getting-started) - Set up HarnSpec
 - [Configuration](/docs/reference/config) - Configure HarnSpec settings

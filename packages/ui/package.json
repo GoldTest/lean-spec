@@ -141,6 +141,6 @@
   "license": "MIT AND Commons-Clause-1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   }
 }

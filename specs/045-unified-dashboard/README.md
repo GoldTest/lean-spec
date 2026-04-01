@@ -50,27 +50,29 @@ Consolidate analytics commands and add velocity tracking to measure SDD effectiv
 ### Before vs After
 
 **Before (v0.1.x):**
+
 ```bash
-lean-spec stats      # Basic metrics only
-lean-spec timeline   # Separate timeline view
-lean-spec board      # Basic Kanban
+harnspec stats      # Basic metrics only
+harnspec timeline   # Separate timeline view
+harnspec board      # Basic Kanban
 # No velocity tracking
 # No timestamp precision
 ```
 
 **After (v0.2.0):**
+
 ```bash
 # Enhanced Stats Command
-lean-spec stats              # Simplified view with insights
-lean-spec stats --timeline   # Add timeline section
-lean-spec stats --velocity   # Cycle time analysis
-lean-spec stats --full       # Everything combined
+harnspec stats              # Simplified view with insights
+harnspec stats --timeline   # Add timeline section
+harnspec stats --velocity   # Cycle time analysis
+harnspec stats --full       # Everything combined
 
 # Enhanced Board Command  
-lean-spec board              # Now includes velocity summary
+harnspec board              # Now includes velocity summary
 
 # Timeline Command
-lean-spec timeline           # Still works (not deprecated)
+harnspec timeline           # Still works (not deprecated)
 
 # Velocity tracking active
 # Precise timestamps in frontmatter
@@ -79,34 +81,44 @@ lean-spec timeline           # Still works (not deprecated)
 ## Implemented Features
 
 ### ✅ 1. Timestamp Tracking (Foundation)
+
 Precise timestamps alongside existing dates enable velocity metrics:
+
 - `created_at`, `updated_at`, `completed_at` (ISO 8601) - **IMPLEMENTED**
 - Optional `transitions` array for stage duration tracking - **IMPLEMENTED**
 - Backward compatible (infer from dates if missing) - **IMPLEMENTED**
 - Auto-enrichment on create/update operations - **IMPLEMENTED**
 
 ### ✅ 2. Velocity Metrics
+
 Comprehensive velocity tracking implemented in `src/utils/velocity.ts`:
+
 - **Cycle Time**: Created → Completed (avg, median, P90) - **IMPLEMENTED**
 - **Lead Time**: Time in each status from transitions - **IMPLEMENTED**
 - **Throughput**: Specs/week with trend indicators - **IMPLEMENTED**
 - **WIP Tracking**: Current and historical WIP averages - **IMPLEMENTED**
 
 ### ✅ 3. Enhanced Stats Command
+
 Completely redesigned stats command with multiple views:
-- `lean-spec stats` → New simplified view with insights (default) - **IMPLEMENTED**
-- `lean-spec stats --timeline` → Add timeline section - **IMPLEMENTED**
-- `lean-spec stats --velocity` → Show cycle time analysis - **IMPLEMENTED**
-- `lean-spec stats --full` → Everything combined (old analytics style) - **IMPLEMENTED**
+
+- `harnspec stats` → New simplified view with insights (default) - **IMPLEMENTED**
+- `harnspec stats --timeline` → Add timeline section - **IMPLEMENTED**
+- `harnspec stats --velocity` → Show cycle time analysis - **IMPLEMENTED**
+- `harnspec stats --full` → Everything combined (old analytics style) - **IMPLEMENTED**
 - Smart insights and completion tracking - **IMPLEMENTED**
 
 ### ✅ 4. Board Command Enhancements
+
 Integrated velocity metrics into board view:
+
 - Shows velocity summary (cycle time, throughput, WIP) - **IMPLEMENTED**
 - Completion rate and project health - **IMPLEMENTED**
 
 ### ❌ 5. Dashboard Command (Not Implemented)
+
 Decision: Instead of creating a separate dashboard command, the functionality was distributed:
+
 - Enhanced `stats` command provides comprehensive analytics
 - Enhanced `board` command shows velocity summary
 - This keeps the CLI simpler and more focused
@@ -117,28 +129,31 @@ Decision: Instead of creating a separate dashboard command, the functionality wa
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `lean-spec list` | Browse/search specs | Find specific spec, apply filters |
-| `lean-spec board` | Kanban workflow + velocity | Sprint planning, project health |
-| `lean-spec stats` | Comprehensive analytics | Deep metrics, velocity analysis |
-| `lean-spec timeline` | Historical trends | Activity over time |
+| `harnspec list` | Browse/search specs | Find specific spec, apply filters |
+| `harnspec board` | Kanban workflow + velocity | Sprint planning, project health |
+| `harnspec stats` | Comprehensive analytics | Deep metrics, velocity analysis |
+| `harnspec timeline` | Historical trends | Activity over time |
 
 ### Stats Output Examples
 
 **Simplified view (default):**
+
 ```bash
-lean-spec stats
+harnspec stats
 # Shows: Overview, Status, Priority Focus, Needs Attention, Velocity Summary
 ```
 
 **Velocity analysis:**
+
 ```bash
-lean-spec stats --velocity
+harnspec stats --velocity
 # Shows: Cycle Time, Lead Time, Throughput, WIP metrics
 ```
 
 **Full analytics:**
+
 ```bash
-lean-spec stats --full
+harnspec stats --full
 # Shows: Everything combined (stats + timeline + velocity)
 ```
 
@@ -155,18 +170,21 @@ Detailed information split for Context Economy (<400 lines per file):
 ## Success Criteria (Achieved)
 
 **✅ User Experience:**
+
 - Stats command now provides clear project insights with simplified default view
 - Needs Attention section highlights critical issues
 - Velocity metrics prove SDD effectiveness
 - No breaking changes for existing users
 
 **✅ Technical:**
+
 - Fast render performance with single spec load
 - Backward compatible (old stats behavior available with `--full`)
 - Clean separation: velocity.ts, completion.ts, insights.ts utilities
 - Comprehensive test coverage
 
 **✅ Business:**
+
 - Velocity metrics demonstrate SDD value objectively
 - Enhanced board/stats commands improve v0.2.0 launch demo
 - Clear analytics for teams to track improvement
@@ -180,6 +198,7 @@ None - standalone feature for v0.2.0
 ### Why Velocity Metrics Matter
 
 **Velocity is SDD's feedback loop:**
+
 - Proves whether specs accelerate or slow development
 - Identifies workflow bottlenecks
 - Tracks team learning curve  
@@ -189,12 +208,14 @@ None - standalone feature for v0.2.0
 ### Design Decisions
 
 **Why no separate dashboard command?**
-- Decided against `lean-spec` defaulting to dashboard (keeps help accessible)
+
+- Decided against `harnspec` defaulting to dashboard (keeps help accessible)
 - Enhanced `stats` and `board` commands provide comprehensive views
 - Simpler CLI surface area (fewer commands to learn)
 - Functionality distributed where it makes most sense
 
 **Why keep timeline command?**
+
 - Originally planned for deprecation
 - Decided to keep it as dedicated historical view
 - No user confusion since stats/timeline serve different use cases

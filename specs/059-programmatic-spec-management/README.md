@@ -36,6 +36,7 @@ completed: '2025-11-13'
 ### Critical Performance Issue
 
 **Current Reality**:
+
 - AI agents manually editing 1,166-line markdown files → slow, error-prone
 - Text corruption during large multi-replace operations
 - Context window pollution from oversized specs
@@ -44,6 +45,7 @@ completed: '2025-11-13'
 **Root Cause**: AI agents lack clean tools to transform specs programmatically - they resort to direct markdown editing.
 
 **Impact**:
+
 - ❌ Spec 045 (4,800 tokens): AI struggles to edit coherently
 - ❌ Context window waste processing oversized specs
 - ❌ Risk of file corruption during complex transformations
@@ -74,6 +76,7 @@ completed: '2025-11-13'
 ```
 
 **Benefits**:
+
 - ✅ Fast: No LLM text generation for file operations
 - ✅ Reliable: Deterministic, testable transformations
 - ✅ Clean: AI agents don't touch markdown directly
@@ -84,12 +87,14 @@ completed: '2025-11-13'
 Based on research from [Anthropic](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), [LangChain](https://blog.langchain.com/context-engineering-for-agents/), and [Drew Breunig](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html):
 
 **Four Core Strategies**:
+
 1. **Partitioning** - Split into sub-specs (what we do in spec 012)
 2. **Compaction** - Remove redundancy, preserve signal
 3. **Compression** - Summarize without losing intent
 4. **Isolation** - Move unrelated concerns to separate specs
 
 **Four Context Failure Modes** (what LeanSpec addresses):
+
 1. **Context Poisoning** - Hallucinations accumulate in spec history
 2. **Context Distraction** - Spec length overwhelms trained knowledge
 3. **Context Confusion** - Superfluous content influences decisions
@@ -98,6 +103,7 @@ Based on research from [Anthropic](https://www.anthropic.com/engineering/effecti
 ### What We're Building
 
 **Mechanical transformation tools for AI agent orchestration**:
+
 - ✅ Parse markdown structure (sections, line ranges, tokens)
 - ✅ Analyze complexity algorithmically (metrics, patterns)
 - ✅ Execute transformations mechanically (split, move, merge)
@@ -105,6 +111,7 @@ Based on research from [Anthropic](https://www.anthropic.com/engineering/effecti
 - ⚡ No LLM calls - AI agents provide the intelligence
 
 **AI Agent Workflow**:
+
 1. Agent reads spec → detects issue (e.g., 4,800 tokens)
 2. Agent decides strategy (e.g., "split by concerns")
 3. Agent calls tool with explicit parameters (e.g., section mappings)
@@ -112,6 +119,7 @@ Based on research from [Anthropic](https://www.anthropic.com/engineering/effecti
 5. Agent reviews result and continues or adjusts
 
 **Why This Works**:
+
 - AI agents already have context understanding
 - Tools just need to execute what AI decides
 - Clean separation: intelligence (AI) vs execution (tools)
@@ -122,7 +130,7 @@ Based on research from [Anthropic](https://www.anthropic.com/engineering/effecti
 # AI Agent Workflow Example:
 
 # 1. AI agent detects issue
-$ lean-spec analyze 045 --json
+$ harnspec analyze 045 --json
 {
   "tokens": 4800,
   "threshold": "warning",
@@ -137,7 +145,7 @@ $ lean-spec analyze 045 --json
 # 2. AI agent decides: "I'll split by concerns"
 
 # 3. AI agent calls tool with explicit parameters
-$ lean-spec split 045 \
+$ harnspec split 045 \
   --output=README.md:1-150 \
   --output=DESIGN.md:151-528 \
   --output=TESTING.md:529-710 \
@@ -151,7 +159,7 @@ $ lean-spec split 045 \
 # ✓ Validated all files
 
 # 4. AI agent verifies result
-$ lean-spec tokens 045/*
+$ harnspec tokens 045/*
 # 045-unified-dashboard/README.md: 812 tokens
 # 045-unified-dashboard/DESIGN.md: 1,512 tokens
 # 045-unified-dashboard/TESTING.md: 728 tokens
@@ -159,6 +167,7 @@ $ lean-spec tokens 045/*
 ```
 
 **Key Difference from Current Approach**:
+
 - ❌ Old: AI manually rewrites markdown → slow, error-prone
 - ✅ New: AI orchestrates tools → fast, deterministic
 
@@ -178,10 +187,10 @@ This spec is organized using sub-spec files:
 
 | Strategy | Purpose | When to Use | Tool |
 |----------|---------|-------------|------|
-| **Partition** | Split into sub-specs | Spec >3,500 tokens, multiple concerns | `lean-spec split` |
-| **Compact** | Remove redundancy | Verbose, repetitive content | `lean-spec compact` |
-| **Compress** | Summarize sections | Historical context, completed phases | `lean-spec compress` |
-| **Isolate** | Move to separate spec | Unrelated concern, different lifecycle | `lean-spec isolate` |
+| **Partition** | Split into sub-specs | Spec >3,500 tokens, multiple concerns | `harnspec split` |
+| **Compact** | Remove redundancy | Verbose, repetitive content | `harnspec compact` |
+| **Compress** | Summarize sections | Historical context, completed phases | `harnspec compress` |
+| **Isolate** | Move to separate spec | Unrelated concern, different lifecycle | `harnspec isolate` |
 
 ### Context Failure Detection
 
@@ -196,18 +205,18 @@ This spec is organized using sub-spec files:
 
 ```bash
 # Analyze spec (returns JSON for AI agent)
-lean-spec analyze <spec> --json
+harnspec analyze <spec> --json
 
 # Transform specs (AI agent provides parameters)
-lean-spec split <spec> --output=FILE:LINES [--output=...]
-lean-spec compact <spec> --remove=LINES [--remove=...]
-lean-spec compress <spec> --replace=LINES:TEXT
-lean-spec isolate <spec> --lines=RANGE --to=NEW_SPEC
+harnspec split <spec> --output=FILE:LINES [--output=...]
+harnspec compact <spec> --remove=LINES [--remove=...]
+harnspec compress <spec> --replace=LINES:TEXT
+harnspec isolate <spec> --lines=RANGE --to=NEW_SPEC
 
 # Utilities
-lean-spec diff <spec> --before-after
-lean-spec preview <spec> --split=FILE:LINES
-lean-spec rollback <spec>
+harnspec diff <spec> --before-after
+harnspec preview <spec> --split=FILE:LINES
+harnspec rollback <spec>
 ```
 
 ## Status
@@ -215,6 +224,7 @@ lean-spec rollback <spec>
 **Current Phase**: 📋 Planning & Design
 
 **Next Steps**:
+
 1. Complete sub-spec documentation
 2. Review with team
 3. Begin implementation (Phase 1: Parser)
@@ -224,6 +234,7 @@ lean-spec rollback <spec>
 ### Why AI Agent Orchestration Works
 
 **AI Agent Strengths** (provide intelligence):
+
 - Understanding spec content
 - Detecting issues (oversized, redundant, contradictory)
 - Deciding transformation strategy
@@ -231,6 +242,7 @@ lean-spec rollback <spec>
 - Reviewing and verifying results
 
 **Tool Strengths** (provide execution):
+
 - Fast file operations
 - Deterministic behavior
 - No hallucinations
@@ -238,6 +250,7 @@ lean-spec rollback <spec>
 - Reference updating
 
 **Clean Separation**:
+
 ```
 AI Agent: "Split this 4,800 token spec at lines 1-150, 151-528, 529-710"
   ↓
@@ -247,6 +260,7 @@ AI Agent: "Verify: all files under 2,000 tokens" → ✓
 ```
 
 **Why This is Better**:
+
 - ✅ AI agents already have context (no need to re-analyze in tool)
 - ✅ Tools are simple and fast (no LLM calls)
 - ✅ Deterministic (same params = same result)
@@ -255,14 +269,16 @@ AI Agent: "Verify: all files under 2,000 tokens" → ✓
 ### Context Engineering as First Principle
 
 This builds on **Context Economy** (Principle #1 from spec 049):
+
 - Specs must fit in working memory
 - <2,000 tokens excellent, >3,500 tokens warning, >5,000 tokens should split
 - But splitting shouldn't require 10 minutes of LLM text generation
 
 **Evolution**:
+
 ```
 v0.1.0: Manual spec writing
-v0.2.0: Detection + warnings (lean-spec validate)
+v0.2.0: Detection + warnings (harnspec validate)
 v0.3.0: Programmatic transformation (this spec)
 v0.4.0: Continuous context management (auto-compaction, etc.)
 ```
@@ -270,23 +286,27 @@ v0.4.0: Continuous context management (auto-compaction, etc.)
 ## Plan
 
 ### Phase 1: Foundation (Week 1) ✅ COMPLETE
+
 - [x] Markdown AST parser (unified.js ecosystem)
 - [x] Spec structure analyzer
 - [x] Boundary detection algorithms
 - [x] Core data structures
 
 ### Phase 2: Analysis Tools (Week 2) ✅ COMPLETE
-- [x] `lean-spec analyze --complexity`
-- [x] `lean-spec analyze --json` (for AI agents)
+
+- [x] `harnspec analyze --complexity`
+- [x] `harnspec analyze --json` (for AI agents)
 - [x] Visual reports
 
 ### Phase 3: Transformation Engine (Week 3) ✅ COMPLETE
-- [x] `lean-spec split` - Partition specs into sub-specs
-- [x] `lean-spec compact` - Remove redundancy
-- [x] `lean-spec compress` - Replace with summaries
-- [x] `lean-spec isolate` - Move to new spec
+
+- [x] `harnspec split` - Partition specs into sub-specs
+- [x] `harnspec compact` - Remove redundancy
+- [x] `harnspec compress` - Replace with summaries
+- [x] `harnspec isolate` - Move to new spec
 
 ### Phase 4: Testing & Launch (Week 4) ✅ COMPLETE
+
 - [x] Test all commands
 - [x] Add comprehensive test coverage
 - [x] CLI integration and polish
@@ -300,63 +320,63 @@ v0.4.0: Continuous context management (auto-compaction, etc.)
 
 ```bash
 # Get structured analysis (JSON output for AI agents)
-lean-spec analyze 059 --json
+harnspec analyze 059 --json
 
 # Human-readable output with recommendations
-lean-spec analyze 045 --verbose
+harnspec analyze 045 --verbose
 ```
 
 ### Split Spec into Sub-Specs
 
 ```bash
 # Split by explicit line ranges (AI agent provides ranges)
-lean-spec split 045 \
+harnspec split 045 \
   --output=README.md:1-150 \
   --output=DESIGN.md:151-528 \
   --output=TESTING.md:529-710 \
   --update-refs
 
 # Preview before applying
-lean-spec split 045 --output=README.md:1-150 --dry-run
+harnspec split 045 --output=README.md:1-150 --dry-run
 ```
 
 ### Compact Redundant Content
 
 ```bash
 # Remove specified line ranges (AI agent identifies redundancy)
-lean-spec compact 045 \
+harnspec compact 045 \
   --remove=145-153 \
   --remove=234-256 \
   --remove=401-415
 
 # Preview what would be removed
-lean-spec compact 045 --remove=145-153 --dry-run
+harnspec compact 045 --remove=145-153 --dry-run
 ```
 
 ### Compress with Summaries
 
 ```bash
 # Replace verbose sections with AI-provided summaries
-lean-spec compress 043 \
+harnspec compress 043 \
   --replace='142-284:## ✅ Phase 1: Completed
 
 Established first principles. See: specs/049/'
 
 # Preview compression
-lean-spec compress 043 --replace='142-284:Summary here' --dry-run
+harnspec compress 043 --replace='142-284:Summary here' --dry-run
 ```
 
 ### Isolate Content to New Spec
 
 ```bash
 # Move independent sections to separate specs
-lean-spec isolate 045 \
+harnspec isolate 045 \
   --lines=401-542 \
   --to=060-velocity-algorithm \
   --add-reference
 
 # Preview isolation
-lean-spec isolate 045 --lines=401-542 --to=060-new-spec --dry-run
+harnspec isolate 045 --lines=401-542 --to=060-new-spec --dry-run
 ```
 
 For detailed command documentation, see [COMMANDS.md](./COMMANDS.md).
@@ -366,17 +386,20 @@ For detailed command documentation, see [COMMANDS.md](./COMMANDS.md).
 ### Validation Criteria
 
 **Performance**:
+
 - [ ] Split 4,800-token spec in <1 second (vs 10+ minutes manual)
 - [ ] Parse/analyze 100 specs in <2 seconds
 - [ ] Zero text corruption (programmatic = deterministic)
 
 **Correctness**:
+
 - [ ] Preserves all content (no information loss)
 - [ ] Maintains markdown validity
 - [ ] Updates all cross-references correctly
 - [ ] Frontmatter remains valid
 
 **Usability**:
+
 - [ ] Clear analysis reports
 - [ ] Interactive preview before applying
 - [ ] Undo/rollback capability
@@ -385,16 +408,19 @@ For detailed command documentation, see [COMMANDS.md](./COMMANDS.md).
 ### Test Approach
 
 **Golden Tests**:
+
 - Snapshot known-good transformations
 - Regression testing against corpus
 - Compare manual vs programmatic splits
 
 **Dogfooding**:
+
 - Use tools on our own oversized specs
 - Validate against specs 045, 046, 048 splits
 - Measure time savings vs manual approach
 
 **Edge Cases**:
+
 - Specs with complex nested structures
 - Specs with many code blocks
 - Specs with tables and diagrams
@@ -405,11 +431,13 @@ For detailed command documentation, see [COMMANDS.md](./COMMANDS.md).
 ### Quantitative
 
 **Speed**:
+
 - 100x faster than LLM text generation
 - <1s to split any spec <8,000 tokens
 - <2s to analyze entire project
 
 **Quality**:
+
 - Zero corruption incidents
 - 100% markdown validity preserved
 - 100% frontmatter validity preserved
@@ -418,12 +446,14 @@ For detailed command documentation, see [COMMANDS.md](./COMMANDS.md).
 ### Qualitative
 
 **Developer Experience**:
+
 - "Splitting specs is now instant"
 - "No more babysitting AI rewrites"
 - "Confident transformations won't corrupt"
 - "Can experiment with splits freely"
 
 **Impact**:
+
 - Enables proactive splitting at 3,500 tokens (warning threshold)
 - Removes friction from Context Economy
 - Makes LeanSpec principles easier to follow
@@ -443,12 +473,14 @@ The external references identified four key insights:
 ### Why This Matters
 
 **For LeanSpec**:
+
 - ✅ Practices our own principles (Context Economy)
 - ✅ Removes major pain point (slow manual splitting)
 - ✅ Enables proactive management (split at 300, not 600)
 - ✅ Makes AI agents more effective (faster, fewer errors)
 
 **For Users**:
+
 - ✅ Faster workflow (seconds vs minutes)
 - ✅ Higher confidence (deterministic transforms)
 - ✅ Better specs (easy to maintain context limits)
@@ -457,16 +489,19 @@ The external references identified four key insights:
 ### Alternatives Considered
 
 **1. Pure AI Approach** (current, rejected):
+
 - ❌ Too slow (10+ minutes per spec)
 - ❌ Error-prone (context corruption)
 - ❌ Not deterministic (varies by run)
 
 **2. Manual Guidelines Only** (rejected):
+
 - ❌ Relies on discipline
 - ❌ Still slow when needed
 - ❌ No automation assistance
 
 **3. Hybrid Approach** (chosen):
+
 - ✅ AI suggests, code executes
 - ✅ Fast (programmatic) + smart (AI)
 - ✅ Best of both worlds

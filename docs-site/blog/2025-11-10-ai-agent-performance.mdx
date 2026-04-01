@@ -154,7 +154,7 @@ We built HarnSpec using HarnSpec itself—the ultimate test of whether this meth
 - Full-featured CLI with 15+ commands
 - MCP server for Cursor, GitHub Copilot integration
 - Documentation site with comprehensive guides
-- [60+ specs](https://github.com/codervisor/lean-spec/tree/main/specs) written and implemented with AI agents
+- [60+ specs](https://github.com/codervisor/harnspec/tree/main/specs) written and implemented with AI agents
 
 **Then we violated our own principles**: Some specs grew to 1,166 lines. We hit the exact problems we were solving:
 - AI agents started corrupting specs during edits
@@ -212,21 +212,21 @@ CLI commands help you detect and fix context issues:
 
 ```bash
 # Install
-npm install -g lean-spec
+npm install -g harnspec
 
 # Initialize in your project
 cd your-project
-lean-spec init
+harnspec init
 
 # Detect issues
-lean-spec validate              # Check for problems
-lean-spec complexity <spec>     # Analyze size/structure
+harnspec validate              # Check for problems
+harnspec complexity <spec>     # Analyze size/structure
 
 # Fix issues  
-lean-spec split <spec>          # Guided splitting workflow
+harnspec split <spec>          # Guided splitting workflow
 
 # Track progress
-lean-spec board                 # Kanban view of all specs
+harnspec board                 # Kanban view of all specs
 ```
 
 ### Start Simple, Grow as Needed
@@ -242,10 +242,10 @@ The structure adapts to your needs—you never add complexity "just in case."
 ### Try It Today
 
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 cd your-project  
-lean-spec init
-lean-spec create user-authentication
+harnspec init
+harnspec create user-authentication
 ```
 
 Your AI coding assistant will thank you.
@@ -269,8 +269,8 @@ HarnSpec is a context engineering methodology for human-AI collaboration on soft
 ---
 
 **Learn more**:
-- GitHub: [github.com/codervisor/lean-spec](https://github.com/codervisor/lean-spec)
-- Docs: [lean-spec.dev](https://lean-spec.dev)
+- GitHub: [github.com/codervisor/harnspec](https://github.com/codervisor/harnspec)
+- Docs: [harnspec.dev](https://harnspec.dev)
 - Research: [Context Engineering Guide](/docs/advanced/context-engineering)
 
 **References**:

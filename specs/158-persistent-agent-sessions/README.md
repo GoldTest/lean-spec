@@ -25,25 +25,29 @@ transitions:
 
 ## Overview
 
-**Problem**: The current `lean-spec agent` command (spec 123) launches one-shot agent sessions that don't persist state across multiple interactions. For medium-to-large specs requiring 2-5+ agent sessions due to:
+**Problem**: The current `harnspec agent` command (spec 123) launches one-shot agent sessions that don't persist state across multiple interactions. For medium-to-large specs requiring 2-5+ agent sessions due to:
+
 - Context window performance degradation after ~20k tokens
 - Natural implementation phases (design → core → polish → tests → docs)
 - Need to incorporate human feedback between phases
 - Agent hitting rate limits or timeouts
 
 Users must manually:
+
 - Track which phase they're in
 - Remember what was completed
 - Reconstruct context for next session
 - Update spec status manually between sessions
 
-**Impact**: 
+**Impact**:
+
 - 60-70% of real-world specs require multiple sessions
 - Manual session management breaks flow and loses context
 - No clear handoff between sessions leads to duplicated work
 - Can't resume failed sessions without starting over
 
 **Goals**:
+
 1. **Persistent session state** - Track progress across multiple agent invocations
 2. **Phase-based workflows** - Support natural implementation phases (design → build → test → document)
 3. **Context continuity** - Seamlessly resume with minimal context reconstruction
@@ -55,12 +59,14 @@ Users must manually:
 ### Orchestration Pattern Context
 
 This design applies **Sequential Orchestration** pattern (Microsoft Agent Framework) to spec implementation:
+
 - Multi-phase workflow with clear linear dependencies (design → implementation → testing → documentation)
 - Progressive refinement through structured phases
 - Session state enables resumption at any phase boundary
 - Human-in-the-loop between phases for feedback and validation
 
 **Why Sequential over Other Patterns**:
+
 - **vs Concurrent**: Phases have dependencies (can't test before implementing)
 - **vs Group Chat**: Single agent per phase with checkpoints, not multi-agent discussion
 - **vs Handoff**: Phase sequence is predetermined, not dynamic routing
@@ -69,16 +75,19 @@ This design applies **Sequential Orchestration** pattern (Microsoft Agent Framew
 ### Core Concepts
 
 **Session**: A series of agent interactions working toward completing a spec
+
 - Has unique ID, tracks state across invocations
 - Persisted to `.leanspec/sessions/<spec-name>-<session-id>.json`
 - Contains: phase progress, completed tasks, notes, artifacts
 
 **Phase**: A logical stage of implementation (configurable per spec/project)
+
 - Default phases: `design` → `implementation` → `testing` → `documentation` → `review`
 - Each phase has entry criteria and completion markers
 - Agent receives phase-specific context and prompts
 
 **Resume**: Continue an existing session from last checkpoint
+
 - Restores: working directory, branch state, phase context
 - Injects: session summary, completed work, next steps
 - Minimizes token usage via intelligent context selection
@@ -135,35 +144,35 @@ interface Interaction {
 
 ```bash
 # Start a new session (replaces simple `agent run`)
-lean-spec agent start <spec> [--agent <type>] [--phase <name>]
+harnspec agent start <spec> [--agent <type>] [--phase <name>]
 
 # Continue existing session
-lean-spec agent resume <spec> [--phase <name>]
+harnspec agent resume <spec> [--phase <name>]
 
 # Pause session with notes
-lean-spec agent pause <spec> --notes "Core API done, tests next"
+harnspec agent pause <spec> --notes "Core API done, tests next"
 
 # Show session details
-lean-spec agent status <spec> [--verbose]
+harnspec agent status <spec> [--verbose]
 
 # List all sessions
-lean-spec agent sessions [--active] [--spec <spec>]
+harnspec agent sessions [--active] [--spec <spec>]
 
 # Complete session (updates spec status to complete)
-lean-spec agent complete <spec> [--notes "Final review done"]
+harnspec agent complete <spec> [--notes "Final review done"]
 
 # Examples:
-lean-spec agent start 045 --agent claude
+harnspec agent start 045 --agent claude
 # ... agent works, exits after design phase ...
 
-lean-spec agent resume 045
+harnspec agent resume 045
 # Agent receives: "Previous session completed design phase. 
 # Files changed: api.ts, types.ts. Next: Implement core logic."
 
-lean-spec agent pause 045 --notes "Core logic done, need design review"
+harnspec agent pause 045 --notes "Core logic done, need design review"
 # ... human reviews, provides feedback in spec ...
 
-lean-spec agent resume 045 --phase testing
+harnspec agent resume 045 --phase testing
 # Agent receives: "Design review incorporated. Start testing phase."
 ```
 
@@ -174,7 +183,7 @@ lean-spec agent resume 045 --phase testing
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ Session 1: Design Phase                                 │
-│ lean-spec agent start 045 --agent claude                │
+│ harnspec agent start 045 --agent claude                │
 │ → Agent creates architecture, defines interfaces        │
 │ → Auto-pauses after ~15k tokens or explicit exit        │
 │ → Session saved with: phase=design, files=[api.ts, ...] │
@@ -182,7 +191,7 @@ lean-spec agent resume 045 --phase testing
          ↓ (human reviews, updates spec with feedback)
 ┌─────────────────────────────────────────────────────────┐
 │ Session 2: Implementation Phase                         │
-│ lean-spec agent resume 045                              │
+│ harnspec agent resume 045                              │
 │ → Agent receives: design summary + feedback + next phase│
 │ → Implements core logic                                 │
 │ → Auto-pauses after ~15k tokens                         │
@@ -190,16 +199,16 @@ lean-spec agent resume 045 --phase testing
          ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Session 3: Testing Phase                                │
-│ lean-spec agent resume 045 --phase testing              │
+│ harnspec agent resume 045 --phase testing              │
 │ → Agent writes tests, fixes bugs                        │
 │ → Runs tests, validates                                 │
 └─────────────────────────────────────────────────────────┘
          ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Session 4: Documentation Phase                          │
-│ lean-spec agent resume 045 --phase documentation        │
+│ harnspec agent resume 045 --phase documentation        │
 │ → Agent writes docs, updates README                     │
-│ → lean-spec agent complete 045                          │
+│ → harnspec agent complete 045                          │
 │ → Spec status → complete, session → completed           │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -295,6 +304,7 @@ agent_phases:
 ### Auto-Pause Triggers
 
 Sessions automatically pause when:
+
 1. **Token threshold** - After ~15k tokens processed
 2. **Time limit** - After 30 minutes (configurable)
 3. **Explicit checkpoint** - Agent writes `[CHECKPOINT]` in output
@@ -305,10 +315,10 @@ Sessions automatically pause when:
 
 ```typescript
 // Enhanced MCP tools
-mcp_lean-spec_agent_start   // Start new session
-mcp_lean-spec_agent_resume  // Resume existing session
-mcp_lean-spec_agent_pause   // Pause with notes
-mcp_lean-spec_agent_status  // Enhanced with session details
+mcp_harnspec_agent_start   // Start new session
+mcp_harnspec_agent_resume  // Resume existing session
+mcp_harnspec_agent_pause   // Pause with notes
+mcp_harnspec_agent_status  // Enhanced with session details
 ```
 
 ## Implementation Considerations
@@ -318,12 +328,14 @@ mcp_lean-spec_agent_status  // Enhanced with session details
 **Problem**: Sequential phases accumulate context (spec + design + implementation + ...). By phase 4-5, context can exceed 30-50k tokens.
 
 **Strategy** (inspired by Microsoft patterns):
+
 1. **Minimal Context Resume**: Each resume gets 2-3k tokens (phase summary + file changes + next steps)
 2. **On-Demand Full Context**: Agent can read full spec if needed, but default is summary
 3. **Progressive Context**: Early phases (design) need full spec, later phases (testing) need only recent changes
 4. **Context Pruning**: Drop completed phase details after 2-3 phases
 
 **Token Budget Guidelines**:
+
 ```
 Phase 1 (Design):       Full spec (~5-10k) + prompt (~1k) = 6-11k tokens
 Phase 2 (Implementation): Summary (~2k) + design output (~3k) + prompt = ~6k
@@ -336,12 +348,14 @@ Total across 4 phases: ~21-26k tokens (vs 40-60k for full context each time)
 ### Reliability and Error Handling
 
 **Checkpoint Mechanisms** (Microsoft pattern: reliability considerations):
+
 - Auto-save session state every 2 minutes during agent execution
 - Commit progress before phase transitions
 - Store last successful state before risky operations
 - Enable resume from last checkpoint on failure
 
 **Failure Recovery**:
+
 ```typescript
 interface SessionCheckpoint {
   timestamp: string;
@@ -354,6 +368,7 @@ interface SessionCheckpoint {
 ```
 
 **Retry Strategy**:
+
 - Phase failure → Retry same phase with error context
 - Timeout (>30min) → Auto-pause, allow human intervention
 - Rate limit → Pause session, resume when quota available
@@ -362,12 +377,14 @@ interface SessionCheckpoint {
 ### Observability and Audit Trail
 
 **Session Telemetry** (Microsoft pattern: observability):
+
 - Track all agent invocations: timestamp, duration, phase, tokens used
 - Log phase transitions: what triggered move to next phase
 - Record file changes per phase: which files modified in each phase
 - Capture decision points: why agent chose certain approach
 
 **Debug Logs Structure**:
+
 ```
 .leanspec/sessions/<spec>/
   session-001.json           # Session state
@@ -380,6 +397,7 @@ interface SessionCheckpoint {
 ```
 
 **Metrics to Track**:
+
 - Session duration per phase
 - Token usage per phase
 - Number of retries/errors
@@ -389,6 +407,7 @@ interface SessionCheckpoint {
 ### Security Considerations
 
 **Principle of Least Privilege** (Microsoft pattern: security):
+
 - Each phase gets only necessary permissions
 - Design phase: Read-only access to codebase
 - Implementation phase: Write access to source files only
@@ -396,6 +415,7 @@ interface SessionCheckpoint {
 - Documentation phase: Write access to docs only
 
 **Session Isolation**:
+
 - Session files stored in `.leanspec/sessions/` (gitignored by default)
 - No sensitive data (API keys, tokens) in session state
 - Session resumption requires workspace authentication
@@ -404,6 +424,7 @@ interface SessionCheckpoint {
 ### Avoiding Common Pitfalls
 
 **Anti-Patterns to Avoid** (Microsoft guide):
+
 1. ❌ **Unnecessary Complexity**: Don't use sessions for simple 1-phase specs (<150 lines)
 2. ❌ **Excessive Context**: Don't pass full conversation history to every phase
 3. ❌ **Shared Mutable State**: Each phase should commit changes before handoff
@@ -414,12 +435,14 @@ interface SessionCheckpoint {
 ## Plan
 
 ### Phase 1: Session State Management
+
 - [ ] Design session schema (JSON format)
 - [ ] Implement session storage (`.leanspec/sessions/`)
 - [ ] Create session CRUD operations (create, read, update)
 - [ ] Add session listing/filtering
 
 ### Phase 2: Core Commands
+
 - [ ] Implement `agent start` (replaces/enhances `agent run`)
 - [ ] Implement `agent resume` (load session, inject context)
 - [ ] Implement `agent pause` (save state, add notes)
@@ -427,34 +450,40 @@ interface SessionCheckpoint {
 - [ ] Implement `agent sessions` (list all sessions)
 
 ### Phase 3: Phase Management
+
 - [ ] Define default phases (design/implementation/testing/docs/review)
 - [ ] Support custom phases (config.yaml + spec frontmatter)
 - [ ] Implement phase transitions
 - [ ] Add phase-specific prompts
 
 ### Phase 4: Context Continuity
+
 - [ ] Design minimal context template for resume
 - [ ] Implement smart context selection (what to include)
 - [ ] Track file changes per session/phase
 - [ ] Generate session summaries automatically
 
 ### Phase 5: Auto-Pause Logic
+
 - [ ] Token counting during session (estimate)
 - [ ] Time-based auto-pause (configurable)
 - [ ] Checkpoint detection in agent output
 - [ ] Phase completion detection
 
 ### Phase 6: Enhanced Status
+
 - [ ] Enhanced `agent status` with session history
 - [ ] Session analytics (time spent, phases completed)
 - [ ] Progress visualization (which phase, % complete)
 
 ### Phase 7: MCP Integration
+
 - [ ] Update MCP tools with session support
 - [ ] Add session management to MCP prompts
 - [ ] Test AI-to-AI session handoff
 
 ### Phase 8: Documentation & Testing
+
 - [ ] Document session workflow
 - [ ] Add examples for multi-session specs
 - [ ] Integration tests for session persistence
@@ -463,24 +492,28 @@ interface SessionCheckpoint {
 ## Test
 
 ### Unit Tests
+
 - [ ] Session state serialization/deserialization
 - [ ] Phase transitions (design → impl → test → docs)
 - [ ] Context template generation
 - [ ] Auto-pause triggers
 
 ### Integration Tests
+
 - [ ] Complete multi-session workflow (3+ sessions)
 - [ ] Resume after manual spec updates
 - [ ] Phase-specific prompts work correctly
 - [ ] Session history persists across CLI invocations
 
 ### Real-World Validation
+
 - [ ] Implement a medium spec (200-300 lines) in 3 sessions
 - [ ] Implement a large spec (400+ lines) in 5+ sessions
 - [ ] Verify context continuity (no duplicated work)
 - [ ] Measure token savings (resume vs fresh start)
 
 ### Edge Cases
+
 - [ ] Resume after failed session
 - [ ] Resume after git conflicts
 - [ ] Multiple active sessions for same spec (error handling)
@@ -491,12 +524,14 @@ interface SessionCheckpoint {
 ### Key Design Decisions
 
 **1. Why Session Files vs In-Memory State?**
+
 - Sessions must survive CLI process restarts
 - Need audit trail for debugging/analytics
 - Files are simple, portable, version-controllable
 - **Pattern justification**: Aligns with Microsoft's checkpoint/reliability recommendations
 
 **2. Why Sequential Orchestration Pattern?**
+
 - **Natural workflow**: Spec implementation follows predictable stages (design → build → test → document)
 - **Clear dependencies**: Can't test before implementing, can't document before testing
 - **Progressive refinement**: Each phase builds on previous phase output
@@ -505,6 +540,7 @@ interface SessionCheckpoint {
 - **Not magentic**: Spec provides the plan; agent executes it sequentially
 
 **3. Why Phases vs Free-Form?**
+
 - Phases provide structure for large specs
 - Enable phase-specific prompts and context
 - Easier to track progress and estimate completion
@@ -512,12 +548,14 @@ interface SessionCheckpoint {
 - **Pattern justification**: Sequential orchestration requires well-defined stages
 
 **3. Why Auto-Pause?**
+
 - Prevents context window degradation
 - Forces natural breakpoints for human review
 - Saves costs (long sessions waste tokens on degraded performance)
 - Enables better error recovery
 
 **4. Token Budget for Resume Context**
+
 - 2-3k tokens sufficient for continuation
 - 85-90% reduction vs full spec re-injection
 - Include: phase summary, file changes, next steps
@@ -526,22 +564,27 @@ interface SessionCheckpoint {
 ### Alternatives Considered
 
 **A. No Sessions, Just Better Prompts**
+
 - Rejected: Doesn't solve state persistence or context degradation
 - Agents still lose track across invocations
 
 **B. Database for Sessions**
+
 - Rejected: Adds complexity, dependency
 - File-based is simpler, portable, debuggable
 
 **C. Single Long-Running Agent Process**
+
 - Rejected: Ties up resources, hard to pause/resume
 - Better to have explicit session boundaries
 
 **D. Cloud-Based Session Management**
+
 - Rejected: Requires backend service, auth
 - Should work offline/locally first
 
 **E. Automatic Phase Detection**
+
 - Considered: Parse git commits to infer phases
 - Rejected: Too complex, error-prone
 - Better to be explicit about phases
@@ -581,12 +624,14 @@ interface SessionCheckpoint {
 ### References
 
 **Microsoft AI Agent Orchestration Patterns**:
+
 - [AI Agent Design Patterns Guide](https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns)
 - Sequential orchestration: Multi-stage processes with linear dependencies
 - Implementation considerations: Context window, reliability, observability, security
 - Common pitfalls: Unnecessary complexity, excessive context accumulation
 
 **Key Takeaways**:
+
 1. **Sequential pattern fits perfectly**: Spec implementation is inherently sequential with phase dependencies
 2. **Context economy is critical**: Accumulated context degrades performance; use minimal resume context
 3. **Checkpoint everything**: Session state, git commits, phase progress for failure recovery
@@ -596,6 +641,7 @@ interface SessionCheckpoint {
 ### Success Metrics
 
 After implementation, track:
+
 - Average sessions per spec (expect 2-3 for medium specs)
 - Token savings from resume vs fresh start (expect 80-90%)
 - Time to resume (expect <5 seconds)

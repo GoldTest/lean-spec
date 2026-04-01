@@ -29,15 +29,17 @@ With 181 specs and growing, flat organization becomes limiting for:
 4. **Team organization** - Multiple teams working on different areas
 
 **Current tools** fall short:
+
 - **Tags**: Flat categorization, not hierarchical (ui, backend, docs can't nest)
 - **Dependencies**: Express relationships, not grouping (081 depends-on 082, but they're not part of a shared "UX Redesign" epic)
 - **Board groupBy**: Dynamic filtering, not persistent structure
 
 **Real pain**:
+
 - AI agents struggle to find "all UI specs" without knowing exact tags
 - Humans scan 181-item list to find related work
 - No way to express "these 6 specs are part of v0.3 release" structurally
-- `lean-spec list --tag ui` works but doesn't show hierarchy
+- `harnspec list --tag ui` works but doesn't show hierarchy
 
 ## Design Options Evaluation
 
@@ -54,6 +56,7 @@ tags: [ux, web]
 ```
 
 **Hierarchy examples**:
+
 - `releases/v0.3` → Release planning
 - `ui/chat` → UI subsystem
 - `backend/api/auth` → 3-level nesting
@@ -140,6 +143,7 @@ parent_spec: 081-web-app-ux-redesign
 ## Recommended Approach: Virtual Groups
 
 **Why virtual groups win**:
+
 1. **Backward compatible** - ungrouped specs work as before
 2. **Multi-dimensional** - spec can have `group: ui/chat` AND `tags: [ai, v0.3]`
 3. **Flexible depth** - 1-5 levels as needed, project decides
@@ -165,6 +169,7 @@ priority: high
 ```
 
 **Validation rules** (spec 018 extension):
+
 - Format: `^[a-z0-9-]+(/[a-z0-9-]+)*$` (lowercase, dash-separated, slash hierarchy)
 - Max depth: 5 levels (prevents abuse)
 - Example valid: `ui`, `ui/chat`, `releases/v0.3/ui`
@@ -173,11 +178,12 @@ priority: high
 ### 2. CLI Commands
 
 **List with groups**:
+
 ```bash
-lean-spec list --group ui           # All specs in ui/* groups
-lean-spec list --group ui/chat      # Exact match
-lean-spec list --group "ui/*"       # Wildcard (all ui subgroups)
-lean-spec list --group-tree         # Hierarchical tree view
+harnspec list --group ui           # All specs in ui/* groups
+harnspec list --group ui/chat      # Exact match
+harnspec list --group "ui/*"       # Wildcard (all ui subgroups)
+harnspec list --group-tree         # Hierarchical tree view
 
 # Output:
 ui/
@@ -190,15 +196,17 @@ ui/
 ```
 
 **Update groups**:
+
 ```bash
-lean-spec update 081 --group ui/redesign
-lean-spec group move ui/old ui/new        # Bulk rename
+harnspec update 081 --group ui/redesign
+harnspec group move ui/old ui/new        # Bulk rename
 ```
 
 **Board grouping**:
+
 ```bash
-lean-spec board --group-by group    # Group by top-level group
-lean-spec board --group-by group:2  # Group by 2nd level
+harnspec board --group-by group    # Group by top-level group
+harnspec board --group-by group:2  # Group by 2nd level
 ```
 
 ### 3. MCP Tools
@@ -217,23 +225,28 @@ group_specs(group)              // All specs in group hierarchy
 ### 4. UI Changes (Minimal Disruption)
 
 **Specs nav sidebar** (spec 081 already has tree view):
+
 - Add **group sections** above flat spec list
 - Collapsible group headers: `▶ ui (12)`, `▶ backend (8)`
 - Specs without groups: "Ungrouped" section at bottom
 
 **List view**:
+
 - Add **group badges** next to tags (different color/icon)
 - Filter dropdown: "All groups" → group tree selector
 
 **Board view**:
+
 - groupBy dropdown: add "Group (level 1)" option
 - Columns become groups instead of status
 
 **Detail page**:
+
 - Show group in breadcrumb: `Home → Specs → ui → redesign → #081`
 - Metadata row: `Group: ui/redesign`
 
 **Mockup (Specs nav sidebar)**:
+
 ```
 ┌─────────────────────┐
 │ Specifications      │
@@ -266,32 +279,36 @@ group_specs(group)              // All specs in group hierarchy
 ## Phased Implementation
 
 ### Phase 1: Core (Week 1)
+
 - [ ] Add `group` validation to spec 018 schema
 - [ ] Extend `list` command with `--group` filter
 - [ ] Add `--group` flag to `update` command
 - [ ] MCP tool support: `list({ group })`, `update({ group })`
 
 ### Phase 2: Hierarchy (Week 2)
+
 - [ ] Implement `--group-tree` list view
 - [ ] Add `group_list()` MCP tool (all groups with counts)
-- [ ] CLI `lean-spec group list` command
+- [ ] CLI `harnspec group list` command
 - [ ] Board `--group-by group` option
 
 ### Phase 3: UI Integration (Week 2-3)
+
 - [ ] Add group filter to list view
 - [ ] Show groups in specs nav sidebar (collapsible sections)
 - [ ] Group badges in spec cards
 - [ ] Breadcrumb shows group hierarchy
 
 ### Phase 4: Maintenance (Week 3)
-- [ ] `lean-spec group move <old> <new>` bulk rename
+
+- [ ] `harnspec group move <old> <new>` bulk rename
 - [ ] `group_rename()` MCP tool
 - [ ] Migration helper: suggest groups based on tags
 
 ## Acceptance Criteria
 
-- [ ] Spec with `group: ui/chat` appears in `lean-spec list --group ui`
-- [ ] `lean-spec list --group-tree` shows hierarchical tree
+- [ ] Spec with `group: ui/chat` appears in `harnspec list --group ui`
+- [ ] `harnspec list --group-tree` shows hierarchical tree
 - [ ] Board groupBy supports "Group (level 1)" option
 - [ ] UI specs nav sidebar shows collapsible group sections
 - [ ] Ungrouped specs still work (backward compatible)
@@ -324,6 +341,7 @@ group_specs(group)              // All specs in group hierarchy
 ## Dependencies
 
 Link after creation:
+
 - **134-ui-metadata-editing** - UI editor needs group field
 - **081-web-app-ux-redesign** - Specs nav sidebar structure
 - **150-tag-management** - Similar governance patterns

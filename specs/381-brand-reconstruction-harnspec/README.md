@@ -23,38 +23,45 @@ The original "LeanSpec" name and its associated vision (as outlined in Spec 380)
 ## Proposed Changes
 
 ### 1. Project Naming
+
 - **Project Name**: HarnSpec
 - **CLI Command**: `harnspec`
 - **npm Scope**: `@harnspec`
 
 ### 2. Package Updates
+
 - Root project renamed to `harnspec`.
 - CLI package renamed to `harnspec`.
 - All `@leanspec/*` packages renamed to `@harnspec/*`.
 
 ### 3. Documentation
+
 - Update all instances of "LeanSpec" to "HarnSpec" in the documentation site.
 - Move documentation hosting to GitHub Pages (`https://harnspec.github.io/`).
-- Remove references to `lean-spec.dev` and `web.lean-spec.dev`.
+- Remove references to `harnspec.dev` and `harnspec.gitub.io`.
 - Update branding assets.
 
 ### 4. Preservation of History
+
 - Existing specifications (`specs/001-*` through `specs/380-*`) will remain unchanged to preserve the project's evolution history.
 
 ## Technical Details
 
 ### Node.js Monorepo
+
 - Update `package.json` in root and all packages.
 - Rename binary in `packages/cli/package.json`.
-- Rename `bin/lean-spec.js` to `bin/harnspec.js`.
+- Rename `bin/harnspec.js` to `bin/harnspec.js`.
 
 ### Rust Components
+
 - Rename crates from `leanspec-*` to `harnspec-*`.
 - Update directory names in the `rust/` folder.
 
 ### Verification
 
 ### Acceptance Criteria
+
 - [ ] `harnspec --help` works correctly with the new name.
 - [ ] All packages publishable under `@harnspec` scope.
 - [ ] Documentation site correctly displays "HarnSpec" branding.

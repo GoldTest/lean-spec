@@ -16,7 +16,6 @@ completed: '2025-11-01'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-01 · **Tags**: enhancement, cli, visualization, pm-tools
 
-
 ## Overview
 
 Once specs have structured frontmatter (status, tags, priority, dependencies), we can build powerful PM/project visibility tools. These CLI commands transform LeanSpec from a simple spec tool into a lightweight project management system - all while staying file-first and lean.
@@ -28,19 +27,20 @@ Once specs have structured frontmatter (status, tags, priority, dependencies), w
 ### Commands Overview
 
 ```bash
-lean-spec stats              # Quick summary stats
-lean-spec board              # Kanban view by status
-lean-spec timeline           # Creation/completion over time
-lean-spec gantt              # Timeline with dependencies
-lean-spec deps <spec>        # Dependency graph
-lean-spec search <query>     # Full-text + metadata search
+harnspec stats              # Quick summary stats
+harnspec board              # Kanban view by status
+harnspec timeline           # Creation/completion over time
+harnspec gantt              # Timeline with dependencies
+harnspec deps <spec>        # Dependency graph
+harnspec search <query>     # Full-text + metadata search
 ```
 
-### 1. `lean-spec stats`
+### 1. `harnspec stats`
 
 Show aggregate statistics across all specs.
 
 **Output:**
+
 ```
 📊 Spec Statistics
 
@@ -66,15 +66,17 @@ Total Specs: 48
 ```
 
 **Options:**
+
 - `--tag=api` - Filter stats by tag
 - `--assignee=alice` - Filter by assignee
 - `--json` - Output as JSON for scripting
 
-### 2. `lean-spec board`
+### 2. `harnspec board`
 
 Kanban-style board view grouped by status.
 
 **Output:**
+
 ```
 📋 Spec Board
 
@@ -100,15 +102,17 @@ Kanban-style board view grouped by status.
 ```
 
 **Options:**
+
 - `--show-complete` - Expand complete column
 - `--tag=api` - Filter by tag
 - `--assignee=alice` - Filter by assignee
 
-### 3. `lean-spec timeline`
+### 3. `harnspec timeline`
 
 Visualize spec creation and completion over time.
 
 **Output:**
+
 ```
 📈 Spec Timeline (Last 30 Days)
 
@@ -125,15 +129,17 @@ Completion Rate:
 ```
 
 **Options:**
+
 - `--days=90` - Show last N days
 - `--by-tag` - Group by tag
 - `--by-assignee` - Group by assignee
 
-### 4. `lean-spec gantt`
+### 4. `harnspec gantt`
 
 Timeline view with dependencies (requires `depends_on` and optional `due` dates).
 
 **Output:**
+
 ```
 📅 Gantt Chart
 
@@ -152,15 +158,17 @@ Nov 1    Nov 8    Nov 15   Nov 22
 ```
 
 **Options:**
+
 - `--weeks=8` - Show N weeks
 - `--show-complete` - Include completed specs
 - `--critical-path` - Highlight critical path
 
-### 5. `lean-spec deps <spec>`
+### 5. `harnspec deps <spec>`
 
 Show dependency graph for a specific spec.
 
 **Output:**
+
 ```
 📦 Dependencies for 20251101/003-pm-visualization-tools
 
@@ -180,17 +188,19 @@ Dependency Chain:
 ```
 
 **Options:**
+
 - `--depth=3` - Show N levels deep
 - `--graph` - ASCII graph visualization
 - `--json` - Output as JSON
 
-### 6. `lean-spec search <query>`
+### 6. `harnspec search <query>`
 
 Full-text search with metadata filters.
 
 **Output:**
+
 ```bash
-$ lean-spec search "api" --status=planned --priority=high
+$ harnspec search "api" --status=planned --priority=high
 
 🔍 Found 2 specs matching "api"
 
@@ -204,6 +214,7 @@ $ lean-spec search "api" --status=planned --priority=high
 ```
 
 **Options:**
+
 - `--status=<status>` - Filter by status
 - `--tag=<tag>` - Filter by tag
 - `--priority=<priority>` - Filter by priority
@@ -212,6 +223,7 @@ $ lean-spec search "api" --status=planned --priority=high
 ### Implementation Notes
 
 **Tech Stack:**
+
 - `gray-matter` - Parse frontmatter
 - `chalk` - Colors (already used)
 - `ink` + `ink-box` - React-based TUI for interactive board
@@ -220,16 +232,19 @@ $ lean-spec search "api" --status=planned --priority=high
 - `marked` or `markdown-it` - Extract text for search
 
 **Interactive vs Static Mode:**
+
 - Default commands output static text (fast, scriptable)
 - Add `--interactive` or `-i` flag for TUI mode
-- Example: `lean-spec board --interactive` launches Ink TUI
+- Example: `harnspec board --interactive` launches Ink TUI
 
 **Performance:**
+
 - Cache parsed frontmatter to avoid re-reading files
 - For large repos (100+ specs), consider indexing
 - Lazy load spec content for search (frontmatter first)
 
 **Output Format:**
+
 - Default: colorful terminal output
 - `--interactive` / `-i`: Interactive TUI with Ink
 - `--json` flag for scripting/integration
@@ -237,12 +252,12 @@ $ lean-spec search "api" --status=planned --priority=high
 
 ## Plan
 
-- [ ] Implement `lean-spec stats` command
-- [ ] Implement `lean-spec board` command (static output)
-- [ ] Implement `lean-spec timeline` command
-- [ ] Implement `lean-spec deps` command with graph visualization
-- [ ] Implement `lean-spec gantt` command
-- [ ] Implement `lean-spec search` command with full-text + metadata
+- [ ] Implement `harnspec stats` command
+- [ ] Implement `harnspec board` command (static output)
+- [ ] Implement `harnspec timeline` command
+- [ ] Implement `harnspec deps` command with graph visualization
+- [ ] Implement `harnspec gantt` command
+- [ ] Implement `harnspec search` command with full-text + metadata
 - [ ] Add caching layer for better performance
 - [ ] Add `--json` and `--markdown` output formats
 - [ ] Implement interactive TUI mode with Ink
@@ -254,12 +269,12 @@ $ lean-spec search "api" --status=planned --priority=high
 
 ## Test
 
-- [ ] `lean-spec stats` shows correct counts across all specs
-- [ ] `lean-spec board` groups specs by status correctly
-- [ ] `lean-spec timeline` aggregates by date accurately
-- [ ] `lean-spec deps` resolves dependency chains correctly
-- [ ] `lean-spec gantt` displays timeline with proper dependencies
-- [ ] `lean-spec search` finds specs by content and metadata
+- [ ] `harnspec stats` shows correct counts across all specs
+- [ ] `harnspec board` groups specs by status correctly
+- [ ] `harnspec timeline` aggregates by date accurately
+- [ ] `harnspec deps` resolves dependency chains correctly
+- [ ] `harnspec gantt` displays timeline with proper dependencies
+- [ ] `harnspec search` finds specs by content and metadata
 - [ ] Commands work with 100+ specs (performance)
 - [ ] `--json` output is valid and parseable
 - [ ] Color output respects NO_COLOR environment variable
@@ -274,6 +289,7 @@ $ lean-spec search "api" --status=planned --priority=high
 ### Why Build This?
 
 Many teams avoid heavy PM tools but still need visibility. By building on structured frontmatter, we can provide:
+
 - Zero-setup project visibility
 - Git-based, version-controlled work tracking
 - No external dependencies or SaaS subscriptions
@@ -282,9 +298,10 @@ Many teams avoid heavy PM tools but still need visibility. By building on struct
 ### Progressive Enhancement
 
 Users can adopt these tools gradually:
-1. Start with basic `lean-spec list`
-2. Add frontmatter → unlock `lean-spec stats`
-3. Add dependencies → unlock `lean-spec deps` and `lean-spec gantt`
+
+1. Start with basic `harnspec list`
+2. Add frontmatter → unlock `harnspec stats`
+3. Add dependencies → unlock `harnspec deps` and `harnspec gantt`
 4. Add due dates → unlock timeline planning
 
 ### Inspiration
@@ -300,10 +317,11 @@ Users can adopt these tools gradually:
 Build an interactive board using Ink (React for CLI):
 
 **Command:**
+
 ```bash
-lean-spec board --interactive
+harnspec board --interactive
 # or shorthand
-lean-spec board -i
+harnspec board -i
 ```
 
 **TUI Features:**
@@ -331,6 +349,7 @@ lean-spec board -i
 ```
 
 **Interactions:**
+
 - `↑/↓` or `j/k` - Navigate between specs
 - `→/←` or `l/h` - Move spec to next/prev status column
 - `Enter` - Open spec detail view (shows full Overview + Plan)
@@ -342,6 +361,7 @@ lean-spec board -i
 - `q` - Quit
 
 **Detail View:**
+
 ```
 ┌─ 20251101/003-pm-visualization-tools ────────────────────┐
 │ Status: planned                                           │
@@ -354,14 +374,15 @@ lean-spec board -i
 │ Build powerful PM/project visibility tools...             │
 │                                                           │
 │ Plan:                                                     │
-│ ☐ Implement lean-spec stats command                          │
-│ ☐ Implement lean-spec board command                          │
+│ ☐ Implement harnspec stats command                          │
+│ ☐ Implement harnspec board command                          │
 │ ...                                                       │
 └──────────────────────────────────────────────────────────┘
 │ s: Change Status  Esc: Back  e: Edit in $EDITOR          │
 ```
 
 **Status Change:**
+
 - When moving spec with `→/←`, update frontmatter automatically
 - Also update `updated` timestamp
 - If moving to complete, set `completed` date
@@ -394,6 +415,7 @@ export const boardInteractive = async (options) => {
 ```
 
 **Benefits:**
+
 - Fast, keyboard-driven workflow
 - No context switching (stay in terminal)
 - Real-time updates visible immediately
@@ -401,6 +423,7 @@ export const boardInteractive = async (options) => {
 - Works over SSH (unlike web UIs)
 
 **Keep It Optional:**
+
 - Static output remains default (fast, scriptable)
 - Interactive mode is opt-in (`-i` flag)
 - Ink is optional dependency (peer dependency?)

@@ -61,18 +61,19 @@ Transitioning from `draft` directly to `in-progress` or `complete` requires `--f
 
 ```bash
 # These work normally
-lean-spec update <spec> --status planned
-lean-spec update <spec> --status archived
+harnspec update <spec> --status planned
+harnspec update <spec> --status archived
 
 # This will fail - skipping planned stage
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 # Error: Cannot skip 'planned' stage. Use --force to override.
 
 # This will succeed with force
-lean-spec update <spec> --status in-progress --force
+harnspec update <spec> --status in-progress --force
 ```
 
 MCP equivalent:
+
 ```json
 {
   "tool": "update",
@@ -85,6 +86,7 @@ MCP equivalent:
 #### UI: Warning Dialog for Stage Skipping
 
 When user tries to change status from `draft` directly to `in-progress` or `complete`:
+
 1. Show warning: "This spec hasn't been through the planned stage. Skip planning?"
 2. Options: "Go to Planned" (suggested) / "Skip Anyway" (confirm force)
 
@@ -92,7 +94,7 @@ This ensures the proper lifecycle is followed unless explicitly overridden.
 
 ### Configuration Flag
 
-Draft status is **opt-in** via `.lean-spec/config.json`:
+Draft status is **opt-in** via `.harnspec/config.json`:
 
 ```json
 {
@@ -104,8 +106,8 @@ Draft status is **opt-in** via `.lean-spec/config.json`:
 
 - When `enabled: false` (default): `create` defaults to `planned`, draft status is hidden from board/UI
 - When `enabled: true`: `create` defaults to `draft`, full lifecycle enforced
-- CLI override: `lean-spec create <name> --status draft` works regardless of config
-- `lean-spec init` prompt: "Enable draft status for human review workflow? (y/N)"
+- CLI override: `harnspec create <name> --status draft` works regardless of config
+- `harnspec init` prompt: "Enable draft status for human review workflow? (y/N)"
 
 ### Default Behavior
 
@@ -118,8 +120,8 @@ Draft status is **opt-in** via `.lean-spec/config.json`:
 ## Plan
 
 - [ ] Update status enum to include `draft` before `planned`
-- [ ] Add `draftStatus.enabled` config option to `.lean-spec/config.json`
-- [ ] Add draft status prompt to `lean-spec init`
+- [ ] Add `draftStatus.enabled` config option to `.harnspec/config.json`
+- [ ] Add draft status prompt to `harnspec init`
 - [ ] Modify `create` command to default status to `draft` when enabled
 - [ ] Add `--force` flag to CLI update command
 - [ ] Add `force` parameter to MCP update tool
@@ -132,19 +134,20 @@ Draft status is **opt-in** via `.lean-spec/config.json`:
 
 ## Test
 
-- [ ] `lean-spec create "test"` creates spec with `planned` status (default, disabled)
-- [ ] `lean-spec create "test"` creates spec with `draft` status when `draftStatus.enabled: true`
-- [ ] `lean-spec create "test" --status draft` works regardless of config
-- [ ] `lean-spec update <spec> --status planned` succeeds
-- [ ] `lean-spec update <spec> --status archived` succeeds
-- [ ] `lean-spec update <spec> --status in-progress` fails with helpful error
-- [ ] `lean-spec update <spec> --status in-progress --force` succeeds
+- [ ] `harnspec create "test"` creates spec with `planned` status (default, disabled)
+- [ ] `harnspec create "test"` creates spec with `draft` status when `draftStatus.enabled: true`
+- [ ] `harnspec create "test" --status draft` works regardless of config
+- [ ] `harnspec update <spec> --status planned` succeeds
+- [ ] `harnspec update <spec> --status archived` succeeds
+- [ ] `harnspec update <spec> --status in-progress` fails with helpful error
+- [ ] `harnspec update <spec> --status in-progress --force` succeeds
 - [ ] UI shows warning dialog for draft→in-progress transition
 - [ ] Board shows draft group before planned
 
 ## Notes
 
 This approach:
+
 - Enforces proper lifecycle progression (draft→planned→in-progress→complete)
 - Allows flexibility with `--force` for edge cases
 - Keeps UI experience friendly with warnings for stage skipping

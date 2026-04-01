@@ -31,14 +31,16 @@ Showcase LeanSpec's **killer feature**: AI agents working with specs naturally t
 ### SCENE 1: Setup & Discovery (45 seconds)
 
 **[Terminal - Right side]**
+
 ```bash
 # Show clean terminal
 cd ~/demo-project
-npm install --save-dev lean-spec
-npx lean-spec init  # Choose "minimal"
+npm install --save-dev harnspec
+npx harnspec init  # Choose "minimal"
 ```
 
 **[AI Chat - Left side]**
+
 ```
 Human: "What specs exist in this project?"
 
@@ -54,6 +56,7 @@ AI: [Uses MCP tool: list]
 ### SCENE 2: Create Spec Through Conversation (90 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "We need user authentication. Create a spec for JWT-based auth 
         with bcrypt password hashing and rate limiting."
@@ -84,6 +87,7 @@ AI: [Uses MCP: create("user-authentication")]
 ```
 
 **[Terminal/Editor - Right side]**
+
 - Show `specs/001-user-authentication/README.md` appearing
 - Show content being written in real-time
 - Highlight the clean frontmatter structure
@@ -95,6 +99,7 @@ AI: [Uses MCP: create("user-authentication")]
 ### SCENE 3: Semantic Search & Memory (60 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "What did we decide about password security?"
 
@@ -115,6 +120,7 @@ AI: [Uses MCP: search("password security")]
 ### SCENE 4: Update Status & Track Progress (45 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "I'm starting work on the auth spec. Update its status."
 
@@ -136,9 +142,10 @@ AI: [Uses MCP: board()]
 ```
 
 **[Terminal - Right side]**
+
 ```bash
 # Verify in terminal
-npx lean-spec board
+npx harnspec board
 # Shows same Kanban view
 ```
 
@@ -149,6 +156,7 @@ npx lean-spec board
 ### SCENE 5: Validation & Quality Gates (45 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "I added a lot of content to the spec. Is it getting too complex?"
 
@@ -185,6 +193,7 @@ AI: [Uses MCP: validate()]
 ### SCENE 6: Wrap-Up (30 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "Show me all available commands"
 
@@ -200,6 +209,7 @@ AI: [Uses MCP: help or lists tools]
 ```
 
 **[Voiceover or text overlay]**
+
 ```
 "LeanSpec + MCP: Specs that AI agents understand natively.
 
@@ -208,7 +218,7 @@ AI: [Uses MCP: help or lists tools]
 - Automatic validation and quality gates
 - Zero-friction collaboration
 
-Get started: npm install lean-spec"
+Get started: npm install harnspec"
 ```
 
 ---
@@ -272,7 +282,7 @@ This is LeanSpec with MCP: specs as semantic memory for AI agents.
 Natural conversation. Zero manual file management. Built-in quality gates.
 Perfect for human-AI collaboration.
 
-Try it yourself: npm install lean-spec"
+Try it yourself: npm install harnspec"
 ```
 
 ---
@@ -280,6 +290,7 @@ Try it yourself: npm install lean-spec"
 ## Recording Checklist
 
 ### Pre-Recording
+
 - [ ] Clean terminal (no history, simple prompt)
 - [ ] Fresh project directory (`demo-project`)
 - [ ] AI tool configured (MCP server ready)
@@ -289,6 +300,7 @@ Try it yourself: npm install lean-spec"
 - [ ] Prepare "overflow content" file for validation demo
 
 ### During Recording
+
 - [ ] Slow down typing in chat (readable)
 - [ ] Pause 2-3 seconds after each AI response
 - [ ] Show MCP tool calls (if visible in UI)
@@ -296,6 +308,7 @@ Try it yourself: npm install lean-spec"
 - [ ] Keep consistent pacing (not too fast)
 
 ### Post-Production
+
 - [ ] Add subtle highlights for MCP tool calls
 - [ ] Zoom in on key text (validation warnings, spec content)
 - [ ] Add captions for key takeaways
@@ -307,12 +320,14 @@ Try it yourself: npm install lean-spec"
 ## Distribution
 
 ### Primary
+
 - [ ] YouTube (unlisted for now, public at launch)
 - [ ] Embedded in README.md "Quick Demo" section
 - [ ] Docs site homepage (hero section)
 - [ ] Product Hunt submission (video)
 
 ### Secondary
+
 - [ ] Twitter/X (15-30s teaser + link)
 - [ ] LinkedIn (professional audience)
 - [ ] Hacker News Show HN (link to full video)
@@ -326,19 +341,19 @@ If split-screen recording is complex, fall back to terminal-only demo with visib
 
 ```bash
 # Install
-npm install -g lean-spec
-lean-spec init
+npm install -g harnspec
+harnspec init
 
 # Show AI interaction via terminal (Claude CLI or similar)
 echo "Pretend this is AI chat, show the same workflow"
 
 # Manually run commands to show what AI would do via MCP
-lean-spec list
-lean-spec create user-authentication
-lean-spec view user-authentication
-lean-spec update user-authentication --status in-progress
-lean-spec board
-lean-spec validate
+harnspec list
+harnspec create user-authentication
+harnspec view user-authentication
+harnspec update user-authentication --status in-progress
+harnspec board
+harnspec validate
 ```
 
 This loses the "natural conversation" magic but still shows the workflow.
@@ -348,12 +363,14 @@ This loses the "natural conversation" magic but still shows the workflow.
 ## Success Metrics
 
 **Demo is successful if viewers understand:**
+
 1. ✅ AI can manage specs through conversation (no CLI needed)
 2. ✅ Specs persist as semantic memory across sessions
 3. ✅ Validation enforces quality automatically
 4. ✅ MCP enables zero-friction AI collaboration
 
 **Failure signs:**
+
 - ❌ Looks like "just another CLI tool"
 - ❌ MCP integration not clear
 - ❌ Seems like gimmick, not real workflow

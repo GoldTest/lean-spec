@@ -25,7 +25,7 @@ transitions:
 
 > **Status**: 🗓️ Planned · **Priority**: Critical · **Created**: 2025-11-11 · **Tags**: release, planning, milestone, v0.3.0, performance, ai-agents
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -35,6 +35,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 **Why now?** v0.2 validated LeanSpec's core philosophy and received positive feedback. Usage analytics show AI agents spending significant time on spec discovery and parsing. v0.3 optimizes these workflows while adding features users are requesting.
 
 **Key Goals:**
+
 1. **10x faster spec operations** for AI agents (programmatic APIs)
 2. **Live documentation preview** for better feedback loops
 3. **Enhanced AI agent workflows** (improved context delivery)
@@ -73,6 +74,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
    - Better structured output
 
 **Release Criteria:**
+
 - All critical specs complete
 - Performance benchmarks show >5x improvement
 - Documentation updated with new APIs
@@ -82,6 +84,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 ## Plan
 
 **Phase 1: Core Performance (Week 1-2)**
+
 - [ ] Complete spec 059 (programmatic-spec-management)
 - [ ] Complete spec 075 Phase 1-2 (intelligent-search-engine)
 - [ ] Benchmark current performance (baseline metrics)
@@ -90,6 +93,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 - [ ] Add performance tests to CI
 
 **Phase 2: Live Preview & Showcase (Week 2-3)**
+
 - [ ] Deep dive analysis of spec 035 requirements
 - [ ] Optimize Docusaurus build for large spec sets
 - [ ] Implement live preview functionality
@@ -97,6 +101,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 - [ ] Performance optimization for client-side rendering
 
 **Phase 3: Polish & Documentation (Week 3-4)**
+
 - [ ] Update documentation with v0.3 features
 - [ ] Create migration guide
 - [ ] Performance benchmark results page
@@ -104,6 +109,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 - [ ] Update CHANGELOG.md
 
 **Phase 4: Release (Week 4)**
+
 - [ ] Final testing and QA
 - [ ] Version bump to 0.3.0
 - [ ] Publish to npm
@@ -113,6 +119,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 ## Test
 
 **Performance Benchmarks:**
+
 - [ ] Spec loading <10ms (from ~100ms)
 - [ ] List operations <50ms for 100 specs
 - [ ] Search operations <100ms across all specs
@@ -120,6 +127,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 - [ ] Docs build time <30s (with showcase)
 
 **Functionality Tests:**
+
 - [ ] All existing CLI commands work unchanged
 - [ ] New programmatic APIs work as documented
 - [ ] Live preview updates in real-time
@@ -127,6 +135,7 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 - [ ] No breaking changes for existing users
 
 **Quality Gates:**
+
 - [ ] Test coverage >80%
 - [ ] No critical bugs in staging
 - [ ] Documentation 100% accurate
@@ -135,26 +144,31 @@ v0.3 focuses on **AI agent performance optimization** and **programmatic spec ma
 ## Notes
 
 **Priority Decisions:**
+
 - **059 (programmatic-spec-management)**: CRITICAL - Foundation for AI agent performance
 - **075 (intelligent-search-engine)**: CRITICAL - Search is broken, blocks AI agent effectiveness
 - **035 (live-specs-showcase)**: HIGH - User-requested, builds trust, needs deep optimization work
 
 **Dependencies:**
+
 - spec 059 → Must complete first (enables performance gains)
 - spec 035 → Can parallel track after 059 design phase
 
 **Open Questions:**
+
 - Should we include Copilot slash commands (034) in v0.3 or defer to v0.4?
 - Do we need breaking changes for performance gains?
 - What's the migration strategy if APIs change?
 
 **Success Metrics:**
+
 - AI agent operations 10x faster
 - Docs build time <30s (currently ~45s)
 - User satisfaction: showcase gets >70% positive feedback
 - Adoption: 5+ new users from showcase visibility
 
 **Related Specs:**
+
 - 059-programmatic-spec-management (critical path)
 - 075-intelligent-search-engine (critical path)
 - 035-live-specs-showcase (high priority)

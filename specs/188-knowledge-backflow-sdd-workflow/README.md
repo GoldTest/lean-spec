@@ -28,6 +28,7 @@ Add bidirectional knowledge flow to the SDD workflow, ensuring specs remain accu
 **Problem**: Specs often become outdated after implementation. Design decisions made during coding aren't captured, leading to spec-reality drift that misleads future AI agents and human developers.
 
 **Solution**: Progressive enhancement approach:
+
 1. **Workflow Integration** (v0.5.0): Make spec updates part of the completion process
 2. **Orchestrator + Reviewer Validation** (v0.6.0): Use orchestrator agent with reviewer agent to validate completed specs against actual implementation
 3. **Proactive Spec Sync** (Future): Periodic AI-powered spec review and update suggestions (high token cost, requires careful consideration)
@@ -37,6 +38,7 @@ See [DESIGN.md](./DESIGN.md) for detailed architecture and [ANALYSIS.md](./ANALY
 ## Design
 
 See [DESIGN.md](./DESIGN.md) for complete technical architecture including:
+
 - Progressive enhancement approach (Workflow → Orchestrator Validation → Proactive Sync)
 - Orchestrator + Reviewer agent integration (leveraging specs 168 and 171)
 - Phased rollout strategy
@@ -90,7 +92,7 @@ See [DESIGN.md](./DESIGN.md) for complete technical architecture including:
   
 - [ ] Integrate with completion flow
   - [ ] Option to trigger reviewer validation before marking complete
-  - [ ] `lean-spec agent review <spec>` command
+  - [ ] `harnspec agent review <spec>` command
   - [ ] Desktop UI: "Validate with AI Reviewer" button
   - [ ] Reviewer report displayed in UI with suggested updates
   
@@ -121,7 +123,7 @@ See [DESIGN.md](./DESIGN.md) for complete technical architecture including:
   - [ ] Human reviews and approves suggestions
   
 - [ ] Alternative: On-demand sync only
-  - [ ] `lean-spec sync <spec>` command (user-triggered)
+  - [ ] `harnspec sync <spec>` command (user-triggered)
   - [ ] Analyzes changes since spec creation
   - [ ] Shows suggested updates
   - [ ] Interactive review (accept/reject/edit)
@@ -180,7 +182,7 @@ See [DESIGN.md](./DESIGN.md) for complete technical architecture including:
   - [ ] No hallucinations or incorrect suggestions
   
 - [ ] On-demand sync workflow
-  - [ ] `lean-spec sync` command works correctly
+  - [ ] `harnspec sync` command works correctly
   - [ ] Interactive review flow is intuitive
   - [ ] Changes apply atomically
 
@@ -203,11 +205,13 @@ See [DESIGN.md](./DESIGN.md) for complete technical architecture including:
 **Issue Origin**: Request from Chinese community (看是否可以增加一下知识回流).
 
 **Core Challenge**: Specs often become outdated after implementation. This creates:
+
 - **Misleading AI agents**: Read specs for context, implement based on false assumptions
 - **Poor onboarding**: New team members misunderstand system architecture
 - **Lost institutional knowledge**: Design decisions aren't captured
 
 **Design Philosophy**: Progressive enhancement with agent-based validation
+
 1. **Phase 1 (Workflow)**: Remind humans to update specs during completion
 2. **Phase 2 (AI Reviewer)**: Use orchestrator + reviewer agent to validate specs against implementation (clean context, higher accuracy)
 3. **Phase 3 (Proactive)**: Periodic AI-powered spec sync (high token cost, requires justification)
@@ -217,12 +221,14 @@ Each phase adds value independently. See [ANALYSIS.md](./ANALYSIS.md) for comple
 ### Related Specs
 
 **Builds On**:
+
 - **047-git-backfill-timestamps**: Git history analysis patterns
 - **122-ai-agent-deps-management-fix**: Content/metadata alignment validation
 - **174-completion-status-verification-hook**: Completion checkpoint system
 - **018-spec-validation**: Validation infrastructure
 
 **Complements**:
+
 - **168-leanspec-orchestration-platform**: Orchestrator dispatches reviewer agent for validation
 - **171-burst-mode-orchestrator**: Ralph mode pattern (autonomous loop) adapted for spec validation
 - **123-ai-coding-agent-integration**: Agents can be instructed to update specs

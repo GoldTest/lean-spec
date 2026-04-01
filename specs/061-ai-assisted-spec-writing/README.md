@@ -21,7 +21,7 @@ completed: '2025-11-10'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-07 · **Tags**: ai, philosophy, docs
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development  
 **Related**: [043-official-launch-02](../043-official-launch-02/) - Blocks v0.2.0 launch
 
@@ -31,6 +31,7 @@ completed: '2025-11-10'
 
 **Current State:**
 LeanSpec assumes: Human writes spec → AI implements from spec
+
 - Docs focus on "making specs AI-readable/executable"
 - Decision criteria: "Will AI need this context to execute?"
 - Value prop: Specs bridge human intent to machine execution
@@ -40,12 +41,14 @@ If AI assists in **writing specs** (not just implementing), does this change our
 
 **The Shift:**
 Human provides intent → AI drafts spec → Human refines → AI implements
+
 - Specs become **refinement artifacts** in human-AI conversation
 - Decision shifts: "Should I formalize intent as spec, or just converse with AI?"
 - New question: **When does structuring intent into a spec add value over direct conversation?**
 
 **Impact:**
 This fundamentally changes:
+
 1. Value proposition of specs
 2. Decision criteria for "when to use"
 3. How we frame the methodology
@@ -56,10 +59,12 @@ This fundamentally changes:
 ### 1. Does This Change "When to Use"?
 
 **Current logic:**
+
 - Write spec when AI needs context to implement
 - Skip when intent is self-evident
 
 **New logic (if AI writes specs):**
+
 - Write spec when formalization adds value over conversation
 - Skip when conversational iteration is faster
 - But... what adds value? When is structure better than chat?
@@ -68,6 +73,7 @@ This fundamentally changes:
 The core value proposition doesn't change—**specs add value when persistence and structure matter**. However, the decision criteria expand:
 
 **Write a spec when (EXPANDED):**
+
 - ✅ Intent needs to persist (reference, onboarding, decisions)
 - ✅ Multiple stakeholders need alignment (can't all chat with AI)
 - ✅ Compliance/audit trail required
@@ -76,6 +82,7 @@ The core value proposition doesn't change—**specs add value when persistence a
 - ✅ **NEW:** Multiple iterations with AI have refined the approach
 
 **Skip the spec when:**
+
 - ❌ Quick feature, no ambiguity (AI can draft + implement directly)
 - ❌ Exploratory work (conversation is better for discovery)
 - ❌ **NEW:** Still discovering what to build (keep conversing)
@@ -106,6 +113,7 @@ The core value proposition doesn't change—**specs add value when persistence a
 **✅ ANSWER:** Success criteria expand, but don't fundamentally change:
 
 **A good spec must:**
+
 1. **Fit in working memory** (Context Economy)
 2. **Inform decisions** (Signal-to-Noise)
 3. **Capture intent** (Intent Over Implementation)
@@ -115,6 +123,7 @@ The core value proposition doesn't change—**specs add value when persistence a
 7. **Support both authoring and implementation** workflows
 
 **This IS a higher bar**, but it's achievable because:
+
 - AI handles first drafts (reduces authoring burden)
 - Humans refine for clarity (ensures quality)
 - LeanSpec principles guide both (maintain standards)
@@ -124,16 +133,19 @@ The core value proposition doesn't change—**specs add value when persistence a
 **✅ ANSWER:** All three models are valid, depending on context. We adopt **Spec-as-Checkpoint** as the primary mental model, with the others as variations:
 
 **Primary: Spec-as-Checkpoint** (Most Common)
+
 - Conversation with AI → Crystallize into spec → Continue from spec
 - Spec = formalized agreement/checkpoint in ongoing work
 - **Use when:** Intent has been clarified through conversation and needs to be captured before implementation
 
 **Variation 1: Spec-as-Artifact** (Formal Projects)
+
 - Spec = durable output of human-AI collaboration
 - Can be referenced, shared, evolved over time
 - **Use when:** Work needs documentation for compliance, onboarding, or long-term reference
 
 **Variation 2: Spec-as-Context** (Living Documentation)
+
 - Spec = structured context for AI + humans
 - Still bridges intent to execution, but co-created
 - **Use when:** Spec evolves alongside implementation (SDD-style iterative refinement)
@@ -152,6 +164,7 @@ Current decision: "Will AI need this context to execute?"
 New decision: "When does formalizing intent as a spec add value?"
 
 **Write a spec when:**
+
 - Intent needs to persist (decisions, reference, onboarding)
 - Multiple stakeholders need shared understanding
 - Work is complex enough that conversation would drift
@@ -159,6 +172,7 @@ New decision: "When does formalizing intent as a spec add value?"
 - Progressive refinement benefits from structure
 
 **Skip the spec when:**
+
 - Quick feature with no ambiguity (AI can draft + implement directly)
 - Exploratory work (conversation is better for discovery)
 - One-off prototype or experiment
@@ -169,6 +183,7 @@ New decision: "When does formalizing intent as a spec add value?"
 **Add mental model for AI-assisted spec writing**
 
 Clarify that specs can be:
+
 - Human-written, AI-implemented (traditional)
 - AI-drafted, human-refined, AI-implemented (assisted)
 - Co-created iteratively (collaborative)
@@ -183,6 +198,7 @@ Current: Focus on AI implementing from specs
 Add: AI drafting specs from human intent
 
 Workflow becomes:
+
 1. Human articulates intent (conversation, notes, rough outline)
 2. AI drafts initial spec following LeanSpec principles
 3. Human reviews, refines, adds context
@@ -192,6 +208,7 @@ Workflow becomes:
 #### 4. Consider New Page: "Writing Specs with AI"
 
 **Topics:**
+
 - How to prompt AI to draft specs
 - What to review/refine in AI-drafted specs
 - Common pitfalls (AI verbosity, missing context)
@@ -203,31 +220,36 @@ Workflow becomes:
 **No tooling changes needed** - This is purely docs/methodology
 
 **But future opportunities:**
-- `lean-spec draft "feature description"` - AI drafts spec from prompt
-- `lean-spec refine <spec>` - AI suggests improvements
-- `lean-spec validate <spec> --ai-check` - AI validates against first principles
+
+- `harnspec draft "feature description"` - AI drafts spec from prompt
+- `harnspec refine <spec>` - AI suggests improvements
+- `harnspec validate <spec> --ai-check` - AI validates against first principles
 
 ## Plan
 
 ### Phase 1: Research & Define (This Spec)
+
 - [x] Identify the question
 - [x] Answer key questions (above)
 - [x] Define new mental model (Spec-as-Checkpoint primary, with variations)
 - [ ] Validate with team/community (deferred to post-implementation feedback)
 
 ### Phase 2: Update Core Docs
+
 - [x] Update "When to Use" with AI-assisted context (merged into understanding.mdx)
 - [x] Update "Understanding LeanSpec" with new mental models (decision framework added)
 - [x] Update "AI Integration" docs with authoring workflow (covered in ai-executable-patterns.mdx)
 - [x] Review all docs for consistency (validated via build + validate)
 
 ### Phase 3: New Content (If Needed)
+
 - [x] Created dedicated "Writing Specs with AI" page (docs-site/docs/guide/usage/ai-assisted/ai-executable-patterns.mdx)
 - [x] Added examples of AI-drafted specs and workflows
 - [x] Documented best practices for prompting (Do's and Don'ts)
 - [x] Created workflow templates (5-step process, common patterns)
 
 ### Phase 4: Validation
+
 - [ ] Dogfood: Use AI to draft/refine specs
 - [ ] Get feedback from community
 - [ ] Iterate based on real usage
@@ -244,6 +266,7 @@ Workflow becomes:
 - [ ] Community understands and can apply guidance (deferred to Phase 4: user feedback)
 
 **Additional Validation:**
+
 - [x] Docs build successfully (verified with `npm run build`)
 - [x] Spec structure validated (no new errors from our changes)
 - [x] All three target docs updated (understanding.mdx updated; when-to-use.mdx was merged into understanding.mdx by spec 062)
@@ -251,6 +274,7 @@ Workflow becomes:
 - [x] Sidebar navigation updated (added to "AI-Assisted Workflows" section)
 
 **Success Signals (To be measured in Phase 4):**
+
 - Users know when to use specs vs. conversation
 - AI-drafted specs follow LeanSpec principles
 - Methodology remains coherent and practical
@@ -261,6 +285,7 @@ Workflow becomes:
 ### Core Insight
 
 The fundamental value of specs doesn't change:
+
 - **Persistence** - Specs outlive conversations
 - **Shared understanding** - Specs align stakeholders
 - **Structure** - Specs prevent drift and ambiguity

@@ -28,9 +28,10 @@ transitions:
 
 ## Overview
 
-Add token counts and validation results information to the LeanSpec web UI to provide immediate visibility into spec quality metrics. Currently, users must run CLI commands (`lean-spec tokens`, `lean-spec validate`) to see this information, but having it displayed directly in the UI would improve workflow efficiency and help maintain spec quality standards.
+Add token counts and validation results information to the LeanSpec web UI to provide immediate visibility into spec quality metrics. Currently, users must run CLI commands (`harnspec tokens`, `harnspec validate`) to see this information, but having it displayed directly in the UI would improve workflow efficiency and help maintain spec quality standards.
 
 **Why now?**
+
 - Token counts and validation status are critical quality indicators
 - Users currently need to switch between CLI and web UI
 - Improves adherence to Context Economy principles by making metrics visible
@@ -50,6 +51,7 @@ Add token counts and validation results information to the LeanSpec web UI to pr
 | Critical | >5K | `bg-red-100` | `text-red-800` | `dark:bg-red-900/30` | `dark:text-red-400` |
 
 **Validation Status Icons:**
+
 - Pass: `CheckCircle2` (green, same as `status=complete`)
 - Warning: `AlertTriangle` (orange, same as `priority=high`)  
 - Fail: `XCircle` (red, same as `priority=critical`)
@@ -60,6 +62,7 @@ Add token counts and validation results information to the LeanSpec web UI to pr
 #### TokenButton Component (Clickable)
 
 **Props Interface:**
+
 ```typescript
 interface TokenButtonProps {
   count: number;
@@ -73,6 +76,7 @@ interface TokenButtonProps {
 ```
 
 **Visual Specifications:**
+
 ```
 Base:       Button variant with threshold color background
 Height:     h-5 (20px) for lists, h-6 (24px) for detail
@@ -87,6 +91,7 @@ Transition: transition-all duration-200
 ```
 
 **Examples:**
+
 ```tsx
 // List view - clickable button
 <TokenButton count={2450} status="good" onClick={() => openTokenDialog(spec)} />
@@ -104,6 +109,7 @@ Transition: transition-all duration-200
 #### ValidationButton Component (Clickable)
 
 **Props Interface:**
+
 ```typescript
 interface ValidationButtonProps {
   status: 'pass' | 'warn' | 'fail' | 'loading';
@@ -115,6 +121,7 @@ interface ValidationButtonProps {
 ```
 
 **Visual Specifications:**
+
 ```
 Base:       Button variant, ghost for pass, colored for warn/fail
 Pass:       text-green-600 hover:bg-green-50 (ghost style)
@@ -129,6 +136,7 @@ Cursor:     cursor-pointer
 ```
 
 **Examples:**
+
 ```tsx
 // Pass - subtle ghost button
 <ValidationButton status="pass" onClick={openDialog} />
@@ -146,6 +154,7 @@ Cursor:     cursor-pointer
 #### TokenDetailsDialog Component
 
 **Props Interface:**
+
 ```typescript
 interface TokenDetailsDialogProps {
   open: boolean;
@@ -159,6 +168,7 @@ interface TokenDetailsDialogProps {
 ```
 
 **Dialog Layout:**
+
 ```
 ┌─ Context Economy: spec-name ───────────────────────────────┐
 │                                                             │
@@ -188,6 +198,7 @@ interface TokenDetailsDialogProps {
 ```
 
 **Visual Specs:**
+
 - Dialog width: `w-[min(500px,90vw)]`
 - Hero section: Large icon + count + status label
 - Progress bar: h-3 with gradient or solid color
@@ -197,6 +208,7 @@ interface TokenDetailsDialogProps {
 #### ValidationDialog Component
 
 **Props Interface:**
+
 ```typescript
 interface ValidationDialogProps {
   open: boolean;
@@ -209,6 +221,7 @@ interface ValidationDialogProps {
 ```
 
 **Pass State Layout:**
+
 ```
 ┌─ Validation: spec-name ────────────────────────────────────┐
 │                                                             │
@@ -224,6 +237,7 @@ interface ValidationDialogProps {
 ```
 
 **Issues State Layout:**
+
 ```
 ┌─ Validation Issues: spec-name ─────────────────────────────┐
 │                                                             │
@@ -249,6 +263,7 @@ interface ValidationDialogProps {
 ```
 
 **Visual Specs:**
+
 - Pass state: Centered icon + success message
 - Issues state: Stacked cards with error details
 - Error cards: border-l-4 with severity color
@@ -258,6 +273,7 @@ interface ValidationDialogProps {
 #### TokenProgressBar Component
 
 **Visual Specifications:**
+
 ```
 Container:    w-full h-2 bg-muted rounded-full overflow-hidden
 Fill:         Color matches threshold (green/blue/orange/red)
@@ -267,6 +283,7 @@ Animation:    transition-all duration-500 ease-out
 ```
 
 **Example:**
+
 ```tsx
 <TokenProgressBar current={4200} max={5000} />
 // Shows orange bar at 84% with ticks at 2K, 3.5K, 5K
@@ -277,6 +294,7 @@ Animation:    transition-all duration-500 ease-out
 #### Spec List View Enhancement
 
 **Current Layout (ListView.tsx:24-45):**
+
 ```
 ┌────────────────────────────────────────────────────┐
 │ [#123] Title                    [Status][Priority]│
@@ -286,6 +304,7 @@ Animation:    transition-all duration-500 ease-out
 ```
 
 **Enhanced Layout:**
+
 ```
 ┌────────────────────────────────────────────────────────────┐
 │ [#123] Title          [2.4k ↗][Status][Priority][✓ ↗]     │
@@ -295,6 +314,7 @@ Animation:    transition-all duration-500 ease-out
 ```
 
 **Positioning:**
+
 - Token badge (clickable button) between title and status badge
 - Validation button at far right (last in badge row)
 - Both badges have `cursor-pointer` and hover state
@@ -304,6 +324,7 @@ Animation:    transition-all duration-500 ease-out
 #### Spec Detail Page Enhancement
 
 **Metadata Row Addition (after Line 422):**
+
 ```
 Created: Jan 15 • Updated: Jan 20 (2 days ago) • Name: spec-name • Assignee: user
 ↓
@@ -311,6 +332,7 @@ Created: Jan 15 • Updated: Jan 20 (2 days ago) • [📄 2.4k tokens ↗] • 
 ```
 
 **Right Sidebar (clean - no cards):**
+
 - TOC only, no token/validation cards taking up space
 - Click badges in header to open dialogs
 
@@ -349,6 +371,7 @@ Created: Jan 15 • Updated: Jan 20 (2 days ago) • [📄 2.4k tokens ↗] • 
 #### Validation Dialog (on click)
 
 **Pass State:**
+
 ```
 ┌─ Validation ────────────────────────────────────────────────┐
 │                                                             │
@@ -364,6 +387,7 @@ Created: Jan 15 • Updated: Jan 20 (2 days ago) • [📄 2.4k tokens ↗] • 
 ```
 
 **Warning/Error State:**
+
 ```
 ┌─ Validation Issues ─────────────────────────────────────────┐
 │                                                             │
@@ -394,6 +418,7 @@ Created: Jan 15 • Updated: Jan 20 (2 days ago) • [📄 2.4k tokens ↗] • 
 #### Stats Page Enhancement
 
 **New Card (row 2, next to top tags):**
+
 ```
 ┌─ Token Distribution ─────────┐
 │                               │
@@ -412,12 +437,14 @@ Created: Jan 15 • Updated: Jan 20 (2 days ago) • [📄 2.4k tokens ↗] • 
 ### Interaction Patterns
 
 **Click Behaviors (Primary):**
+
 - **Token badge/button:** Opens Token Details Dialog with full breakdown
 - **Validation button:** Opens Validation Dialog with issues or success state
 - **Sort button (in header):** Toggle sort specs by token count asc/desc
 - **Filter button (in header):** Toggle filter to show only specs with validation issues
 
 **Hover Behaviors (Secondary):**
+
 ```
 Token Badge Hover:
 ┌─────────────────────────────┐
@@ -431,7 +458,8 @@ Validation Button Hover:
 ```
 
 **Dialog Interactions:**
-- **Token Dialog:** 
+
+- **Token Dialog:**
   - Progress bar shows position relative to thresholds
   - Breakdown items show percentage on hover
   - Close button or click outside to dismiss
@@ -444,6 +472,7 @@ Validation Button Hover:
   - Close button or click outside to dismiss
 
 **Loading States:**
+
 ```tsx
 // Token badge loading (disabled state)
 <Button variant="ghost" disabled className="h-5 px-2">
@@ -460,6 +489,7 @@ Validation Button Hover:
 ### Responsive Behavior
 
 **Mobile (< 640px):**
+
 - Token button shows icon only (📄) in list view
 - Validation button shows icon only (✓/⚠/✗)
 - Dialog is full-screen (h-full w-full)
@@ -467,12 +497,14 @@ Validation Button Hover:
 - Progress bar simplified (no threshold markers)
 
 **Tablet (640px - 1024px):**
+
 - Token button shows "2.4k" format
 - Validation button shows icon + count badge
 - Dialog: w-[90vw] max-w-lg
 - Full breakdown with mini progress bars
 
 **Desktop (> 1024px):**
+
 - Token button shows full format "📄 2.4k tokens"
 - Validation button shows icon + "Pass"/"3 Warnings"/"2 Errors"
 - Dialog: w-[500px] centered
@@ -482,6 +514,7 @@ Validation Button Hover:
 ### Threshold Indicators
 
 **Badge Label Mapping:**
+
 ```typescript
 const thresholdLabels = {
   optimal: { label: 'Optimal', color: 'green', icon: CheckCircle2 },
@@ -492,6 +525,7 @@ const thresholdLabels = {
 ```
 
 **Performance Impact Estimates:**
+
 ```
 Optimal (<2K):    ~100% baseline AI performance
 Good (2-3.5K):    ~90-95% performance
@@ -502,11 +536,13 @@ Critical (>5K):   ~65-80% performance
 ### Technical Implementation
 
 **Data Sources:**
-- Reuse existing `lean-spec tokens` CLI via API (tiktoken, <50ms/spec)
-- Integrate with `lean-spec validate` command via API
+
+- Reuse existing `harnspec tokens` CLI via API (tiktoken, <50ms/spec)
+- Integrate with `harnspec validate` command via API
 - Calculate on-demand initially, no caching needed for v1
 
 **API Additions:**
+
 ```typescript
 // types/api.ts
 interface Spec {
@@ -536,12 +572,14 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 ## Plan
 
 ### Phase 1: Backend API (1 day)
+
 - [ ] Add `tokenCount`, `tokenStatus`, `validationStatus` fields to Spec type
 - [ ] Create `GET /api/projects/{id}/specs/{name}/tokens` endpoint
 - [ ] Create `GET /api/projects/{id}/specs/{name}/validation` endpoint
 - [ ] Add methods to `backend-adapter.ts` interface
 
 ### Phase 2: Button & Dialog Components (2 days)
+
 - [ ] Create `TokenButton` component (clickable button variant)
 - [ ] Create `ValidationButton` component (clickable button variant)
 - [ ] Create `TokenDetailsDialog` component (full breakdown)
@@ -551,6 +589,7 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] Implement responsive variants (sm/md sizes for buttons)
 
 ### Phase 3: Page Integration (1-2 days)
+
 - [ ] Add `TokenButton` to ListView (clickable, opens dialog)
 - [ ] Add `ValidationButton` to ListView (clickable, opens dialog)
 - [ ] Add sort button to ListView header (sort by tokens asc/desc)
@@ -560,11 +599,13 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] Integrate dialogs with page state management
 
 ### Phase 4: Stats Dashboard (1 day)
+
 - [ ] Add Token Distribution chart to StatsPage
 - [ ] Add aggregate token metrics (total, average)
 - [ ] Add validation health overview section
 
 ### Phase 5: Polish (1 day)
+
 - [ ] Add hover tooltips with detailed info
 - [ ] Implement loading states (skeletons + spinners)
 - [ ] Add error handling for failed token/validation fetches
@@ -574,6 +615,7 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 ## Test
 
 ### Visual Tests (Storybook)
+
 - [ ] TokenBadge renders all 4 threshold colors correctly
 - [ ] TokenBadge shows correct format (2.4k vs 456)
 - [ ] TokenBadge responsive sizes (sm vs md)
@@ -584,6 +626,7 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] Dark mode colors render correctly
 
 ### Component Unit Tests
+
 - [ ] TokenBadge formats numbers correctly (>999 = X.Xk)
 - [ ] TokenBadge applies correct threshold class
 - [ ] ValidationStatus shows correct icon for each status
@@ -591,6 +634,7 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] TokenProgressBar calculates width percentage correctly
 
 ### Integration Tests
+
 - [ ] Token button displays in ListView next to status badge
 - [ ] Clicking token button opens TokenDetailsDialog
 - [ ] TokenDetailsDialog shows correct breakdown data
@@ -602,6 +646,7 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] Dialogs close correctly (close button, outside click, escape key)
 
 ### E2E Tests
+
 - [ ] Browse specs and see token buttons with correct colors
 - [ ] Click token button opens dialog with full breakdown
 - [ ] Token dialog shows progress bar and performance estimates
@@ -614,12 +659,14 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - [ ] Dialogs are accessible (keyboard navigation, screen readers)
 
 ### Accessibility Tests
+
 - [ ] Token badges have aria-label with exact count
 - [ ] Validation icons have aria-label with status
 - [ ] Color is not the only indicator (icons + text)
 - [ ] Tooltips are keyboard accessible
 
 ### Performance Tests
+
 - [ ] Token calculation doesn't block page render (<50ms)
 - [ ] Token badges load without layout shift
 - [ ] Validation status updates don't cause re-render cascade
@@ -628,11 +675,13 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 ## Notes
 
 ### Dependencies
+
 - Depends on: 035-live-specs-showcase (UI foundation)
 - Depends on: 018-spec-validation (validation logic)
 - Depends on: 069-token-counting-utils (token counting)
 
 ### Implementation Decisions
+
 - **On-demand calculation**: Use tiktoken directly (<50ms/spec), no caching for v1
 - **Validation refresh**: Check on page load + manual refresh button in dialog
 - **Token breakdown**: Show in dialog only (clean UI, detailed on demand)
@@ -642,7 +691,9 @@ getSpecValidation(projectId: string, specName: string): Promise<ValidationResult
 - **Dialogs**: Use shadcn/ui Dialog component, consistent with existing dialogs (Timeline, Dependencies)
 
 ### Visual References
+
 See existing components for styling patterns:
+
 - `StatusBadge.tsx`: Badge sizing, colors, dark mode
 - `PriorityBadge.tsx`: Icon + label layout  
 - `ListView.tsx`: Spec list layout and spacing
@@ -651,6 +702,7 @@ See existing components for styling patterns:
 - `SpecDependencyGraph` dialog: Full-size dialog pattern
 
 ### Design Decisions
+
 - Color coding: Green (optimal: <2k), Yellow (good: 2-3.5k), Orange (warning: 3.5-5k), Red (critical: >5k)
 - Validation icons: ✅ Pass, ⚠️ Warnings, ❌ Fail
 - Token display format: "2.1k tokens" with progress bar

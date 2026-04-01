@@ -38,6 +38,7 @@ Fix critical issue where desktop app's embedded UI server fails to start due to 
 ## Problem Statement
 
 The desktop app bundles Next.js standalone build but fails at runtime with:
+
 ```
 Error: Cannot find module 'styled-jsx/package.json'
 Error: Cannot find module 'next'
@@ -50,12 +51,14 @@ Error: Cannot find module 'next'
 ### Issue #1: Missing Working Directory ✅ Fixed
 
 **Problem**: Node.js was executed without setting current directory
+
 ```rust
 // Before (broken)
 command.arg(&server).env("PORT", port.to_string())
 ```
 
 **Fix Applied**: Set working directory to server.js location
+
 ```rust
 // After (fixed)
 let server_dir = standalone.join("packages/ui");
@@ -67,6 +70,7 @@ command.current_dir(&server_dir).arg("server.js")
 ### Issue #2: Broken pnpm Symlinks 🔴 Active
 
 **Problem**: Next.js standalone build structure:
+
 ```
 ui-standalone/
 ├── node_modules/
@@ -83,6 +87,7 @@ ui-standalone/
 ```
 
 **Attempted Fixes**:
+
 1. ❌ **Preserve symlinks** - Tauri DEB packaging doesn't include them
 2. ❌ **Dereference symlinks** - Only copied immediate targets, not transitive deps
 3. ❌ **Set NODE_PATH** - Node's module resolution doesn't work with pnpm structure
@@ -92,11 +97,12 @@ ui-standalone/
 ### Issue #3: Bundled Node.js Path Wrong
 
 **Problem**: Looking for Node in wrong location
+
 ```
-[DEBUG] Bundled node candidate: "/tmp/.../usr/lib/lean-spec-desktop/node/linux-x64/node"
+[DEBUG] Bundled node candidate: "/tmp/.../usr/lib/harnspec-desktop/node/linux-x64/node"
 ```
 
-Should be: `usr/lib/lean-spec-desktop/resources/node/linux-x64/node`
+Should be: `usr/lib/harnspec-desktop/resources/node/linux-x64/node`
 
 **Status**: Falls back to system Node.js (works but not ideal for distribution)
 
@@ -117,12 +123,14 @@ async function flattenNodeModules(standalone, dest) {
 }
 ```
 
-**Pros**: 
+**Pros**:
+
 - Works with standard Node.js resolution
 - No runtime hacks needed
 - Proven approach
 
-**Cons**: 
+**Cons**:
+
 - Larger bundle size (duplicate dependencies)
 - Build script complexity
 
@@ -139,11 +147,13 @@ Use `@vercel/ncc` or `esbuild` to create single-file server:
 ```
 
 **Pros**:
+
 - Single executable file
 - No node_modules needed
 - Smallest bundle
 
 **Cons**:
+
 - May not work with Next.js server (uses dynamic requires)
 - Loses hot module replacement in dev
 - Needs thorough testing
@@ -153,10 +163,12 @@ Use `@vercel/ncc` or `esbuild` to create single-file server:
 Package everything including Node.js binary:
 
 **Pros**:
+
 - Completely self-contained
 - No system dependencies
 
 **Cons**:
+
 - Very large bundle (~150MB+)
 - Platform-specific Node binaries needed
 
@@ -165,6 +177,7 @@ Package everything including Node.js binary:
 Use `pkg` to bundle Next.js server + Node.js runtime into a single executable, then configure as Tauri sidecar:
 
 **Architecture**:
+
 ```
 1. pkg server.js → standalone executable (includes Node.js)
 2. Place in src-tauri/binaries/ui-server-{target}
@@ -173,6 +186,7 @@ Use `pkg` to bundle Next.js server + Node.js runtime into a single executable, t
 ```
 
 **Implementation**:
+
 ```json
 // package.json
 {
@@ -219,6 +233,7 @@ fn main() {
 ```
 
 **Pros**:
+
 - ✅ Single self-contained binary (no node_modules needed)
 - ✅ No symlink issues - everything bundled
 - ✅ Official Tauri pattern for external processes
@@ -228,11 +243,13 @@ fn main() {
 - ✅ Proper process management via Tauri
 
 **Cons**:
+
 - Requires `pkg` build step
 - May need webpack/rollup configuration for Next.js compatibility
 - Initial setup complexity
 
 **Why This is Best**:
+
 1. Eliminates all node_modules/pnpm issues completely
 2. Uses Tauri's designed pattern for external binaries
 3. Cleaner architecture - UI server as managed subprocess
@@ -244,23 +261,27 @@ fn main() {
 **NEW: Pivot to Sidecar Approach** (Highest Priority)
 
 **Phase 1**: Proof of Concept
+
 - Test `pkg` with Next.js standalone server
 - Verify all dynamic requires work
 - Test on target platforms
 
 **Phase 2**: Sidecar Integration
+
 - Configure `pkg` build for all platforms
 - Set up sidecar in tauri.conf.json
 - Update ui_server.rs to use Command::new_sidecar()
 - Test process lifecycle management
 
 **Phase 3**: Production Hardening
+
 - Error handling for sidecar failures
 - Port conflict resolution
 - Logging and debugging
 - Health checks
 
 **OLD Approaches** (Fallback if sidecar doesn't work):
+
 - Phase 1: Fix immediate issues ✅ Done
 - Phase 2: Implement flat node_modules (if needed)
 - Phase 3: Optimize bundle size
@@ -290,6 +311,7 @@ fn spawn_embedded_server(app: &AppHandle, port: u16, project: Option<&DesktopPro
 #### 2. ui_server.rs - Debug Logging
 
 Added comprehensive logging throughout:
+
 - Standalone directory resolution
 - Node.js discovery process
 - Server path validation
@@ -300,11 +322,12 @@ Added comprehensive logging throughout:
 - Port readiness checks
 
 **Sample Output**:
+
 ```
-[DEBUG] Standalone dir: "/usr/lib/lean-spec-desktop/ui-standalone"
+[DEBUG] Standalone dir: "/usr/lib/harnspec-desktop/ui-standalone"
 [DEBUG] Server.js exists: true
 [DEBUG] Node executable: node (version: v22.12.0)
-[DEBUG] Server working dir: "/usr/lib/lean-spec-desktop/ui-standalone/packages/ui"
+[DEBUG] Server working dir: "/usr/lib/harnspec-desktop/ui-standalone/packages/ui"
 [DEBUG] .next exists: true
 [DEBUG] Server process spawned with PID: 123456
 [DEBUG] Waiting for server on 127.0.0.1:18095
@@ -313,6 +336,7 @@ Added comprehensive logging throughout:
 #### 3. sync-ui-build.mjs - Symlink Handling
 
 **Current Implementation**:
+
 ```javascript
 if (entry.isSymbolicLink()) {
   try {
@@ -337,6 +361,7 @@ if (entry.isSymbolicLink()) {
 ### Next Steps
 
 1. **Implement flat node_modules copier**:
+
    ```javascript
    async function createFlatNodeModules(standalone, packagesUI) {
      const pnpmDir = path.join(standalone, 'node_modules/.pnpm');
@@ -400,12 +425,14 @@ if (entry.isSymbolicLink()) {
 ### Functional Tests
 
 **Server Spawn**:
+
 - [x] Server process spawns with correct working directory
 - [x] Debug logging shows all critical paths
 - [x] All Node.js dependencies resolve correctly
 - [x] Server starts and listens on assigned port
 
 **Desktop App**:
+
 - [x] DEB package builds successfully
 - [ ] App launches without errors (needs GUI test)
 - [ ] UI loads from embedded server (needs GUI test)
@@ -414,11 +441,13 @@ if (entry.isSymbolicLink()) {
 ### Verification Tests
 
 **Development Mode**:
+
 - [x] `pnpm dev:desktop` works as expected
 - [x] Hot reload functions properly
 - [x] All dependencies available
 
 **Production Build**:
+
 - [x] `pnpm tauri build --bundles deb` succeeds
 - [x] Bundle size is reasonable (134MB, <200MB target)
 - [x] Extracted bundle has proper structure
@@ -427,9 +456,10 @@ if (entry.isSymbolicLink()) {
 - [x] No broken symlinks in bundle
 
 **Runtime**:
+
 - [x] Server starts within 5 seconds (~150-200ms)
 - [x] No module resolution errors
-- [x] UI accessible at http://127.0.0.1:PORT
+- [x] UI accessible at <http://127.0.0.1:PORT>
 - [ ] App window loads UI correctly (needs GUI test)
 
 ## Dependencies
@@ -463,6 +493,7 @@ node_modules/
 ### Why Next.js Standalone?
 
 Next.js standalone mode (via `output: 'standalone'`) is designed for Docker/containers:
+
 - Bundles only production dependencies
 - Optimizes for minimal size
 - Expects to run `node server.js` from specific location
@@ -495,17 +526,20 @@ Next.js standalone mode (via `output: 'standalone'`) is designed for Docker/cont
 ### pkg + Next.js Compatibility Notes
 
 **Challenges**:
+
 - Next.js uses dynamic imports and requires
 - May need custom webpack config
 - `.next` directory must be accessible to bundled binary
 
 **Potential Solutions**:
+
 1. Use `pkg` with `--public-packages` flag
 2. Configure `pkg.assets` in package.json to include `.next/`
 3. Alternative: Use `nexe` or `ncc` if `pkg` doesn't work
 4. Consider `@vercel/ncc` for Next.js-specific bundling
 
 **Research Links**:
+
 - [pkg documentation](https://github.com/vercel/pkg)
 - [Tauri sidecar guide](https://tauri.app/v1/guides/building/sidecar/)
 - [Next.js standalone mode](https://nextjs.org/docs/advanced-features/output-file-tracing)
@@ -513,8 +547,9 @@ Next.js standalone mode (via `output: 'standalone'`) is designed for Docker/cont
 ### Debug Output Examples
 
 **Successful Spawn**:
+
 ```
-[DEBUG] Standalone dir: "/tmp/.../usr/lib/lean-spec-desktop/ui-standalone"
+[DEBUG] Standalone dir: "/tmp/.../usr/lib/harnspec-desktop/ui-standalone"
 [DEBUG] Server.js path: ".../ui-standalone/packages/ui/server.js"
 [DEBUG] Server.js exists: true
 [DEBUG] Node executable: node
@@ -525,6 +560,7 @@ Next.js standalone mode (via `output: 'standalone'`) is designed for Docker/cont
 ```
 
 **Dependency Error**:
+
 ```
 Error: Cannot find module 'styled-jsx/package.json'
 Require stack:
@@ -536,6 +572,7 @@ Require stack:
 ## Progress Log
 
 **2025-12-12 - Implementation Complete**:
+
 - ✅ **Sidecar POC tested** - pkg doesn't work with Next.js ESM modules (UNEXPECTED-20 error)
 - ✅ **Pivoted to flat node_modules approach** - simpler and works reliably
 - ✅ **Updated sync-ui-build.mjs** with improved flattening logic:
@@ -548,6 +585,7 @@ Require stack:
 - 🔄 **Sidecar infrastructure retained** for future use when pkg supports ESM
 
 **Key Implementation Files Changed**:
+
 - `packages/desktop/scripts/sync-ui-build.mjs` - Improved flattenNodeModules()
 - `packages/desktop/scripts/build-sidecar.mjs` - Created for future use
 - `packages/desktop/package.json` - Added build:sidecar script and @yao-pkg/pkg
@@ -556,11 +594,13 @@ Require stack:
 - `packages/desktop/src-tauri/src/main.rs` - Registered shell plugin
 
 **Technical Notes**:
+
 - pkg fails with Next.js ESM: `import.meta` not supported, dynamic requires fail
 - Flat node_modules solution: ~24 packages flattened from pnpm store
 - Key fix: detecting which pnpm version has complete package (with package.json)
 
 **2025-12-12 - Codebase Verification**:
+
 - ❌ **Spec incorrectly marked complete** - Sidecar approach not implemented
 - ❌ **No pkg dependency** in package.json
 - ❌ **No binaries directory** in src-tauri/
@@ -570,6 +610,7 @@ Require stack:
 - 📋 **Next steps**: Implement pkg sidecar approach as originally planned
 
 **2025-12-11 - Initial Investigation & Diagnosis**:
+
 - ✅ Identified working directory issue
 - ✅ Added comprehensive debug logging throughout ui_server.rs
 - ✅ Fixed server spawn process (working directory + arg changes)
@@ -582,6 +623,7 @@ Require stack:
 - 📝 Documented findings in this spec
 
 **2025-12-11 - Sidecar Approach Discovery**:
+
 - 💡 Learned about Tauri sidecar pattern for external binaries
 - 📚 Researched `pkg` for bundling Node.js + Next.js server
 - ✨ Identified Option D (sidecar) as superior long-term solution

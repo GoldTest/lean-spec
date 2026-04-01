@@ -10,21 +10,20 @@ completed: 2025-10-31
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-10-31 · **Tags**: init, cli, templates
 
-
 **Status**: ✅ Complete  
 **Created**: 2025-10-31  
 **Spec**: `specs/20251031/003-init-system-redesign.md`
 
 ## Overview
 
-LeanSpec should help projects adopt Spec-Driven Development through `lean-spec init`. Current system only manages individual specs. We need project initialization that sets up the entire working model: spec structure, AI agent instructions, examples, and customizable conventions.
+LeanSpec should help projects adopt Spec-Driven Development through `harnspec init`. Current system only manages individual specs. We need project initialization that sets up the entire working model: spec structure, AI agent instructions, examples, and customizable conventions.
 
 ## Objectives
 
-- `lean-spec init` command with one interactive question, three paths
+- `harnspec init` command with one interactive question, three paths
 - Templates become full project initialization bundles (not just spec formats)
 - Spec structure uses folders: `specs/YYYYMMDD/NNN-name/README.md` (not flat files)
-- Config system: `.lean-spec/config.json` for project-specific customization
+- Config system: `.harnspec/config.json` for project-specific customization
 - Keep it lean: Quick start is zero-friction, customization only when needed
 
 ## Non-Goals
@@ -37,8 +36,9 @@ LeanSpec should help projects adopt Spec-Driven Development through `lean-spec i
 ## Design
 
 ### Init Flow
+
 ```
-$ lean-spec init
+$ harnspec init
 
 ? How would you like to set up?
   > Quick start (recommended)     - solo-dev defaults, immediate
@@ -47,6 +47,7 @@ $ lean-spec init
 ```
 
 ### Template Structure
+
 ```
 templates/
 ├── solo-dev/
@@ -63,7 +64,9 @@ templates/
 ```
 
 ### Config System
-`.lean-spec/config.json`:
+
+`.harnspec/config.json`:
+
 ```json
 {
   "template": "solo-dev",
@@ -77,6 +80,7 @@ templates/
 ```
 
 ### Spec Structure Change
+
 - **Before**: `specs/20251031/001-name.md` (file)
 - **After**: `specs/20251031/001-name/README.md` (folder)
 - Allows multiple files per spec (diagrams, supporting docs, etc.)
@@ -84,7 +88,7 @@ templates/
 ## Implementation Plan
 
 1. [ ] Add prompts library (@inquirer/prompts or prompts)
-2. [ ] Implement config loader/writer for .lean-spec/config.json
+2. [ ] Implement config loader/writer for .harnspec/config.json
 3. [ ] Redesign template structure as project bundles
 4. [ ] Implement init command with three paths
 5. [ ] Update create command to use folder structure + read config
@@ -94,7 +98,7 @@ templates/
 
 ## Success Criteria
 
-- [ ] `lean-spec init` works with one question, three paths
+- [ ] `harnspec init` works with one question, three paths
 - [ ] Quick start takes <2 seconds, zero additional input
 - [ ] Templates include full working model (AGENTS.md, examples)
 - [ ] Specs created as folders with README.md

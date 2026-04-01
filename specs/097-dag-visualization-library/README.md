@@ -24,7 +24,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17 · **Tags**: web, ux, dependencies, technical-debt
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -46,12 +46,14 @@ completed: '2025-11-17'
    - Incomplete graph prevents understanding full dependency chain
 
 **Why Now**: During troubleshooting for spec #066 and testing spec #082, we discovered:
+
 - DAG nodes overlapping due to coordinate system mismatches
 - Font sizes too small to read
 - Edges not rendering (ReactFlow Handle components missing)
 - Can't see full dependency context (only current spec's perspective)
 
-**Impact**: 
+**Impact**:
+
 - Better readability (larger fonts, proper edge rendering)
 - Complete dependency visualization (upstream, downstream, bidirectional)
 - Easier maintenance with proper library
@@ -62,6 +64,7 @@ completed: '2025-11-17'
 **Code Location**: `/packages/web/src/components/spec-relationships.tsx`
 
 **Problems Found**:
+
 1. Mixed coordinate systems (SVG viewBox vs CSS %)
 2. Manual bezier curve calculations for edges
 3. Fixed column layout (COLUMN_X constants) doesn't adapt
@@ -69,6 +72,7 @@ completed: '2025-11-17'
 5. Node positioning uses `calc(${xPercent}% - ${NODE_WIDTH / 2}px)` which breaks with aspect ratio changes
 
 **Current Approach**:
+
 - 3-column layout: Precedence (left) → Current (center) → Related (right)
 - Nodes positioned with CSS absolute + calc()
 - SVG paths drawn manually with fixed control points
@@ -79,6 +83,7 @@ completed: '2025-11-17'
 ### Recommended Library: Reactflow
 
 **Why Reactflow**:
+
 - ✅ **React-native**: Built for React, excellent TypeScript support
 - ✅ **Declarative**: Define nodes/edges, library handles layout
 - ✅ **Auto-layout**: Built-in dagre/elk layout algorithms
@@ -89,6 +94,7 @@ completed: '2025-11-17'
 - ✅ **Small bundle**: ~50KB gzipped (reasonable for feature richness)
 
 **Alternatives Considered**:
+
 - **D3.js**: Too low-level, requires manual layout management
 - **Cytoscape.js**: Powerful but heavier, steeper learning curve
 - **vis.js**: Unmaintained, no React integration
@@ -97,6 +103,7 @@ completed: '2025-11-17'
 ### Implementation Approach
 
 **Display Pattern**: Modal/Dialog (REQUIRED)
+
 - Dependencies graph opens in a dialog/modal, not inline expansion
 - Timeline also moves to modal (consistent pattern for spec metadata)
 - Triggered by "Show Dependencies" and "Show Timeline" buttons
@@ -104,6 +111,7 @@ completed: '2025-11-17'
 - Better mobile experience (full screen modal vs cramped accordion)
 
 **Replace Current Components**:
+
 ```tsx
 // Current: Accordion expansion
 <Accordion>
@@ -117,6 +125,7 @@ completed: '2025-11-17'
 ```
 
 **Node Types**:
+
 - **Current Spec**: Center node (non-interactive, highlighted, primary border)
 - **Depends On (Upstream)**: Left side (amber styling, solid edges with arrows pointing right)
 - **Required By (Downstream)**: Right side, top (red/orange styling, solid edges with arrows pointing left)
@@ -124,6 +133,7 @@ completed: '2025-11-17'
 
 **Complete Dependency Graph**:
 To show the full picture, we need:
+
 1. **Current spec's `dependsOn`** → shows as upstream nodes (left)
 2. **Specs that depend on current spec** → shows as downstream nodes (right, top)
 3. **Current spec's `related`** → shows as related nodes (right, bottom)
@@ -131,16 +141,19 @@ To show the full picture, we need:
 
 **Data Requirements**:
 Current API only provides current spec's perspective. Need to either:
+
 - **Option A**: Fetch all related specs individually to check their relationships (client-side)
 - **Option B**: Add API endpoint that returns complete graph (server-side, better performance)
 - **Option C**: Implement in phases (current perspective first, then expand)
 
 **Implementation Strategy**: Start with Option C (phased approach)
+
 - **Phase 1** (MVP): Current spec perspective only (dependsOn + related) ✅
 - **Phase 2**: Add API endpoint for complete graph (includes requiredBy + bidirectional related)
 - **Phase 3**: Polish UX (better labels, tooltips, legend)
 
 **Layout Strategy**:
+
 - Use Reactflow's `dagre` layout algorithm
 - Constrain to 3-column structure (precedence | current | related)
 - Vertical spacing based on node count
@@ -148,6 +161,7 @@ Current API only provides current spec's perspective. Need to either:
 - Dialog provides ample space for complex graphs
 
 **Styling**:
+
 - Match current design (rounded boxes, color scheme)
 - Maintain distinction between precedence (amber) and related (blue)
 - Full screen or large modal (80-90% viewport)
@@ -156,6 +170,7 @@ Current API only provides current spec's perspective. Need to either:
 ### Migration Plan
 
 **Phase 1: Fix Current Implementation** (COMPLETED ✅)
+
 - ✅ Increase font sizes (node labels, badges, legend)
 - ✅ Add ReactFlow Handle components for edge rendering
 - ✅ Fix edge markers and colors
@@ -163,6 +178,7 @@ Current API only provides current spec's perspective. Need to either:
 - ✅ Update legend text for clarity
 
 **Phase 2: API Enhancement for Complete Graph** (1-2 days)
+
 - [ ] Design API response format for complete dependency graph
 - [ ] Add server-side endpoint: `GET /api/specs/:id/dependency-graph`
   - Returns: `{ current, dependsOn, requiredBy, related, relatedBidirectional }`
@@ -170,6 +186,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Add caching for graph queries
 
 **Phase 3: Client-Side Graph Building** (1-2 days)
+
 - [ ] Update `SpecRelationships` type to include `requiredBy`
 - [ ] Modify `buildGraph()` to handle all relationship types
 - [ ] Add downstream nodes (red/orange styling for "Required By")
@@ -181,6 +198,7 @@ Current API only provides current spec's perspective. Need to either:
   - Right Bottom: Related (bidirectional, informational)
 
 **Phase 4: UX Polish** (1 day)
+
 - [ ] Add tooltips explaining relationship types
 - [ ] Improve legend with examples
 - [ ] Add "Show Full Graph" toggle (current perspective vs complete graph)
@@ -188,6 +206,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Test with complex graphs (10+ nodes, multiple levels)
 
 **Phase 5: Testing & Documentation** (1 day)
+
 - [ ] Test with various spec configurations
 - [ ] Performance testing with large graphs
 - [ ] Update documentation
@@ -198,6 +217,7 @@ Current API only provides current spec's perspective. Need to either:
 ## Plan
 
 **Phase 1: Fix Current Implementation** ✅
+
 - [x] Increase font sizes for better readability
 - [x] Add ReactFlow Handle components to enable edge rendering
 - [x] Fix edge colors and arrow markers
@@ -206,6 +226,7 @@ Current API only provides current spec's perspective. Need to either:
 - [x] Reduce horizontal spacing between nodes
 
 **Phase 2: API Enhancement** ✅
+
 - [x] Design complete dependency graph API response format
 - [x] Implement `GET /api/specs/:id/dependency-graph` endpoint
 - [x] Add graph traversal logic to find:
@@ -215,6 +236,7 @@ Current API only provides current spec's perspective. Need to either:
 - [x] Add tests for API endpoint
 
 **Phase 3: Client-Side Graph Enhancement** ✅
+
 - [x] Update `SpecRelationships` type: add `requiredBy: string[]`
 - [x] Modify `buildGraph()` function to support all relationship types
 - [x] Add downstream nodes (red styling for "Required By")
@@ -224,6 +246,7 @@ Current API only provides current spec's perspective. Need to either:
 - [x] Fetch complete graph on dialog open using SWR
 
 **Phase 4: UX Polish**
+
 - [ ] Add tooltips with relationship explanations
 - [ ] Improve legend with visual examples
 - [ ] Add "View Mode" toggle (current perspective vs full graph)
@@ -232,6 +255,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Improve mobile responsiveness
 
 **Phase 5: Testing**
+
 - [ ] Test with no dependencies
 - [ ] Test with only `dependsOn`
 - [ ] Test with only `related`
@@ -244,6 +268,7 @@ Current API only provides current spec's perspective. Need to either:
 ## Test
 
 **Phase 1 Tests (Current Implementation)** ✅
+
 - [x] Font sizes are readable
 - [x] Edges render correctly with proper colors
 - [x] Nodes display without overlap
@@ -251,6 +276,7 @@ Current API only provides current spec's perspective. Need to either:
 - [x] Spec #082 shows 5 related connections
 
 **Phase 2 Tests (Complete Graph API)**:
+
 - [ ] API endpoint returns correct `requiredBy` relationships
 - [ ] API handles specs with no dependencies
 - [ ] API handles circular dependencies gracefully
@@ -258,6 +284,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Performance is acceptable (<200ms for typical queries)
 
 **Phase 3 Tests (Enhanced Graph Visualization)**:
+
 - [ ] Downstream nodes (Required By) appear on right side
 - [ ] Upstream nodes (Depends On) appear on left side
 - [ ] Related nodes show bidirectional nature
@@ -268,6 +295,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Clicking nodes navigates to correct spec
 
 **Phase 4 Tests (UX Polish)**:
+
 - [ ] Tooltips provide helpful information
 - [ ] Legend is clear and accurate
 - [ ] View mode toggle works
@@ -276,6 +304,7 @@ Current API only provides current spec's perspective. Need to either:
 - [ ] Mobile layout is usable
 
 **Phase 5 Tests (Integration & Performance)**:
+
 - [ ] Graph renders quickly for small graphs (<10 nodes, <100ms)
 - [ ] Graph renders acceptably for large graphs (>20 nodes, <500ms)
 - [ ] No memory leaks during repeated opens/closes
@@ -288,6 +317,7 @@ Current API only provides current spec's perspective. Need to either:
 ### Phase 1 Completion Summary
 
 **Completed (Nov 17, 2025)**:
+
 - ✅ Increased font sizes across all text elements
   - Node labels: `text-xs` → `text-base` (16px)
   - Badge text: `text-[10px]` → `text-xs` (12px)
@@ -315,6 +345,7 @@ Current API only provides current spec's perspective. Need to either:
   - Subtitles added: "Must complete first", "Connected work"
 
 **Files Modified**:
+
 - `/packages/web/src/components/spec-dependency-graph.tsx`
 
 **Next Steps**: Phase 2 requires API changes to support complete dependency graph.
@@ -322,6 +353,7 @@ Current API only provides current spec's perspective. Need to either:
 ### Phase 2 & 3 Completion Summary
 
 **Completed (Nov 17, 2025)**:
+
 - ✅ **API Endpoint**: Created `GET /api/specs/[id]/dependency-graph`
   - Returns complete graph: `{ current, dependsOn, requiredBy, related }`
   - Standalone implementation to avoid tiktoken wasm issues
@@ -330,18 +362,19 @@ Current API only provides current spec's perspective. Need to either:
   - Builds reverse edges (requiredBy) from dependsOn relationships
   - Handles bidirectional related connections automatically
   - O(1) lookups with in-memory Map
-- ✅ **Frontend Integration**: 
+- ✅ **Frontend Integration**:
   - Updated `SpecRelationships` type to include `requiredBy`
   - Added SWR hook to fetch complete graph on dialog open
   - Added red styling for "Required By" nodes (downstream dependents)
   - Updated legend to show all 3 relationship types
   - Graph auto-layouts with dagre algorithm
-- ✅ **Testing**: 
+- ✅ **Testing**:
   - 2 tests for API endpoint
   - Tests gracefully handle missing specs in test environment
   - Build and all tests passing
 
 **Files Modified**:
+
 - `/packages/web/src/lib/dependency-graph.ts` (new)
 - `/packages/web/src/app/api/specs/[id]/dependency-graph/route.ts` (new)
 - `/packages/web/src/app/api/specs/[id]/dependency-graph/route.test.ts` (new)
@@ -354,18 +387,21 @@ Current API only provides current spec's perspective. Need to either:
 ### Why Complete Dependency Graph Matters
 
 **Current Limitation**: Only shows relationships FROM the current spec's perspective:
+
 - Shows specs this one depends on (`dependsOn`)
 - Shows specs this one is related to (`related`)
 - **Missing**: Specs that depend on THIS spec (downstream impact)
 - **Missing**: Specs that list THIS spec in their `related` (bidirectional)
 
-**Example Problem**: 
+**Example Problem**:
+
 - Spec A depends on Spec B
 - When viewing Spec B, you can't see that Spec A is blocked by it
 - Can't assess impact of changes to Spec B
 - Can't see full dependency chain
 
 **Solution**: API endpoint that returns complete graph:
+
 ```typescript
 interface CompleteDependencyGraph {
   current: SpecMetadata;
@@ -377,6 +413,7 @@ interface CompleteDependencyGraph {
 ```
 
 **Visualization Strategy**:
+
 - **Left side**: Upstream dependencies (what this spec needs)
 - **Center**: Current spec
 - **Right side top**: Downstream dependents (what needs this spec)
@@ -438,6 +475,7 @@ class SpecDependencyGraph {
 ```
 
 **Performance Analysis**:
+
 - **Memory**: ~100 specs × (3 Sets × ~5 entries × 50 bytes) ≈ 75KB total
 - **Startup**: O(n²) worst case, but typically O(n×d) where d = avg dependencies (~5)
   - 100 specs × 5 deps = 500 operations ≈ <1ms
@@ -445,6 +483,7 @@ class SpecDependencyGraph {
 - **Conclusion**: Negligible memory/CPU impact, excellent query performance
 
 **Option B: On-Demand Query** (Not Recommended)
+
 - Query all specs on each request to find reverse dependencies
 - O(n) per request where n = total specs
 - Slower (10-50ms per request)
@@ -455,20 +494,24 @@ class SpecDependencyGraph {
 ### CLI/MCP Impact Analysis
 
 **Current CLI Commands Affected**:
-- `lean-spec deps <spec>` - Shows dependencies from spec's perspective
+
+- `harnspec deps <spec>` - Shows dependencies from spec's perspective
 - Need to enhance to show complete graph (requiredBy + bidirectional related)
 
 **Proposed New Commands**:
-- `lean-spec deps <spec> --complete` - Show full dependency graph
-- `lean-spec deps <spec> --upstream` - Only show dependsOn
-- `lean-spec deps <spec> --downstream` - Only show requiredBy
-- `lean-spec deps <spec> --impact` - Show all specs affected by changes to this spec
+
+- `harnspec deps <spec> --complete` - Show full dependency graph
+- `harnspec deps <spec> --upstream` - Only show dependsOn
+- `harnspec deps <spec> --downstream` - Only show requiredBy
+- `harnspec deps <spec> --impact` - Show all specs affected by changes to this spec
 
 **MCP Tools Affected**:
-- `mcp_lean-spec_deps` - Currently shows dependencies, needs enhancement
-- May need new tool: `mcp_lean-spec_dependency-graph` for complete view
+
+- `mcp_harnspec_deps` - Currently shows dependencies, needs enhancement
+- May need new tool: `mcp_harnspec_dependency-graph` for complete view
 
 **Related Spec Needed**: Yes
+
 - **Spec #099**: "Enhanced Dependency Commands for CLI/MCP"
   - Implement in-memory graph in `@leanspec/core`
   - Add CLI commands for complete dependency views
@@ -476,6 +519,7 @@ class SpecDependencyGraph {
   - Ensure consistency between web, CLI, and MCP
 
 **Core Package Changes**:
+
 - Add `SpecDependencyGraph` class to `@leanspec/core`
 - Export graph building utilities
 - Share implementation between web API and CLI
@@ -485,6 +529,7 @@ class SpecDependencyGraph {
 **User Requirement**: Both timeline and dependencies MUST use modal/dialog pattern, not inline accordions.
 
 **Rationale**:
+
 - **More space**: Complex graphs and timelines need room to breathe
 - **Better mobile UX**: Full screen modal vs cramped inline expansion
 - **Consistent pattern**: All spec metadata (dependencies, timeline, transitions) in dialogs
@@ -492,6 +537,7 @@ class SpecDependencyGraph {
 - **Performance**: Lazy load graph only when user opens dialog
 
 **Implementation**:
+
 - Use shadcn/ui Dialog component (already in project)
 - "Show Dependencies" button → opens dependency graph modal
 - "Show Timeline" button → opens timeline modal
@@ -506,12 +552,14 @@ class SpecDependencyGraph {
 **Why These Specs Are Related**:
 
 **Spec #066** (Context Economy Thresholds Refinement):
+
 - **How it led here**: While testing token counting on spec #066, we opened the dependency graph
 - **Issues discovered**: Nodes were overlapping, fonts too small, edges not rendering
 - **Trigger**: This visualization problem became apparent during spec #066 testing
 - **Connection**: Good dependency visualization helps assess spec complexity/relationships
 
 **Spec #082** (Web App Realtime Spec Sync Architecture):
+
 - **How it relates**: Defines the data layer (FilesystemSource, DatabaseSource, SpecsService)
 - **Dependency**: This spec relies on the service layer architecture from #082
 - **API changes**: Complete dependency graph endpoint will use #082's service pattern
@@ -519,6 +567,7 @@ class SpecDependencyGraph {
 - **Coordination**: Any API changes should follow #082's architectural patterns
 
 **Spec #099** (To Be Created - Enhanced Dependency Commands):
+
 - **Scope**: CLI/MCP enhancements for complete dependency graph
 - **Shared code**: In-memory graph implementation in `@leanspec/core`
 - **Consistency**: Ensure web, CLI, MCP all show same dependency information

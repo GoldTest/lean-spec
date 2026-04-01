@@ -16,10 +16,10 @@ HarnSpec is a lightweight spec framework optimized for AI-assisted development. 
 **5-minute setup:**
 
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 cd your-project
-lean-spec init
-lean-spec create my-first-spec
+harnspec init
+harnspec create my-first-spec
 ```
 
 No configuration files, no database, no server. Works with any editor and any AI tool.
@@ -30,23 +30,23 @@ This is the most common question! Here's your quickstart path:
 
 **Option 1: Try with tutorial project (recommended for first-timers)**
 ```bash
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme && npm install && npm start
 ```
 
 **Option 2: Add to existing project**
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 cd your-project
-lean-spec init
-lean-spec create my-first-feature
+harnspec init
+harnspec create my-first-feature
 ```
 
 **After setup:**
-1. Run `lean-spec board` to see the Kanban view
+1. Run `harnspec board` to see the Kanban view
 2. Edit your spec at `specs/001-my-first-feature/README.md`
-3. Run `lean-spec update 001 --status in-progress` when you start coding
-4. Run `lean-spec update 001 --status complete` when done
+3. Run `harnspec update 001 --status in-progress` when you start coding
+4. Run `harnspec update 001 --status complete` when done
 
 **Next steps:**
 - 📖 [Your First Spec with AI](/docs/tutorials/first-spec-with-ai) (10 min tutorial)
@@ -206,10 +206,10 @@ Claude Code will now use MCP to access your specs with semantic search, dependen
 AI agents need explicit instructions. Create `AGENTS.md` at your project root:
 
 ```bash
-lean-spec init  # Creates AGENTS.md automatically
+harnspec init  # Creates AGENTS.md automatically
 ```
 
-Or copy from: [AGENTS.md template](https://github.com/codervisor/lean-spec/blob/main/AGENTS.md)
+Or copy from: [AGENTS.md template](https://github.com/codervisor/harnspec/blob/main/AGENTS.md)
 
 **2. AGENTS.md not in context**
 
@@ -259,19 +259,19 @@ Can you list the specs in this project?
 
 **Scenario 1: Upgrade to latest config (safest)**
 ```bash
-lean-spec init -y
+harnspec init -y
 ```
 This merges your existing config with latest defaults. All specs and AGENTS.md are preserved.
 
 **Scenario 2: Reset config but keep specs**
 ```bash
-lean-spec init -f
+harnspec init -f
 ```
-This resets `.lean-spec/` configuration but keeps your `specs/` directory intact.
+This resets `.harnspec/` configuration but keeps your `specs/` directory intact.
 
 **Scenario 3: Interactive choice**
 ```bash
-lean-spec init
+harnspec init
 ```
 When HarnSpec is already initialized, you'll see options:
 - **Upgrade configuration** (recommended) - Update config, keep everything
@@ -281,7 +281,7 @@ When HarnSpec is already initialized, you'll see options:
 
 **What each option preserves:**
 
-| Option | `.lean-spec/` | `specs/` | `AGENTS.md` |
+| Option | `.harnspec/` | `specs/` | `AGENTS.md` |
 |--------|---------------|----------|-------------|
 | Upgrade | Merged | ✅ Kept | ✅ Kept |
 | Reset config | Fresh | ✅ Kept | Re-created |
@@ -294,7 +294,7 @@ When HarnSpec is already initialized, you'll see options:
 **Start the web UI:**
 
 ```bash
-lean-spec ui
+harnspec ui
 ```
 
 This opens a browser at `http://localhost:3000` with:
@@ -310,9 +310,9 @@ npx @HarnSpec/ui
 
 **Options:**
 ```bash
-lean-spec ui --port 3100    # Custom port
-lean-spec ui --no-open      # Don't auto-open browser
-lean-spec ui --specs ./path # Custom specs directory
+harnspec ui --port 3100    # Custom port
+harnspec ui --no-open      # Don't auto-open browser
+harnspec ui --specs ./path # Custom specs directory
 ```
 
 📖 [Visual Mode guide →](/docs/guide/visual-mode)
@@ -323,34 +323,34 @@ lean-spec ui --specs ./path # Custom specs directory
 
 **1. Create specs for each feature:**
 ```bash
-lean-spec create user-auth --tags auth,api --priority high
-lean-spec create payment-flow --tags payments,api --priority high
-lean-spec create dashboard --tags frontend,ui --priority medium
+harnspec create user-auth --tags auth,api --priority high
+harnspec create payment-flow --tags payments,api --priority high
+harnspec create dashboard --tags frontend,ui --priority medium
 ```
 
 **2. Track relationships:**
 ```bash
 # Dashboard depends on auth being complete
-lean-spec link dashboard --depends-on user-auth
+harnspec link dashboard --depends-on user-auth
 ```
 
 **3. Visualize progress:**
 ```bash
-lean-spec board          # Kanban view
-lean-spec stats          # Project metrics
-lean-spec deps dashboard # See what's blocking dashboard
+harnspec board          # Kanban view
+harnspec stats          # Project metrics
+harnspec deps dashboard # See what's blocking dashboard
 ```
 
 **4. Filter by status or tags:**
 ```bash
-lean-spec list --status in-progress    # What's being worked on?
-lean-spec list --tag api               # All API-related specs
-lean-spec list --assignee @alice       # Alice's work
+harnspec list --status in-progress    # What's being worked on?
+harnspec list --tag api               # All API-related specs
+harnspec list --assignee @alice       # Alice's work
 ```
 
 **5. Use the UI for team visibility:**
 ```bash
-lean-spec ui
+harnspec ui
 # Share http://localhost:3000 in team meetings
 ```
 
@@ -379,12 +379,12 @@ Reference the original spec in commit message for traceability.
 
 Create a follow-up spec:
 ```bash
-lean-spec create auth-token-refresh-fix --tags auth,bugfix --priority high
+harnspec create auth-token-refresh-fix --tags auth,bugfix --priority high
 ```
 
 Link to original:
 ```bash
-lean-spec link auth-token-refresh-fix --depends-on user-auth
+harnspec link auth-token-refresh-fix --depends-on user-auth
 ```
 
 In the new spec, document:
@@ -396,7 +396,7 @@ In the new spec, document:
 
 If the bug reveals a missing requirement:
 ```bash
-lean-spec open user-auth
+harnspec open user-auth
 # Add "Lessons Learned" section documenting the issue
 # Update relevant sections with corrected approach
 ```
@@ -421,17 +421,17 @@ lean-spec open user-auth
 **Fix:**
 ```bash
 git checkout HEAD -- specs/042-my-spec/  # Restore from git
-lean-spec validate                        # Check for issues
+harnspec validate                        # Check for issues
 ```
 
-**Prevention:** Keep specs under 2,000 tokens (warning at 3,500, hard stop at 5,000). Run `lean-spec tokens <spec>` to check before editing.
+**Prevention:** Keep specs under 2,000 tokens (warning at 3,500, hard stop at 5,000). Run `harnspec tokens <spec>` to check before editing.
 
-### `lean-spec update` says "spec not found"
+### `harnspec update` says "spec not found"
 
 **Debug:**
 ```bash
-lean-spec list          # See all active specs
-lean-spec list --all    # Include archived
+harnspec list          # See all active specs
+harnspec list --all    # Include archived
 ```
 
 **Common causes:**
@@ -448,14 +448,14 @@ lean-spec list --all    # Include archived
 
 **Fix:**
 ```bash
-lean-spec validate      # See exactly what's wrong
+harnspec validate      # See exactly what's wrong
 ```
 
 **Always use CLI commands** to update metadata:
 ```bash
-lean-spec update 042 --status in-progress
-lean-spec update 042 --priority high
-lean-spec update 042 --tags api,backend
+harnspec update 042 --status in-progress
+harnspec update 042 --priority high
+harnspec update 042 --tags api,backend
 ```
 
 ### How do I recover deleted specs?
@@ -471,20 +471,20 @@ Or restore from archived:
 
 ```bash
 mv archived/042-my-spec specs/
-lean-spec update 042 --status in-progress
+harnspec update 042 --status in-progress
 ```
 
 ### CLI command not working
 
 **Check installation:**
 ```bash
-which lean-spec
-lean-spec --version
+which harnspec
+harnspec --version
 ```
 
 **Reinstall if needed:**
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 ```
 
 **Verify you're in a git repo:**
@@ -496,12 +496,12 @@ git rev-parse --git-dir
 
 ### How do I report bugs or request features?
 
-- **Bugs:** [GitHub Issues](https://github.com/codervisor/lean-spec/issues)
-- **Features:** [GitHub Discussions](https://github.com/codervisor/lean-spec/discussions)
+- **Bugs:** [GitHub Issues](https://github.com/codervisor/harnspec/issues)
+- **Features:** [GitHub Discussions](https://github.com/codervisor/harnspec/discussions)
 
 ### Can I contribute?
 
-Yes! See [CONTRIBUTING.md](https://github.com/codervisor/lean-spec/blob/main/CONTRIBUTING.md).
+Yes! See [CONTRIBUTING.md](https://github.com/codervisor/harnspec/blob/main/CONTRIBUTING.md).
 
 **Common contributions:**
 - Documentation improvements
@@ -512,8 +512,8 @@ Yes! See [CONTRIBUTING.md](https://github.com/codervisor/lean-spec/blob/main/CON
 ### Where can I get help?
 
 - **Documentation:** [Full guide](/docs/guide/)
-- **Discussions:** [GitHub Discussions](https://github.com/codervisor/lean-spec/discussions)
-- **Issues:** [Bug tracker](https://github.com/codervisor/lean-spec/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/codervisor/harnspec/discussions)
+- **Issues:** [Bug tracker](https://github.com/codervisor/harnspec/issues)
 - **Twitter/X:** [@MarvinZhang89](https://x.com/MarvinZhang89)
 
 ### What's the license?
@@ -522,4 +522,4 @@ MIT License - free for commercial and personal use.
 
 ---
 
-**More questions?** Check the [full documentation](/docs/guide/) or ask in [GitHub Discussions](https://github.com/codervisor/lean-spec/discussions).
+**More questions?** Check the [full documentation](/docs/guide/) or ask in [GitHub Discussions](https://github.com/codervisor/harnspec/discussions).

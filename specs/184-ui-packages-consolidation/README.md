@@ -18,16 +18,18 @@ updated_at: 2026-01-12T08:27:30.904768148Z
 # Unified UI Architecture: Rust-Powered Web & Desktop (Umbrella)
 
 > **Status**: planned · **Priority**: high · **Created**: 2025-12-18
-> 
+>
 > **⚠️ Umbrella Spec**: Coordinates 3 sub-specs. See [SPLIT.md](SPLIT.md) and sub-specs for implementation details.
 
 ## Overview
 
 **Problem**: Two UI implementations with different capabilities:
+
 - **`packages/ui`**: Next.js SSR, rich UI, but 150MB+ bundle + slow TypeScript backend
 - **`packages/desktop`**: Tauri + basic UI, fast Rust backend, but limited features
 
 **Solution**: Unify around **Vite SPA + Rust HTTP Server**:
+
 - One shared component library
 - One Rust HTTP server (multi-project support)
 - One Vite SPA for both web and desktop
@@ -65,6 +67,7 @@ packages/ai-worker
 ```
 
 **Important distinction**:
+
 - **Web**: Uses HTTP server (browser can't call Rust directly)
 - **Desktop**: Uses Tauri commands (direct Rust calls, no HTTP overhead)
 - **AI Chat**: Both platforms use `@leanspec/ai-worker` via IPC (spawned by Rust server)
@@ -76,11 +79,12 @@ packages/ai-worker
 3. **Tauri Commands for Desktop**: Direct Rust calls (no HTTP overhead)
 4. **Shared Components**: `packages/ui-components` used by web + desktop
 5. **Multi-Project Default**: Both platforms use project registry
-6. **Config JSON**: `~/.lean-spec/config.json` (not YAML)
+6. **Config JSON**: `~/.harnspec/config.json` (not YAML)
 
 ### Configuration
 
-**`~/.lean-spec/config.json`**:
+**`~/.harnspec/config.json`**:
+
 ```json
 {
   "server": {
@@ -94,6 +98,7 @@ packages/ai-worker
 ```
 
 **System Requirements**:
+
 - **Rust**: Backend server and core operations
 - **Node.js**: Required for AI chat features (via `@leanspec/ai-worker`)
   - Hard minimum: v20+ (works with EOL warning if v20-v21)
@@ -106,17 +111,21 @@ packages/ai-worker
 ### Timeline (4 weeks)
 
 **Week 1**: Foundations (parallel)
+
 - [ ] [Spec 185](../185-ui-components-extraction/): Extract component library
 - [ ] [Spec 186](../186-rust-http-server/): Build HTTP server
 
 **Week 2**: New UI
+
 - [ ] [Spec 187](../187-vite-spa-migration/): Vite SPA using components + HTTP API
 
 **Week 3**: Integration
+
 - [ ] Desktop uses HTTP server + shared UI
 - [ ] Integration + performance testing
 
 **Week 4**: Launch
+
 - [ ] Archive Next.js UI (`packages/ui` → `packages/ui-legacy-nextjs`)
 - [ ] Promote Vite SPA (`packages/ui-new` → `packages/ui`)
 - [ ] Release v0.3.0
@@ -124,6 +133,7 @@ packages/ai-worker
 ### Success Criteria
 
 **Must Have**:
+
 - [ ] All Next.js UI features in Vite SPA
 - [ ] Desktop uses shared UI
 - [ ] Bundle <30MB (vs 150MB+)
@@ -133,6 +143,7 @@ packages/ai-worker
 ## Test
 
 **Integration Tests** (cross-spec):
+
 - [ ] Web → HTTP server → filesystem
 - [ ] Desktop → HTTP server → filesystem
 - [ ] Project switching synchronized
@@ -151,6 +162,7 @@ packages/ai-worker
 ### Why Bold Migration?
 
 AI coding era enables velocity:
+
 - AI excels at mechanical porting
 - Desktop migration (spec 169) proved this works
 - Avoid temporary bridges (no CLI spawning)

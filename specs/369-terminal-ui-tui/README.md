@@ -19,7 +19,7 @@ created_at: '2026-03-11T09:00:20.459758+00:00'
 
 Developers using AI coding tools (Claude Code, Cursor, etc.) work primarily in the terminal. Currently, viewing specs with rich visuals requires switching to the web UI — a context switch that breaks flow. The CLI provides text output but lacks interactivity. A TUI bridges this gap: rich, interactive spec management without leaving the terminal.
 
-**Goal**: Build a `lean-spec tui` command that provides an interactive terminal interface for browsing, searching, and viewing specs — optimized for developers who live in the terminal.
+**Goal**: Build a `harnspec tui` command that provides an interactive terminal interface for browsing, searching, and viewing specs — optimized for developers who live in the terminal.
 
 ## Design
 
@@ -27,7 +27,7 @@ Developers using AI coding tools (Claude Code, Cursor, etc.) work primarily in t
 
 - **ratatui** + **crossterm**: Standard Rust TUI stack, well-maintained, battle-tested
 - **leanspec-core**: Already provides all data access (SpecLoader, SpecInfo, relationships)
-- Ships as part of the existing `lean-spec` binary — no separate install
+- Ships as part of the existing `harnspec` binary — no separate install
 
 ### Architecture
 
@@ -72,7 +72,7 @@ Split-pane (similar to lazygit): board/list on left, spec detail on right. Respo
 - [ ] Implement split-pane responsive layout
 - [ ] Add live search/filter overlay
 - [ ] Add dependency tree view
-- [ ] Wire up `lean-spec tui` subcommand
+- [ ] Wire up `harnspec tui` subcommand
 - [ ] Test with 300+ specs for performance
 
 ## Non-Goals
@@ -84,7 +84,7 @@ Split-pane (similar to lazygit): board/list on left, spec detail on right. Respo
 
 ## Test
 
-- [ ] `lean-spec tui` launches without errors
+- [ ] `harnspec tui` launches without errors
 - [ ] Board view renders all specs grouped by status
 - [ ] Selecting a spec shows full content, metadata, and relationships
 - [ ] Search filters specs in real-time as the user types

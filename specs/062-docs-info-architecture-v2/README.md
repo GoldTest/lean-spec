@@ -22,7 +22,7 @@ completed: '2025-11-10'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-08 · **Tags**: docs, information-architecture, ux, v0.2.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -38,6 +38,7 @@ Restructure docs-site to cleanly separate **WHY (Core Concepts)** from **HOW (Ge
 ## Summary
 
 **Key Changes:**
+
 1. **Core Concepts** - Pure WHY (positioning, principles, philosophy) + new Context Engineering and AI Agent Memory pages
 2. **Remove "Working with AI"** - Integrate throughout (setup in Getting Started, usage in new AI-Assisted section)
 3. **Unified Usage Section** - Merge Features + Workflow, add missing Essential Usage docs, organize progressively
@@ -59,6 +60,7 @@ See sub-specs for comprehensive design:
 ### Success Criteria
 
 #### Structure & Navigation
+
 - [ ] Core Concepts has 5 pages: Understanding, First Principles, Context Engineering, AI Agent Memory, Philosophy
 - [ ] "Working with AI" section removed
 - [ ] Usage section exists with 4 subcategories
@@ -68,6 +70,7 @@ See sub-specs for comprehensive design:
 - [ ] Cross-links to Reference pages present throughout Usage section
 
 #### Content Quality
+
 - [ ] "Understanding LeanSpec" clearly positions the methodology
 - [ ] First Principles standalone and comprehensive
 - [ ] Context Engineering explains LeanSpec's approach to managing AI context
@@ -79,6 +82,7 @@ See sub-specs for comprehensive design:
 - [ ] Cross-links to Reference pages work correctly
 
 #### Completeness
+
 - [ ] Essential usage comprehensively documented with Reference cross-links
 - [ ] Project management features grouped logically
 - [ ] Advanced features clearly marked as such
@@ -88,6 +92,7 @@ See sub-specs for comprehensive design:
 - [ ] All previous content accounted for (nothing lost)
 
 #### Technical
+
 - [ ] Build succeeds: `cd docs-site && npm run build`
 - [ ] No broken internal links
 - [ ] No 404 errors
@@ -95,6 +100,7 @@ See sub-specs for comprehensive design:
 - [ ] Mobile/desktop rendering correct
 
 #### User Experience
+
 - [ ] Clear separation of WHY (concepts) vs HOW (usage)
 - [ ] Progressive disclosure: basic → advanced
 - [ ] No confusion about where to find information
@@ -107,7 +113,7 @@ See sub-specs for comprehensive design:
 cd docs-site && npm run build
 
 # Validate specs
-cd .. && npx lean-spec validate
+cd .. && npx harnspec validate
 
 # Check for broken links (if link checker available)
 # npm run check-links
@@ -118,6 +124,7 @@ cd .. && npx lean-spec validate
 ### Key Design Decisions
 
 **1. Why keep "Understanding LeanSpec" as entry point but add Context Engineering + AI Agent Memory?**
+
 - "Understanding LeanSpec" is more informative than abrupt "Why LeanSpec"
 - Users need quick overview before diving into detailed concepts
 - Context Engineering coherently links to spec 059 and Context Economy principle
@@ -125,18 +132,21 @@ cd .. && npx lean-spec validate
 - Each concept gets dedicated page for depth
 
 **2. Why remove "Working with AI" section?**
+
 - AI is not optional add-on, it's core to LeanSpec
 - Setup belongs in Getting Started (everyone needs it)
 - Patterns/best practices belong in Usage (how to use)
 - Having separate section implies AI is secondary concern
 
 **3. Why merge Features + Workflow into Usage?**
+
 - Both are "how to use LeanSpec features"
 - Artificial separation confuses users
 - New structure is progressive: Basic → Project Mgmt → Advanced → AI
 - Natural learning progression
 
 **4. Why "Essential Usage" instead of "Basic Commands"?**
+
 - "Essential" is more accurate - these are core operations, not just "basic"
 - Covers both commands AND concepts (spec structure, frontmatter)
 - Better conveys importance to new users
@@ -194,6 +204,7 @@ guide/validation.mdx                  → guide/usage/project-management/validat
 ### Research Sources
 
 **Context Engineering**:
+
 - Spec 059: Programmatic Spec Management & Context Engineering
 - Spec 059/CONTEXT-ENGINEERING.md: Deep dive on strategies and failure modes
 - Anthropic: [Effective Context Engineering for AI Agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
@@ -201,6 +212,7 @@ guide/validation.mdx                  → guide/usage/project-management/validat
 - Drew Breunig: [How Contexts Fail and How to Fix Them](https://www.dbreunig.com/2025/06/22/how-contexts-fail-and-how-to-fix-them.html)
 
 **AI Agent Memory**:
+
 - LangChain: [Memory for Agents](https://blog.langchain.com/memory-for-agents/)
 - CoALA paper: [Cognitive Architectures for Language Agents](https://arxiv.org/pdf/2309.02427)
 - Key insight: Specs serve as **semantic memory** (long-term knowledge store) for AI agents
@@ -217,10 +229,12 @@ guide/validation.mdx                  → guide/usage/project-management/validat
 ### Trade-offs
 
 **Lose**:
+
 - Separate "Working with AI" navigation entry
 - "Features" and "Workflow" as distinct categories
 
 **Gain**:
+
 - Crystal clear WHY vs HOW separation
 - Progressive learning path
 - No redundancy or confusion
@@ -228,6 +242,7 @@ guide/validation.mdx                  → guide/usage/project-management/validat
 - Logical feature grouping (basic → advanced)
 
 **5. Why add Context Engineering and AI Agent Memory as core concepts?**
+
 - Both are fundamental to understanding LeanSpec's innovation
 - Context Engineering: Connects to spec 059, explains practical application of Context Economy
 - AI Agent Memory: Positions specs as persistent memory layer (research-backed from LangChain)
@@ -235,6 +250,7 @@ guide/validation.mdx                  → guide/usage/project-management/validat
 - Elevates discussion from "how to write specs" to "how AI agents use specs"
 
 **6. Why add cross-links to Reference pages throughout Usage?**
+
 - Reduces redundancy - Usage guides the "what/why", Reference documents the "how/details"
 - Users can quickly jump to detailed API/config documentation
 - Maintains clear separation between guidance and reference material

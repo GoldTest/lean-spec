@@ -29,10 +29,10 @@ A second round of TUI polish items from real-world use, as follow-up to specs #3
 
 1. **Critical priority icon is double-width** — `"!!"` takes 2 cells and is visually noisy; should be `"! "` (single `!` + space) to match the 2-cell width of other priority symbols.
 
-2. **Startup ignores CWD** — `resolve_specs_dir` picks the most recently accessed project. If the user `cd`'d into their project directory and launches `lean-spec tui`, they expect *that* project — not whichever was last accessed elsewhere. CWD should be checked first.
+2. **Startup ignores CWD** — `resolve_specs_dir` picks the most recently accessed project. If the user `cd`'d into their project directory and launches `harnspec tui`, they expect *that* project — not whichever was last accessed elsewhere. CWD should be checked first.
    > Overlaps spec #372 startup behavior table — update that spec's table and implement here.
 
-3. **No per-project UI settings persistence** — Sort order, filter state, sidebar width/collapsed are reset on every launch. The web UI persists these per-project. The TUI should save/restore them from `~/.lean-spec/tui-prefs/<project-id>.json`.
+3. **No per-project UI settings persistence** — Sort order, filter state, sidebar width/collapsed are reset on every launch. The web UI persists these per-project. The TUI should save/restore them from `~/.harnspec/tui-prefs/<project-id>.json`.
 
 4. **Archived specs visible by default** — `FilterState::default()` shows all statuses including `Archived`. Most users don't want archived specs cluttering the list. Default should exclude `Archived`; users opt-in via filter.
 
@@ -45,6 +45,7 @@ A second round of TUI polish items from real-world use, as follow-up to specs #3
 ### 1. Critical Priority Icon
 
 `theme.rs`, `priority_symbol`:
+
 ```rust
 // Before
 Some(SpecPriority::Critical) => "!!",
@@ -68,7 +69,7 @@ CWD match: check if any registered project's `specs_dir` equals `cwd`, or is a c
 
 ### 3. Per-Project Settings Persistence
 
-`TuiPrefs` stored at `~/.lean-spec/tui-prefs/<project-id>.json`:
+`TuiPrefs` stored at `~/.harnspec/tui-prefs/<project-id>.json`:
 
 ```json
 {
@@ -136,10 +137,12 @@ fn clamp_scroll_offset(&mut self, visible_rows: usize) {
 ### 6. Scrollbar Mouse Drag
 
 Add to `App`:
+
 - `list_scrollbar_col: u16` — right column of list pane (set during render)
 - `scrollbar_drag_active: bool`
 
 In `keybindings.rs` mouse handler, on `MouseEvent::Down { column, row, .. }`:
+
 ```rust
 if column == app.list_scrollbar_col && app.primary_view == PrimaryView::List {
     let inner_top = app.layout_left.y + 3; // skip header rows
@@ -160,7 +163,7 @@ On `MouseEvent::Up`: clear `scrollbar_drag_active`.
 - [x] Fix critical priority icon: `"!!"` → `"! "` in `theme.rs`
 - [x] Update `resolve_specs_dir` in `mod.rs` to prefer CWD match before most-recently-accessed
 - [x] Update startup behavior table in spec #372
-- [x] Add `TuiPrefs` struct with serde; save/load from `~/.lean-spec/tui-prefs/`
+- [x] Add `TuiPrefs` struct with serde; save/load from `~/.harnspec/tui-prefs/`
 - [x] Wire prefs load into `App::new` and save into `run()` on exit
 - [x] Change `FilterState::default()` to exclude `Archived`; add `A` = show-all in filter popup
 - [x] Add `list_scroll_offset: usize` to `App`; update nav methods to call `clamp_scroll_offset`
@@ -177,9 +180,9 @@ On `MouseEvent::Up`: clear `scrollbar_drag_active`.
 ## Test
 
 - [x] Critical priority shows single `!` in list, board, and filter views
-- [x] `lean-spec tui` from a project directory opens that project (not most-recently-accessed)
-- [x] `lean-spec tui` from non-project dir opens most-recently-accessed
-- [x] `lean-spec tui` with empty registry shows add-project prompt
+- [x] `harnspec tui` from a project directory opens that project (not most-recently-accessed)
+- [x] `harnspec tui` from non-project dir opens most-recently-accessed
+- [x] `harnspec tui` with empty registry shows add-project prompt
 - [x] Sort, filter, sidebar state are restored on next launch for the same project
 - [x] Archived specs are hidden by default on fresh launch
 - [x] After `G`, pressing `k` produces visible upward scroll (cursor has scrolloff context above/below)

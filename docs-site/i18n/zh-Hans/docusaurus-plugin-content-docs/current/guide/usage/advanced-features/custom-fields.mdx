@@ -13,7 +13,7 @@ HarnSpec 通过自定义frontmatter字段和模板变量支持强大的自定义
 
 ### 定义自定义字段
 
-编辑 `.lean-spec/config.json`：
+编辑 `.harnspec/config.json`：
 
 ```json
 {
@@ -43,19 +43,19 @@ HarnSpec 通过自定义frontmatter字段和模板变量支持强大的自定义
 
 **创建Spec时：**
 ```bash
-lean-spec create user-auth --field epic=PROJ-123 --field sprint=42
+harnspec create user-auth --field epic=PROJ-123 --field sprint=42
 ```
 
 **更新Spec时：**
 ```bash
-lean-spec update 001 --field reviewer=alice --field estimate=large
+harnspec update 001 --field reviewer=alice --field estimate=large
 ```
 
 **过滤时：**
 ```bash
-lean-spec list --field epic=PROJ-123
-lean-spec list --field sprint=42
-lean-spec search "API" --field team=backend
+harnspec list --field epic=PROJ-123
+harnspec list --field sprint=42
+harnspec search "API" --field team=backend
 ```
 
 ### 示例配置
@@ -118,7 +118,7 @@ lean-spec search "API" --field team=backend
 
 ### 自定义变量
 
-在 `.lean-spec/config.json` 中定义：
+在 `.harnspec/config.json` 中定义：
 
 ```json
 {
@@ -133,7 +133,7 @@ lean-spec search "API" --field team=backend
 
 ### 在模板中使用变量
 
-创建或编辑 `.lean-spec/templates/spec-template.md`：
+创建或编辑 `.harnspec/templates/spec-template.md`：
 
 ```markdown
 ---
@@ -164,7 +164,7 @@ created: \{date\}
 当您创建Spec时，所有变量都会自动解析：
 
 ```bash
-lean-spec create user-authentication
+harnspec create user-authentication
 ```
 
 结果为：
@@ -197,7 +197,7 @@ created: 2025-11-02
 
 **基本自定义字段使用：**
 ```bash
-lean-spec create user-authentication \
+harnspec create user-authentication \
   --field epic=AUTH-2024 \
   --field sprint=5 \
   --field estimate=3d \
@@ -206,7 +206,7 @@ lean-spec create user-authentication \
 
 **包含所有选项：**
 ```bash
-lean-spec create payment-integration \
+harnspec create payment-integration \
   --title "Stripe Payment Integration" \
   --description "Integrate Stripe for subscription payments" \
   --tags backend,payment,api \
@@ -222,12 +222,12 @@ lean-spec create payment-integration \
 **更新自定义字段：**
 ```bash
 # 仅更新自定义字段
-lean-spec update 001-user-authentication \
+harnspec update 001-user-authentication \
   --field sprint=6 \
   --field estimate=2d
 
 # 一起更新标准和自定义字段
-lean-spec update 001-user-authentication \
+harnspec update 001-user-authentication \
   --status in-progress \
   --priority high \
   --field sprint=6
@@ -236,19 +236,19 @@ lean-spec update 001-user-authentication \
 **按自定义字段过滤：**
 ```bash
 # 按史诗过滤
-lean-spec list --field epic=AUTH-2024
+harnspec list --field epic=AUTH-2024
 
 # 按冲刺过滤
-lean-spec list --field sprint=5
+harnspec list --field sprint=5
 
 # 与标准过滤器组合
-lean-spec list --status in-progress --field sprint=6
+harnspec list --status in-progress --field sprint=6
 
 # 多个自定义字段
-lean-spec list --field epic=AUTH-2024 --field sprint=6
+harnspec list --field epic=AUTH-2024 --field sprint=6
 
 # 使用自定义字段过滤器搜索
-lean-spec search "authentication" --field epic=AUTH-2024
+harnspec search "authentication" --field epic=AUTH-2024
 ```
 
 ### 敏捷团队设置
@@ -386,13 +386,13 @@ HarnSpec 自动将值强制转换为正确的类型：
 
 ```bash
 # "42" 转换为数字 42
-lean-spec create feature --field sprint=42
+harnspec create feature --field sprint=42
 
 # "true" 转换为布尔值 true
-lean-spec create feature --field needs_review=true
+harnspec create feature --field needs_review=true
 
 # 数组使用逗号分隔
-lean-spec create feature --field teams=backend,frontend
+harnspec create feature --field teams=backend,frontend
 ```
 
 ## 限制
@@ -408,7 +408,7 @@ lean-spec create feature --field teams=backend,frontend
 
 ```bash
 # 手动或使用脚本更新现有Spec
-lean-spec update 001 --field epic=PROJ-123
+harnspec update 001 --field epic=PROJ-123
 
 # 或直接在每个 README.md 中编辑frontmatter
 ```

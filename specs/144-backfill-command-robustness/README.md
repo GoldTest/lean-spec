@@ -23,7 +23,8 @@ completed: '2025-12-05'
 
 ## What
 
-Make `lean-spec backfill` robust enough to handle specs migrated from various formats, including files with:
+Make `harnspec backfill` robust enough to handle specs migrated from various formats, including files with:
+
 - Missing or incomplete YAML frontmatter
 - Legacy inline metadata (e.g., `**Status**: Complete`)
 - No frontmatter at all (plain markdown)
@@ -34,6 +35,7 @@ Make `lean-spec backfill` robust enough to handle specs migrated from various fo
 The `backfill` command is designed to help users migrate specs from other systems or recover timestamp data from git history. Currently it crashes with `Cannot read properties of undefined (reading 'charAt')` when processing specs without valid `status` or `created` fields.
 
 Users migrating from:
+
 - Plain markdown documents
 - Other spec systems (ADR, RFC, etc.)
 - Legacy LeanSpec formats with inline metadata
@@ -51,17 +53,20 @@ Users migrating from:
 ### Proposed Enhancement
 
 **Option A: Auto-infer missing fields** (Recommended)
+
 - If `status` missing: infer from git history or default to `planned`
 - If `created` missing: use first git commit date
 - Add `--bootstrap` flag to explicitly create missing frontmatter
 
 **Option B: Separate bootstrap command**
-- New `lean-spec bootstrap` command for adding frontmatter to plain files
+
+- New `harnspec bootstrap` command for adding frontmatter to plain files
 - `backfill` only updates existing frontmatter
 
 ### Implementation Approach
 
 Enhance backfill to:
+
 1. Detect files with missing/partial frontmatter
 2. Offer to bootstrap required fields from git history
 3. Handle various legacy formats gracefully
@@ -87,6 +92,7 @@ Enhance backfill to:
 ## Implementation Summary
 
 ### New Files
+
 - `packages/cli/src/utils/bootstrap-helpers.ts` - Bootstrap utilities:
   - `loadSpecsForBootstrap()` - Load specs without requiring valid frontmatter
   - `inferStatusFromContent()` - Parse status from inline metadata patterns
@@ -95,6 +101,7 @@ Enhance backfill to:
   - `inferCreatedFromGit()` - Use first commit date as fallback
 
 ### Modified Files
+
 - `packages/cli/src/commands/backfill.ts`:
   - Added `--bootstrap` flag
   - New `bootstrapSpec()` function for creating frontmatter
@@ -105,6 +112,7 @@ Enhance backfill to:
   - Guard in `updateVisualMetadata()` for missing status/created
 
 ### Supported Input Formats
+
 1. **Plain markdown** - No frontmatter at all
 2. **LeanSpec inline** - `**Status**: Complete`, `**Created**: 2025-01-15`
 3. **Simple format** - `Status: Complete`, `Created: 2025-01-15`
@@ -112,7 +120,9 @@ Enhance backfill to:
 5. **Partial frontmatter** - Missing status or created fields
 
 ### Status Mapping
+
 ADR/RFC statuses are mapped to LeanSpec statuses:
+
 - `accepted`, `approved`, `done` → `complete`
 - `proposed`, `pending`, `draft` → `planned`
 - `superseded`, `deprecated`, `rejected` → `archived`
@@ -123,6 +133,7 @@ ADR/RFC statuses are mapped to LeanSpec statuses:
 ### Quick Fix Already Applied
 
 The immediate crash was fixed by adding guards in:
+
 - `frontmatter.ts`: `updateVisualMetadata()` returns early if `status`/`created` missing
 - `backfill.ts`: Skip specs without required frontmatter with clear message
 

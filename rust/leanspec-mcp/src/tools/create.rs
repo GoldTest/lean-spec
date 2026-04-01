@@ -132,7 +132,7 @@ pub(crate) fn get_definition() -> crate::protocol::ToolDefinition {
                 },
                 "template": {
                     "type": "string",
-                    "description": "Template name to load from .lean-spec/templates"
+                    "description": "Template name to load from .harnspec/templates"
                 },
                 "content": {
                     "type": "string",

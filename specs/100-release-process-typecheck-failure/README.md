@@ -17,7 +17,6 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17 · **Tags**: process, quality, ci-cd, post-mortem
 
-
 ## Overview
 
 On November 17, 2025, we attempted to release v0.2.3 only to discover **30+ TypeScript compilation errors** that should have been caught before the release process began. This spec documents what went wrong, why it happened, and how to prevent it in the future.
@@ -27,7 +26,9 @@ On November 17, 2025, we attempted to release v0.2.3 only to discover **30+ Type
 ## What Went Wrong
 
 ### The Problem
+
 Version 0.2.3 was tagged and released without running `pnpm typecheck`, leading to a published package that:
+
 - Failed TypeScript compilation (`tsc --noEmit` showed 30+ errors)
 - Had broken MCP SDK integration (signature mismatches)
 - Had type mismatches across packages (core vs CLI)
@@ -60,17 +61,21 @@ Version 0.2.3 was tagged and released without running `pnpm typecheck`, leading 
 The errors fell into several categories:
 
 **Type Export Issues (1 error)**
+
 - `isolate.ts` couldn't import `Frontmatter` type from core (not exported)
 
 **Interface Mismatches (2 errors)**  
+
 - `SpecInfo.date` was required in CLI but optional in core
 - `deps.ts` failed due to this mismatch
 
 **Type Casting Issues (2 errors)**
+
 - `search.ts` had `unknown` types for `title`/`description` from frontmatter
 - Needed explicit type guards
 
 **MCP SDK Signature Changes (25+ errors)**
+
 - All tool handlers missing required `extra` parameter
 - Resource callbacks missing `variables` and `extra` parameters  
 - Console capturing code broken by incorrect multi_replace edits
@@ -79,18 +84,21 @@ The errors fell into several categories:
 ## Why Didn't We Catch This?
 
 ### Human Factors
+
 - **Assumption**: "If build passes, types are good"
 - **Habit**: Not running `pnpm typecheck` before releases
 - **Time pressure**: Rush to publish without full validation
 - **Trust**: Assumed CI would catch issues (but it didn't)
 
 ### Process Gaps
+
 - No checklist for releases
 - No automated pre-release validation
 - No CI gate for type checking
 - No cross-package type validation
 
 ### Tool Configuration
+
 - `tsup.config.ts` may have been too lenient
 - Build tool doesn't enforce strict type checking
 - Missing `turbo run typecheck` in release workflow
@@ -98,6 +106,7 @@ The errors fell into several categories:
 ## What Should Have Happened
 
 ### Ideal Pre-Release Checklist
+
 ```bash
 # 1. Type check all packages
 pnpm typecheck
@@ -112,7 +121,7 @@ pnpm build
 cd docs-site && npm run build
 
 # 5. Run local spec validation
-node bin/lean-spec.js validate
+node bin/harnspec.js validate
 
 # 6. Update CHANGELOG.md
 
@@ -127,6 +136,7 @@ gh release create vX.Y.Z
 ```
 
 ### Ideal CI/CD Workflow
+
 ```yaml
 # .github/workflows/publish.yml
 jobs:
@@ -152,12 +162,14 @@ jobs:
 ## Lessons Learned
 
 ### What Worked
+
 - ✅ Fast identification and triage of errors
 - ✅ Systematic fix approach (categorize, prioritize, fix)
 - ✅ Good git practices (committed fix, tagged properly)
 - ✅ Clear documentation of what was fixed
 
 ### What Didn't Work
+
 - ❌ No automated type checking in CI
 - ❌ No pre-release validation checklist
 - ❌ Build tools don't enforce type safety
@@ -169,6 +181,7 @@ jobs:
 ### Immediate (Before Next Release)
 
 **1. Add Type Checking to CI Workflow**
+
 ```yaml
 # .github/workflows/publish.yml
 - name: Type check all packages
@@ -180,15 +193,17 @@ jobs:
 
 **2. Create Release Checklist**
 Add to `CONTRIBUTING.md` or create `RELEASING.md`:
+
 - [ ] Run `pnpm typecheck`
 - [ ] Run `pnpm test:run`  
 - [ ] Run `pnpm build`
-- [ ] Validate with `node bin/lean-spec.js validate`
+- [ ] Validate with `node bin/harnspec.js validate`
 - [ ] Update CHANGELOG.md
 - [ ] Commit, tag, push
 - [ ] Create GitHub release
 
 **3. Add Pre-Push Hook** (Optional)
+
 ```bash
 # .husky/pre-push
 pnpm typecheck || (echo "Type check failed!" && exit 1)
@@ -198,6 +213,7 @@ pnpm typecheck || (echo "Type check failed!" && exit 1)
 
 **4. Improve Package Scripts**
 Add a `pre-release` script:
+
 ```json
 {
   "scripts": {
@@ -207,11 +223,13 @@ Add a `pre-release` script:
 ```
 
 **5. Enhanced CI Pipeline**
+
 - Add separate typecheck job that runs on all PRs
 - Require passing typecheck before merge
 - Add matrix testing across Node versions
 
 **6. Documentation**
+
 - Document the release process in `AGENTS.md`
 - Add "Why typecheck matters" section
 - Include common type error patterns
@@ -220,17 +238,20 @@ Add a `pre-release` script:
 
 **7. Automated Release Process**
 Consider tools like:
+
 - `semantic-release` for automated versioning
 - `changesets` for monorepo releases
 - `release-please` for GitHub-native releases
 
 **8. Type Safety Improvements**
+
 - Enable stricter TypeScript compiler options
 - Add `strict: true` to all `tsconfig.json`
 - Use `exactOptionalPropertyTypes`
 - Enable `noUncheckedIndexedAccess`
 
 **9. Monorepo Type Validation**
+
 - Add Turbo task for cross-package type checking
 - Validate type exports/imports between packages
 - Add package boundary lint rules
@@ -238,6 +259,7 @@ Consider tools like:
 ## Metrics to Track
 
 Going forward, track:
+
 - **Time to catch type errors**: Pre-push vs CI vs post-release
 - **Type error frequency**: Trend over time
 - **Release confidence**: Did we catch issues before release?
@@ -246,6 +268,7 @@ Going forward, track:
 ## Success Criteria
 
 This post-mortem is successful when:
+
 - ✅ CI blocks releases with type errors
 - ✅ `pnpm typecheck` is part of standard workflow
 - ✅ Developers run typecheck before PRs

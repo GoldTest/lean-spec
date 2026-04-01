@@ -118,7 +118,7 @@ pub fn build_context_prompt(
     // Resolve the specs directory from the project's config (fall back to "specs").
     let (specs_dir, template) = {
         let config_path = PathBuf::from(project_path)
-            .join(".lean-spec")
+            .join(".harnspec")
             .join("config.yaml");
         let config = if config_path.exists() {
             LeanSpecConfig::load(&config_path).ok()
@@ -625,7 +625,7 @@ impl SessionManager {
                 json!({
                     "protocolVersion": 1,
                     "clientInfo": {
-                        "name": "lean-spec",
+                        "name": "harnspec",
                         "version": env!("CARGO_PKG_VERSION")
                     },
                     "clientCapabilities": {}
@@ -1439,7 +1439,7 @@ fn build_acp_prompt_content(
     })];
 
     let config_path = PathBuf::from(project_path)
-        .join(".lean-spec")
+        .join(".harnspec")
         .join("config.yaml");
     let specs_subdir = if config_path.exists() {
         LeanSpecConfig::load(&config_path)
@@ -2025,7 +2025,7 @@ mod tests {
         )
         .expect("write spec");
 
-        let config_dir = project.join(".lean-spec");
+        let config_dir = project.join(".harnspec");
         fs::create_dir_all(&config_dir).expect("create config dir");
         fs::write(
             config_dir.join("config.yaml"),

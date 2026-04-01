@@ -29,6 +29,7 @@ Add native OS menu bar to LeanSpec Desktop app with File, Edit, View, and Help m
 ### Current State
 
 The desktop app uses a **frameless window** (`decorations: false`) with:
+
 - Custom title bar component with logo, project switcher, and window controls
 - System tray menu (right-click tray icon)
 - Global keyboard shortcuts
@@ -159,7 +160,7 @@ pub fn handle_menu_event(event: WindowMenuEvent) {
             let _ = event.window().emit("desktop://menu-toggle-sidebar", ());
         }
         "docs" => {
-            let _ = tauri::api::shell::open(&event.window().shell_scope(), "https://lean-spec.dev/docs", None);
+            let _ = tauri::api::shell::open(&event.window().shell_scope(), "https://harnspec.dev/docs", None);
         }
         "shortcuts" => {
             let _ = event.window().emit("desktop://menu-shortcuts", ());
@@ -194,21 +195,25 @@ fn main() {
 ### Design Decisions
 
 **Why add native menu when we have system tray?**
+
 - **Discoverability**: New users expect menu bar, especially on macOS
 - **Standard UX**: Follows OS conventions (File/Edit/View/Help structure)
 - **Keyboard shortcuts**: Menu shows all shortcuts in one place
 - **Accessibility**: Screen readers can navigate menus
 
 **Why keep both menu bar AND custom title bar?**
+
 - Custom title bar provides quick access to project switcher
 - Menu bar provides comprehensive commands and shortcuts
 - Not mutually exclusive - many apps have both (VS Code, Slack, etc.)
 
 **Platform differences:**
+
 - **macOS**: Menu appears in system menu bar at top of screen
 - **Windows/Linux**: Menu appears within window below title bar
 
 **Menu vs System Tray:**
+
 - **Menu**: Comprehensive commands, keyboard shortcuts, follows OS conventions
 - **Tray**: Quick access when window is hidden, recent projects
 
@@ -232,20 +237,23 @@ fn main() {
 ## Test
 
 **Menu Visibility:**
+
 - [ ] Menu bar appears on app launch (macOS: top of screen, Windows/Linux: in window)
 - [ ] All four menus (File, Edit, View, Help) are visible
 - [ ] Menu items have correct labels and keyboard shortcuts
 
 **Menu Actions:**
+
 - [ ] "New Spec" triggers spec creation dialog
 - [ ] "Open Project" opens native folder picker
 - [ ] "Switch Project" opens project switcher
 - [ ] "Refresh Projects" reloads project list
 - [ ] "Check for Updates" triggers update check
-- [ ] "Documentation" opens lean-spec.dev in browser
+- [ ] "Documentation" opens harnspec.dev in browser
 - [ ] "Quit" closes application cleanly
 
 **Keyboard Shortcuts:**
+
 - [ ] `Cmd/Ctrl+N` creates new spec
 - [ ] `Cmd/Ctrl+O` opens project
 - [ ] `Cmd/Ctrl+Shift+K` switches project
@@ -254,6 +262,7 @@ fn main() {
 - [ ] All native shortcuts work (Cut/Copy/Paste)
 
 **Cross-Platform:**
+
 - [ ] Menu renders correctly on macOS (system menu bar)
 - [ ] Menu renders correctly on Windows (in-window menu)
 - [ ] Menu renders correctly on Linux (in-window menu)
@@ -270,6 +279,7 @@ Manual desktop verification still needs hardware. Automated checks executed in t
 ### Reference Implementation
 
 Similar apps with both custom UI and native menus:
+
 - **VS Code**: Frameless with custom title bar + native menu
 - **Slack**: Custom UI with native menu integration
 - **Discord**: Frameless but has native menu on macOS
@@ -277,22 +287,26 @@ Similar apps with both custom UI and native menus:
 ### Future Enhancements
 
 **Context-aware menus:**
+
 - Disable "New Spec" when no project is active
 - Show current project name in menu
 - Recent projects submenu (like "Open Recent" in native apps)
 
 **Dynamic menu updates:**
+
 - Update menu based on app state
 - Show spec count in View menu
 - Add "Recent Specs" submenu
 
 **Customization:**
+
 - User preference to show/hide menu bar
 - Custom keyboard shortcuts in settings
 
 ### Related: localStorage in Desktop Context
 
 **Current localStorage Usage in UI:**
+
 - Recent search history (`leanspec-recent-searches`)
 - Sidebar collapsed state (`main-sidebar-collapsed`, `specs-nav-sidebar-collapsed`)
 - View mode preference (`specs-view-mode`)
@@ -302,11 +316,13 @@ Similar apps with both custom UI and native menus:
 **Desktop App Context:**
 
 The desktop app loads the UI via iframe from an embedded Next.js server (localhost). In Tauri's webview:
+
 - localStorage is **isolated per app** (not shared with browser)
 - Data persists in Tauri's app data directory
 - Each project switch reloads the iframe → localStorage persists
 
 **Current Behavior (Works Fine):**
+
 ```
 Desktop App
   └── Tauri Webview (localhost:PORT)
@@ -317,6 +333,7 @@ Desktop App
 ```
 
 **Why it works:**
+
 1. Tauri webview has its own localStorage separate from system browsers
 2. localStorage is domain-scoped to `localhost:PORT`
 3. Port stays consistent across app restarts (configured in `ui_server.rs`)
@@ -336,6 +353,7 @@ Desktop App
 **Future Improvements (out of scope for this spec):**
 
 1. **Project-scoped preferences:**
+
    ```typescript
    // Instead of:
    localStorage.setItem('specs-view-mode', 'kanban')
@@ -350,7 +368,7 @@ Desktop App
    - Automatic JSON serialization
 
 3. **Sync with desktop config:**
-   - Mirror important prefs to `~/.lean-spec/desktop.json` (see spec 162)
+   - Mirror important prefs to `~/.harnspec/desktop.json` (see spec 162)
    - Share preferences across web/desktop
 
 **Decision for this spec:** Keep current localStorage behavior as-is. Menu bar interactions don't need new storage.

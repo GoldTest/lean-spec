@@ -21,13 +21,16 @@ Total: ~6800 tokens (split efficiency: 88%)
 ## Sub-Spec Breakdown
 
 ### 185: UI Components Extraction
+
 **Scope**: Create `packages/ui-components` shared library
+
 - Extract components from packages/ui (Next.js)
 - Extract components from packages/desktop (basic UI)
 - Unify and upgrade to best-in-class components
 - Export as tree-shakeable library
 
 **Deliverables**:
+
 - `packages/ui-components` package
 - Storybook documentation
 - Component tests
@@ -35,14 +38,17 @@ Total: ~6800 tokens (split efficiency: 88%)
 ---
 
 ### 186: Rust HTTP Server
+
 **Scope**: Build production-ready HTTP server
+
 - Axum web framework setup
 - Multi-project architecture
-- Project registry integration (~/.lean-spec/projects.json)
-- Configuration system (~/.lean-spec/config.json)
+- Project registry integration (~/.harnspec/projects.json)
+- Configuration system (~/.harnspec/config.json)
 - REST API endpoints for all spec operations
 
 **Deliverables**:
+
 - `rust/leanspec-http` crate
 - API documentation
 - Integration tests
@@ -50,13 +56,16 @@ Total: ~6800 tokens (split efficiency: 88%)
 ---
 
 ### 187: Vite SPA Migration
+
 **Scope**: Replace Next.js with Vite SPA
+
 - Vite + React + TypeScript setup
 - API client for Rust HTTP server
 - React Router for navigation
 - Feature parity with Next.js UI
 
 **Deliverables**:
+
 - `packages/ui` (rewritten as Vite SPA)
 - Desktop integration (uses same UI)
 - E2E tests

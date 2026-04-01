@@ -18,6 +18,7 @@ Week 4:    Polish, testing, dogfooding
 ## Phase 1: Foundation (Week 1)
 
 ### Goals
+
 - ✅ Basic markdown parsing (line ranges, sections, frontmatter)
 - ✅ File operations (extract, create, delete, move)
 - ✅ Token counting integration
@@ -35,12 +36,14 @@ packages/core/src/analysis/
 ```
 
 **What we need**:
+
 - Parse frontmatter (already exists)
 - Find section headings and line numbers
 - Extract line ranges from content
 - Count tokens (already exists via spec 069)
 
 **What we DON'T need**:
+
 - ❌ Full AST traversal
 - ❌ Semantic analysis
 - ❌ Concern detection
@@ -71,16 +74,17 @@ function replaceLines(content: string, start: number, end: number, replacement: 
 
 ```bash
 # Already exists from spec 069
-$ lean-spec tokens <spec>
+$ harnspec tokens <spec>
 
 # Just need to integrate into analyze command
-$ lean-spec analyze <spec> --json
+$ harnspec analyze <spec> --json
 # Returns token count in JSON
 ```
 
 ## Phase 2: Core Commands (Week 2)
 
 ### Goals
+
 - ✅ `analyze` command (return structure as JSON)
 - ✅ `split` command (mechanical line extraction)
 - ✅ `compact` command (remove line ranges)
@@ -183,6 +187,7 @@ export async function compact(spec: string, options: CompactOptions) {
 ## Phase 3: Additional Commands (Week 3)
 
 ### Goals
+
 - ✅ `compress` command (replace with summary)
 - ✅ `isolate` command (move to new spec)
 - ✅ CLI polish
@@ -261,6 +266,7 @@ program
 ## Phase 4: Polish & Dogfooding (Week 4)
 
 ### Goals
+
 - ✅ Test on real specs
 - ✅ Fix bugs
 - ✅ Documentation
@@ -269,6 +275,7 @@ program
 ### Day 1-2: Dogfooding
 
 **Target specs** (oversized or complex):
+
 1. This spec (059) - Use to split itself
 2. Spec 045 - Large unified dashboard spec
 3. Spec 048 - Complexity analysis spec
@@ -300,6 +307,7 @@ packages/cli/src/commands/__tests__/
 ## Success Criteria
 
 **Must Have**:
+
 - ✅ AI agent can analyze spec via JSON output
 - ✅ AI agent can split spec with explicit parameters
 - ✅ All transformations are deterministic
@@ -307,11 +315,13 @@ packages/cli/src/commands/__tests__/
 - ✅ Fast (<200ms for typical operations)
 
 **Nice to Have**:
+
 - `--dry-run` mode
 - `preview` command
 - `rollback` command
 
 **Deferred to v0.4.0**:
+
 - Batch operations
 - Watch mode
 - CI/CD integration
@@ -336,6 +346,7 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 **Key Principle**: Keep it simple. 4 weeks to build mechanical tools vs. 7+ weeks for complex semantic analysis. AI agents do the hard work, tools just execute.
 
 **Day 5: Round-trip validation**
+
 - [ ] Test parse → stringify → parse identity
 - [ ] Validate on all existing specs
 - [ ] Fix any formatting issues
@@ -343,22 +354,26 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 #### Week 2: AST Utilities
 
 **Day 1-2: Traversal**
+
 - [ ] Implement `visit(ast, nodeType, callback)`
 - [ ] Implement `findSections(ast, predicate)`
 - [ ] Implement `extractText(node)`
 
 **Day 3-4: Queries**
+
 - [ ] Find references: `findReferences(ast)`
 - [ ] Find code blocks: `findCodeBlocks(ast)`
 - [ ] Find headings: `findHeadings(ast, depth)`
 - [ ] Count lines: `countLines(node)`
 
 **Day 5: Testing**
+
 - [ ] Unit tests for all utilities
 - [ ] Integration test with real specs
 - [ ] Document API with examples
 
 ### Deliverables
+
 - ✅ Working parser (unified.js integration)
 - ✅ AST utilities library
 - ✅ Test suite (>80% coverage)
@@ -367,6 +382,7 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 ## Phase 2: Analysis Tools (Week 3)
 
 ### Goals
+
 - ✅ Detect complexity issues
 - ✅ Find redundancy
 - ✅ Identify concerns
@@ -375,6 +391,7 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 ### Tasks
 
 #### Day 1-2: Complexity Analysis
+
 ```typescript
 // src/analysis/analyzer/complexity.ts
 export interface ComplexityAnalyzer {
@@ -390,6 +407,7 @@ export interface ComplexityAnalyzer {
 - [ ] Test on existing specs
 
 #### Day 3-4: Concern Detection
+
 ```typescript
 // src/analysis/analyzer/concerns.ts
 export interface ConcernAnalyzer {
@@ -403,9 +421,10 @@ export interface ConcernAnalyzer {
 - [ ] Test on specs with known structure
 
 #### Day 5: CLI Integration
+
 ```bash
-$ lean-spec analyze <spec> --complexity
-$ lean-spec analyze <spec> --concerns
+harnspec analyze <spec> --complexity
+harnspec analyze <spec> --concerns
 ```
 
 - [ ] Add `analyze` command to CLI
@@ -414,14 +433,16 @@ $ lean-spec analyze <spec> --concerns
 - [ ] Add to help documentation
 
 ### Deliverables
+
 - ✅ Complexity analyzer
 - ✅ Concern detector
-- ✅ `lean-spec analyze` command
+- ✅ `harnspec analyze` command
 - ✅ Comprehensive tests
 
 ## Phase 3: Transformation Engine (Weeks 4-5)
 
 ### Goals
+
 - ✅ Partition specs into sub-specs
 - ✅ Compact redundant content
 - ✅ Update cross-references automatically
@@ -430,6 +451,7 @@ $ lean-spec analyze <spec> --concerns
 ### Week 4: Partition Transformer
 
 #### Day 1-2: Core splitting logic
+
 ```typescript
 // src/analysis/transformer/partition.ts
 export class PartitionTransformer implements Transformer {
@@ -444,6 +466,7 @@ export class PartitionTransformer implements Transformer {
 - [ ] Test with spec 045 (known-good split)
 
 #### Day 3-4: Reference updating
+
 - [ ] Build reference graph
 - [ ] Generate mapping (old → new paths)
 - [ ] Update internal links
@@ -451,6 +474,7 @@ export class PartitionTransformer implements Transformer {
 - [ ] Validate all links resolve
 
 #### Day 5: File operations
+
 - [ ] Write sub-spec files
 - [ ] Update parent README.md
 - [ ] Create git commit
@@ -459,6 +483,7 @@ export class PartitionTransformer implements Transformer {
 ### Week 5: Compaction & Compression
 
 #### Day 1-2: Redundancy detection
+
 ```typescript
 // src/analysis/analyzer/redundancy.ts
 export interface RedundancyAnalyzer {
@@ -473,6 +498,7 @@ export interface RedundancyAnalyzer {
 - [ ] Test on verbose specs
 
 #### Day 3-4: Compaction transformer
+
 ```typescript
 // src/analysis/transformer/compact.ts
 export class CompactionTransformer implements Transformer {
@@ -488,6 +514,7 @@ export class CompactionTransformer implements Transformer {
 - [ ] Test preservation (no info loss)
 
 #### Day 5: Compression transformer
+
 ```typescript
 // src/analysis/transformer/compress.ts
 export class CompressionTransformer implements Transformer {
@@ -503,6 +530,7 @@ export class CompressionTransformer implements Transformer {
 - [ ] Test on completed phases
 
 ### Deliverables
+
 - ✅ Partition transformer (sub-spec splitting)
 - ✅ Compaction transformer (redundancy removal)
 - ✅ Compression transformer (summarization)
@@ -512,6 +540,7 @@ export class CompressionTransformer implements Transformer {
 ## Phase 4: CLI Commands (Week 6)
 
 ### Goals
+
 - ✅ User-friendly CLI interface
 - ✅ Interactive previews
 - ✅ Safe transformations (with rollback)
@@ -519,9 +548,10 @@ export class CompressionTransformer implements Transformer {
 
 ### Tasks
 
-#### Day 1-2: `lean-spec split` command
+#### Day 1-2: `harnspec split` command
+
 ```bash
-$ lean-spec split <spec> [options]
+harnspec split <spec> [options]
 ```
 
 - [ ] Implement command handler
@@ -532,9 +562,10 @@ $ lean-spec split <spec> [options]
 - [ ] Validate result
 - [ ] Test on multiple specs
 
-#### Day 3: `lean-spec compact` command
+#### Day 3: `harnspec compact` command
+
 ```bash
-$ lean-spec compact <spec> [options]
+harnspec compact <spec> [options]
 ```
 
 - [ ] Implement command handler
@@ -544,9 +575,10 @@ $ lean-spec compact <spec> [options]
 - [ ] Validate result
 - [ ] Test on verbose specs
 
-#### Day 4: `lean-spec compress` command
+#### Day 4: `harnspec compress` command
+
 ```bash
-$ lean-spec compress <spec> [options]
+harnspec compress <spec> [options]
 ```
 
 - [ ] Implement command handler
@@ -557,10 +589,11 @@ $ lean-spec compress <spec> [options]
 - [ ] Test on specs with completed phases
 
 #### Day 5: Utilities & Polish
+
 ```bash
-$ lean-spec preview <spec> --transformation=<type>
-$ lean-spec diff <spec> --before-after
-$ lean-spec rollback <spec>
+harnspec preview <spec> --transformation=<type>
+harnspec diff <spec> --before-after
+harnspec rollback <spec>
 ```
 
 - [ ] Implement preview command
@@ -570,9 +603,10 @@ $ lean-spec rollback <spec>
 - [ ] Create command examples
 
 ### Deliverables
-- ✅ `lean-spec split` command
-- ✅ `lean-spec compact` command
-- ✅ `lean-spec compress` command
+
+- ✅ `harnspec split` command
+- ✅ `harnspec compact` command
+- ✅ `harnspec compress` command
 - ✅ Utility commands (preview, diff, rollback)
 - ✅ Help documentation
 - ✅ Example workflows
@@ -580,6 +614,7 @@ $ lean-spec rollback <spec>
 ## Phase 5: Polish & Launch (Week 7)
 
 ### Goals
+
 - ✅ Handle edge cases
 - ✅ Optimize performance
 - ✅ Dogfood on our own specs
@@ -588,6 +623,7 @@ $ lean-spec rollback <spec>
 ### Tasks
 
 #### Day 1: Edge case handling
+
 - [ ] Test on all existing specs
 - [ ] Handle empty sections
 - [ ] Handle specs with no clear concerns
@@ -596,6 +632,7 @@ $ lean-spec rollback <spec>
 - [ ] Add helpful error messages
 
 #### Day 2: Performance optimization
+
 - [ ] Profile analysis operations
 - [ ] Add caching for repeated analysis
 - [ ] Optimize AST traversal
@@ -603,12 +640,14 @@ $ lean-spec rollback <spec>
 - [ ] Target: <1s for any single spec
 
 #### Day 3-4: Dogfooding
+
 - [ ] Run on all specs >3,000 tokens
 - [ ] Fix any issues discovered
 - [ ] Document learnings
 - [ ] Create case studies (before/after)
 
 #### Day 5: Documentation & Launch
+
 - [ ] Update README.md
 - [ ] Create tutorial/guide
 - [ ] Record demo video
@@ -616,6 +655,7 @@ $ lean-spec rollback <spec>
 - [ ] Blog post explaining approach
 
 ### Deliverables
+
 - ✅ Robust edge case handling
 - ✅ Optimized performance
 - ✅ Dogfooded on all project specs
@@ -627,24 +667,28 @@ $ lean-spec rollback <spec>
 ### Unit Tests
 
 **Parser**:
+
 - ✅ Parse valid markdown
 - ✅ Handle frontmatter
 - ✅ Track line positions
 - ✅ Round-trip identity
 
 **Analyzers**:
+
 - ✅ Complexity calculation
 - ✅ Concern detection
 - ✅ Redundancy finding
 - ✅ Conflict detection
 
 **Transformers**:
+
 - ✅ Partition correctness
 - ✅ Reference updating
 - ✅ Compaction preservation
 - ✅ Compression accuracy
 
 **Commands**:
+
 - ✅ CLI argument parsing
 - ✅ Preview generation
 - ✅ File operations
@@ -653,23 +697,25 @@ $ lean-spec rollback <spec>
 ### Integration Tests
 
 **End-to-end workflows**:
+
 ```bash
 # Test: Split oversized spec
-$ lean-spec split 045
+$ harnspec split 045
 # Verify: 5 files created, all valid, references updated
 
 # Test: Compact verbose spec
-$ lean-spec compact 018
+$ harnspec compact 018
 # Verify: Lines reduced, no info lost
 
 # Test: Compress completed phases
-$ lean-spec compress 043 --phases
+$ harnspec compress 043 --phases
 # Verify: Phases summarized, outcomes preserved
 ```
 
 ### Golden Tests
 
 Create snapshots of transformations:
+
 ```
 tests/golden/
   split-045/
@@ -684,6 +730,7 @@ tests/golden/
 ```
 
 Run regression tests:
+
 ```bash
 $ npm run test:golden
 # Compares actual output vs expected output
@@ -712,29 +759,34 @@ describe('Performance', () => {
 ## Success Criteria
 
 ### Phase 1 (Foundation)
+
 - ✅ Parse all existing specs without errors
 - ✅ Round-trip preserves content exactly
 - ✅ Test coverage >80%
 
 ### Phase 2 (Analysis)
+
 - ✅ Correctly identify concerns in 90%+ of specs
 - ✅ Token thresholds match validation expectations
 - ✅ Structure checks provide actionable feedback
 - ✅ JSON output mode works for automation
 
 ### Phase 3 (Transformation)
+
 - ✅ Split spec 045 matches manual split
 - ✅ All cross-references remain valid
 - ✅ Compaction preserves all decisions
 - ✅ Zero information loss
 
 ### Phase 4 (CLI)
+
 - ✅ Commands feel intuitive to users
 - ✅ Previews are clear and accurate
 - ✅ Rollback works reliably
 - ✅ Help docs are comprehensive
 
 ### Phase 5 (Polish)
+
 - ✅ No crashes on any existing spec
 - ✅ Performance targets met
 - ✅ Team can use confidently
@@ -745,6 +797,7 @@ describe('Performance', () => {
 ### Risk 1: Complex Edge Cases
 
 **Mitigation**:
+
 - Start with simple specs (tests)
 - Gradually increase complexity
 - Build comprehensive test suite
@@ -753,6 +806,7 @@ describe('Performance', () => {
 ### Risk 2: Reference Integrity
 
 **Mitigation**:
+
 - Thorough reference graph testing
 - Validation after every transform
 - Git-based rollback always available
@@ -761,6 +815,7 @@ describe('Performance', () => {
 ### Risk 3: Information Loss
 
 **Mitigation**:
+
 - Preview mode for all transforms
 - Diff view before applying
 - Golden tests for regression
@@ -769,6 +824,7 @@ describe('Performance', () => {
 ### Risk 4: Performance Issues
 
 **Mitigation**:
+
 - Profile early and often
 - Cache analysis results
 - Stream for large projects
@@ -777,6 +833,7 @@ describe('Performance', () => {
 ### Risk 5: User Confusion
 
 **Mitigation**:
+
 - Clear command naming
 - Interactive prompts with context
 - Comprehensive help docs
@@ -785,23 +842,27 @@ describe('Performance', () => {
 ## Post-Launch Roadmap
 
 ### v0.3.1 (Bug fixes)
+
 - Address issues from dogfooding
 - Improve error messages
 - Performance tweaks
 
 ### v0.4.0 (Continuous Management)
+
 - Watch mode (auto-detect violations)
 - Pre-commit hooks
 - CI/CD integration
 - Auto-compaction on save
 
 ### v0.5.0 (AI-Assisted Strategy)
+
 - LLM suggests optimal strategy
 - Semantic conflict detection
 - Automated resolution suggestions
 - Learning from past transformations
 
 ### v1.0.0 (Project-Wide Optimization)
+
 - Cross-spec redundancy detection
 - Spec dependency graph
 - Consolidation recommendations

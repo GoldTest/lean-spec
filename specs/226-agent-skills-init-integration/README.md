@@ -24,7 +24,7 @@ transitions:
 
 ## Overview
 
-Enable automated installation of LeanSpec Agent Skills during `lean-spec init`, making it effortless for users to set up agent skills support for their AI coding tools.
+Enable automated installation of LeanSpec Agent Skills during `harnspec init`, making it effortless for users to set up agent skills support for their AI coding tools.
 
 ### Problem
 
@@ -33,15 +33,17 @@ Spec 211 created the `leanspec-sdd` agent skill (plus internal skills for LeanSp
 **Note**: Only `leanspec-sdd` is distributed to users. The `leanspec-publishing` and `leanspec-development` skills are internal tools for LeanSpec project contributors.
 
 **Current workflow** (manual):
+
 ```bash
-lean-spec init
+harnspec init
 # User must then:
 cp -r .github/skills/leanspec-sdd ~/.copilot/skills/  # Manual copy
 ```
 
 **Desired workflow** (automated):
+
 ```bash
-lean-spec init
+harnspec init
 # Detects installed AI tools (Copilot, Claude, Cursor, etc.)
 # Prompts: "Install LeanSpec skills to .github/skills/? [Y/n]"
 # Automatically copies skills to appropriate locations
@@ -49,7 +51,8 @@ lean-spec init
 
 ### What This Spec Delivers
 
-Integrate agent skills installation into the `lean-spec init` command:
+Integrate agent skills installation into the `harnspec init` command:
+
 1. **Detect AI coding tools** installed (reuse spec 126 logic)
 2. **Smart defaults** - Suggest appropriate skills folders per tool
 3. **Interactive prompts** - Let users choose where to install
@@ -71,6 +74,7 @@ Integrate agent skills installation into the `lean-spec init` command:
 Detect existing skills infrastructure and recommend installation locations.
 
 **Project-Level Locations** (check in current directory):
+
 ```
 .github/skills/      # GitHub Copilot
 .claude/skills/      # Claude
@@ -82,6 +86,7 @@ Detect existing skills infrastructure and recommend installation locations.
 ```
 
 **User-Level Locations** (check in home directory):
+
 ```
 ~/.copilot/skills/   # GitHub Copilot global
 ~/.claude/skills/    # Claude global
@@ -93,6 +98,7 @@ Detect existing skills infrastructure and recommend installation locations.
 ```
 
 **Detection Strategy**:
+
 1. Check if any project-level skills folders exist
 2. Check if any user-level skills folders exist
 3. Leverage spec 126 AI tool detection to suggest defaults
@@ -101,8 +107,9 @@ Detect existing skills infrastructure and recommend installation locations.
 ### 2. Installation Flow
 
 **Scenario A: No Existing Skills Folders** (fresh project)
+
 ```
-$ lean-spec init
+$ harnspec init
 
 Welcome to LeanSpec! 🚀
 
@@ -120,8 +127,9 @@ Installing skill to .github/skills/...
 ```
 
 **Scenario B: Existing Project Skills Folder**
+
 ```
-$ lean-spec init
+$ harnspec init
 
 🔍 Found existing skills folder: .github/skills/
 
@@ -134,8 +142,9 @@ Installing to .github/skills/...
 ```
 
 **Scenario C: Multiple Tools Detected**
+
 ```
-$ lean-spec init
+$ harnspec init
 
 🔍 Detected AI tools:
    • GitHub Copilot (VS Code extension)
@@ -156,15 +165,17 @@ Installing to 2 locations...
 ### 3. Installation Implementation
 
 **Copy Strategy** (recommended for v1):
+
 - Copy skill folders from bundled templates
 - Each location gets independent copy
 - Simple, works everywhere (Windows/macOS/Linux)
 - Users can customize per-project
 
 **Source Location**:
-The `leanspec-sdd` skill is bundled with lean-spec installation:
+The `leanspec-sdd` skill is bundled with harnspec installation:
+
 ```
-/path/to/lean-spec-install/.github/skills/
+/path/to/harnspec-install/.github/skills/
 └── leanspec-sdd/
     ├── SKILL.md
     ├── references/
@@ -179,6 +190,7 @@ The `leanspec-sdd` skill is bundled with lean-spec installation:
 **Note**: The `leanspec-publishing` and `leanspec-development` skills remain in the LeanSpec repo but are not distributed to users.
 
 **Installation Process**:
+
 1. Detect or prompt for target location(s)
 2. Create target directory if needed (e.g., `.github/skills/`)
 3. Copy `leanspec-sdd/` folder recursively
@@ -191,30 +203,30 @@ Support non-interactive mode for automation:
 
 ```bash
 # Interactive (default)
-lean-spec init
+harnspec init
 
 # Auto-install to project-level (detect tool)
-lean-spec init --skill
+harnspec init --skill
 
 # Install to specific tool locations
-lean-spec init --skill-github       # .github/skills/
-lean-spec init --skill-claude       # .claude/skills/
-lean-spec init --skill-cursor       # .cursor/skills/
-lean-spec init --skill-codex        # .codex/skills/
-lean-spec init --skill-gemini       # .gemini/skills/
-lean-spec init --skill-vscode       # .vscode/skills/
+harnspec init --skill-github       # .github/skills/
+harnspec init --skill-claude       # .claude/skills/
+harnspec init --skill-cursor       # .cursor/skills/
+harnspec init --skill-codex        # .codex/skills/
+harnspec init --skill-gemini       # .gemini/skills/
+harnspec init --skill-vscode       # .vscode/skills/
 
 # Install to user-level
-lean-spec init --skill-user         # Tool-specific user dir
+harnspec init --skill-user         # Tool-specific user dir
 
 # Install to multiple locations
-lean-spec init --skill-github --skill-claude
+harnspec init --skill-github --skill-claude
 
 # Skip skill installation
-lean-spec init --no-skill
+harnspec init --no-skill
 
 # Silent mode (yes to all)
-lean-spec init -y --skill
+harnspec init -y --skill
 ```
 
 ### 5. Integration with AI Tool Detection (Spec 126)
@@ -222,6 +234,7 @@ lean-spec init -y --skill
 Reuse existing AI tool detection to provide smart defaults:
 
 **Tool Detection → Skills Folder Mapping**:
+
 ```rust
 // Pseudo-code
 let detected_tools = detect_ai_tools(); // From spec 126
@@ -239,6 +252,7 @@ if detected_tools.contains("cursor") {
 ```
 
 **Benefits**:
+
 - Zero-config for most users
 - Tool-specific recommendations
 - Intelligent defaults
@@ -368,46 +382,54 @@ if detected_tools.contains("cursor") {
 ### Relationship to Other Specs
 
 **Depends on**:
+
 - **211-leanspec-as-anthropic-skill** (complete) - The skills to install
 - **126-ai-tool-auto-detection** (complete) - Tool detection logic
 
 **Coordinates with**:
+
 - **222-cross-tool-agent-skills-compatibility** (planned) - Advanced compatibility, symlink strategies, sync mechanisms
 - **127-init-agents-merge-automation** (complete) - AGENTS.md merging
 - **145-mcp-config-auto-setup** (complete) - MCP configuration
 
-**Key difference from spec 222**: 
+**Key difference from spec 222**:
+
 - This spec: Basic copy-based installation in init
 - Spec 222: Advanced cross-tool compatibility, version sync, platform-specific optimizations
 
 ### Implementation Location
 
 **Rust CLI** (`rust/leanspec-cli/src/commands/init.rs`):
+
 - Primary implementation target
 - More mature init command
 - Better cross-platform support
 - Direct filesystem access
 
 **TypeScript CLI** (if needed):
+
 - May need updates for consistency
 - Less priority if Rust is canonical
 
 ### Design Decisions
 
 **Why copy instead of symlink?**
+
 - Works on Windows without admin privileges
 - Users can customize per-project
-- No breakage if lean-spec moved/uninstalled
+- No breakage if harnspec moved/uninstalled
 - Simpler implementation
 - Spec 222 can add symlink option later
 
 **Why project-level default?**
+
 - Git-tracked and shared with team
 - Version-controlled methodology
 - Most teams want consistent approach
 - User-level still available as option
 
 **Why bundle skills with CLI?**
+
 - No internet required during init
 - Faster installation
 - Version-locked (skills match CLI version)
@@ -416,6 +438,7 @@ if detected_tools.contains("cursor") {
 ### Future Enhancements (Spec 222)
 
 These are explicitly out of scope for this spec:
+
 - ❌ Symlink-based installation
 - ❌ Skills version management/sync
 - ❌ Update existing skills command

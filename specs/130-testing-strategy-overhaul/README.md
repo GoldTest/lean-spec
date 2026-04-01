@@ -21,14 +21,15 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-28 · **Tags**: testing, quality, dx, infrastructure, maintainability
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-As LeanSpec grows (CLI, MCP server, Web UI, core library), our testing approach needs to evolve. Current unit-focused strategy missed the `lean-spec init` re-initialization bug where "AGENTS.md preserved" was falsely reported.
+As LeanSpec grows (CLI, MCP server, Web UI, core library), our testing approach needs to evolve. Current unit-focused strategy missed the `harnspec init` re-initialization bug where "AGENTS.md preserved" was falsely reported.
 
 **Current State:**
+
 - 52 test files, ~17k lines, 851 tests (all unit/integration via Vitest)
 - Strong coverage: validators, commands, search, frontmatter
 - Gaps: E2E CLI scenarios, cross-package integration, regression testing
@@ -70,7 +71,7 @@ Create `packages/cli/src/__e2e__/` for scenario-based tests:
 
 ```typescript
 // Example: init-scenarios.e2e.test.ts
-describe('lean-spec init scenarios', () => {
+describe('harnspec init scenarios', () => {
   it('should recreate AGENTS.md when missing during upgrade', async () => {
     // Setup: init, delete AGENTS.md
     // Action: run init again

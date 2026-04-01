@@ -1,5 +1,5 @@
 {
-  "name": "lean-spec",
+  "name": "harnspec",
   "version": "0.3.0",
   "description": "Lightweight spec methodology for AI-powered development",
   "keywords": [
@@ -11,18 +11,18 @@
     "sdd",
     "spec-driven-development"
   ],
-  "homepage": "https://lean-spec.dev",
+  "homepage": "https://harnspec.dev",
   "bugs": {
-    "url": "https://github.com/codervisor/lean-spec/issues"
+    "url": "https://github.com/codervisor/harnspec/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   },
   "license": "MIT",
   "author": "Marvin Zhang",
   "bin": {
-    "lean-spec": "./bin/lean-spec.js",
+    "harnspec": "./bin/harnspec.js",
     "leanspec-mcp": "./bin/leanspec-mcp.js"
   },
   "files": [

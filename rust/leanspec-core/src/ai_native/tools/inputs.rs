@@ -39,7 +39,7 @@ pub struct CreateInput {
     pub status: Option<String>,
     /// Priority level
     pub priority: Option<String>,
-    /// Template name to load from .lean-spec/templates
+    /// Template name to load from .harnspec/templates
     pub template: Option<String>,
     /// Body content (markdown sections, no frontmatter)
     pub content: Option<String>,

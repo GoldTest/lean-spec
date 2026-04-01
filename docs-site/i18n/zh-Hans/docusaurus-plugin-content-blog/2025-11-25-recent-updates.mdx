@@ -19,10 +19,10 @@ tags: [release, getting-started, tutorials]
 
 ```bash
 # 查看可用示例
-npx lean-spec examples
+npx harnspec examples
 
 # 初始化示例项目
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme
 npm install
 npm start
@@ -68,7 +68,7 @@ npm start
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["@HarnSpec/mcp"]
     }
@@ -84,13 +84,13 @@ npm start
 
 ```bash
 # 使用明确的依赖关系链接 Spec
-lean-spec link feature-123 --depends-on auth-system
+harnspec link feature-123 --depends-on auth-system
 
 # 查看完整的依赖图
-lean-spec deps feature-123
+harnspec deps feature-123
 
 # 删除关系
-lean-spec unlink feature-123 --from auth-system
+harnspec unlink feature-123 --from auth-system
 ```
 
 更好的验证在问题发生前捕获循环依赖。
@@ -101,13 +101,13 @@ lean-spec unlink feature-123 --from auth-system
 
 ```bash
 # 集成到仪表板
-lean-spec board --json | jq '.columns[] | select(.status=="in-progress")'
+harnspec board --json | jq '.columns[] | select(.status=="in-progress")'
 
 # 构建自定义工作流
-lean-spec list --json --status=complete | jq -r '.[] | .name'
+harnspec list --json --status=complete | jq -r '.[] | .name'
 
 # 导出用于报告
-lean-spec timeline --json > project-timeline.json
+harnspec timeline --json > project-timeline.json
 ```
 
 在 CI/CD 流水线、项目仪表板或自定义工具中使用 HarnSpec 数据。
@@ -134,7 +134,7 @@ lean-spec timeline --json > project-timeline.json
 - 所有文档中的一致术语
 - 完整覆盖指南、教程和 API 参考
 
-访问 [lean-spec.dev/zh-Hans](https://lean-spec.dev/zh-Hans) 查看中文文档。
+访问 [harnspec.dev/zh-Hans](https://harnspec.dev/zh-Hans) 查看中文文档。
 
 ## 🎯 快速上手路径
 
@@ -149,7 +149,7 @@ lean-spec timeline --json > project-timeline.json
 ### 2. 启动示例项目（2 分钟）
 
 ```bash
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme
 npm install
 ```
@@ -171,8 +171,8 @@ npm install
 
 ```bash
 cd your-existing-project
-npx lean-spec init
-lean-spec create user-authentication
+npx harnspec init
+harnspec create user-authentication
 ```
 
 现在应用您学到的知识。从简单开始（status + created），根据需要添加结构（tags、priority、自定义字段）。
@@ -193,16 +193,16 @@ lean-spec create user-authentication
 - **项目管理集成** - Jira、Linear 和 GitHub Projects 同步
 - **更多示例项目** - 后端 API、移动应用、基础设施
 
-**反馈塑造路线图**。什么能让 HarnSpec 对您的工作流更有用？[提交 Issue](https://github.com/codervisor/lean-spec/issues) 或[参与讨论](https://github.com/codervisor/lean-spec/discussions)。
+**反馈塑造路线图**。什么能让 HarnSpec 对您的工作流更有用？[提交 Issue](https://github.com/codervisor/harnspec/issues) 或[参与讨论](https://github.com/codervisor/harnspec/discussions)。
 
 ## 立即尝试
 
 ```bash
 # 全局安装
-npm install -g lean-spec
+npm install -g harnspec
 
 # 或使用 npx 一次性命令
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 ```
 
 学习的最快方式就是构建。选择一个示例，跟随教程，看看 AI 辅助的规格驱动开发如何改变您的工作流。
@@ -210,10 +210,10 @@ npx lean-spec init --example dark-theme
 ---
 
 **链接**：
-- [文档](https://lean-spec.dev/zh-Hans)
-- [GitHub 仓库](https://github.com/codervisor/lean-spec)
-- [示例项目](https://lean-spec.dev/zh-Hans/docs/tutorials/first-spec-with-ai#quick-start)
-- [快速开始指南](https://lean-spec.dev/zh-Hans/docs/guide/getting-started)
-- [完整教程集合](https://lean-spec.dev/zh-Hans/docs/tutorials/first-spec-with-ai)
+- [文档](https://harnspec.dev/zh-Hans)
+- [GitHub 仓库](https://github.com/codervisor/harnspec)
+- [示例项目](https://harnspec.dev/zh-Hans/docs/tutorials/first-spec-with-ai#quick-start)
+- [快速开始指南](https://harnspec.dev/zh-Hans/docs/guide/getting-started)
+- [完整教程集合](https://harnspec.dev/zh-Hans/docs/tutorials/first-spec-with-ai)
 
-**更新日志**：详细版本历史请参阅 [CHANGELOG.md](https://github.com/codervisor/lean-spec/blob/main/CHANGELOG.md)。
+**更新日志**：详细版本历史请参阅 [CHANGELOG.md](https://github.com/codervisor/harnspec/blob/main/CHANGELOG.md)。

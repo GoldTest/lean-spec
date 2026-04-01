@@ -15,7 +15,7 @@ updated_at: 2026-01-29T01:15:22.716843137Z
 
 > **Status**: 🟢 Complete · **Priority**: Medium · **Created**: 2025-01-29 · **Tags**: ui, ux, markdown, enhancement
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -23,11 +23,13 @@ updated_at: 2026-01-29T01:15:22.716843137Z
 **Problem**: The spec detail page's markdown renderer lacks interactive features that would enhance the reading and data extraction experience. Users cannot easily copy code blocks, view enlarged Mermaid diagrams, or export table data for use in external tools like Excel.
 
 **Request**: Enhance the `MarkdownRenderer` component with three key improvements:
+
 1. **Advanced Code Blocks** - Copy button and language indicator
 2. **Optimized Mermaid Diagrams** - Click-to-enlarge modal, remove redundant outer border
 3. **Advanced Tables** - Copy to clipboard (Excel-compatible) and CSV export
 
 **Impact**:
+
 - Improved developer experience when working with spec content
 - Faster extraction of code snippets and data from specs
 - Better visualization of complex diagrams
@@ -40,6 +42,7 @@ updated_at: 2026-01-29T01:15:22.716843137Z
 **Current State**: Code blocks use `rehype-highlight` for syntax highlighting but have no copy functionality or language display.
 
 **Enhanced Features**:
+
 - **Copy Button**: Appears on hover (top-right corner), copies raw code to clipboard
 - **Language Badge**: Shows language name (e.g., "typescript", "json") if specified in the fenced block
 - **Visual Feedback**: Checkmark icon briefly shown after successful copy
@@ -85,6 +88,7 @@ function EnhancedCodeBlock({ language, code, children }: EnhancedCodeBlockProps)
 **Current State**: `MermaidDiagram` component renders diagrams inline with a border that duplicates Mermaid's own styling.
 
 **Enhanced Features**:
+
 - **Click to Enlarge**: Full-screen modal for complex diagrams with zoom/pan
 - **Remove Outer Border**: Mermaid SVG already has its own styling; remove container border
 - **Download as PNG/SVG** (stretch goal): Export diagram for presentations
@@ -120,6 +124,7 @@ function EnhancedMermaid({ chart, className }: EnhancedMermaidProps) {
 ```
 
 **Border Removal**: Update existing `MermaidDiagram` component:
+
 ```tsx
 // Current: border border-border rounded-lg
 // New: no border wrapper, let Mermaid handle its own styling
@@ -133,6 +138,7 @@ function EnhancedMermaid({ chart, className }: EnhancedMermaidProps) {
 **Current State**: Tables render with basic GFM styling via `remarkGfm`, no interactivity.
 
 **Enhanced Features**:
+
 - **Copy Button**: Copies table as tab-separated values (TSV) for direct paste into Excel/Sheets
 - **Export CSV**: Downloads table data as .csv file
 - **Toolbar UI**: Small action bar above table (appears on hover or as persistent icons)
@@ -213,6 +219,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 ## Plan
 
 ### Phase 1: Advanced Code Blocks
+
 - [x] Create `EnhancedCodeBlock` component with copy button
 - [x] Add language badge display for fenced code blocks
 - [x] Implement copy-to-clipboard with visual feedback
@@ -220,6 +227,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Handle inline code vs block code differentiation
 
 ### Phase 2: Optimized Mermaid Diagrams  
+
 - [x] Remove outer border from `MermaidDiagram` container
 - [x] Create `MermaidModal` dialog component for enlarged view
 - [x] Add click handler to open modal from inline diagram
@@ -227,6 +235,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Add keyboard shortcuts (Escape to close)
 
 ### Phase 3: Advanced Tables
+
 - [x] Create table data extraction utility (parse from AST or DOM)
 - [x] Implement `EnhancedTable` wrapper component
 - [x] Add copy-as-TSV functionality (Excel-compatible)
@@ -234,6 +243,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Style toolbar and action buttons
 
 ### Phase 4: Polish & Testing
+
 - [x] Add tooltips to all action buttons
 - [x] Ensure accessibility (ARIA labels, keyboard nav)
 - [x] Test with various markdown content (edge cases)
@@ -243,6 +253,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 ## Test
 
 ### Code Block Tests
+
 - [x] Copy button appears on hover for fenced code blocks
 - [x] Language badge shows correct language name
 - [x] Copying works and shows success feedback
@@ -250,6 +261,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Code blocks without language specified work correctly
 
 ### Mermaid Diagram Tests
+
 - [x] Diagrams render without double border
 - [x] Clicking diagram opens enlarged modal
 - [x] Modal displays diagram at larger size
@@ -257,6 +269,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Dark mode theme applies in modal
 
 ### Table Tests
+
 - [x] Copy button copies as TSV (paste into Excel works)
 - [x] Export downloads valid CSV file
 - [x] Tables with special characters export correctly
@@ -264,6 +277,7 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 - [x] Multi-row, multi-column tables work
 
 ### General Tests
+
 - [x] No regressions in existing markdown rendering
 - [x] Performance acceptable with many code blocks/tables
 - [x] Works on mobile (touch-friendly buttons)
@@ -277,17 +291,21 @@ function useMarkdownComponents(specName: string, basePath: string): Components {
 ## Notes
 
 ### Why TSV for Copy?
+
 Tab-separated values paste correctly into Excel/Google Sheets with proper column alignment. CSV requires file import which is less convenient for quick operations.
 
 ### Alternative: remark/rehype plugins
+
 Could use existing plugins like `rehype-copy-code-button`, but custom implementation gives more control over styling and behavior consistent with shadcn/ui design system.
 
 ### Bundle Size Considerations
+
 - Dialog component already used elsewhere in UI
 - Clipboard API is native, no additional dependencies
 - CSV generation is simple string manipulation
 
 ### Future Enhancements
+
 - Syntax-aware copy (format code before copying)
 - Code block line numbers
 - Code block filename display (from meta string)

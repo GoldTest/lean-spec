@@ -50,7 +50,7 @@ The new design should intuitively tell users the (potential) contexts the projec
 pub struct ProjectContextResponse {
     pub system_prompts: Vec<ContextFile>,      // AGENTS.md, CLAUDE.md, etc.
     pub agent_skills: Vec<AgentSkill>,         // .github/skills/*/SKILL.md
-    pub config: ProjectConfigResponse,          // .lean-spec/config.json
+    pub config: ProjectConfigResponse,          // .harnspec/config.json
     pub global_contexts: GlobalContexts,        // Future: MCP tools, etc.
     pub total_tokens: usize,
     pub project_root: String,
@@ -100,31 +100,37 @@ export interface GlobalContexts {
 ### Collection Logic
 
 **System Prompts** (root level):
+
 - `AGENTS.md`
 - `CLAUDE.md`, `GEMINI.md`, `COPILOT.md`
 - `.github/copilot-instructions.md`
 
 **Agent Skills** (`.github/skills/` directory):
+
 - Scan `<skill-name>/SKILL.md` files
 - Extract description from frontmatter or first paragraph
 - Group by skill name
 
 **Config**:
-- `.lean-spec/config.json` (keep as-is)
+
+- `.harnspec/config.json` (keep as-is)
 
 **Global Contexts** (future):
+
 - MCP tools configuration
 - Global agent skills
 
 ### UI Design
 
 **Context Health Indicators**:
+
 - 🟢 Green (< 5K tokens): Optimal
 - 🔵 Blue (5-10K): Good
 - 🟡 Yellow (10-20K): Warning
 - 🔴 Red (> 20K): Critical
 
 **Section Layout**:
+
 ```
 ┌─────────────────────────────────────┐
 │ Project Context                     │
@@ -152,7 +158,7 @@ export interface GlobalContexts {
 ┌─────────────────────────────────────┐
 │ ⚙️ Configuration (1 file, 500)     │
 │ ─────────────────────────────────── │
-│ • .lean-spec/config.json    500     │
+│ • .harnspec/config.json    500     │
 └─────────────────────────────────────┘
 
 ┌─────────────────────────────────────┐
@@ -164,9 +170,10 @@ export interface GlobalContexts {
 ```
 
 **Empty States**:
+
 - System Prompts: "No system prompts found. Add AGENTS.md to provide instructions."
 - Agent Skills: "No skills configured. Create .github/skills/ to add capabilities."
-- Config: "Default configuration. Create .lean-spec/config.json to customize."
+- Config: "Default configuration. Create .harnspec/config.json to customize."
 
 ## Plan
 

@@ -29,14 +29,14 @@ pub struct TemplateLoader {
 impl TemplateLoader {
     pub fn new<P: AsRef<Path>>(project_root: P) -> Self {
         Self {
-            templates_dir: project_root.as_ref().join(".lean-spec").join("templates"),
+            templates_dir: project_root.as_ref().join(".harnspec").join("templates"),
             config: None,
         }
     }
 
     pub fn with_config<P: AsRef<Path>>(project_root: P, config: LeanSpecConfig) -> Self {
         Self {
-            templates_dir: project_root.as_ref().join(".lean-spec").join("templates"),
+            templates_dir: project_root.as_ref().join(".harnspec").join("templates"),
             config: Some(config),
         }
     }
@@ -115,7 +115,7 @@ mod tests {
     #[test]
     fn loads_file_template() {
         let temp = TempDir::new().unwrap();
-        let templates_dir = temp.path().join(".lean-spec/templates");
+        let templates_dir = temp.path().join(".harnspec/templates");
         fs::create_dir_all(&templates_dir).unwrap();
         let template_path = templates_dir.join("spec-template.md");
         fs::write(&template_path, "# Test {name}").unwrap();
@@ -128,7 +128,7 @@ mod tests {
     #[test]
     fn falls_back_to_readme() {
         let temp = TempDir::new().unwrap();
-        let template_dir = temp.path().join(".lean-spec/templates/custom");
+        let template_dir = temp.path().join(".harnspec/templates/custom");
         fs::create_dir_all(&template_dir).unwrap();
         fs::write(template_dir.join("README.md"), "# Readme Template").unwrap();
 

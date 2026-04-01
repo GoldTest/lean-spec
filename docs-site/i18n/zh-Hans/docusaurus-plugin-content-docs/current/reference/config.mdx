@@ -5,11 +5,11 @@ sidebar_position: 2
 ---
 # 配置
 
-`.lean-spec/config.json` 的完整参考。
+`.harnspec/config.json` 的完整参考。
 
 ## 配置文件
 
-HarnSpec 配置存储在项目根目录的 `.lean-spec/config.json` 中。
+HarnSpec 配置存储在项目根目录的 `.harnspec/config.json` 中。
 
 ## 默认配置
 
@@ -43,7 +43,7 @@ HarnSpec 配置存储在项目根目录的 `.lean-spec/config.json` 中。
 **类型：** `string`  
 **默认：** `"spec-template.md"`
 
-`.lean-spec/templates/` 目录中模板文件的路径。
+`.harnspec/templates/` 目录中模板文件的路径。
 
 ```json
 {
@@ -58,7 +58,7 @@ HarnSpec 配置存储在项目根目录的 `.lean-spec/config.json` 中。
 **类型：** `object`  
 **默认：** `{ "default": "spec-template.md" }`
 
-允许您定义多个模板，用户可以在 `lean-spec create` 或 `lean-spec init` 期间选择。
+允许您定义多个模板，用户可以在 `harnspec create` 或 `harnspec init` 期间选择。
 
 ```json
 {
@@ -421,7 +421,7 @@ HarnSpec 在加载时验证配置：
 
 - 必需的结构字段必须有效
 - 自定义字段类型必须有效（`string`、`number`、`boolean`、`array`）
-- 模板文件必须存在于 `.lean-spec/templates/` 中
+- 模板文件必须存在于 `.harnspec/templates/` 中
 - 如果缺少Spec目录，则创建
 
 无效的配置将显示带有详细信息的错误。
@@ -430,7 +430,7 @@ HarnSpec 在加载时验证配置：
 
 更新配置时：
 
-1. 编辑 `.lean-spec/config.json`
+1. 编辑 `.harnspec/config.json`
 2. 新Spec将使用新配置
 3. 现有Spec不会自动更新
 4. 如需要手动更新现有Spec

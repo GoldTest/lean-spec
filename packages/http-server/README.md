@@ -27,6 +27,7 @@ npx leanspec-http
 ```
 
 Options:
+
 - `--host <host>` - Server host (default: 127.0.0.1)
 - `--port <port>` - Server port (default: 3000)
 - `-v, --verbose` - Enable verbose (debug) logging
@@ -46,6 +47,7 @@ RUST_LOG=leanspec_http=debug,tower_http=debug npx leanspec-http
 ```
 
 In dev mode, the server provides:
+
 - **Request tracing**: Each request gets a unique ID for correlation
 - **Error context**: Full error details with status codes and stack context
 - **Latency tracking**: Response timing in milliseconds
@@ -71,7 +73,7 @@ const server = spawn('leanspec-http', ['--port', '3000']);
 
 ## Configuration
 
-The server reads configuration from `~/.lean-spec/config.json`:
+The server reads configuration from `~/.harnspec/config.json`:
 
 ```json
 {
@@ -92,6 +94,7 @@ The server reads configuration from `~/.lean-spec/config.json`:
 ## API Endpoints
 
 ### Projects
+
 - `GET /api/projects` - List all projects
 - `POST /api/projects` - Add new project
 - `GET /api/projects/:id` - Get project details
@@ -100,6 +103,7 @@ The server reads configuration from `~/.lean-spec/config.json`:
 - `POST /api/projects/:id/switch` - Switch to project
 
 ### Specs
+
 - `GET /api/specs` - List specs (with filters)
 - `GET /api/specs/:spec` - Get spec detail
 - `PATCH /api/specs/:spec/metadata` - Update spec metadata
@@ -109,6 +113,7 @@ The server reads configuration from `~/.lean-spec/config.json`:
 - `GET /api/validate` - Validate all specs
 
 ### Health
+
 - `GET /health` - Health check
 
 ## Platform Support

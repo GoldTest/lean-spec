@@ -10,7 +10,6 @@ completed: 2025-10-31
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-10-31 · **Tags**: templates, templates-system
 
-
 **Created**: 2025-10-31  
 **Status**: Complete
 
@@ -22,12 +21,13 @@ Expand LeanSpec template system to support multiple working styles, team sizes, 
 
 - Template bundles: Each template is a directory containing spec.md + supporting files (AGENTS.md, checklists, etc.)
 - Core templates: default (new structured), minimal (current simple), team, enterprise, api
-- CLI support: `--template` flag for selection, `lean-spec templates` to list available
+- CLI support: `--template` flag for selection, `harnspec templates` to list available
 - New default template: Hybrid structure with Overview, Objectives, Design, Implementation Plan, Success Criteria, Non-Goals, Notes, References
 
 ## Non-Goals
 
 What we're explicitly NOT doing:
+
 - Creating dozens of domain-specific templates (start with 5 core ones)
 - Making templates mandatory or rigid (still adaptable)
 - Losing the lean philosophy (every template stays focused)
@@ -36,10 +36,12 @@ What we're explicitly NOT doing:
 ## Notes
 
 Current template (to become "minimal"):
+
 - Simple: Goal, Key Points, Non-Goals, Notes
 - Works but feels like a form
 
 New default template structure:
+
 - Status with emoji, spec location link
 - Overview, Objectives, Non-Goals
 - Design, Implementation Plan (numbered)
@@ -48,6 +50,7 @@ New default template structure:
 - More actionable and structured while staying lean
 
 Template directory structure:
+
 ```
 templates/
 ├── default/

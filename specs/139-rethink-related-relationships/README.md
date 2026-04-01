@@ -30,10 +30,12 @@ completed: '2025-12-04'
 **Trigger**: Even with dual-view (DAG + Network), the dependency graph is hard to visualize. This raises a fundamental question: **does `related` actually help users, or does it just add noise?**
 
 **Current Model**:
+
 - `depends_on` → Hard blocking dependency (A must complete before B starts)
 - `related` → Soft bidirectional association (A and B are related topics)
 
 **The Problem**: When visualizing specs:
+
 1. DAG view filters out `related` → incomplete picture
 2. Network view includes both → cluttered, hard to read
 3. Users are confused about when to use which relationship type
@@ -45,6 +47,7 @@ completed: '2025-12-04'
 ### What Problems Does `related` Solve?
 
 **Intended benefits:**
+
 1. **Discovery** - Find specs on similar topics
 2. **Context** - Understand broader context when reading a spec
 3. **Coordination** - Signal that work is related but not blocking
@@ -53,6 +56,7 @@ completed: '2025-12-04'
 ### What Problems Does `related` Create?
 
 **Observed issues:**
+
 1. **Visualization clutter** - Network graphs become hairballs with many `related` edges
 2. **Semantic ambiguity** - When to use `depends_on` vs `related`? Edge cases are confusing
 3. **Maintenance burden** - Must manage bidirectional relationships
@@ -86,11 +90,13 @@ completed: '2025-12-04'
 **Keep `depends_on` + `related`**
 
 ✅ Pros:
+
 - Backward compatible
 - Users already learned the model
 - Expressive for complex projects
 
 ❌ Cons:
+
 - Visualization is fundamentally hard
 - Maintenance burden continues
 - Semantic confusion persists
@@ -100,6 +106,7 @@ completed: '2025-12-04'
 **Simplify to just `depends_on`**
 
 ✅ Pros:
+
 - **Clean DAG-only visualization**
 - **Clear semantics** - every edge means "blocking"
 - **Easier AI agent guidance** - one rule: "if it blocks, add depends_on"
@@ -107,14 +114,16 @@ completed: '2025-12-04'
 - **Lean philosophy** - remove if not essential
 
 ❌ Cons:
+
 - Breaking change for existing specs
 - Some users may miss soft associations
 - Migration effort needed
 
 **Migration path:**
+
 ```bash
 # Remove all `related` fields
-lean-spec migrate --remove-related
+harnspec migrate --remove-related
 ```
 
 ### Option 3: Replace with "See Also" in Content
@@ -129,12 +138,14 @@ lean-spec migrate --remove-related
 ```
 
 ✅ Pros:
+
 - Relationships in context, not metadata
 - Prose can explain WHY specs are related
 - No graph visualization needed
 - More human-readable
 
 ❌ Cons:
+
 - Not machine-parseable for tooling
 - Manual maintenance
 - Breaks existing `deps` command features
@@ -153,11 +164,13 @@ epic: v0.3.0-launch
 All specs in same group are implicitly related.
 
 ✅ Pros:
+
 - Cleaner than explicit links
 - Natural clustering
 - Works well with project management
 
 ❌ Cons:
+
 - New concept to learn
 - Doesn't capture arbitrary relationships
 - May create too-large groups
@@ -172,11 +185,13 @@ All specs in same group are implicitly related.
 4. Over time, remove as users stop adding them
 
 ✅ Pros:
+
 - No breaking change
 - Natural migration
 - Users can still use if they find it valuable
 
 ❌ Cons:
+
 - Continued complexity in codebase
 - Mixed signals to users
 
@@ -243,6 +258,7 @@ All specs in same group are implicitly related.
 ### Historical Context
 
 The `related` field was added in [044-spec-relationships-clarity](../archived/044-spec-relationships-clarity) to:
+
 - Distinguish from blocking `depends_on`
 - Enable bidirectional soft references
 - Match user expectations that "related" means mutual
@@ -263,17 +279,21 @@ The archived spec already noted: "related sounds symmetric" was driving the desi
 ### The "Related" vs "Tags" Trade-off
 
 **Using `related`:**
+
 ```yaml
 related: [082-web-realtime-sync, 097-dag-visualization]
 ```
+
 - Explicit links to specific specs
 - Bidirectional maintenance required
 - Shows in deps command/graph
 
 **Using tags:**
+
 ```yaml
 tags: [web, visualization, dependencies]
 ```
+
 - Implicit grouping by topic
 - No maintenance overhead
 - Search/filter instead of graph
@@ -287,6 +307,7 @@ For blocking work order: **`depends_on` wins** (that's its job)
 ### Impact on `/dependencies` Page
 
 If we remove `related`:
+
 - No need for dual view (DAG/Network) - just DAG
 - Delete ~200 lines of force-layout code
 - Simpler mental model for users

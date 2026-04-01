@@ -24,7 +24,7 @@ transitions:
 
 ## Overview
 
-The TUI event loop uses a blocking `event::read()` call — it only redraws on keyboard/mouse input. Spec files changed externally (by `lean-spec update`, an AI agent, a text editor, or another terminal session) are never reflected until the user quits and relaunches. This breaks any workflow involving concurrent editing alongside TUI browsing.
+The TUI event loop uses a blocking `event::read()` call — it only redraws on keyboard/mouse input. Spec files changed externally (by `harnspec update`, an AI agent, a text editor, or another terminal session) are never reflected until the user quits and relaunches. This breaks any workflow involving concurrent editing alongside TUI browsing.
 
 ## Problem
 
@@ -92,6 +92,7 @@ On receiving a file event for a `.md` file under the specs dir:
 Only `.md` files directly under `<specs_dir>/*/README.md` (or any `.md` under a spec subfolder). Debounce prevents redundant reloads on multi-file saves.
 
 Ignored events:
+
 - Changes to non-`.md` files
 - Changes outside the watched specs directory
 - `Chmod` / `Access` events (modify + create only)

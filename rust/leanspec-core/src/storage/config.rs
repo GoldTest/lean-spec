@@ -1,6 +1,6 @@
 //! Shared configuration utilities
 //!
-//! Loads configuration from `~/.lean-spec/config.json`.
+//! Loads configuration from `~/.harnspec/config.json`.
 
 #![cfg(feature = "storage")]
 
@@ -242,7 +242,7 @@ impl Default for SyncSettings {
 }
 
 fn default_verification_url() -> String {
-    "https://app.lean-spec.dev/device".to_string()
+    "https://app.harnspec.dev/device".to_string()
 }
 
 fn default_device_code_ttl() -> u64 {
@@ -272,7 +272,7 @@ fn default_max_recent() -> usize {
 
 /// Get the LeanSpec config directory path.
 ///
-/// Checks `LEANSPEC_DATA_DIR` env var first, falling back to `~/.lean-spec/`.
+/// Checks `LEANSPEC_DATA_DIR` env var first, falling back to `~/.harnspec/`.
 /// This allows cloud containers with ephemeral filesystems to use a custom
 /// persistent volume path.
 pub fn config_dir() -> PathBuf {
@@ -283,8 +283,8 @@ pub fn config_dir() -> PathBuf {
         }
     }
     dirs::home_dir()
-        .map(|h| h.join(".lean-spec"))
-        .unwrap_or_else(|| PathBuf::from(".lean-spec"))
+        .map(|h| h.join(".harnspec"))
+        .unwrap_or_else(|| PathBuf::from(".harnspec"))
 }
 
 /// Get the path to the config file
@@ -301,7 +301,7 @@ pub fn default_database_path() -> PathBuf {
 ///
 /// Supported URL formats:
 /// - sqlite:///absolute/path/to/db.db
-/// - sqlite://~/.lean-spec/leanspec.db
+/// - sqlite://~/.harnspec/leanspec.db
 /// - sqlite://relative/path.db (resolved under config_dir)
 /// - postgres://user:pass@host:5432/dbname (returns the path component for display)
 pub fn resolve_database_path(database_url: Option<&str>) -> CoreResult<PathBuf> {
@@ -335,7 +335,7 @@ pub fn resolve_database_path(database_url: Option<&str>) -> CoreResult<PathBuf> 
 
     if path_without_query == "~" {
         return dirs::home_dir()
-            .map(|home| home.join(".lean-spec").join("leanspec.db"))
+            .map(|home| home.join(".harnspec").join("leanspec.db"))
             .ok_or_else(|| {
                 CoreError::ConfigError(
                     "Failed to resolve home directory for sqlite database URL".to_string(),
@@ -437,14 +437,14 @@ mod tests {
     #[test]
     fn resolve_database_path_defaults_to_leanspec_db() {
         let path = resolve_database_path(None).expect("default path should resolve");
-        assert!(path.ends_with(".lean-spec/leanspec.db"));
+        assert!(path.ends_with(".harnspec/leanspec.db"));
     }
 
     #[test]
     fn resolve_database_path_expands_home_urls() {
-        let path = resolve_database_path(Some("sqlite://~/.lean-spec/custom.db"))
+        let path = resolve_database_path(Some("sqlite://~/.harnspec/custom.db"))
             .expect("home-relative sqlite path should resolve");
-        assert!(path.ends_with(".lean-spec/custom.db"));
+        assert!(path.ends_with(".harnspec/custom.db"));
     }
 
     #[test]

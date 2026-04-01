@@ -17,7 +17,7 @@ sidebar_position: 3
 Spec的可视化看板视图：
 
 ```bash
-lean-spec board
+harnspec board
 ```
 
 显示按状态列组织的Spec：
@@ -39,13 +39,13 @@ lean-spec board
 
 ```bash
 # 仅显示高优先级Spec
-lean-spec board --priority high
+harnspec board --priority high
 
 # 显示带特定标签的Spec
-lean-spec board --tag feature
+harnspec board --tag feature
 
 # 组合过滤器
-lean-spec board --priority high --tag api
+harnspec board --priority high --tag api
 ```
 
 ### 统计命令
@@ -53,7 +53,7 @@ lean-spec board --priority high --tag api
 快速项目指标：
 
 ```bash
-lean-spec stats
+harnspec stats
 ```
 
 显示：
@@ -68,7 +68,7 @@ lean-spec stats
 获取详细分析：
 
 ```bash
-lean-spec stats --full
+harnspec stats --full
 ```
 
 提供全面的项目洞察：
@@ -111,37 +111,37 @@ lean-spec stats --full
 **每日站会：**
 ```bash
 # 快速项目概览
-lean-spec board
+harnspec board
 
 # 查看进行中的内容
-lean-spec board --status in-progress
+harnspec board --status in-progress
 
 # 检查高优先级项目
-lean-spec board --priority high
+harnspec board --priority high
 ```
 
 **冲刺计划：**
 ```bash
 # 审查项目健康状况
-lean-spec stats --full
+harnspec stats --full
 
 # 查看准备开始的内容
-lean-spec board --status planned
+harnspec board --status planned
 
 # 检查容量
-lean-spec stats
+harnspec stats
 ```
 
 **每周审查：**
 ```bash
 # 整体项目指标
-lean-spec stats --full
+harnspec stats --full
 
 # 审查已完成的工作
-lean-spec board --status complete
+harnspec board --status complete
 
 # 识别瓶颈
-lean-spec board --status in-progress
+harnspec board --status in-progress
 ```
 
 ### 项目健康指标
@@ -152,7 +152,7 @@ lean-spec board --status in-progress
 - 太多进行中的Spec（焦点问题）
 - 没有更新的旧Spec（陈旧工作）
 - 计划中Spec的百分比高（执行差距）
-- 有未满足依赖关系的Spec（使用 `lean-spec deps` 检查）
+- 有未满足依赖关系的Spec（使用 `harnspec deps` 检查）
 
 **✅ 健康信号：**
 - 稳定的完成率
@@ -184,18 +184,18 @@ HarnSpec 有两种类型的关系：
 
 ```bash
 # 将Spec 042 链接到 043 和 044
-lean-spec link 042 --related 043,044
+harnspec link 042 --related 043,044
 ```
 
 两侧都能看到关系：
 
 ```bash
-$ lean-spec deps 042
+$ harnspec deps 042
 Related Specs:
   ⟷ 043-feature-launch [in-progress]
   ⟷ 044-api-update [planned]
 
-$ lean-spec deps 043
+$ harnspec deps 043
 Related Specs:
   ⟷ 042-error-handling [complete]  # 自动显示！
 ```
@@ -211,20 +211,20 @@ Related Specs:
 
 ```bash
 # Spec A 依赖于Spec B
-lean-spec link spec-a --depends-on spec-b
+harnspec link spec-a --depends-on spec-b
 
 # Spec A 依赖于多个Spec
-lean-spec link spec-a --depends-on spec-b spec-c
+harnspec link spec-a --depends-on spec-b spec-c
 ```
 
 从每一侧显示不同：
 
 ```bash
-$ lean-spec deps spec-a
+$ harnspec deps spec-a
 Depends On:
   → spec-b [in-progress]  # A 依赖于 B
 
-$ lean-spec deps spec-b
+$ harnspec deps spec-b
 Required By:
   ← spec-a [planned]  # B 被 A 需要
 ```
@@ -239,7 +239,7 @@ Required By:
 查看Spec的所有关系：
 
 ```bash
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 显示：
@@ -273,10 +273,10 @@ Related Specs:
 
 ```bash
 # ✅ 好 - 用于上下文的相关Spec
-lean-spec link feature-a --related feature-b
+harnspec link feature-a --related feature-b
 
 # ❌ 过度使用 - 不是真正的阻塞依赖
-lean-spec link feature-a --depends-on documentation-spec
+harnspec link feature-a --depends-on documentation-spec
 ```
 
 **2. 保留 `depends_on` 用于真正的阻塞器**
@@ -285,18 +285,18 @@ lean-spec link feature-a --depends-on documentation-spec
 
 ```bash
 # ✅ 好 - API 必须在集成之前存在
-lean-spec link integration --depends-on api-implementation
+harnspec link integration --depends-on api-implementation
 
 # ❌ 坏 - 这些可以并行完成
-lean-spec link feature --depends-on docs-update
+harnspec link feature --depends-on docs-update
 ```
 
 **3. 避免循环依赖**
 
 ```bash
 # ❌ 坏 - 循环依赖
-lean-spec link spec-a --depends-on spec-b
-lean-spec link spec-b --depends-on spec-a
+harnspec link spec-a --depends-on spec-b
+harnspec link spec-b --depends-on spec-a
 ```
 
 HarnSpec 会警告循环依赖。
@@ -307,7 +307,7 @@ HarnSpec 会警告循环依赖。
 
 ```bash
 # ✅ 好 - 从 A 链接到 B
-lean-spec link spec-a --related spec-b
+harnspec link spec-a --related spec-b
 
 # Spec B 自动显示与 A 的关系
 ```
@@ -319,7 +319,7 @@ lean-spec link spec-a --related spec-b
 检查依赖关系：
 
 ```bash
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 确保在开始之前所有 `depends_on` Spec都已完成。
@@ -330,10 +330,10 @@ lean-spec deps <spec>
 
 ```bash
 # 查看相关工作
-lean-spec deps feature-spec
+harnspec deps feature-spec
 
 # 检查被阻塞的内容
-lean-spec board --status planned
+harnspec board --status planned
 ```
 
 **识别瓶颈：**
@@ -342,7 +342,7 @@ lean-spec board --status planned
 
 ```bash
 # 检查依赖于此的内容
-lean-spec deps <in-progress-spec>
+harnspec deps <in-progress-spec>
 
 # 查找 "Required By" 项
 ```
@@ -353,28 +353,28 @@ lean-spec deps <in-progress-spec>
 
 ```bash
 # 阶段 2 依赖于阶段 1
-lean-spec link phase-2 --depends-on phase-1
+harnspec link phase-2 --depends-on phase-1
 
 # 阶段 3 依赖于阶段 2
-lean-spec link phase-3 --depends-on phase-2
+harnspec link phase-3 --depends-on phase-2
 ```
 
 **具有协调的并行工作：**
 
 ```bash
 # 链接所有相关功能
-lean-spec link feature-a --related feature-b,feature-c
-lean-spec link feature-b --related feature-c
+harnspec link feature-a --related feature-b,feature-c
+harnspec link feature-b --related feature-c
 ```
 
 **集成点：**
 
 ```bash
 # 测试在功能完成之前被阻塞
-lean-spec link tests --depends-on core-feature
+harnspec link tests --depends-on core-feature
 
 # 文档相关但不阻塞
-lean-spec link docs --related core-feature
+harnspec link docs --related core-feature
 ```
 
 ### 管理更改
@@ -383,7 +383,7 @@ lean-spec link docs --related core-feature
 
 ```bash
 # 添加依赖关系
-lean-spec link my-spec --depends-on prerequisite-spec
+harnspec link my-spec --depends-on prerequisite-spec
 ```
 
 **删除依赖关系：**
@@ -392,20 +392,20 @@ lean-spec link my-spec --depends-on prerequisite-spec
 
 ```bash
 # 删除依赖关系
-lean-spec unlink my-spec --depends-on old-requirement
+harnspec unlink my-spec --depends-on old-requirement
 
 # 替换为 related（可选）
-lean-spec link my-spec --related old-requirement
+harnspec link my-spec --related old-requirement
 ```
 
 ## 最佳实践
 
 ### 看板与统计
 
-1. **每日检查** - 用 `lean-spec board` 开始您的一天
-2. **每周审查** - 使用 `lean-spec stats --full` 查看趋势
+1. **每日检查** - 用 `harnspec board` 开始您的一天
+2. **每周审查** - 使用 `harnspec stats --full` 查看趋势
 3. **限制 WIP** - 控制进行中的Spec
-4. **定期更新** - 使用 `lean-spec update` 保持状态最新
+4. **定期更新** - 使用 `harnspec update` 保持状态最新
 5. **使用优先级** - 首先关注高优先级工作
 
 ### 依赖关系
@@ -414,7 +414,7 @@ lean-spec link my-spec --related old-requirement
 2. **保留 `depends_on`** - 仅用于真正的阻塞器
 3. **开始前检查** - 确保满足依赖关系
 4. **避免循环依赖** - 保持依赖链简单
-5. **使用 CLI 命令** - `lean-spec link`/`unlink`，而不是手动编辑
+5. **使用 CLI 命令** - `harnspec link`/`unlink`，而不是手动编辑
 
 ## 下一步
 

@@ -16,7 +16,6 @@ transitions:
 
 > **Status**: 📦 Archived · **Priority**: Low · **Created**: 2025-11-03 · **Tags**: templates, polish
 
-
 > Update all template configs to use new format consistently
 
 ## Overview
@@ -32,6 +31,7 @@ The built-in templates (minimal, standard, enterprise) in `templates/` still use
 Update templates to use new config format:
 
 **Current format (legacy):**
+
 ```json
 {
   "specDir": "specs"
@@ -39,6 +39,7 @@ Update templates to use new config format:
 ```
 
 **New format:**
+
 ```json
 {
   "specDir": "specs",
@@ -52,11 +53,13 @@ Update templates to use new config format:
 ```
 
 **Templates to update:**
+
 - `templates/minimal/config.json`
 - `templates/standard/config.json`
 - `templates/enterprise/config.json`
 
 Each template should have a sensible default `folderPattern`:
+
 - **Minimal**: Flat pattern `{NNN}-{name}/` (simplest)
 - **Standard**: Date-grouped `{YYYYMMDD}/{NNN}-{name}/` (prevents conflicts)
 - **Enterprise**: Date-grouped `{YYYYMMDD}/{NNN}-{name}/` (team workflows)
@@ -72,7 +75,7 @@ Each template should have a sensible default `folderPattern`:
 ## Test
 
 - [ ] All templates use new config format
-- [ ] `lean-spec init` works with each template
+- [ ] `harnspec init` works with each template
 - [ ] Config merging works correctly
 - [ ] Backward compatibility maintained
 

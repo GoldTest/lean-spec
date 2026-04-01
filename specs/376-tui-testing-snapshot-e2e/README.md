@@ -40,7 +40,7 @@ Ratatui provides `TestBackend` — a fake terminal that renders to a 2D grid in 
 ```
 Normal run:                          Test run (TestBackend):
 
-lean-spec tui                        TestBackend::new(120, 30)
+harnspec tui                        TestBackend::new(120, 30)
      │                                    │
      ▼                                    ▼
 Real terminal                        In-memory grid of cells
@@ -81,7 +81,7 @@ Add a `--headless <script>` CLI flag. When set, the TUI loads specs, replays the
 ```
 Web E2E (Playwright)                TUI E2E (headless mode)
 ────────────────────────────────────────────────────────────
-await page.goto('/specs')           lean-spec tui --headless ""
+await page.goto('/specs')           harnspec tui --headless ""
 await page.click('#sort-btn')       send 's'
 await page.type('#search', 'tui')   send '/tui\n'
 expect(el).toHaveText('4 specs')    assert filtered_count == 4
@@ -90,7 +90,7 @@ expect(el).toHaveText('4 specs')    assert filtered_count == 4
 Example invocation and output:
 
 ```bash
-$ lean-spec tui --headless "ss/tui\n" --specs-dir ./specs
+$ harnspec tui --headless "ss/tui\n" --specs-dir ./specs
 # key sequence: s=sort, s=sort again, /tui\n=search for "tui"
 ```
 
@@ -117,7 +117,7 @@ Integration test that spawns the binary and asserts on the JSON:
 ```rust
 #[test]
 fn test_sort_cycles_then_search_filters() {
-    let output = Command::new("lean-spec")
+    let output = Command::new("harnspec")
         .args(["tui", "--headless", "ss/tui\n", "--specs-dir", "tests/fixtures/tui-sample"])
         .output().unwrap();
 

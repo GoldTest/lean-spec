@@ -188,10 +188,10 @@ async fn test_get_project_context() {
     )
     .unwrap();
 
-    // Create .lean-spec/config.json
-    std::fs::create_dir_all(temp_dir.path().join(".lean-spec")).unwrap();
+    // Create .harnspec/config.json
+    std::fs::create_dir_all(temp_dir.path().join(".harnspec")).unwrap();
     std::fs::write(
-        temp_dir.path().join(".lean-spec/config.json"),
+        temp_dir.path().join(".harnspec/config.json"),
         r#"{"template":"default","specsDir":"specs"}"#,
     )
     .unwrap();

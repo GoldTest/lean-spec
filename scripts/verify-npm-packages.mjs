@@ -6,7 +6,7 @@
  * supported platforms. Used to verify that cross-platform builds worked correctly.
  * 
  * Usage:
- *   node scripts/verify-npm-packages.mjs [--package lean-spec] [--version 0.3.0]
+ *   node scripts/verify-npm-packages.mjs [--package harnspec] [--version 0.3.0]
  */
 
 import { execSync } from 'node:child_process';
@@ -29,10 +29,10 @@ const PLATFORMS = [
 ];
 
 const PACKAGES = {
-  'lean-spec': {
-    main: 'lean-spec',
+  'harnspec': {
+    main: 'harnspec',
     platformPrefix: '@leanspec/cli',
-    binary: 'lean-spec'
+    binary: 'harnspec'
   },
   '@leanspec/mcp': {
     main: '@leanspec/mcp',
@@ -47,10 +47,10 @@ const PACKAGES = {
 };
 
 async function fetchPackageInfo(packageName, version) {
-  const url = version 
+  const url = version
     ? `https://registry.npmjs.org/${packageName}/${version}`
     : `https://registry.npmjs.org/${packageName}/latest`;
-  
+
   return new Promise((resolve, reject) => {
     https.get(url, (res) => {
       let data = '';
@@ -68,29 +68,29 @@ async function fetchPackageInfo(packageName, version) {
 
 async function checkMainPackage(packageName, version) {
   console.log(`\n📦 Checking main package: ${packageName}`);
-  
+
   try {
     const info = await fetchPackageInfo(packageName, version);
     const actualVersion = info.version;
-    
+
     console.log(`  Version: ${actualVersion}`);
-    
+
     // Check optionalDependencies
     const optDeps = info.optionalDependencies || {};
-    const platformPackages = Object.keys(optDeps).filter(name => 
+    const platformPackages = Object.keys(optDeps).filter(name =>
       PLATFORMS.some(platform => name.includes(platform))
     );
-    
+
     if (platformPackages.length === 0) {
       console.log(`  ⚠️  No platform packages in optionalDependencies`);
       return { success: false, version: actualVersion };
     }
-    
+
     console.log(`  ✅ Found ${platformPackages.length} platform packages:`);
     for (const pkg of platformPackages.sort()) {
       console.log(`     - ${pkg}@${optDeps[pkg]}`);
     }
-    
+
     return { success: platformPackages.length === PLATFORMS.length, version: actualVersion };
   } catch (error) {
     console.log(`  ❌ Error: ${error.message}`);
@@ -100,15 +100,15 @@ async function checkMainPackage(packageName, version) {
 
 async function checkPlatformPackage(platformPrefix, platform, binary, version) {
   const packageName = `${platformPrefix}-${platform}`;
-  
+
   try {
     const info = await fetchPackageInfo(packageName, version);
-    
+
     // Check files array
     const files = info.files || [];
     const binaryName = platform === 'windows-x64' ? `${binary}.exe` : binary;
     const hasBinary = files.includes(binaryName) || files.includes('*');
-    
+
     if (hasBinary) {
       console.log(`  ✅ ${platform}: ${binaryName}`);
       return { success: true, platform };
@@ -128,29 +128,29 @@ async function checkPlatformPackage(platformPrefix, platform, binary, version) {
 
 async function verifyPackage(packageKey, version) {
   const config = PACKAGES[packageKey];
-  
+
   console.log(`\n${'='.repeat(60)}`);
   console.log(`Verifying: ${config.main}`);
   console.log('='.repeat(60));
-  
+
   // Check main package
   const mainResult = await checkMainPackage(config.main, version);
-  
+
   if (!mainResult.success) {
     return { package: config.main, success: false, details: mainResult };
   }
-  
+
   // Check platform packages
   console.log(`\n📦 Checking platform packages:`);
   const platformResults = await Promise.all(
-    PLATFORMS.map(platform => 
+    PLATFORMS.map(platform =>
       checkPlatformPackage(config.platformPrefix, platform, config.binary, version)
     )
   );
-  
+
   const allPlatformsOk = platformResults.every(r => r.success);
   const missingPlatforms = platformResults.filter(r => !r.success);
-  
+
   if (allPlatformsOk) {
     console.log(`\n✅ All ${PLATFORMS.length} platforms verified!`);
   } else {
@@ -159,7 +159,7 @@ async function verifyPackage(packageKey, version) {
       console.log(`   - ${result.platform}: ${result.error}`);
     }
   }
-  
+
   return {
     package: config.main,
     success: allPlatformsOk,
@@ -170,11 +170,11 @@ async function verifyPackage(packageKey, version) {
 
 async function main() {
   const args = process.argv.slice(2);
-  
+
   // Parse arguments
   let targetPackage = null;
   let targetVersion = null;
-  
+
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--package' && args[i + 1]) {
       targetPackage = args[i + 1];
@@ -184,42 +184,42 @@ async function main() {
       i++;
     }
   }
-  
+
   console.log('🔍 Verifying npm packages have all platform binaries...\n');
-  
+
   if (targetVersion) {
     console.log(`   Target version: ${targetVersion}`);
   } else {
     console.log(`   Checking latest published versions`);
   }
-  
+
   // Verify packages
-  const packagesToCheck = targetPackage 
+  const packagesToCheck = targetPackage
     ? [targetPackage]
     : Object.keys(PACKAGES);
-  
+
   const results = [];
   for (const pkg of packagesToCheck) {
     const result = await verifyPackage(pkg, targetVersion);
     results.push(result);
   }
-  
+
   // Summary
   console.log(`\n${'='.repeat(60)}`);
   console.log('Summary:');
   console.log('='.repeat(60));
-  
+
   const successful = results.filter(r => r.success);
   const failed = results.filter(r => !r.success);
-  
+
   console.log(`\n✅ Verified: ${successful.length}/${results.length}`);
-  
+
   if (successful.length > 0) {
     for (const result of successful) {
       console.log(`   ${result.package}@${result.version}`);
     }
   }
-  
+
   if (failed.length > 0) {
     console.log(`\n❌ Failed: ${failed.length}/${results.length}`);
     for (const result of failed) {
@@ -235,14 +235,14 @@ async function main() {
       }
     }
   }
-  
+
   // Exit with error if any failed
   if (failed.length > 0) {
     console.log(`\n⚠️  Some packages have missing platform binaries!`);
     console.log(`   This means cross-platform builds may have failed.`);
     process.exit(1);
   }
-  
+
   console.log(`\n✨ All packages verified successfully!`);
 }
 

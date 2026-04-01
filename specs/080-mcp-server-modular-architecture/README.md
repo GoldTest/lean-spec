@@ -19,7 +19,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-13 · **Tags**: refactor, mcp, architecture
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -108,12 +108,14 @@ mcp/
 ```
 
 Each tool file exports:
+
 1. **Tool definition function**: e.g., `listTool()` that returns MCP tool config
 2. **Tool handler function**: e.g., `listSpecsData()` with business logic
 
 ### Architecture
 
 **Before (current)**:
+
 ```typescript
 // mcp-server.ts (1,302 lines)
 async function createMcpServer() {
@@ -136,6 +138,7 @@ async function createMcpServer() {
 ```
 
 **After (proposed)**:
+
 ```typescript
 // mcp-server.ts (~100 lines)
 import { registerTools } from './mcp/tools/registry.js';
@@ -144,7 +147,7 @@ import { registerPrompts } from './mcp/prompts/registry.js';
 
 async function createMcpServer() {
   const server = new McpServer({
-    name: 'lean-spec',
+    name: 'harnspec',
     version: packageJson.version,
   });
   
@@ -221,6 +224,7 @@ export async function listSpecsData(options: {
 ### File Size Estimates
 
 Based on current code:
+
 - `mcp-server.ts`: 1,302 lines → **~100 lines** (92% reduction)
 - `mcp/types.ts`: **~50 lines** (type definitions)
 - `mcp/helpers.ts`: **~80 lines** (shared utilities)
@@ -234,12 +238,14 @@ Based on current code:
 ## Plan
 
 ### Phase 1: Create Module Structure
+
 - [ ] Create `packages/cli/src/mcp/` directory structure
 - [ ] Create `types.ts` with shared type definitions
 - [ ] Create `helpers.ts` with utility functions (formatErrorMessage, specToData)
 - [ ] Create registry files: `tools/registry.ts`, `resources/registry.ts`, `prompts/registry.ts`
 
 ### Phase 2: Extract Tools (14 tools)
+
 - [ ] Extract alphabetically sorted tools to individual files:
   - [ ] `archive.ts` - archiveTool + archiveSpec logic
   - [ ] `backfill.ts` - backfillTool + backfillTimestamps logic
@@ -258,6 +264,7 @@ Based on current code:
 - [ ] Implement `registerTools()` in registry with alphabetical order
 
 ### Phase 3: Extract Resources (3 resources)
+
 - [ ] Extract resources to individual files:
   - [ ] `resources/board.ts` - board://kanban resource
   - [ ] `resources/spec.ts` - spec://{specPath} resource
@@ -265,6 +272,7 @@ Based on current code:
 - [ ] Implement `registerResources()` in registry
 
 ### Phase 4: Extract Prompts (3 prompts)
+
 - [ ] Extract prompts to individual files:
   - [ ] `prompts/create-feature-spec.ts`
   - [ ] `prompts/find-related-specs.ts`
@@ -272,6 +280,7 @@ Based on current code:
 - [ ] Implement `registerPrompts()` in registry
 
 ### Phase 5: Refactor Main Server File
+
 - [ ] Update `mcp-server.ts` to use registries
 - [ ] Remove all tool/resource/prompt definitions
 - [ ] Keep only server setup + transport initialization
@@ -279,6 +288,7 @@ Based on current code:
 - [ ] Update imports to use new module structure
 
 ### Phase 6: Validation
+
 - [ ] Run `pnpm build` - ensure TypeScript compiles
 - [ ] Test MCP server startup: verify no errors
 - [ ] Test representative tools:
@@ -288,12 +298,13 @@ Based on current code:
   - [ ] `create` - new spec creation
   - [ ] `tokens` - token counting
 - [ ] Verify all 14 tools + 3 resources + 3 prompts registered
-- [ ] Run token count: `lean-spec tokens packages/cli/src/mcp-server.ts`
+- [ ] Run token count: `harnspec tokens packages/cli/src/mcp-server.ts`
 - [ ] Confirm main file <2,000 tokens
 
 ## Test
 
 **Validation criteria**:
+
 - ✅ Main `mcp-server.ts` reduced to <150 lines
 - ✅ Token count <2,000 (from 9,807)
 - ✅ Tools appear alphabetically in MCP tool list
@@ -302,12 +313,13 @@ Based on current code:
 - ✅ No breaking changes to tool behavior
 
 **Manual testing**:
+
 ```bash
 # Build and verify compilation
 pnpm build
 
 # Test MCP server startup
-node bin/lean-spec.js mcp
+node bin/harnspec.js mcp
 
 # Test in MCP client (e.g., Claude Desktop)
 # - List tools: should show 14 tools alphabetically
@@ -318,11 +330,12 @@ node bin/lean-spec.js mcp
 # - Test tokens tool with spec path
 
 # Verify token reduction
-lean-spec tokens packages/cli/src/mcp-server.ts
+harnspec tokens packages/cli/src/mcp-server.ts
 # Should show <2,000 tokens (was 9,807)
 ```
 
 **Automated testing**:
+
 - [ ] Existing MCP integration tests pass (if any)
 - [ ] Tool registration tests
 - [ ] Resource registration tests
@@ -374,11 +387,13 @@ This spec follows the same refactoring pattern as spec 079:
 ### Context Economy Analysis
 
 **Current state**: 9,807 tokens = 8.2x baseline
+
 - AI effectiveness: ~70% (hypothesis from spec 066)
 - Cost multiplier: 8.2x
 - Maintainability: Poor (scrolling, finding tools)
 
 **Target state**: <2,000 tokens per file
+
 - AI effectiveness: 100% (optimal)
 - Cost multiplier: ~1.7x (acceptable)
 - Maintainability: Excellent (alphabetical, modular)

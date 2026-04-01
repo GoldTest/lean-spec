@@ -37,6 +37,7 @@ return /(?:^|\D)(\d{2,4})-[a-z]/i;
 This regex requires ASCII letters after the dash, which excludes Chinese and other Unicode characters.
 
 **Solution**: Change `[a-z]` to a pattern that matches any non-digit, non-dash character, including Unicode:
+
 - Use `[^0-9-]` to match any character that is not a digit or dash
 - This allows Chinese characters like `测试`, Japanese, Korean, and other Unicode scripts
 
@@ -57,4 +58,4 @@ This regex requires ASCII letters after the dash, which excludes Chinese and oth
 
 ## Notes
 
-GitHub Issue: https://github.com/codervisor/lean-spec/issues/82
+GitHub Issue: <https://github.com/codervisor/harnspec/issues/82>

@@ -2,12 +2,14 @@
 
 ## What We Built
 
-Added smart detection and handling for projects that already have `AGENTS.md` or other system prompts when running `lean-spec init`.
+Added smart detection and handling for projects that already have `AGENTS.md` or other system prompts when running `harnspec init`.
 
 ## Key Features
 
 ### 1. Auto-Detection
+
 Detects these common system prompt files:
+
 - `AGENTS.md`
 - `.cursorrules`  
 - `.github/copilot-instructions.md`
@@ -17,23 +19,27 @@ Detects these common system prompt files:
 When existing files are detected, users choose how to proceed:
 
 **Merge Mode** (for AGENTS.md)
+
 - Preserves existing content completely
 - Appends LeanSpec section with clear `---` delimiter
 - Best for: Adding LeanSpec to established projects
 
 **Backup Mode**
+
 - Renames existing files to `.backup`
 - Creates fresh files from template
 - Best for: Starting over while keeping old content safe
 
 **Skip Mode**
+
 - Leaves existing files completely untouched
-- Only adds `.lean-spec/` config and `specs/` directory
+- Only adds `.harnspec/` config and `specs/` directory
 - Best for: Manual integration or using existing setup as-is
 
 ### 3. Intelligent File Copying
 
 The `copyDirectory` function now:
+
 - Checks for file existence before copying
 - Skips files the user wants to preserve
 - Only copies what's needed
@@ -68,8 +74,8 @@ The `copyDirectory` function now:
 # Project with existing AGENTS.md
 cd my-existing-project
 
-# Run lean-spec init
-lean-spec init
+# Run harnspec init
+harnspec init
 
 # Output:
 # Welcome to LeanSpec!
@@ -86,16 +92,18 @@ lean-spec init
 ## Testing
 
 1. **Automated**: Run `./test-integration.sh` for basic checks
-2. **Manual**: 
+2. **Manual**:
+
    ```bash
-   cd /tmp/lean-spec-test-existing
-   node /path/to/lean-spec/bin/lean-spec.js init
+   cd /tmp/harnspec-test-existing
+   node /path/to/harnspec/bin/harnspec.js init
    # Test each mode: merge, backup, skip
    ```
 
 ## Future Enhancements
 
 Potential improvements (not in current scope):
+
 - Extend merge support to `.cursorrules` and other files
 - Smart content parsing to avoid duplicate sections
 - Template-aware merging (different merge strategies per template)
@@ -104,6 +112,7 @@ Potential improvements (not in current scope):
 ## Dogfooding Note
 
 This feature itself follows LeanSpec principles:
+
 - Clear goal: Don't clobber existing files
 - Essential scenarios: merge, backup, skip
 - Minimal implementation: Simple append for merge, straightforward backup/skip

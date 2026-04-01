@@ -27,7 +27,7 @@ completed: '2025-11-13'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-13 · **Tags**: templates, maintainability, dx, refactor, ai-first
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -37,11 +37,12 @@ completed: '2025-11-13'
 1. **Duplication**: Core content (First Principles, commands, workflow) duplicated across 3+ templates
 2. **Maintenance Burden**: Single change (like nested code blocks rule) requires updating 4+ files
 3. **Drift Risk**: Templates diverge over time as updates miss some files
-4. **Template System Mismatch**: Current `.lean-spec/templates/` only handles spec files (README.md), not supporting files (AGENTS.md)
+4. **Template System Mismatch**: Current `.harnspec/templates/` only handles spec files (README.md), not supporting files (AGENTS.md)
 
 **Example**: Just added "nested code blocks" rule to all 4 AGENTS.md files - this is not scalable.
 
 **Current State**:
+
 - Root `AGENTS.md` (reference implementation)
 - `packages/cli/templates/minimal/files/AGENTS.md`
 - `packages/cli/templates/standard/files/AGENTS.md`
@@ -53,6 +54,7 @@ completed: '2025-11-13'
 **Scope**: This spec covers Phase 1 only (AGENTS.md template engine). Phase 2 (sub-spec template system) was split into spec 078.
 
 **Related Specs**:
+
 - `012-sub-spec-files` (archived) - Original sub-spec design (implemented)
 - `013-custom-spec-templates` (archived) - Template system v1
 - `025-template-config-updates` - Config format updates
@@ -86,6 +88,7 @@ completed: '2025-11-13'
 Use simple template engine (Handlebars or similar) with shared components:
 
 **Structure**:
+
 ```
 packages/cli/templates/
 ├── _shared/
@@ -115,6 +118,7 @@ packages/cli/templates/
 ```
 
 **agents-config.json** (example for standard):
+
 ```json
 {
   "project_name": "{project_name}",
@@ -133,6 +137,7 @@ packages/cli/templates/
 ```
 
 **Build Process**:
+
 ```bash
 # During package build or on-demand
 npm run build:agents-templates
@@ -140,6 +145,7 @@ npm run build:agents-templates
 ```
 
 **Benefits**:
+
 - ✅ Single source of truth for shared content
 - ✅ Easy to update all templates (edit one component file)
 - ✅ Template-specific customization still possible
@@ -149,6 +155,7 @@ npm run build:agents-templates
 ### Technical Approach
 
 **AGENTS.md Template Engine**:
+
 - Tool: Handlebars.js (lightweight, widely used)
 - Build script: `scripts/build-agents-templates.ts`
 - Runs during: `pnpm build` or `pnpm build:templates`
@@ -158,7 +165,7 @@ npm run build:agents-templates
 
 ### Alternative Approaches Considered
 
-1. **Runtime Template Composition**: Generate AGENTS.md during `lean-spec init`
+1. **Runtime Template Composition**: Generate AGENTS.md during `harnspec init`
    - ❌ Requires template engine in runtime dependency
    - ❌ More complex error handling
    - ✅ Could work but build-time is simpler
@@ -209,7 +216,7 @@ npm run build:agents-templates
 
 - [x] **Validation & Testing**
   - [x] Verify generated AGENTS.md matches current versions
-  - [x] Test `lean-spec init` with each template
+  - [x] Test `harnspec init` with each template
   - [x] Update CI to fail if generated files out of sync
   - [ ] Add pre-commit hook to regenerate if source changed (deferred - CI validation sufficient)
 
@@ -226,6 +233,7 @@ npm run build:agents-templates
 - [ ] **CI Validation Test**: CI fails if source components changed but generated files not updated
 
 **Test Protocol**:
+
 ```bash
 # 1. Generate templates
 pnpm build:templates
@@ -234,7 +242,7 @@ pnpm build:templates
 diff packages/cli/templates/minimal/files/AGENTS.md packages/cli/templates/minimal/files/AGENTS.md.bak
 
 # 3. Test template selection during init
-lean-spec init --template standard
+harnspec init --template standard
 # Verify AGENTS.md was copied correctly
 
 # 4. Modify shared component
@@ -249,7 +257,8 @@ pnpm build:templates
 
 **Immediate Pain**: Just added "nested code blocks" rule to 4 files. Next update will be same pain.
 
-**Long-term Impact**: 
+**Long-term Impact**:
+
 - As LeanSpec grows, AGENTS.md will evolve frequently (new commands, updated workflows, etc.)
 - Every change requires 4-file update currently
 - Risk of inconsistency grows over time
@@ -258,6 +267,7 @@ pnpm build:templates
 ### Build vs Runtime Trade-offs
 
 **Build-time generation** (chosen):
+
 - ✅ No runtime overhead
 - ✅ Simple distribution (generated files in npm package)
 - ✅ Easy to audit (see generated output in git)
@@ -265,6 +275,7 @@ pnpm build:templates
 - ⚠️ Must remember to rebuild after editing components
 
 **Runtime generation** (rejected):
+
 - ✅ Always fresh
 - ❌ Template engine in runtime deps
 - ❌ More complex error handling
@@ -273,6 +284,7 @@ pnpm build:templates
 ### Phase 2 Split Decision
 
 **Why split into separate spec (078)?**
+
 - Phase 1 (AGENTS.md template engine) is complete and independent
 - Phase 2 (sub-spec template system) is a different feature with different scope
 - Cleaner separation allows independent planning and archiving
@@ -285,7 +297,7 @@ See Overview section for full list of related specs.
 ### Open Questions
 
 - Should we also template-ize spec templates (README.md)? Or just AGENTS.md?
-- ~~Do we need a `lean-spec templates validate` command?~~ ✅ Implemented as `pnpm validate:templates`
+- ~~Do we need a `harnspec templates validate` command?~~ ✅ Implemented as `pnpm validate:templates`
 - ~~Should CI auto-regenerate and commit, or just fail?~~ ✅ CI fails on drift (regeneration is manual)
 - Can we detect if AGENTS.md was manually edited and warn?
 - ~~Should we support optional sub-specs?~~ ✅ Moved to spec 078
@@ -301,6 +313,7 @@ See Overview section for full list of related specs.
 **Status**: Complete ✅
 
 **Completed Work**:
+
 1. ✅ Template infrastructure created with component-based architecture
 2. ✅ All component files extracted and organized
 3. ✅ Build system integrated (`pnpm build:templates`)
@@ -310,6 +323,7 @@ See Overview section for full list of related specs.
 7. ✅ Documentation updated with validation guide
 
 **Benefits Realized**:
+
 - Single source of truth for shared content
 - Automated validation prevents template drift
 - Easy maintenance: update once, propagates to all templates

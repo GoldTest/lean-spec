@@ -42,7 +42,7 @@ Agents always **write** to `entries/`. They **read** from `compacted/` and `inde
 
 | Scope       | Purpose                                            | Storage                   | Injected Into                 |
 | ----------- | -------------------------------------------------- | ------------------------- | ----------------------------- |
-| **Project** | Conventions, architecture facts, verified commands | `.lean-spec/memory/`      | All agent sessions in project |
+| **Project** | Conventions, architecture facts, verified commands | `.harnspec/memory/`      | All agent sessions in project |
 | **Session** | Task-specific working context, in-progress notes   | Ephemeral / session-local | Current session only          |
 
 **Key distinction from OpenClaw**: Memory is project-scoped (shared across agents), not agent-scoped (siloed per agent identity).
@@ -50,7 +50,7 @@ Agents always **write** to `entries/`. They **read** from `compacted/` and `inde
 ### File Layout
 
 ```
-.lean-spec/
+.harnspec/
   memory/
     index.md              # Auto-generated token-budgeted summary (from compacted/)
     compacted/            # Read-optimized Markdown (rebuilt by compact)
@@ -68,8 +68,8 @@ Agents always **write** to `entries/`. They **read** from `compacted/` and `inde
 
 ```gitignore
 # .gitignore
-.lean-spec/memory/index.md
-.lean-spec/memory/compacted/
+.harnspec/memory/index.md
+.harnspec/memory/compacted/
 # daily/ tracking is optional
 ```
 
@@ -113,15 +113,16 @@ Entries use JSON instead of Markdown because they are **machine-written and mach
 
 Compaction is the mechanism that **fuses** entries into coherent, read-optimized output. It bridges the write path (many small JSON files) and the read path (few consolidated Markdown files).
 
-**Trigger**: `lean-spec memory compact` (manual, post-merge hook, or auto-triggered on read when stale)
+**Trigger**: `harnspec memory compact` (manual, post-merge hook, or auto-triggered on read when stale)
 
 **Process**:
+
 1. Scan all entries in `entries/`
 2. Group by `category`
 3. Within each category, resolve:
    - **Exact duplicates**: Normalize content text, keep newest, discard others
    - **Supersession chains**: Follow `supersedes` references transitively (A supersedes B supersedes C → only A survives). Dangling references (superseded entry not yet merged) are ignored gracefully.
-   - **Contradictions**: Last-write-wins (by `created` timestamp). Conflicts logged for `lean-spec memory review`.
+   - **Contradictions**: Last-write-wins (by `created` timestamp). Conflicts logged for `harnspec memory review`.
    - **Confidence tiebreaker**: When timestamps are equal, `high` > `medium` > `low`
 4. Write surviving entries into `compacted/<category>.md` as bullet points
 5. Rebuild `index.md` from compacted files with token budget
@@ -143,7 +144,7 @@ Compaction is the mechanism that **fuses** entries into coherent, read-optimized
 Example generated `index.md`:
 
 ```markdown
-<!-- Auto-generated. Do not edit. Rebuild: lean-spec memory compact -->
+<!-- Auto-generated. Do not edit. Rebuild: harnspec memory compact -->
 
 ## Conventions
 - Always use pnpm, never npm or yarn
@@ -162,15 +163,15 @@ Example generated `index.md`:
 ### Retrieval Mechanisms
 
 - **Auto-injection**: `index.md` included in system prompt context (token-budgeted, configurable cap)
-- **Search**: `lean-spec memory search "query"` — keyword + fuzzy match over all entry files
-- **Read**: `lean-spec memory read <id>` — targeted entry access by UUID
-- **List**: `lean-spec memory list [--category <cat>]` — list entries with optional filtering
+- **Search**: `harnspec memory search "query"` — keyword + fuzzy match over all entry files
+- **Read**: `harnspec memory read <id>` — targeted entry access by UUID
+- **List**: `harnspec memory list [--category <cat>]` — list entries with optional filtering
 - **MCP tools**: `memory_search`, `memory_read`, `memory_write`, `memory_delete` exposed via MCP server
 
 ### Write Mechanisms
 
 - **MCP tool**: `memory_write` — creates a new entry JSON file with timestamp-prefixed filename (never modifies existing files)
-- **CLI**: `lean-spec memory add "fact" --category conventions`
+- **CLI**: `harnspec memory add "fact" --category conventions`
 - **Auto-capture**: Optional hook that prompts agent to flush durable notes before session ends
 - **Delete**: `memory_delete` removes an entry by ID. Agents can also supersede entries by writing a new entry with `supersedes` set.
 
@@ -185,7 +186,7 @@ The one-file-per-entry design is intentionally chosen for **safe parallel execut
 | Daily log appends                 | Concurrent appends corrupt file | UUID-suffixed files → no collision         |
 | Entry deletion during read        | Partial read / corruption       | Atomic file delete; reader retries         |
 
-**Deduplication**: `memory_write` performs a lightweight similarity check against existing entries (exact match on normalized text). Duplicates are silently skipped. Near-duplicates are flagged for human review via `lean-spec memory review`.
+**Deduplication**: `memory_write` performs a lightweight similarity check against existing entries (exact match on normalized text). Duplicates are silently skipped. Near-duplicates are flagged for human review via `harnspec memory review`.
 
 ### Branching Strategy
 
@@ -204,9 +205,10 @@ Memory entries travel with the branch they're created on, merging naturally thro
 | `supersedes` across branches   | If branch B supersedes an entry from branch A that hasn't merged yet, compaction ignores the dangling reference. When A merges, compaction resolves the chain correctly. |
 
 **Post-merge hook** (optional):
+
 ```sh
 # .git/hooks/post-merge
-lean-spec memory compact
+harnspec memory compact
 ```
 
 Automatically rebuilds compacted views after any merge brings in new entries.
@@ -217,12 +219,12 @@ Automatically rebuilds compacted views after any merge brings in new entries.
 - **Daily logs**: Auto-pruned after `dailyRetentionDays` (configurable, default 30)
 - **Active entries**: No automatic deletion — compaction consolidates but preserves
 - **Confidence decay**: `low` confidence entries are deprioritized in index generation (omitted first when over token budget)
-- **Manual cleanup**: `lean-spec memory prune --before 2026-01-01` for explicit cleanup
+- **Manual cleanup**: `harnspec memory prune --before 2026-01-01` for explicit cleanup
 
 ### Configuration
 
 ```json
-// .lean-spec/config.json
+// .harnspec/config.json
 {
   "memory": {
     "enabled": true,
@@ -243,7 +245,7 @@ LeanSpec memory complements, not replaces, runner-specific files:
 | `CLAUDE.md`          | Claude only  | LeanSpec can sync curated memory → CLAUDE.md        |
 | `/memories/repo/`    | Copilot only | LeanSpec can export memory as Copilot repo memories |
 | `AGENTS.md`          | All runners  | Static instructions (not memory)                    |
-| `.lean-spec/memory/` | All runners  | Dynamic, evolving project knowledge                 |
+| `.harnspec/memory/` | All runners  | Dynamic, evolving project knowledge                 |
 
 ### Relationship to Spec 159
 
@@ -260,17 +262,17 @@ Spec 159 defines LeanSpec as the "memory layer" for agent orchestration. This sp
 ## Requirements
 
 - [ ] Define entry file format (JSON with id, category, content, created, agent, tags, supersedes, confidence)
-- [ ] Implement `memory/entries/`, `memory/compacted/`, and `memory/daily/` directory initialization in `lean-spec init`
+- [ ] Implement `memory/entries/`, `memory/compacted/`, and `memory/daily/` directory initialization in `harnspec init`
 - [ ] Add `memory_write` MCP tool — creates new entry JSON file with timestamp-prefixed filename (`<timestamp>-<short-uuid>.json`), performs dedup check
 - [ ] Add `memory_read` MCP tool for targeted entry access by UUID
 - [ ] Add `memory_search` MCP tool for keyword/fuzzy search over all entries
 - [ ] Add `memory_delete` MCP tool for removing entries
-- [ ] Add CLI commands: `lean-spec memory add|search|read|list|delete|compact|review|prune`
+- [ ] Add CLI commands: `harnspec memory add|search|read|list|delete|compact|review|prune`
 - [ ] Implement compaction: dedup, supersession chain resolution, contradiction detection, category grouping
 - [ ] Implement `index.md` generation from compacted files (token-budgeted, category-proportional, recency-prioritized)
 - [ ] Auto-inject generated `index.md` into MCP context with configurable token budget
 - [ ] Support daily log files with UUID suffix and auto-pruning
-- [ ] Add `memory` section to `.lean-spec/config.json` schema
+- [ ] Add `memory` section to `.harnspec/config.json` schema
 - [ ] Add `.gitignore` entries for derived files (`index.md`, `compacted/`)
 - [ ] Support optional post-merge git hook for auto-compaction
 - [ ] Document memory workflow, compaction model, and branching strategy in AGENTS.md template
@@ -304,6 +306,7 @@ Spec 159 defines LeanSpec as the "memory layer" for agent orchestration. This sp
 | Agent-scoped workspace isolation    | Project-scoped sharing across agents                         |
 
 ### Key Differentiator
+
 OpenClaw's memory is **agent-scoped** (each agent has its own workspace and memory). LeanSpec's memory is **project-scoped** (all agents working on the project share the same memory). This reflects LeanSpec's position as a project-level tool, not an agent runtime.
 
 ### Design Decisions

@@ -12,13 +12,13 @@ completed: 2025-11-01
 
 ## Goal
 
-Support `lean-spec init` on projects with existing `AGENTS.md` or system prompts without clobbering their content.
+Support `harnspec init` on projects with existing `AGENTS.md` or system prompts without clobbering their content.
 
 ## Key Scenarios
 
 1. **Merge Mode**: User has `AGENTS.md` → detect, offer to merge LeanSpec section ✅
 2. **Backup Mode**: User chooses not to merge → backup existing, create new ✅
-3. **Skip Mode**: User wants to keep their setup → just add .lean-spec config and specs/ ✅
+3. **Skip Mode**: User wants to keep their setup → just add .harnspec config and specs/ ✅
 
 ## Acceptance Criteria
 
@@ -26,7 +26,7 @@ Support `lean-spec init` on projects with existing `AGENTS.md` or system prompts
 - [x] Interactive prompt: merge, backup, or skip
 - [x] If merge: append LeanSpec section with clear delimiter
 - [x] If backup: rename to `AGENTS.md.backup`, create new
-- [x] If skip: don't touch existing files, only add lean-spec structure
+- [x] If skip: don't touch existing files, only add harnspec structure
 
 ## Implementation
 
@@ -37,6 +37,7 @@ Added three helper functions in `src/commands.ts`:
 3. Updated `copyDirectory()` - Supports skipping specified files
 
 Interactive flow in `initProject()`:
+
 - Detects existing files before copying templates
 - Prompts user with 3 options: merge, backup, or skip
 - Handles each option appropriately
@@ -53,15 +54,17 @@ Interactive flow in `initProject()`:
 Basic test script created: `test-integration.sh`
 
 Manual testing:
+
 ```bash
-cd /tmp/lean-spec-test-existing
-node /path/to/lean-spec init
+cd /tmp/harnspec-test-existing
+node /path/to/harnspec init
 # Choose merge/backup/skip and verify behavior
 ```
 
 ## Notes
 
 Supported system prompt files:
+
 - `AGENTS.md` (merge supported)
 - `.cursorrules` (backup/skip only)
 - `.github/copilot-instructions.md` (backup/skip only)

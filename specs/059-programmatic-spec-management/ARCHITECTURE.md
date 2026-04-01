@@ -7,6 +7,7 @@
 ### 1. AI Agent Orchestration Model
 
 **AI Agent Role** (GitHub Copilot, Claude, etc.):
+
 - Read and understand spec content
 - Detect issues (token count, redundancy, structure)
 - Decide transformation strategy
@@ -15,6 +16,7 @@
 - Verify results
 
 **Tool Role** (LeanSpec CLI):
+
 - Parse markdown structure (sections, line ranges)
 - Execute mechanical transformations (split, move, delete)
 - Update cross-references
@@ -28,6 +30,7 @@
 ### 2. Deterministic Transformations
 
 **No LLM in tools** - AI agent provides intelligence, tools execute:
+
 ```
 AI Agent analyzes spec → Decides what to do → Calls tool with parameters
                                                       ↓
@@ -42,6 +45,7 @@ Tool tries to understand content → Makes decisions → Uses LLM → Slow/unrel
 ```
 
 **Benefits**:
+
 - ✅ Predictable results (same input = same output)
 - ✅ No hallucinations (just file operations)
 - ✅ Fast (milliseconds, no LLM calls)
@@ -51,12 +55,14 @@ Tool tries to understand content → Makes decisions → Uses LLM → Slow/unrel
 ### 3. Minimal Parsing Requirements
 
 Tools only need basic markdown parsing:
+
 - Extract line ranges: "Give me lines 100-200"
 - Identify sections: "Where does ## Design start?"
 - Parse frontmatter: "What's the current status?"
 - Update references: "Change line 45 ref to line 23"
 
 **No need for**:
+
 - ❌ Semantic understanding of content
 - ❌ Concern detection algorithms
 - ❌ Similarity/redundancy detection
@@ -80,7 +86,7 @@ AI agents already have this context - tools just execute their decisions.
                   │ (tool calls)
 ┌─────────────────▼────────────────────────────────┐
 │              LeanSpec CLI Tools                  │
-│  lean-spec analyze | split | compact | compress     │
+│  harnspec analyze | split | compact | compress     │
 └─────────────────┬────────────────────────────────┘
                   │
         ┌─────────┼─────────┐
@@ -104,6 +110,7 @@ AI agents already have this context - tools just execute their decisions.
 ```
 
 **Key Points**:
+
 - AI agent is the orchestrator (top)
 - Tools are executors (middle)
 - No "analyzer" or "concern detector" - AI does that
@@ -114,17 +121,20 @@ AI agents already have this context - tools just execute their decisions.
 #### 1. Markdown Parser (Simplified)
 
 **Technology**: [unified.js](https://unifiedjs.com/) for basic parsing
+
 - `remark-parse`: Markdown → AST
 - `remark-stringify`: AST → Markdown
 - `remark-frontmatter`: YAML frontmatter
 
 **Why unified.js**:
+
 - ✅ Battle-tested
 - ✅ Handles edge cases (nested lists, code blocks, etc.)
 - ✅ Position tracking (line numbers)
 - ✅ Round-trip safe (parse → stringify → parse = same)
 
 **What we need**:
+
 ```typescript
 interface MarkdownParser {
   // Get section line ranges
@@ -145,6 +155,7 @@ interface MarkdownParser {
 ```
 
 **What we DON'T need**:
+
 - ❌ Full AST traversal algorithms
 - ❌ Semantic analysis
 - ❌ Content understanding
@@ -181,6 +192,7 @@ interface AnalyzeResult {
 #### 3. Transformation Commands (Mechanical)
 
 **Split**: Extract line ranges to new files
+
 ```typescript
 function split(spec: string, outputs: Array<{file: string, lines: [number, number]}>) {
   outputs.forEach(({file, lines}) => {
@@ -192,6 +204,7 @@ function split(spec: string, outputs: Array<{file: string, lines: [number, numbe
 ```
 
 **Compact**: Remove specified line ranges
+
 ```typescript
 function compact(spec: string, removes: Array<[number, number]>) {
   let content = readFile(spec);
@@ -203,6 +216,7 @@ function compact(spec: string, removes: Array<[number, number]>) {
 ```
 
 **Compress**: Replace line range with new content
+
 ```typescript
 function compress(spec: string, range: [number, number], replacement: string) {
   const content = readFile(spec);
@@ -212,6 +226,7 @@ function compress(spec: string, range: [number, number], replacement: string) {
 ```
 
 **Isolate**: Move lines to new spec
+
 ```typescript
 function isolate(spec: string, lines: [number, number], newSpec: string) {
   const content = extractLines(spec, lines[0], lines[1]);
@@ -266,7 +281,7 @@ class SyntaxValidator {
    └─ Detects: Exceeds 3,500 token warning
 
 2. AI Agent calls analyze
-   $ lean-spec analyze 045 --json
+   $ harnspec analyze 045 --json
    ├─ Returns: Structure, sections, line ranges
    └─ AI interprets: "5 major H2 sections"
 
@@ -277,7 +292,7 @@ class SyntaxValidator {
    └─ Testing (lines 529-710)
 
 4. AI Agent calls split
-   $ lean-spec split 045 \
+   $ harnspec split 045 \
      --output=README.md:1-150 \
      --output=DESIGN.md:151-528 \
      --output=TESTING.md:529-710
@@ -296,7 +311,7 @@ class SyntaxValidator {
    }
 
 7. AI Agent verifies
-   $ lean-spec tokens 045/*
+   $ harnspec tokens 045/*
    └─ Confirms all under 2,000 tokens
 ```
 
@@ -305,6 +320,7 @@ class SyntaxValidator {
 ### What We're Building
 
 **Core Functionality**:
+
 - ✅ Basic markdown parsing (sections, line ranges, frontmatter)
 - ✅ `analyze` - Return structure as JSON
 - ✅ `split` - Extract line ranges to files
@@ -314,6 +330,7 @@ class SyntaxValidator {
 - ✅ Syntax validation
 
 **What We're NOT Building** (AI agent does this):
+
 - ❌ Concern detection algorithms
 - ❌ Redundancy detection
 - ❌ Similarity analysis
@@ -324,16 +341,19 @@ class SyntaxValidator {
 ### Technology Stack
 
 **Core**:
+
 - `unified.js` + `remark-parse` - Markdown parsing
 - `remark-frontmatter` - YAML parsing
 - TypeScript - Type safety
 - Node.js - Runtime
 
 **Testing**:
+
 - Vitest - Unit/integration tests
 - Existing specs - Real-world test data
 
 **CLI**:
+
 - Commander.js - CLI framework (already used)
 - Existing CLI infrastructure from core package
 
@@ -351,6 +371,7 @@ class SyntaxValidator {
 ## Error Handling
 
 **Simple and clear**:
+
 ```typescript
 // Invalid line range
 if (startLine > endLine || startLine < 1) {
@@ -373,16 +394,19 @@ Exit codes match COMMANDS.md specification.
 ## Future Considerations
 
 ### v0.4.0: Enhanced Tooling
+
 - `--dry-run` mode for all commands
 - `preview` command for visualization
 - `rollback` via git integration
 
 ### v0.5.0: MCP Integration
+
 - Expose tools as MCP server
 - AI agents can call tools over stdio/HTTP
 - Better integration with Claude Desktop, etc.
 
 ### v1.0.0: Advanced Features
+
 - Batch operations (split multiple specs)
 - Project-wide analysis
 - CI/CD integration

@@ -25,9 +25,9 @@ completed: '2025-12-21'
 
 ## Problem & Motivation
 
-The MCP `create` tool's `content` field has a minimal static description: "Full markdown content to use instead of template". 
+The MCP `create` tool's `content` field has a minimal static description: "Full markdown content to use instead of template".
 
-**The core issue**: The actual template file (`.lean-spec/templates/spec-template.md`) exists on disk but is NOT exposed to AI agents through the MCP tool schema. AI agents have no way to see what the template looks like, so they don't know:
+**The core issue**: The actual template file (`.harnspec/templates/spec-template.md`) exists on disk but is NOT exposed to AI agents through the MCP tool schema. AI agents have no way to see what the template looks like, so they don't know:
 
 1. **What structure** the body content should follow
 2. **What sections** are expected (Overview, Design, Plan, Test, Notes)
@@ -35,6 +35,7 @@ The MCP `create` tool's `content` field has a minimal static description: "Full 
 4. **What the body looks like** without frontmatter/title (since those are auto-generated)
 
 This leads to:
+
 - AI agents guessing at spec structure
 - Inconsistent formatting across specs
 - Missing critical sections
@@ -50,7 +51,7 @@ This leads to:
 ### How It Should Work
 
 1. **At MCP server startup**:
-   - Load `.lean-spec/templates/spec-template.md`
+   - Load `.harnspec/templates/spec-template.md`
    - Extract the **body content only** (everything after frontmatter and title)
    - Format it for inclusion in schema description
 
@@ -64,6 +65,7 @@ This leads to:
 ### Implementation Strategy
 
 The MCP server should:
+
 - Use existing `TemplateLoader` to load the template
 - Strip frontmatter and title (`# {name}`) from template
 - Keep only the body sections (## Overview, ## Design, etc.)
@@ -73,6 +75,7 @@ The MCP server should:
 ### Example Result
 
 After implementation, the schema would look like:
+
 ```rust
 "content": {
     "type": "string",
@@ -114,6 +117,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 ### Design Considerations
 
 **Option 1: Load Full Template, Strip Frontmatter/Title**
+
 - Load template using `TemplateLoader`
 - Parse and remove YAML frontmatter
 - Remove title line (`# {name}`)
@@ -122,7 +126,8 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 **Pros**: Shows exact template structure, always in sync
 **Cons**: Description can be long (~500 chars + template body)
 
-**Option 2: Load Template, Summarize Structure** 
+**Option 2: Load Template, Summarize Structure**
+
 - Load template
 - Extract section headings only (## Overview, ## Design, etc.)
 - Provide condensed structure
@@ -131,6 +136,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 **Cons**: Loses valuable details (comments, task list format, tips)
 
 **Option 3: Static Description (Current)**
+
 - Manually write description
 - No template loading
 
@@ -140,6 +146,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 ### Recommendation
 
 **Option 1** - Load full template body and embed it. Reasons:
+
 - AI agents see **exact** template structure
 - **Always synchronized** with actual template file
 - Shows **real examples** of comments, task lists, etc.
@@ -151,7 +158,8 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 
 **Option 1** - Dynamically load and embed the full template body.
 
-**Why**: 
+**Why**:
+
 - Shows **exact** template to AI agents (no guessing)
 - **Always synchronized** (template changes auto-reflect)
 - **Real examples** of formatting (comments, task lists, tips)
@@ -171,7 +179,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 
 ## Acceptance Criteria
 
-- [x] MCP server loads `.lean-spec/templates/spec-template.md` at startup
+- [x] MCP server loads `.harnspec/templates/spec-template.md` at startup
 - [x] Template loading uses existing `TemplateLoader` infrastructure
 - [x] Frontmatter (YAML block) is stripped from loaded template
 - [x] Title line (`# {name}` or similar) is stripped from loaded template
@@ -197,12 +205,14 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 
 ## Implementation Notes
 
-**Files to modify**: 
+**Files to modify**:
+
 - `rust/leanspec-mcp/src/tools.rs` - Tool definitions and schema generation
 
 **Approach**:
 
 1. **Add template loading function**:
+
    ```rust
    fn load_template_body_for_description() -> String {
        // Load template using TemplateLoader
@@ -213,6 +223,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
    ```
 
 2. **Modify tool definition** (lines 85-87):
+
    ```rust
    "content": {
        "type": "string",
@@ -225,6 +236,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
    - Log warning but don't crash MCP server
 
 **Implementation details**:
+
 - Use existing `TemplateLoader` infrastructure
 - Strip YAML frontmatter (everything between `---` markers)
 - Strip title heading (`# {name}` line and following status line)
@@ -233,6 +245,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 - Append: "\n\nKeep <2000 tokens optimal."
 
 **Testing**:
+
 - Verify template loads at MCP startup
 - Check tool schema includes template body (MCP inspector/logs)
 - Test AI agent can create spec using description alone
@@ -240,11 +253,13 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 - Confirm template changes reflect after restart
 
 ### Implementation Notes (2025-12-21)
+
 - Create tool schema now builds its `content` description by loading the default template via `TemplateLoader`, stripping frontmatter/title/status lines, and caching the processed body with `OnceLock` for reuse.
 - Added a graceful fallback description and warning when template loading fails.
 - Added a regression test asserting the create tool description includes the template body (without frontmatter) so AI agents see the expected structure.
 
 ### Testing
+
 - `RUSTFLAGS="-Awarnings" cargo test -p leanspec-mcp test_create_tool_description_includes_template_body -- --nocapture`
 
 ## Open Questions
@@ -263,12 +278,14 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 ### Why Dynamic Loading
 
 **Benefits**:
+
 1. **Zero maintenance** - Template changes automatically reflect in tool schema
 2. **Accuracy** - AI agents see EXACTLY what the template looks like
 3. **Consistency** - No risk of manual description drift from actual template
 4. **Examples included** - Comments, task list format, tips all visible to AI
 
 **Trade-offs**:
+
 - Longer description (but LLMs handle this fine)
 - Requires template load at startup (negligible performance cost)
 - Template errors could affect MCP server (mitigated by fallback)
@@ -276,6 +293,7 @@ Keep specs <2000 tokens optimal, <3500 max. Consider sub-specs (IMPLEMENTATION.m
 ### Template Processing Logic
 
 The loaded template looks like:
+
 ```markdown
 ---
 status: planned
@@ -294,6 +312,7 @@ created: '{date}'
 ```
 
 We need to **extract only**:
+
 ```markdown
 ## Overview
 
@@ -304,6 +323,7 @@ We need to **extract only**:
 ```
 
 **Algorithm**:
+
 1. Skip YAML frontmatter (lines between `---`)
 2. Skip title heading (`# {name}`)
 3. Skip status line (`> **Status**:`)
@@ -312,6 +332,7 @@ We need to **extract only**:
 ### Future Enhancement: Multiple Templates
 
 If LeanSpec adds multiple templates (standard, detailed, minimal), we could:
+
 - Load all templates at startup
 - Show merged/combined structure in description
 - Or dynamically show template based on `template` parameter

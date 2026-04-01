@@ -22,9 +22,10 @@ updated_at: 2026-02-01T15:37:46.065777Z
 
 ### Problem & Motivation
 
-Agent Skills (https://agentskills.io) is an open standard adopted by multiple AI coding tools, but each tool has different implementation details, discovery mechanisms, and integration patterns. Currently, spec 211 focuses on creating the LeanSpec Agent Skill itself, but doesn't address the **compatibility challenges** across different AI coding platforms.
+Agent Skills (<https://agentskills.io>) is an open standard adopted by multiple AI coding tools, but each tool has different implementation details, discovery mechanisms, and integration patterns. Currently, spec 211 focuses on creating the LeanSpec Agent Skill itself, but doesn't address the **compatibility challenges** across different AI coding platforms.
 
 **Key Challenges**:
+
 1. **Discovery Path Variance**: Different tools use different skills folder conventions
    - GitHub Copilot: `.github/skills/`, `~/.copilot/skills/`
    - Claude Code: `.claude/skills/`, `~/.claude/skills/`
@@ -90,7 +91,7 @@ Agent Skills (https://agentskills.io) is an open standard adopted by multiple AI
 
 ### Research: Mainstream AI Coding Tools
 
-Based on https://agentskills.io adoption list and ecosystem research:
+Based on <https://agentskills.io> adoption list and ecosystem research:
 
 | Tool | Provider | Skills Support | Location Pattern | MCP Support | Notes |
 |------|----------|---------------|------------------|-------------|-------|
@@ -110,16 +111,19 @@ Based on https://agentskills.io adoption list and ecosystem research:
 ### Why This Matters
 
 **For Users**:
+
 - ✅ Install once, works with their preferred AI tool
 - ✅ Switch tools without reconfiguration
 - ✅ Team members can use different tools with same skill
 
 **For LeanSpec**:
+
 - ✅ Wider adoption across AI coding ecosystem
 - ✅ Not locked to Claude/Anthropic ecosystem
 - ✅ Future-proof as new tools adopt Agent Skills
 
 **For the Ecosystem**:
+
 - ✅ Demonstrates best practices for cross-tool compatibility
 - ✅ Contributes to Agent Skills standard evolution
 - ✅ Shows how to handle tool-specific differences
@@ -131,11 +135,12 @@ Based on https://agentskills.io adoption list and ecosystem research:
 **Core Principle**: Write SKILL.md to be tool-agnostic, with tool-specific guidance in separate sections.
 
 **SKILL.md Structure** (tool-agnostic):
+
 ```markdown
 ---
 name: leanspec-sdd
 description: Spec-Driven Development methodology for AI-assisted development. Use when working in a LeanSpec project.
-compatibility: Requires lean-spec CLI or @leanspec/mcp server
+compatibility: Requires harnspec CLI or @leanspec/mcp server
 metadata:
   author: LeanSpec
   version: 1.0.0
@@ -148,7 +153,7 @@ metadata:
 ## When to Use This Skill
 
 Activate when:
-- Repository contains `.lean-spec/config.json` or `specs/` folder
+- Repository contains `.harnspec/config.json` or `specs/` folder
 - User mentions LeanSpec, specs, or spec-driven development
 - Planning multi-step features or breaking changes
 
@@ -162,7 +167,7 @@ Activate when:
 [Instructions for Claude, Cursor, VS Code with MCP]
 
 ### If You Have CLI Access
-[Instructions for Codex, Gemini CLI, or any environment with lean-spec CLI]
+[Instructions for Codex, Gemini CLI, or any environment with harnspec CLI]
 
 ### Tool Detection
 [How to check which tools are available]
@@ -173,8 +178,9 @@ Activate when:
 **Strategy**: Provide optional tool-specific variants that reference the core skill but add platform-specific optimizations.
 
 **Example Structure**:
+
 ```
-.lean-spec/skills/
+.harnspec/skills/
 ├── leanspec-sdd/           # Core universal skill
 │   ├── SKILL.md
 │   └── references/
@@ -188,6 +194,7 @@ Activate when:
 ```
 
 **Adapter Strategy**:
+
 - Start with universal skill only
 - Add adapters if specific tools need optimization
 - Adapters inherit from core, add tool-specific hints
@@ -265,7 +272,7 @@ const TOOL_CONFIGS: ToolConfig[] = [
   {
     name: 'Generic',
     provider: 'Generic',
-    projectPaths: ['.skills', '.lean-spec/skills'],
+    projectPaths: ['.skills', '.harnspec/skills'],
     userPaths: ['~/.skills'],
     mcpSupport: false,
     cliSupport: true,
@@ -277,12 +284,14 @@ const TOOL_CONFIGS: ToolConfig[] = [
 ### 4. Cross-Platform Installation Strategy
 
 **Windows Considerations**:
+
 - No symlinks by default (require admin privileges)
 - Use copy-based installation
 - Handle path separators correctly (`\` vs `/`)
 - Use `%USERPROFILE%` instead of `~`
 
 **macOS/Linux**:
+
 - Symlinks work well for single source of truth
 - Still offer copy option for portability
 
@@ -294,7 +303,8 @@ const TOOL_CONFIGS: ToolConfig[] = [
 | **Symlink** | ⚠️ Requires admin | ✅ Default | Single source, auto-updates | Windows complexity |
 | **Hybrid** | ✅ Copy to canonical, symlink others | ✅ Symlink to canonical | Best of both | More complex |
 
-**Recommended**: 
+**Recommended**:
+
 - Windows: Always copy
 - macOS/Linux: Offer symlink (default) or copy
 
@@ -318,9 +328,9 @@ If you have access to MCP tools, you'll see tools like:
 Use these MCP tools directly (preferred method).
 
 ### Check for CLI
-If MCP is not available, check for `lean-spec` CLI:
-- Try running: `lean-spec --version`
-- If successful, use CLI commands: `lean-spec list`, `lean-spec view`, etc.
+If MCP is not available, check for `harnspec` CLI:
+- Try running: `harnspec --version`
+- If successful, use CLI commands: `harnspec list`, `harnspec view`, etc.
 
 ### Fallback
 If neither MCP nor CLI is available:
@@ -335,21 +345,23 @@ If neither MCP nor CLI is available:
 **Approach**: Use universal markdown with optional model-specific hints:
 
 **Universal Format** (works for all):
+
 ```markdown
 ## SDD Workflow
 
 1. **Discovery Phase**
    - Always check existing specs first
-   - Run: `lean-spec board` (or use MCP `list` tool)
-   - Search for related specs: `lean-spec search "query"`
+   - Run: `harnspec board` (or use MCP `list` tool)
+   - Search for related specs: `harnspec search "query"`
 
 2. **Design Phase**
-   - Create spec if needed: `lean-spec create <name>`
+   - Create spec if needed: `harnspec create <name>`
    - Keep under 2000 tokens
-   - Validate: `lean-spec tokens <spec>`
+   - Validate: `harnspec tokens <spec>`
 ```
 
 **Model-Specific Optimization** (in references/):
+
 - `references/CLAUDE-OPTIMIZATION.md` - XML-structured examples
 - `references/OPENAI-OPTIMIZATION.md` - JSON-structured examples
 - `references/GEMINI-OPTIMIZATION.md` - Natural language examples
@@ -392,6 +404,7 @@ If neither MCP nor CLI is available:
 ### 1. Universal SKILL.md Design Patterns
 
 **Pattern 1: Conditional Sections**
+
 ```markdown
 ## Using LeanSpec Tools
 
@@ -406,15 +419,17 @@ If neither MCP nor CLI is available:
 ```
 
 **Pattern 2: Tool Reference Table**
+
 ```markdown
 | Action | MCP Tool | CLI Command |
 |--------|----------|-------------|
-| List specs | `list` | `lean-spec list` |
-| View spec | `view` | `lean-spec view <spec>` |
-| Create spec | `create` | `lean-spec create <name>` |
+| List specs | `list` | `harnspec list` |
+| View spec | `view` | `harnspec view <spec>` |
+| Create spec | `create` | `harnspec create <name>` |
 ```
 
 **Pattern 3: Progressive Disclosure**
+
 - Core workflow in SKILL.md (300-400 lines)
 - Tool-specific optimizations in references/ (optional reading)
 - Keep token count low for initial skill load
@@ -429,6 +444,7 @@ If neither MCP nor CLI is available:
 | Check process list | ⚠️ Complex | ⚠️ Complex | ⚠️ Complex | Low |
 
 **Recommended Detection Order**:
+
 1. Check for tool-specific skills folders (`.github/skills/`, `.claude/skills/`, etc.)
 2. Check for tool config files (`.vscode/extensions/`, `~/.cursor/`, etc.)
 3. Check for binaries in PATH (`which codex`, `which gemini`, etc.)
@@ -437,6 +453,7 @@ If neither MCP nor CLI is available:
 ### 3. Installation Strategy Decision Matrix
 
 **Decision Factors**:
+
 - Number of tools detected
 - Operating system
 - User preference (project vs user-level)
@@ -445,6 +462,7 @@ If neither MCP nor CLI is available:
 **Scenarios**:
 
 **Scenario A: Single Tool Detected**
+
 ```
 Detected: Claude Code
 
@@ -456,6 +474,7 @@ Detected: Claude Code
 ```
 
 **Scenario B: Multiple Tools Detected**
+
 ```
 Detected: Claude Code, GitHub Copilot, Cursor
 
@@ -464,7 +483,7 @@ Detected: Claude Code, GitHub Copilot, Cursor
   ◉ .github/skills/leanspec-sdd/
   ◉ .cursor/skills/leanspec-sdd/
   ◯ ~/.claude/skills/leanspec-sdd/ (user-level)
-  ◯ .lean-spec/skills/leanspec-sdd/ (canonical)
+  ◯ .harnspec/skills/leanspec-sdd/ (canonical)
   
 Install mode:
   ❯ Copy to each location (works everywhere)
@@ -472,11 +491,12 @@ Install mode:
 ```
 
 **Scenario C: No Tools Detected**
+
 ```
 No AI coding tools detected.
 
 ? Install skill anyway?
-  ❯ Yes - Generic location (.lean-spec/skills/leanspec-sdd/)
+  ❯ Yes - Generic location (.harnspec/skills/leanspec-sdd/)
     Yes - Custom location (specify path)
     No - Skip for now
     
@@ -486,64 +506,74 @@ No AI coding tools detected.
 ### 4. Symlink vs Copy Trade-offs
 
 **Symlink Approach**:
+
 ```
-.lean-spec/skills/leanspec-sdd/  ← Canonical location
+.harnspec/skills/leanspec-sdd/  ← Canonical location
   ├── SKILL.md
   └── references/
 
-.claude/skills/leanspec-sdd/     → Symlink to .lean-spec/skills/leanspec-sdd/
-.github/skills/leanspec-sdd/     → Symlink to .lean-spec/skills/leanspec-sdd/
-.cursor/skills/leanspec-sdd/     → Symlink to .lean-spec/skills/leanspec-sdd/
+.claude/skills/leanspec-sdd/     → Symlink to .harnspec/skills/leanspec-sdd/
+.github/skills/leanspec-sdd/     → Symlink to .harnspec/skills/leanspec-sdd/
+.cursor/skills/leanspec-sdd/     → Symlink to .harnspec/skills/leanspec-sdd/
 ```
 
 **Pros**:
+
 - ✅ Single source of truth
 - ✅ Updates propagate automatically
 - ✅ Saves disk space
 
 **Cons**:
+
 - ❌ Requires admin on Windows
 - ❌ Breaks if canonical location moved
 - ❌ Not portable across filesystems
 
 **Copy Approach**:
+
 ```
-.lean-spec/skills/leanspec-sdd/  ← Canonical location
+.harnspec/skills/leanspec-sdd/  ← Canonical location
 .claude/skills/leanspec-sdd/     ← Full copy
 .github/skills/leanspec-sdd/     ← Full copy
 .cursor/skills/leanspec-sdd/     ← Full copy
 ```
 
 **Pros**:
+
 - ✅ Works everywhere (Windows, macOS, Linux)
 - ✅ Portable across filesystems
 - ✅ No admin privileges needed
 
 **Cons**:
+
 - ❌ Duplicates content
 - ❌ Manual sync on updates
 - ❌ Uses more disk space (~100KB per copy)
 
-**Recommendation**: 
+**Recommendation**:
+
 - **Default**: Copy (works everywhere)
 - **Option**: Symlink (for macOS/Linux users who want single source)
-- **Future**: Add `lean-spec sync-skill` command to update all copies
+- **Future**: Add `harnspec sync-skill` command to update all copies
 
 ### 5. Tool-Specific Optimization Strategy
 
 **When to Create Tool-Specific Variants**:
 
 **DON'T create variants for**:
+
 - Minor differences in syntax
 - Different command names (handle with table in SKILL.md)
 - Tool-specific UI differences
 
 **DO create variants for**:
+
 - Fundamentally different activation patterns
 - Model-specific prompt optimizations (GPT-4 vs Claude vs Gemini)
 - Tools with unique constraints (token limits, context windows)
 
 **Example: When Variant Makes Sense**:
+
 ```
 leanspec-sdd/              # Universal skill (works for 90% of tools)
 leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
@@ -591,31 +621,36 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### 7. Documentation Structure
 
 **User-Facing Docs**:
+
 - `docs/agent-skills/installation.md` - Installation guide per tool
 - `docs/agent-skills/compatibility.md` - Compatibility matrix
 - `docs/agent-skills/troubleshooting.md` - Common issues per tool
 
 **Developer-Facing Docs**:
+
 - `docs/contributing/agent-skills.md` - How to extend skill support
 - `docs/architecture/skills-integration.md` - Technical architecture
-- `.lean-spec/skills/leanspec-sdd/references/TOOLS.md` - Tool-specific guidance
+- `.harnspec/skills/leanspec-sdd/references/TOOLS.md` - Tool-specific guidance
 
 ## Implementation Plan
 
 ### Phase 1: Research & Specification (1 week)
 
 **Goals**:
+
 - [ ] Research each tool's Agent Skills implementation
 - [ ] Document discovery paths for each tool
 - [ ] Identify tool-specific constraints and quirks
 - [ ] Create compatibility matrix
 
 **Deliverables**:
+
 - Tool compatibility research document
 - Discovery path mapping
 - Constraint documentation
 
 **Research Tasks**:
+
 - [ ] Test Claude Code skills discovery
 - [ ] Test Cursor skills discovery
 - [ ] Test GitHub Copilot skills discovery
@@ -626,17 +661,20 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Phase 2: Universal SKILL.md Design (1 week)
 
 **Goals**:
+
 - [ ] Design tool-agnostic SKILL.md structure
 - [ ] Write conditional guidance for MCP vs CLI
 - [ ] Create tool reference table
 - [ ] Keep under 500 lines (progressive disclosure)
 
 **Deliverables**:
+
 - Universal SKILL.md (passes `skills-ref validate`)
 - references/TOOLS.md with tool-specific guidance
 - Tool reference table for all supported tools
 
 **Design Tasks**:
+
 - [ ] Draft SKILL.md with conditional sections
 - [ ] Create MCP vs CLI tool reference table
 - [ ] Write tool discovery guidance
@@ -647,17 +685,20 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Phase 3: Enhanced Detection System (1 week)
 
 **Goals**:
+
 - [ ] Implement tool detection for all mainstream tools
 - [ ] Support Windows, macOS, Linux
 - [ ] Handle multiple detected tools
 - [ ] Add CLI flags for non-interactive mode
 
 **Deliverables**:
+
 - Enhanced `detectToolsAndSkillsLocations()` function
 - Cross-platform path handling
 - Installation mode selection (copy vs symlink)
 
 **Implementation Tasks**:
+
 - [ ] Extend TOOL_CONFIGS with Codex, Gemini CLI, VS Code
 - [ ] Implement detection for each tool (config files, binaries, folders)
 - [ ] Add Windows-specific path handling (`%USERPROFILE%`)
@@ -668,18 +709,21 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Phase 4: Installation System (1 week)
 
 **Goals**:
+
 - [ ] Implement copy-based installation (Windows default)
 - [ ] Implement symlink-based installation (macOS/Linux option)
 - [ ] Handle multiple target locations
 - [ ] Validate installation success
 
 **Deliverables**:
+
 - Copy installation logic
 - Symlink installation logic (with admin check on Windows)
 - Multi-target installation support
 - Post-installation validation
 
 **Implementation Tasks**:
+
 - [ ] Implement `copySkillToLocation(source, target)` function
 - [ ] Implement `symlinkSkillToLocation(canonical, target)` function (macOS/Linux)
 - [ ] Add Windows admin check for symlink mode
@@ -690,17 +734,20 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Phase 5: Cross-Platform Testing (1 week)
 
 **Goals**:
+
 - [ ] Test on Windows 10/11
 - [ ] Test on macOS (Intel + Apple Silicon)
 - [ ] Test on Linux (Ubuntu/Debian)
 - [ ] Test with 3+ different AI tools
 
 **Deliverables**:
+
 - Test reports per platform
 - Tool compatibility verification
 - Bug fixes and refinements
 
 **Testing Tasks**:
+
 - [ ] Windows testing (copy mode, path handling)
 - [ ] macOS testing (symlink mode, both chip architectures)
 - [ ] Linux testing (symlink mode, permissions)
@@ -713,18 +760,21 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Phase 6: Documentation & Launch (3-5 days)
 
 **Goals**:
+
 - [ ] Write installation guides per tool
 - [ ] Create compatibility matrix documentation
 - [ ] Write troubleshooting guides
 - [ ] Update main documentation
 
 **Deliverables**:
+
 - Tool-specific installation guides
 - Compatibility matrix page
 - Troubleshooting documentation
 - Migration guide from spec 211 approach
 
 **Documentation Tasks**:
+
 - [ ] Create `docs/agent-skills/` directory
 - [ ] Write installation guide for each tool
 - [ ] Document detection behavior
@@ -751,16 +801,18 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 **Issue**: Windows requires administrator privileges for symlinks (or Developer Mode enabled).
 
 **Mitigation**:
+
 1. Default to copy mode on Windows
 2. Detect if Developer Mode enabled or admin privileges available
 3. Offer symlink as option with clear warning
-4. Provide `lean-spec sync-skill` command for manual updates
+4. Provide `harnspec sync-skill` command for manual updates
 
 ### Challenge 2: Tool Detection Reliability
 
 **Issue**: No standard way to detect which AI tools are installed.
 
 **Mitigation**:
+
 1. Use multiple detection methods (folders, binaries, config files)
 2. Show detected tools and let user confirm/adjust
 3. Allow manual tool selection
@@ -771,6 +823,7 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 **Issue**: Tools activate skills differently (auto vs manual).
 
 **Mitigation**:
+
 1. Document activation behavior per tool in TOOLS.md
 2. Provide activation instructions in installation success message
 3. Include "When to Use" section in SKILL.md
@@ -781,6 +834,7 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 **Issue**: Path conventions differ (Windows `\` vs Unix `/`, `~` expansion).
 
 **Mitigation**:
+
 1. Use Node.js `path` module for all path operations
 2. Handle `~` expansion explicitly
 3. Test on all platforms
@@ -791,20 +845,23 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 **Issue**: Copy-based installation creates multiple versions of skill.
 
 **Mitigation**:
+
 1. Include version in metadata field
-2. Add `lean-spec check-skill-version` command
-3. Add `lean-spec sync-skill` command to update all copies
+2. Add `harnspec check-skill-version` command
+3. Add `harnspec sync-skill` command to update all copies
 4. Document manual sync process
 5. Consider auto-update mechanism in future
 
 ## Dependencies
 
 **Foundation** (from spec 211):
+
 - ✅ **211-leanspec-as-anthropic-skill** - Base skill creation (in-progress) - **Blocks this spec**
 - ✅ **126-ai-tool-auto-detection** - Tool detection logic (complete)
 - ✅ **127-init-agents-merge-automation** - Init system (complete)
 
 **Parallel Work**:
+
 - **Agent Skills ecosystem research** - Understanding each tool's implementation
 
 ## Related Specs
@@ -834,7 +891,7 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 4. **Version management for multi-copy installations?**
    - How to track which copies are out of date?
    - Should we build auto-update into CLI?
-   - **Recommendation**: Add `lean-spec check-skill-version` command
+   - **Recommendation**: Add `harnspec check-skill-version` command
 
 5. **Should we contribute tool detection back to Agent Skills spec?**
    - Discovery path recommendations per tool
@@ -856,16 +913,19 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Key Messages
 
 **For Multi-Tool Users**:
+
 - "Use LeanSpec SDD with your favorite AI coding tool"
 - "Switch between Claude, Cursor, Copilot without reconfiguring"
 - "One methodology, works everywhere"
 
 **For Teams**:
+
 - "Team members can use different AI tools, same workflow"
 - "Install once per project, works with all compatible tools"
 - "Future-proof as new tools adopt Agent Skills"
 
 **For Tool Developers**:
+
 - "Reference implementation for cross-tool compatibility"
 - "Learn how to make Agent Skills work across platforms"
 - "Contribute detection patterns back to ecosystem"
@@ -873,16 +933,19 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Value Proposition
 
 **Universal Compatibility**:
+
 - Works with Claude, Cursor, Copilot, Codex, Gemini CLI, and more
 - No lock-in to specific AI tool or vendor
 - Future-proof as ecosystem evolves
 
 **Zero-Config Installation**:
+
 - Auto-detects your AI tools
 - Installs to correct locations automatically
 - Works on Windows, macOS, Linux
 
 **Single Source of Truth**:
+
 - Optional symlink mode for power users
 - Update once, propagates everywhere (macOS/Linux)
 - Version management for copy mode
@@ -901,11 +964,13 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Why Cross-Tool Compatibility Matters
 
 **Current Fragmentation**:
+
 - Users locked into tool-specific configurations
 - Teams can't mix tools easily
 - Migration costs are high
 
 **With Universal Support**:
+
 - Users choose best tool for them
 - Teams collaborate regardless of tool choice
 - Easy to try new tools as they emerge
@@ -916,6 +981,7 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 **This Spec**: Makes that skill work across all mainstream AI tools
 
 **Synergy**:
+
 - 211 focuses on methodology encoding
 - This spec focuses on distribution and compatibility
 - Together, they provide complete cross-tool solution
@@ -923,6 +989,7 @@ leanspec-sdd-codex/        # Optimized for OpenAI Codex CLI
 ### Agent Skills Ecosystem Contribution
 
 By solving cross-tool compatibility, we can:
+
 1. Contribute detection patterns to Agent Skills spec
 2. Document best practices for tool compatibility
 3. Help standardize discovery paths across ecosystem
@@ -931,6 +998,7 @@ By solving cross-tool compatibility, we can:
 ### Future: Tool-Specific Optimizations
 
 Once universal skill is working, consider:
+
 - **Claude-optimized variant**: XML-structured examples, Anthropic best practices
 - **Codex-optimized variant**: JSON-structured examples, OpenAI patterns
 - **Gemini-optimized variant**: Natural language emphasis, Google patterns

@@ -1,32 +1,32 @@
 # Design: Migration Command
 
-Technical design for `lean-spec migrate` command.
+Technical design for `harnspec migrate` command.
 
 ## Command Interface
 
 ```bash
 # Show generic migration instructions
-lean-spec migrate <input-path>
-lean-spec migrate ./docs/adr/
-lean-spec migrate ./docs/rfcs/
-lean-spec migrate ./specs/linear-export/
+harnspec migrate <input-path>
+harnspec migrate ./docs/adr/
+harnspec migrate ./docs/rfcs/
+harnspec migrate ./specs/linear-export/
 
 # AI-assisted migration (AI figures out the format)
-lean-spec migrate <input-path> --with copilot
-lean-spec migrate <input-path> --with claude
-lean-spec migrate <input-path> --with gemini
+harnspec migrate <input-path> --with copilot
+harnspec migrate <input-path> --with claude
+harnspec migrate <input-path> --with gemini
 
 # Options
-lean-spec migrate <input-path> --dry-run          # Preview without changes
-lean-spec migrate <input-path> --batch-size 10    # Process N docs at a time
-lean-spec migrate <input-path> --skip-validation  # Don't validate after
-lean-spec migrate <input-path> --backfill         # Auto-run backfill after migration
+harnspec migrate <input-path> --dry-run          # Preview without changes
+harnspec migrate <input-path> --batch-size 10    # Process N docs at a time
+harnspec migrate <input-path> --skip-validation  # Don't validate after
+harnspec migrate <input-path> --backfill         # Auto-run backfill after migration
 
 # After migration: Backfill metadata from git history
-lean-spec backfill                # Timestamps only
-lean-spec backfill --assignee     # Include assignee from git author
-lean-spec backfill --all          # All available metadata
-lean-spec backfill --dry-run      # Preview what would be backfilled
+harnspec backfill                # Timestamps only
+harnspec backfill --assignee     # Include assignee from git author
+harnspec backfill --all          # All available metadata
+harnspec backfill --dry-run      # Preview what would be backfilled
 ```
 
 ## Supported Sources
@@ -52,13 +52,15 @@ lean-spec backfill --dry-run      # Preview what would be backfilled
    - **File organization**: Single files → folder-based organization
 
 **External Systems** (cautious approach):
+
 - **Linear, Jira, Confluence, Notion**: Support **exported documents only**
 - **Rationale**: API integration requires authentication, API keys, rate limiting, and ongoing maintenance
 - **Migration path**: Export to markdown/JSON, then migrate those files
 - **No direct API integration**: Keeps tool simple, secure, and maintenance-free
 
 **Key Migration Tasks:**
-1. **Frontmatter generation** (PRIMARY CHALLENGE): Use `lean-spec backfill` to extract:
+
+1. **Frontmatter generation** (PRIMARY CHALLENGE): Use `harnspec backfill` to extract:
    - `status` - from git history or document content
    - `priority` - infer from labels/tags or set default
    - `tags` - extract from existing metadata or directory structure
@@ -105,12 +107,12 @@ You are helping migrate specification documents to LeanSpec format.
 3. Migrate each document by running these commands:
    
    # Create spec
-   lean-spec create <name>
+   harnspec create <name>
    
    # Set metadata (NEVER edit frontmatter manually)
-   lean-spec update <name> --status <status>
-   lean-spec update <name> --priority <priority>
-   lean-spec update <name> --tags <tag1,tag2>
+   harnspec update <name> --status <status>
+   harnspec update <name> --priority <priority>
+   harnspec update <name> --tags <tag1,tag2>
    
    # Edit content with your preferred tool
    # Map original sections to LeanSpec structure:
@@ -122,8 +124,8 @@ You are helping migrate specification documents to LeanSpec format.
 
 4. After migration, run:
    
-   lean-spec validate  # Check for issues
-   lean-spec board     # Verify migration
+   harnspec validate  # Check for issues
+   harnspec board     # Verify migration
 
 **Important Rules:**
 - Preserve decision rationale and context
@@ -140,6 +142,7 @@ You are helping migrate specification documents to LeanSpec format.
 When `--with <provider>` specified, fully automated:
 
 **Pre-flight Checks:**
+
 ```typescript
 interface AIToolCheck {
   provider: 'copilot' | 'claude' | 'gemini';
@@ -173,6 +176,7 @@ async function verifyAITool(provider: string): Promise<AIToolCheck> {
 ```
 
 **Migration Execution:**
+
 ```typescript
 interface MigrationConfig {
   inputPath: string;
@@ -216,10 +220,10 @@ TASK:
 1. Analyze document format and structure
 2. Extract metadata (title, status, dates, priority)
 3. For each document, execute:
-   - lean-spec create <name>
-   - lean-spec update <name> --status <status>
-   - lean-spec update <name> --priority <priority>
-   - lean-spec update <name> --tags <tags>
+   - harnspec create <name>
+   - harnspec update <name> --status <status>
+   - harnspec update <name> --priority <priority>
+   - harnspec update <name> --tags <tags>
    - Edit content to match LeanSpec structure
 
 4. Preserve decision rationale and relationships
@@ -233,6 +237,7 @@ Execute migration commands now.
 ## AI Provider Integration
 
 **AI CLI Tool Registry:**
+
 ```typescript
 interface AICliTool {
   name: 'copilot' | 'claude' | 'gemini';
@@ -272,6 +277,7 @@ const AI_CLI_TOOLS: Record<string, AICliTool> = {
 ```
 
 **Pre-flight Verification:**
+
 ```typescript
 async function verifyAndExecute(provider: string, inputPath: string) {
   const tool = AI_CLI_TOOLS[provider];
@@ -305,26 +311,27 @@ async function verifyAndExecute(provider: string, inputPath: string) {
 
 ```bash
 # AI CLI not found
-$ lean-spec migrate ./docs/adr --with copilot
+$ harnspec migrate ./docs/adr --with copilot
 ❌ copilot CLI not found
    Install: npm install -g @githubnext/github-copilot-cli
    Or run without --with flag for manual instructions
 
 # AI CLI outdated
-$ lean-spec migrate ./docs/adr --with claude
+$ harnspec migrate ./docs/adr --with claude
 ❌ claude version 0.5.0 too old
    Required: >=1.0.0
    Update: pip install --upgrade claude-cli
 
 # No documents found
-$ lean-spec migrate ./docs/empty --with gemini
+$ harnspec migrate ./docs/empty --with gemini
 ❌ No documents found in ./docs/empty
    Check path and try again
 ```
 
 **Error Handling Strategy:**
+
 - **Dry run first**: Preview changes before applying
-- **Validation**: Run `lean-spec validate` after migration
+- **Validation**: Run `harnspec validate` after migration
 - **Rollback**: Keep source docs unchanged
 - **Conflict resolution**: Detect duplicate names/IDs, prompt user
 - **Partial migration**: Continue on errors, report summary
@@ -332,6 +339,7 @@ $ lean-spec migrate ./docs/empty --with gemini
 ## Migration Examples
 
 See [EXAMPLES.md](./EXAMPLES.md) for detailed folder reorganization examples showing:
+
 - Source folder structure from each tool
 - Target LeanSpec folder structure
 - AI commands to reorganize files

@@ -18,6 +18,7 @@ completed: '2025-11-02'
 The `src/commands.ts` file has grown to **648 lines** and contains multiple distinct responsibilities. As the CLI grows with more commands (board, stats, search, deps, timeline, gantt), maintaining a single large file becomes increasingly difficult. This refactor will split commands into focused modules for better maintainability and testability.
 
 ### Current State
+
 - Single `commands.ts` file with 648 lines
 - 6 exported command functions: `createSpec`, `archiveSpec`, `listSpecs`, `updateSpec`, `initProject`, `listTemplates`
 - Additional commands already in `src/commands/` directory: `board`, `stats`, `search`, `deps`, `timeline`, `gantt`
@@ -25,6 +26,7 @@ The `src/commands.ts` file has grown to **648 lines** and contains multiple dist
 - Complex init logic (~200 LOC) with template handling
 
 ### Problems
+
 1. **Poor organization**: Core commands mixed with helpers and utilities
 2. **Hard to test**: Large file makes unit testing difficult
 3. **Inconsistent structure**: Some commands in `commands/`, others in `commands.ts`
@@ -74,6 +76,7 @@ src/utils/
 ## Plan
 
 ### Phase 1: Identify and Extract Helpers
+
 - [ ] Audit all helper functions in `commands.ts`
 - [ ] Create `src/utils/spec-helpers.ts` for spec-related utilities
   - `getSpecFile()`
@@ -88,22 +91,26 @@ src/utils/
   - Template variable replacement
 
 ### Phase 2: Extract Simple Commands
+
 - [ ] Move `createSpec` → `src/commands/create.ts`
 - [ ] Move `archiveSpec` → `src/commands/archive.ts`
 - [ ] Move `listSpecs` → `src/commands/list.ts`
 - [ ] Move `updateSpec` → `src/commands/update.ts`
 
 ### Phase 3: Extract Complex Commands
+
 - [ ] Move `listTemplates` → `src/commands/templates.ts`
 - [ ] Move `initProject` → `src/commands/init.ts` (largest, ~200 LOC)
 
 ### Phase 4: Update Imports and CLI
+
 - [ ] Update `src/cli.ts` to import from new command modules
 - [ ] Create barrel export `src/commands/index.ts` for convenience
 - [ ] Remove old `commands.ts` file
 - [ ] Update any other files importing from `commands.ts`
 
 ### Phase 5: Testing and Verification
+
 - [ ] Run full build: `pnpm build`
 - [ ] Test all commands: `create`, `archive`, `list`, `update`, `init`, `templates`
 - [ ] Test visualization commands: `board`, `stats`, `search`, `deps`
@@ -115,23 +122,27 @@ src/utils/
 ### Verification Checklist
 
 **Core Commands:**
-- [ ] `lean-spec create test-spec` - Creates new spec
-- [ ] `lean-spec list` - Lists all specs correctly
-- [ ] `lean-spec update test-spec --status complete` - Updates spec metadata
-- [ ] `lean-spec archive test-spec` - Archives spec
+
+- [ ] `harnspec create test-spec` - Creates new spec
+- [ ] `harnspec list` - Lists all specs correctly
+- [ ] `harnspec update test-spec --status complete` - Updates spec metadata
+- [ ] `harnspec archive test-spec` - Archives spec
 
 **Init & Templates:**
-- [ ] `lean-spec init` - Interactive project initialization
-- [ ] `lean-spec templates` - Lists available templates
-- [ ] `lean-spec init --template minimal` - Non-interactive init
+
+- [ ] `harnspec init` - Interactive project initialization
+- [ ] `harnspec templates` - Lists available templates
+- [ ] `harnspec init --template minimal` - Non-interactive init
 
 **Visualization Commands:**
-- [ ] `lean-spec board` - Displays kanban board
-- [ ] `lean-spec stats` - Shows statistics
-- [ ] `lean-spec search "keyword"` - Searches specs
-- [ ] `lean-spec deps spec-path` - Shows dependencies
+
+- [ ] `harnspec board` - Displays kanban board
+- [ ] `harnspec stats` - Shows statistics
+- [ ] `harnspec search "keyword"` - Searches specs
+- [ ] `harnspec deps spec-path` - Shows dependencies
 
 **Build & Performance:**
+
 - [ ] Build completes in <1 second
 - [ ] No TypeScript errors
 - [ ] Bundle size similar to before (~56KB)
@@ -140,11 +151,13 @@ src/utils/
 ## Implementation Notes
 
 ### File Size Targets
+
 - Each command file: 50-150 lines
 - Helper utilities: 50-100 lines each
 - Total LOC remains similar, but better organized
 
 ### Import Structure
+
 ```typescript
 // Before
 import { createSpec, listSpecs, updateSpec } from './commands.js';
@@ -157,6 +170,7 @@ import { createSpec } from './commands/create.js';
 ```
 
 ### Migration Strategy
+
 - Extract one command at a time
 - Test after each extraction
 - Keep `commands.ts` until all extractions complete
@@ -202,11 +216,13 @@ import { createSpec } from './commands/create.js';
 Successfully refactored the 648-line `commands.ts` file into focused, modular command files:
 
 **Created Utility Modules:**
+
 - `src/utils/spec-helpers.ts` - Display helpers (`getStatusEmoji`, `getPriorityLabel`)
 - `src/utils/path-helpers.ts` - Path resolution (`getNextSeq`, `resolveSpecPath`)
 - `src/utils/template-helpers.ts` - Template utilities (`detectExistingSystemPrompts`, `handleExistingFiles`, `copyDirectory`, `getProjectName`)
 
 **Created Command Modules:**
+
 - `src/commands/create.ts` - Spec creation (147 lines)
 - `src/commands/archive.ts` - Spec archiving (28 lines)
 - `src/commands/list.ts` - Spec listing (92 lines)
@@ -216,6 +232,7 @@ Successfully refactored the 648-line `commands.ts` file into focused, modular co
 - `src/commands/index.ts` - Barrel export (14 lines)
 
 **Updated Files:**
+
 - `src/cli.ts` - Updated imports to use new command modules
 - `src/commands.test.ts` - Updated test imports
 - `src/integration.test.ts` - Updated test imports
@@ -224,6 +241,7 @@ Successfully refactored the 648-line `commands.ts` file into focused, modular co
 ### Results
 
 ✅ **All Success Metrics Met:**
+
 - Largest command file: 147 lines (init.ts) - well under 200-line limit
 - All commands follow consistent structure with single exported async function
 - Build time: ~0.5 seconds (well under 1 second)
@@ -232,6 +250,7 @@ Successfully refactored the 648-line `commands.ts` file into focused, modular co
 - All commands verified working: `list`, `board`, `stats`, `templates`
 
 **File Size Comparison:**
+
 - Before: 1 file × 648 lines = 648 lines
 - After: 6 command files + 3 utility files = ~504 lines (22% reduction)
 - Better organized with clear separation of concerns

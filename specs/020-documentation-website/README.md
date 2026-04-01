@@ -16,6 +16,7 @@ priority: high
 Create a modern, user-friendly documentation website for LeanSpec using VitePress. The current README.md is comprehensive but difficult to navigate for new users. A dedicated documentation site will improve discoverability, provide better navigation, and create a professional presence for the project.
 
 **Why Now:**
+
 - Project is ready for external users (v0.1.0)
 - README.md has grown too long (~400 lines)
 - Need better organization for growing documentation
@@ -23,6 +24,7 @@ Create a modern, user-friendly documentation website for LeanSpec using VitePres
 - Better SEO and discoverability
 
 **What Success Looks Like:**
+
 - Clean, modern documentation site hosted on GitHub Pages
 - Clear navigation and structure
 - Mobile-friendly responsive design
@@ -36,6 +38,7 @@ Create a modern, user-friendly documentation website for LeanSpec using VitePres
 ### Technology Choice: VitePress
 
 **Why VitePress:**
+
 - Modern, fast, Vue-powered static site generator
 - Designed specifically for documentation
 - Minimal configuration
@@ -46,6 +49,7 @@ Create a modern, user-friendly documentation website for LeanSpec using VitePres
 - Active development and community support
 
 **Alternatives Considered:**
+
 - Docusaurus: Too heavy for our needs
 - GitBook: Requires external hosting
 - MkDocs: Python dependency
@@ -128,6 +132,7 @@ docs/
 ## Implementation Plan
 
 ### Phase 1: Setup (Day 1)
+
 - [x] Create spec
 - [x] Install VitePress as dev dependency
 - [x] Initialize VitePress in `docs/` directory
@@ -135,6 +140,7 @@ docs/
 - [x] Set up local development workflow
 
 ### Phase 2: Content Migration (Day 1-2)
+
 - [x] Create homepage with hero section
 - [x] Migrate getting started content
 - [x] Migrate CLI reference
@@ -143,6 +149,7 @@ docs/
 - [x] Add code examples
 
 ### Phase 3: Polish & Enhancement (Day 2)
+
 - [x] Configure search
 - [x] Add navigation menu
 - [x] Add sidebar for each section
@@ -150,6 +157,7 @@ docs/
 - [x] Add favicon and branding
 
 ### Phase 4: Deployment (Day 2)
+
 - [x] Configure GitHub Pages
 - [x] Set up deployment workflow
 - [x] Test production build
@@ -161,6 +169,7 @@ docs/
 ### VitePress Configuration
 
 Key configuration options:
+
 ```typescript
 // docs/.vitepress/config.ts
 export default {
@@ -170,7 +179,7 @@ export default {
     nav: [...],
     sidebar: {...},
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/codervisor/lean-spec' }
+      { icon: 'github', link: 'https://github.com/codervisor/harnspec' }
     ],
     search: {
       provider: 'local'
@@ -195,6 +204,7 @@ export default {
 ### GitHub Actions Workflow
 
 Create `.github/workflows/docs.yml`:
+
 ```yaml
 name: Deploy Docs
 

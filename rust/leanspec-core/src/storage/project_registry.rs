@@ -205,7 +205,7 @@ impl Project {
 /// Find the specs directory in a project
 fn find_specs_dir(project_path: &Path) -> CoreResult<PathBuf> {
     // Check common locations
-    let candidates = ["specs", ".lean-spec/specs", "doc/specs", "docs/specs"];
+    let candidates = ["specs", ".harnspec/specs", "doc/specs", "docs/specs"];
 
     for candidate in candidates {
         let path = project_path.join(candidate);
@@ -214,9 +214,9 @@ fn find_specs_dir(project_path: &Path) -> CoreResult<PathBuf> {
         }
     }
 
-    // Check for .lean-spec/config.yaml or config.json to get custom specs_dir
-    let config_json = project_path.join(".lean-spec/config.json");
-    let config_yaml = project_path.join(".lean-spec/config.yaml");
+    // Check for .harnspec/config.yaml or config.json to get custom specs_dir
+    let config_json = project_path.join(".harnspec/config.json");
+    let config_yaml = project_path.join(".harnspec/config.yaml");
 
     if config_json.exists() {
         if let Ok(content) = fs::read_to_string(&config_json) {
@@ -285,7 +285,7 @@ impl ProjectRegistry {
     /// Create a new registry using a specific registry file path.
     ///
     /// This is primarily useful for tests to avoid touching the user's real
-    /// `~/.lean-spec/projects.json`.
+    /// `~/.harnspec/projects.json`.
     pub fn new_with_file_path(file_path: PathBuf) -> CoreResult<Self> {
         let mut registry = Self {
             projects: HashMap::new(),

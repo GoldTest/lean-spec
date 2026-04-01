@@ -22,7 +22,7 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-25 · **Tags**: test, ui, mermaid, visualization
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -57,7 +57,7 @@ sequenceDiagram
     participant Core
     participant FileSystem
     
-    User->>CLI: lean-spec create my-feature
+    User->>CLI: harnspec create my-feature
     CLI->>Core: createSpec(name, options)
     Core->>FileSystem: mkdir(specsDir/name)
     FileSystem-->>Core: success
@@ -196,6 +196,7 @@ gitGraph
 ## Test Criteria
 
 ### Rendering Tests
+
 - [ ] Flowchart renders with correct node shapes and arrows
 - [ ] Sequence diagram shows all participants and messages
 - [ ] Class diagram displays classes with attributes and methods
@@ -206,11 +207,13 @@ gitGraph
 - [ ] Git graph shows branches and commits
 
 ### Theme Support
+
 - [ ] Diagrams render correctly in light mode
 - [ ] Diagrams render correctly in dark mode
 - [ ] Theme switching updates diagram colors
 
 ### Error Handling
+
 - [ ] Invalid syntax shows error message
 - [ ] Fallback to code block on render failure
 

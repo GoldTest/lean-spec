@@ -18,19 +18,19 @@ HarnSpec brings agile principles to SDD (Spec-Driven Development)—small, focus
 
 ```bash
 # Try with a tutorial project
-npx lean-spec init --example dark-theme
+npx harnspec init --example dark-theme
 cd dark-theme && npm install && npm start
 
 # Or add to your existing project
-npm install -g lean-spec && lean-spec init
+npm install -g harnspec && harnspec init
 ```
 
 **Visualize your project:**
 
 ```bash
-lean-spec board    # Kanban view
-lean-spec stats    # Project metrics
-lean-spec ui       # Web UI at localhost:3000
+harnspec board    # Kanban view
+harnspec stats    # Project metrics
+harnspec ui       # Web UI at localhost:3000
 ```
 
 **Next:** [Your First Spec with AI](/docs/tutorials/first-spec-with-ai) (10 min tutorial)
@@ -49,11 +49,11 @@ lean-spec ui       # Web UI at localhost:3000
 
 | Feature | Description |
 |---------|-------------|
-| **📊 Kanban Board** | `lean-spec board` - visual project tracking |
-| **🔍 Smart Search** | `lean-spec search` - find specs by content or metadata |
+| **📊 Kanban Board** | `harnspec board` - visual project tracking |
+| **🔍 Smart Search** | `harnspec search` - find specs by content or metadata |
 | **🔗 Dependencies** | Track spec relationships with `depends_on` and `related` |
-| **🎨 Web UI** | `lean-spec ui` - browser-based dashboard |
-| **📈 Project Stats** | `lean-spec stats` - health metrics and bottleneck detection |
+| **🎨 Web UI** | `harnspec ui` - browser-based dashboard |
+| **📈 Project Stats** | `harnspec stats` - health metrics and bottleneck detection |
 | **🤖 AI-Native** | MCP server + CLI for AI assistants |
 
 ## AI Integration
@@ -63,7 +63,7 @@ Works with any AI coding assistant via MCP or CLI:
 ```json
 {
   "mcpServers": {
-    "lean-spec": { "command": "npx", "args": ["@HarnSpec/mcp"] }
+    "harnspec": { "command": "npx", "args": ["@HarnSpec/mcp"] }
   }
 }
 ```
@@ -116,7 +116,7 @@ Enable secure user login and session management for the mobile app.
 
 ## Community
 
-💬 [Discussions](https://github.com/codervisor/lean-spec/discussions) · 🐛 [Issues](https://github.com/codervisor/lean-spec/issues) · 🤝 [Contributing](https://github.com/codervisor/lean-spec/blob/main/CONTRIBUTING.md)
+💬 [Discussions](https://github.com/codervisor/harnspec/discussions) · 🐛 [Issues](https://github.com/codervisor/harnspec/issues) · 🤝 [Contributing](https://github.com/codervisor/harnspec/blob/main/CONTRIBUTING.md)
 
 ## Next Steps
 

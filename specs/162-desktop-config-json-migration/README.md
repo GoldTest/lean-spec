@@ -31,10 +31,12 @@ Complete the config format standardization by migrating `desktop.yaml` to `deskt
 ### Current State
 
 **Inconsistent config formats:**
-- ✅ `~/.lean-spec/projects.json` - UI project registry (JSON, spec 147)
-- ❌ `~/.lean-spec/desktop.yaml` - Desktop preferences (YAML)
+
+- ✅ `~/.harnspec/projects.json` - UI project registry (JSON, spec 147)
+- ❌ `~/.harnspec/desktop.yaml` - Desktop preferences (YAML)
 
 **Why JSON everywhere?**
+
 - Native Rust/JavaScript support (no `serde_yaml` dependency)
 - Deterministic serialization (no line wrapping issues)
 - Consistent with UI package (spec 147)
@@ -45,14 +47,14 @@ Complete the config format standardization by migrating `desktop.yaml` to `deskt
 ### File Changes
 
 ```diff
-- ~/.lean-spec/desktop.yaml
-+ ~/.lean-spec/desktop.json
+- ~/.harnspec/desktop.yaml
++ ~/.harnspec/desktop.json
 ```
 
 ### Current Config Structure
 
 ```yaml
-# ~/.lean-spec/desktop.yaml (current)
+# ~/.harnspec/desktop.yaml (current)
 window:
   width: 1400
   height: 900
@@ -188,6 +190,7 @@ fn backup_legacy_yaml() {
 ### Migration Strategy
 
 **Auto-migration on first launch:**
+
 1. App starts → looks for `desktop.json`
 2. Not found → checks for `desktop.yaml`
 3. If YAML exists → parse, convert, save as JSON
@@ -195,6 +198,7 @@ fn backup_legacy_yaml() {
 5. Continue with JSON config
 
 **Manual migration (if needed):**
+
 ```bash
 # If users want to migrate manually
 node -e "
@@ -228,12 +232,14 @@ node -e "
 ## Test
 
 **Fresh Install:**
+
 - [ ] New user launches desktop app
-- [ ] Config created at `~/.lean-spec/desktop.json`
+- [ ] Config created at `~/.harnspec/desktop.json`
 - [ ] No YAML files created
 - [ ] Default config values work
 
 **Migration Path:**
+
 - [ ] User has existing `desktop.yaml`
 - [ ] Launch desktop app
 - [ ] Config migrated to `desktop.json`
@@ -242,6 +248,7 @@ node -e "
 - [ ] Active project ID preserved
 
 **Config Operations:**
+
 - [ ] Window state saves to JSON
 - [ ] Shortcut changes persist
 - [ ] Active project updates correctly
@@ -249,11 +256,13 @@ node -e "
 - [ ] JSON format is human-readable (2-space indent)
 
 **Error Handling:**
+
 - [ ] Corrupted JSON → falls back to defaults
 - [ ] Invalid YAML during migration → falls back to defaults
 - [ ] Missing config dir → creates on first write
 
 **Cross-platform:**
+
 - [ ] Works on macOS (`~/Library/Application Support/dev.leanspec.desktop`)
 - [ ] Works on Windows (`%APPDATA%\dev.leanspec.desktop`)
 - [ ] Works on Linux (`~/.local/share/dev.leanspec.desktop`)
@@ -263,16 +272,19 @@ node -e "
 ### Why This Matters
 
 **Consistency:** All LeanSpec config files now use JSON:
-- `~/.lean-spec/projects.json` (UI)
-- `~/.lean-spec/desktop.json` (Desktop)
+
+- `~/.harnspec/projects.json` (UI)
+- `~/.harnspec/desktop.json` (Desktop)
 - `leanspec.json` (per-project config)
 
-**Simplicity:** 
+**Simplicity:**
+
 - No YAML parser needed in Rust backend
 - `serde_json` is smaller and faster than `serde_yaml`
 - Fewer dependencies = smaller binary
 
 **Reliability:**
+
 - JSON has no indentation ambiguity
 - No line-wrapping issues (spec 147's motivation)
 - Easier to debug/validate
@@ -280,6 +292,7 @@ node -e "
 ### Breaking Change
 
 This is a **minor breaking change** for existing desktop app users:
+
 - **Impact**: Users with `desktop.yaml` will see it migrate to JSON
 - **Mitigation**: Auto-migration on first launch + backup created
 - **Severity**: Low - config is auto-managed, users rarely edit manually
@@ -287,11 +300,13 @@ This is a **minor breaking change** for existing desktop app users:
 ### Dependency Cleanup
 
 **Before:**
+
 ```toml
 serde_yaml = "0.9"  # ~200KB compiled
 ```
 
 **After:**
+
 ```toml
 # serde_json already included via Tauri
 ```
@@ -307,6 +322,7 @@ Binary size reduction: ~100-200KB
 ### Future: Unified Config System
 
 After this change, consider:
+
 - Shared config schema between desktop and UI
 - Sync preferences via cloud (optional)
 - Config versioning for future migrations

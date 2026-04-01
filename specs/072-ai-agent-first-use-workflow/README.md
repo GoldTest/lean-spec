@@ -19,27 +19,29 @@ transitions:
 
 > **Status**: 🗓️ Planned · **Priority**: High · **Created**: 2025-11-13 · **Tags**: onboarding, ai-agents, ux, mcp
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 **Problem**: Real users report that AI agents are not following the standard workflow to leverage LeanSpec MCP/CLI tools on their first use. Observed issues:
 
-1. **Skipping Discovery**: Agents don't use discovery commands (`lean-spec board`, `lean-spec list`) to understand project context before creating specs
-2. **Manual Spec Creation**: Agents create spec files manually (e.g., `specs/my-feature.md`) instead of using `lean-spec create`, resulting in:
+1. **Skipping Discovery**: Agents don't use discovery commands (`harnspec board`, `harnspec list`) to understand project context before creating specs
+2. **Manual Spec Creation**: Agents create spec files manually (e.g., `specs/my-feature.md`) instead of using `harnspec create`, resulting in:
    - Missing sequence numbers
    - Wrong directory structure (flat files vs `NNN-name/README.md`)
    - Missing/malformed frontmatter
    - Breaking LeanSpec tooling
 
 **Root Causes**:
+
 1. Current AGENTS.md buries discovery workflow ~200 lines down in "SDD Workflow"
-2. No explicit instruction to **ALWAYS use `lean-spec create`** instead of manual file creation
+2. No explicit instruction to **ALWAYS use `harnspec create`** instead of manual file creation
 3. CLI/MCP tool usage not emphasized as mandatory, appears optional
 
 **Impact**:
-- Specs created with wrong structure, breaking `lean-spec list`, `board`, etc.
+
+- Specs created with wrong structure, breaking `harnspec list`, `board`, etc.
 - Duplicate/conflicting specs from lack of discovery
 - Missing proper metadata and sequence numbers
 - Poor first impression of LeanSpec's AI integration
@@ -52,21 +54,23 @@ transitions:
 ### Problem Analysis
 
 Current AGENTS.md structure (all templates):
+
 1. **First Principles** (60+ lines) - Great but heavy for first use
 2. **Core Rules** - Generic, no actionable first step
 3. **Essential Commands** - Listed but not emphasized as mandatory first action
 4. **SDD Workflow** - "Discover" is step 1 but appears ~200 lines down
 
 **What AI agents need on FIRST interaction:**
+
 ```
 🚨 CRITICAL FIRST STEPS:
 
 1. DISCOVER project context:
-   - CLI: `lean-spec board` (preferred - shows status + health)
+   - CLI: `harnspec board` (preferred - shows status + health)
    - MCP: Use board prompt or list tool
    
 2. ALWAYS use proper tools to create specs:
-   - CLI: `lean-spec create <name>`
+   - CLI: `harnspec create <name>`
    - MCP: Use create_spec tool
    - ❌ NEVER manually create spec files
    
@@ -86,8 +90,8 @@ Add a new section **immediately after project description**, before everything e
     ### Step 1: Discover Context (REQUIRED)
     
     **Using CLI** (recommended):
-    - `lean-spec board` - Best: shows status, health, WIP at a glance
-    - `lean-spec list` - Alternative: see all specs
+    - `harnspec board` - Best: shows status, health, WIP at a glance
+    - `harnspec list` - Alternative: see all specs
     
     **Using MCP**:
     - Use the `board` prompt (preferred)
@@ -96,22 +100,22 @@ Add a new section **immediately after project description**, before everything e
     ### Step 2: Always Use Proper Tools (REQUIRED)
     
     **To create specs:**
-    - CLI: `lean-spec create <name>`
+    - CLI: `harnspec create <name>`
     - MCP: Use the create_spec tool
     
     ❌ **NEVER manually create spec files** (e.g., `specs/my-feature.md`)
     ✅ **ALWAYS use the CLI/MCP tools**
     
     **Why?**
-    - `lean-spec create` auto-generates sequence numbers
+    - `harnspec create` auto-generates sequence numbers
     - Creates correct directory structure (`NNN-name/README.md`)
     - Adds proper frontmatter with timestamps
     - Manual creation breaks tooling (`list`, `board`, `search`)
     
     ### Step 3: Update Status as You Work
     
-    - `lean-spec update <spec> --status in-progress` - Mark started
-    - `lean-spec update <spec> --status complete` - Mark done
+    - `harnspec update <spec> --status in-progress` - Mark started
+    - `harnspec update <spec> --status complete` - Mark done
     
     **Why This Matters**: 
     - Discovery prevents duplicate work and finds related specs
@@ -121,6 +125,7 @@ Add a new section **immediately after project description**, before everything e
 ### Implementation Strategy
 
 **Phase 1: Update All Templates** (Immediate)
+
 - Add "First Interaction Protocol" section to all template AGENTS.md files:
   - `packages/cli/templates/minimal/files/AGENTS.md`
   - `packages/cli/templates/standard/files/AGENTS.md`
@@ -130,15 +135,18 @@ Add a new section **immediately after project description**, before everything e
 - Keep it short (<150 tokens)
 
 **Phase 2: Update Root AGENTS.md** (Reference implementation)
+
 - Update `/AGENTS.md` to include this pattern
 - Serves as canonical example
 
 **Phase 3: Update Documentation**
+
 - Update `docs-site/docs/guide/usage/ai-assisted/agent-configuration.mdx`
 - Add first-use protocol to example templates
 - Update MCP integration guide to emphasize discovery-first
 
 **Phase 4: MCP Server Enhancement** (Optional, future)
+
 - Add server-side hint when AI makes first call without discovery
 - Track if `board` or `list` was called this session
 - Return gentle reminder if agent tries `create_spec` without discovery first
@@ -147,6 +155,7 @@ Add a new section **immediately after project description**, before everything e
 ### Content Guidelines
 
 **Keep it:**
+
 - ✅ Visual (emojis, formatting)
 - ✅ Actionable (specific commands with examples)
 - ✅ Short (~200 tokens max for expanded version)
@@ -155,6 +164,7 @@ Add a new section **immediately after project description**, before everything e
 - ✅ Explicit about what NOT to do (❌ don't manually create files)
 
 **Avoid:**
+
 - ❌ Philosophy (save for later sections)
 - ❌ Lengthy explanations
 - ❌ Buried in other content
@@ -166,7 +176,7 @@ Add a new section **immediately after project description**, before everything e
   - [ ] Update `packages/cli/templates/minimal/files/AGENTS.md`
   - [ ] Update `packages/cli/templates/standard/files/AGENTS.md`
   - [ ] Update `packages/cli/templates/enterprise/files/AGENTS.md`
-  - [ ] Test with each template via `lean-spec init`
+  - [ ] Test with each template via `harnspec init`
 
 - [ ] **Phase 2: Update root AGENTS.md**
   - [ ] Add First Interaction Protocol section
@@ -187,8 +197,8 @@ Add a new section **immediately after project description**, before everything e
 **Success Criteria:**
 
 - [ ] **Visibility Test**: First Interaction Protocol appears in first 100 lines of all AGENTS.md templates
-- [ ] **Discovery Test**: AI agent runs `lean-spec board` (or MCP equivalent) BEFORE creating specs
-- [ ] **Tool Usage Test**: AI agent uses `lean-spec create` instead of manually creating files
+- [ ] **Discovery Test**: AI agent runs `harnspec board` (or MCP equivalent) BEFORE creating specs
+- [ ] **Tool Usage Test**: AI agent uses `harnspec create` instead of manually creating files
 - [ ] **Structure Test**: Created specs have correct structure (`NNN-name/README.md`, proper frontmatter)
 - [ ] **Content Test**: Section includes discovery priority (board > list), tool usage mandate
 - [ ] **Template Test**: All three templates (minimal, standard, enterprise) include the section
@@ -197,14 +207,15 @@ Add a new section **immediately after project description**, before everything e
 **Testing Protocol:**
 
 1. **Fresh Project Test**:
+
    ```bash
-   mkdir test-lean-spec-project
-   cd test-lean-spec-project
-   lean-spec init --template standard
+   mkdir test-harnspec-project
+   cd test-harnspec-project
+   harnspec init --template standard
    # Ask AI agent: "Create a spec for authentication"
    # Expected: 
-   #   1. Agent runs `lean-spec board` FIRST
-   #   2. Agent uses `lean-spec create authentication`
+   #   1. Agent runs `harnspec board` FIRST
+   #   2. Agent uses `harnspec create authentication`
    #   3. Spec created at specs/001-authentication/README.md (not specs/authentication.md)
    ```
 
@@ -219,17 +230,17 @@ Add a new section **immediately after project description**, before everything e
 3. **Existing Project Test**:
    - Project with 5+ existing specs
    - Ask AI: "Add a rate limiting feature"
-   - Expected: 
-     - Agent runs `lean-spec board` to see context
-     - Agent searches for related specs (`lean-spec search "rate"`)
-     - Agent uses `lean-spec create rate-limiting`
+   - Expected:
+     - Agent runs `harnspec board` to see context
+     - Agent searches for related specs (`harnspec search "rate"`)
+     - Agent uses `harnspec create rate-limiting`
      - New spec properly numbered (e.g., `006-rate-limiting/`)
 
 4. **Manual Creation Prevention Test**:
    - Ask AI: "Create a spec for email notifications"
    - Monitor filesystem
    - Expected: NO direct file creation in specs/
-   - Expected: Uses `lean-spec create` or MCP create_spec tool
+   - Expected: Uses `harnspec create` or MCP create_spec tool
 
 ## Notes
 
@@ -249,7 +260,7 @@ Add a new section **immediately after project description**, before everything e
    - ❌ Doesn't help CLI-only users
    - ✅ Could work as optional "training wheels" mode
 
-2. **Interactive Init Prompt**: During `lean-spec init`, show AI-focused onboarding
+2. **Interactive Init Prompt**: During `harnspec init`, show AI-focused onboarding
    - ❌ Doesn't help projects initialized before update
    - ❌ Users might skip or miss it
    - ✅ Good supplementary approach
@@ -273,11 +284,12 @@ Add a new section **immediately after project description**, before everything e
 - Should MCP server log discovery patterns and warn if skipped?
 - How do we measure success beyond anecdotal user reports?
 - Can we detect manual spec creation and provide helpful error messages?
-- Should `lean-spec validate` check for manually created specs (missing sequence, wrong structure)?
+- Should `harnspec validate` check for manually created specs (missing sequence, wrong structure)?
 
 ### Key Insight from User Feedback
 
 **Discovery Tool Priority**: `board` > `list` because:
+
 - `board` shows status, WIP, and project health in one view
 - `list` only shows spec names without context
 - New users get better overview from board

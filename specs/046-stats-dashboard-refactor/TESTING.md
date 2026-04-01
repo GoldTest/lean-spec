@@ -5,6 +5,7 @@
 ## Stats Command Tests
 
 ### Default output (simplified)
+
 - [ ] Shows only essential metrics (not overwhelming)
 - [ ] "Needs Attention" section highlights issues
 - [ ] Velocity summary shows 3 key metrics
@@ -12,17 +13,20 @@
 - [ ] Renders in < 200ms for 50 specs
 
 ### Full output
-- [ ] `lean-spec stats --full` shows all sections
-- [ ] Equivalent to old `lean-spec analytics` output
+
+- [ ] `harnspec stats --full` shows all sections
+- [ ] Equivalent to old `harnspec analytics` output
 - [ ] Stats + Timeline + Velocity all present
 - [ ] No information loss from analytics
 
 ### Focus modes
-- [ ] `lean-spec stats --velocity` shows only velocity
-- [ ] `lean-spec stats --timeline` shows only timeline/activity
+
+- [ ] `harnspec stats --velocity` shows only velocity
+- [ ] `harnspec stats --timeline` shows only timeline/activity
 - [ ] Filters work (--tag, --assignee)
 
 ### Smart insights
+
 - [ ] Detects critical overdue specs
 - [ ] Flags long-running WIP (> 7 days)
 - [ ] Shows top 5 issues only
@@ -31,57 +35,64 @@
 ## Board Command Tests
 
 ### Health summary
+
 - [ ] Shows at top of board output
 - [ ] Includes totals, health score, alerts, velocity
 - [ ] Doesn't break kanban columns layout
 - [ ] Box renders correctly (Unicode characters)
 
 ### Health score accuracy
+
 - [ ] Simple completion rate (not weighted)
 - [ ] 0% when no specs complete
 - [ ] 100% when all complete
 - [ ] Reflects project health intuitively
 
 ### Options
-- [ ] `lean-spec board` shows default view with health
-- [ ] `lean-spec board --simple` shows kanban only
-- [ ] `lean-spec board --health-only` shows health summary only
+
+- [ ] `harnspec board` shows default view with health
+- [ ] `harnspec board --simple` shows kanban only
+- [ ] `harnspec board --health-only` shows health summary only
 - [ ] All filter options work (--tag, --assignee, --status)
 
 ## Command Removal Tests
 
 ### Analytics command
+
 - [ ] Command no longer exists
-- [ ] `lean-spec analytics` shows "unknown command" error
-- [ ] Error message suggests `lean-spec stats` instead
+- [ ] `harnspec analytics` shows "unknown command" error
+- [ ] Error message suggests `harnspec stats` instead
 - [ ] Help text doesn't mention analytics
 
 ### Dashboard command
+
 - [ ] Command no longer exists
-- [ ] `lean-spec dashboard` shows "unknown command" error
-- [ ] Error message suggests `lean-spec board` instead
+- [ ] `harnspec dashboard` shows "unknown command" error
+- [ ] Error message suggests `harnspec board` instead
 - [ ] Help text doesn't mention dashboard
 
 ## Breaking Changes (v0.2.0)
 
 ### Expected behavior
-- [ ] `lean-spec analytics` fails with helpful error
-- [ ] `lean-spec dashboard` fails with helpful error
-- [ ] `lean-spec stats` works as replacement
-- [ ] `lean-spec board` works as replacement
+
+- [ ] `harnspec analytics` fails with helpful error
+- [ ] `harnspec dashboard` fails with helpful error
+- [ ] `harnspec stats` works as replacement
+- [ ] `harnspec board` works as replacement
 - [ ] JSON output formats compatible where applicable
 
 ### Existing workflows
-- [ ] All `lean-spec analytics` scripts still work
+
+- [ ] All `harnspec analytics` scripts still work
 - [ ] JSON output format unchanged
 - [ ] Filter options unchanged
 - [ ] No breaking changes in v0.2.0
 
 ## Performance Tests
 
-- [ ] `lean-spec stats` < 200ms for 50 specs
-- [ ] `lean-spec stats --full` < 500ms for 100 specs
-- [ ] `lean-spec board` < 300ms for 50 specs
+- [ ] `harnspec stats` < 200ms for 50 specs
+- [ ] `harnspec stats --full` < 500ms for 100 specs
+- [ ] `harnspec board` < 300ms for 50 specs
 - [ ] Health calculation < 50ms
 - [ ] Insight generation < 50ms
 
@@ -98,6 +109,7 @@
 ### Unit Tests
 
 **Health Score Calculation:**
+
 ```typescript
 describe('calculateHealth', () => {
   it('returns 0% for no complete specs', () => {
@@ -131,6 +143,7 @@ describe('calculateHealth', () => {
 ```
 
 **Smart Insights:**
+
 ```typescript
 describe('generateInsights', () => {
   it('detects critical overdue specs', () => {
@@ -171,17 +184,18 @@ describe('generateInsights', () => {
 ### Integration Tests
 
 **Stats Command:**
+
 ```typescript
 describe('stats command', () => {
   it('shows simplified output by default', async () => {
-    const output = await runCommand('lean-spec stats');
+    const output = await runCommand('harnspec stats');
     expect(output).toContain('📊 Spec Stats');
     expect(output).toContain('Needs Attention');
-    expect(output).toContain('Use `lean-spec stats --full` for detailed analytics');
+    expect(output).toContain('Use `harnspec stats --full` for detailed analytics');
   });
 
   it('shows full output with --full flag', async () => {
-    const output = await runCommand('lean-spec stats --full');
+    const output = await runCommand('harnspec stats --full');
     expect(output).toContain('Status');
     expect(output).toContain('Priority');
     expect(output).toContain('Timeline');
@@ -189,30 +203,31 @@ describe('stats command', () => {
   });
 
   it('supports filter flags', async () => {
-    const output = await runCommand('lean-spec stats --tag=bug');
+    const output = await runCommand('harnspec stats --tag=bug');
     expect(output).toContain('Filtered');
   });
 });
 ```
 
 **Board Command:**
+
 ```typescript
 describe('board command', () => {
   it('shows health summary by default', async () => {
-    const output = await runCommand('lean-spec board');
+    const output = await runCommand('harnspec board');
     expect(output).toContain('Project Health');
     expect(output).toContain('health');
     expect(output).toContain('Velocity');
   });
 
   it('hides health summary with --simple', async () => {
-    const output = await runCommand('lean-spec board --simple');
+    const output = await runCommand('harnspec board --simple');
     expect(output).not.toContain('Project Health');
     expect(output).toContain('📅 Planned');
   });
 
   it('shows only health with --health-only', async () => {
-    const output = await runCommand('lean-spec board --health-only');
+    const output = await runCommand('harnspec board --health-only');
     expect(output).toContain('Project Health');
     expect(output).not.toContain('📅 Planned');
   });
@@ -222,18 +237,21 @@ describe('board command', () => {
 ## Success Criteria
 
 ### User Experience
-- [ ] PMs can check project health in < 5 seconds (`lean-spec board`)
-- [ ] Quick stats check takes < 10 seconds (`lean-spec stats`)
-- [ ] Deep dive available when needed (`lean-spec stats --full`)
+
+- [ ] PMs can check project health in < 5 seconds (`harnspec board`)
+- [ ] Quick stats check takes < 10 seconds (`harnspec stats`)
+- [ ] Deep dive available when needed (`harnspec stats --full`)
 - [ ] Clear error messages for removed commands
 
 ### Technical
+
 - [ ] Breaking changes clearly documented in CHANGELOG
 - [ ] All tests pass
 - [ ] Performance < 300ms for typical projects
 - [ ] Clean codebase (no deprecated code)
 
 ### Adoption
+
 - [ ] Beta testers prefer new commands
 - [ ] Positive feedback on simplified output
 - [ ] No confusion about command naming
@@ -244,6 +262,7 @@ describe('board command', () => {
 ### Stats Output Comparison
 
 **Before (analytics):**
+
 ```
 Status:
   Planned: 5
@@ -267,6 +286,7 @@ Velocity: (full breakdown)
 ```
 
 **After (stats default):**
+
 ```
 📊 Spec Stats
 
@@ -279,12 +299,13 @@ Velocity: (full breakdown)
 
 🚀 Velocity: 5.2d avg, 2.8/wk ↑
 
-💡 Use `lean-spec stats --full` for detailed analytics
+💡 Use `harnspec stats --full` for detailed analytics
 ```
 
 ### Board Health Box Layout
 
 **Health Summary Box:**
+
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║  Project Health                                          ║
@@ -295,6 +316,7 @@ Velocity: (full breakdown)
 ```
 
 **Verify:**
+
 - [ ] Box characters render correctly
 - [ ] Content fits within box width
 - [ ] Emojis align properly
@@ -305,21 +327,23 @@ Velocity: (full breakdown)
 
 | Command | Specs | Target | Measured |
 |---------|-------|--------|----------|
-| `lean-spec stats` | 50 | < 200ms | ___ms |
-| `lean-spec stats --full` | 100 | < 500ms | ___ms |
-| `lean-spec board` | 50 | < 300ms | ___ms |
+| `harnspec stats` | 50 | < 200ms | ___ms |
+| `harnspec stats --full` | 100 | < 500ms | ___ms |
+| `harnspec board` | 50 | < 300ms | ___ms |
 | Health calc | 100 | < 50ms | ___ms |
 | Insights gen | 100 | < 50ms | ___ms |
 
 ## Test Automation
 
 **CI/CD Pipeline:**
+
 1. Run unit tests on every commit
 2. Run integration tests on PR
 3. Run performance tests on main branch
 4. Generate coverage report (target: > 80%)
 
 **Pre-release Checklist:**
+
 - [ ] All tests pass
 - [ ] Performance benchmarks met
 - [ ] Visual regression tests reviewed

@@ -13,13 +13,13 @@ Ensure spec quality with HarnSpec's built-in validation system. Validate checks 
 Check specs for quality issues:
 
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 Validates all specs by default. Check specific specs:
 
 ```bash
-lean-spec validate <spec-1> <spec-2>
+harnspec validate <spec-1> <spec-2>
 ```
 
 ## Quality Checks
@@ -77,7 +77,7 @@ Checks spec organization:
 ### Clean Validation
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ✅ All specs valid!
 
@@ -90,7 +90,7 @@ Summary:
 ### With Warnings
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ⚠️  Warnings found:
 
@@ -107,7 +107,7 @@ Summary:
 ### With Errors
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ❌ Errors found:
 
@@ -131,26 +131,26 @@ Summary:
 
 ```bash
 # Stricter token threshold
-lean-spec validate --warning-threshold 4000
+harnspec validate --warning-threshold 4000
 
 # More lenient threshold
-lean-spec validate --warning-threshold 6000
+harnspec validate --warning-threshold 6000
 
 # Custom line count backstop
-lean-spec validate --max-lines 500
+harnspec validate --max-lines 500
 ```
 
 ### Validate Specific Aspects
 
 ```bash
 # Only check complexity (tokens)
-lean-spec validate --check complexity
+harnspec validate --check complexity
 
 # Only check frontmatter
-lean-spec validate --check frontmatter
+harnspec validate --check frontmatter
 
 # Only check structure
-lean-spec validate --check structure
+harnspec validate --check structure
 ```
 
 ## Fixing Validation Issues
@@ -180,17 +180,17 @@ IMPLEMENTATION.md (1,500 tokens) ✅ - Implementation plan (100% effectiveness)
 
 **Problem**: Invalid or missing frontmatter fields
 
-**Solution**: Use `lean-spec update` to fix:
+**Solution**: Use `harnspec update` to fix:
 
 ```bash
 # Fix status
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 
 # Fix priority
-lean-spec update <spec> --priority high
+harnspec update <spec> --priority high
 
 # Fix tags
-lean-spec update <spec> --tags feature,api
+harnspec update <spec> --tags feature,api
 ```
 
 ### Structure Issues
@@ -209,7 +209,7 @@ lean-spec update <spec> --tags feature,api
 Run before committing:
 
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 Fix any errors before committing changes.
@@ -230,8 +230,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g lean-spec
-      - run: lean-spec validate
+      - run: npm install -g harnspec
+      - run: harnspec validate
 ```
 
 ### Regular Review
@@ -240,13 +240,13 @@ Weekly spec health check:
 
 ```bash
 # Check overall health
-lean-spec validate
+harnspec validate
 
 # Detailed analysis
-lean-spec stats --full
+harnspec stats --full
 
 # Review large specs (token focus)
-lean-spec tokens --all --include-sub-specs
+harnspec tokens --all --include-sub-specs
 ```
 
 ## When to Split

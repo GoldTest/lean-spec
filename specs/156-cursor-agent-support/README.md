@@ -24,11 +24,11 @@ completed: '2025-12-09'
 
 ## Overview
 
-Add Cursor as a supported AI coding agent in lean-spec agent commands. Users can dispatch specs to Cursor IDE for implementation.
+Add Cursor as a supported AI coding agent in harnspec agent commands. Users can dispatch specs to Cursor IDE for implementation.
 
 ## Problem
 
-Users working with Cursor IDE cannot use the `lean-spec agent run` command to dispatch specs to Cursor. When they attempt to use `--agent cursor`, they receive:
+Users working with Cursor IDE cannot use the `harnspec agent run` command to dispatch specs to Cursor. When they attempt to use `--agent cursor`, they receive:
 
 ```
 Unknown agent: cursor
@@ -37,7 +37,7 @@ Available agents: claude, copilot, aider, gemini, gh-coding
 
 ## Design
 
-Cursor IDE supports AI-powered code editing through its built-in agent system. To integrate Cursor with lean-spec, we need to:
+Cursor IDE supports AI-powered code editing through its built-in agent system. To integrate Cursor with harnspec, we need to:
 
 1. **Add Cursor to AgentType enum** - Include 'cursor' as a valid agent type
 2. **Define Cursor agent configuration** - Add to DEFAULT_AGENTS with appropriate settings
@@ -46,7 +46,8 @@ Cursor IDE supports AI-powered code editing through its built-in agent system. T
 ### Cursor Agent Configuration
 
 Cursor can be invoked via CLI using `cursor <file>` to open files. For spec implementation, we'll use:
-- Command: `cursor` 
+
+- Command: `cursor`
 - Mode: CLI-based (local)
 - Context approach: Open the spec directory in Cursor for the user to work with
 
@@ -65,11 +66,11 @@ Cursor can be invoked via CLI using `cursor <file>` to open files. For spec impl
 
 ## Test
 
-- [x] `lean-spec agent list` shows cursor as an available agent
-- [x] `lean-spec agent run <spec> --agent cursor --dry-run` succeeds
-- [x] `lean-spec agent run <spec> --agent cursor` opens spec in Cursor (if installed)
+- [x] `harnspec agent list` shows cursor as an available agent
+- [x] `harnspec agent run <spec> --agent cursor --dry-run` succeeds
+- [x] `harnspec agent run <spec> --agent cursor` opens spec in Cursor (if installed)
 - [x] Error messages include 'cursor' in available agents list
-- [x] `lean-spec agent config cursor` sets cursor as default agent
+- [x] `harnspec agent config cursor` sets cursor as default agent
 
 ## Implementation Summary
 
@@ -82,6 +83,7 @@ The following changes were made to add Cursor agent support:
 5. **Tests** - Updated `agent.test.ts` to verify cursor agent is present in the list
 
 All tests pass and manual verification confirms cursor can be:
+
 - Listed as an available agent
 - Set as the default agent
 - Used with the `agent run` command

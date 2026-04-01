@@ -35,13 +35,13 @@ Before creating new specs, see what already exists:
 
 ```bash
 # What's the current state?
-lean-spec board
+harnspec board
 
 # Search for related work
-lean-spec search "authentication"
+harnspec search "authentication"
 
 # List specs by tag
-lean-spec list --tag api
+harnspec list --tag api
 ```
 
 **Why?** Avoid duplicating work and understand dependencies.
@@ -52,7 +52,7 @@ Create a spec to formalize your intent:
 
 ```bash
 # Create new spec
-lean-spec create user-auth-api --tags api,auth --priority high
+harnspec create user-auth-api --tags api,auth --priority high
 ```
 
 This creates `specs/042-user-auth-api/README.md` with status `planned`.
@@ -76,7 +76,7 @@ Keep it under 300 lines. Follow Context Economy principles.
 Before implementing, mark the spec as in-progress:
 
 ```bash
-lean-spec update 042 --status in-progress
+harnspec update 042 --status in-progress
 ```
 
 **CRITICAL:** This tracks when work actually starts (not when the spec document was created).
@@ -101,10 +101,10 @@ After implementation and testing:
 
 ```bash
 # Mark spec as complete
-lean-spec update 042 --status complete
+harnspec update 042 --status complete
 
 # Validate everything
-lean-spec validate
+harnspec validate
 ```
 
 **The spec now serves as:**
@@ -119,10 +119,10 @@ Let's build a rate limiting feature using SDD:
 ### Step 1: Discover
 
 ```bash
-$ lean-spec search "rate limit"
+$ harnspec search "rate limit"
 No results found
 
-$ lean-spec list --tag api
+$ harnspec list --tag api
 🟡 ⏳ 041-api-authentication [in-progress]
 🟢 ✅ 038-api-error-handling [complete]
 ```
@@ -132,7 +132,7 @@ No existing rate limiting work. Let's create it.
 ### Step 2: Plan
 
 ```bash
-$ lean-spec create api-rate-limiting --tags api,security --priority high
+$ harnspec create api-rate-limiting --tags api,security --priority high
 ✅ Created spec 042-api-rate-limiting
    📁 specs/042-api-rate-limiting/README.md
    Status: planned
@@ -156,7 +156,7 @@ AI drafts the spec. You review and refine.
 ### Step 3: Start Work
 
 ```bash
-$ lean-spec update 042 --status in-progress
+$ harnspec update 042 --status in-progress
 ✅ Updated 042-api-rate-limiting: status → in-progress
 ```
 
@@ -179,7 +179,7 @@ AI reads the spec via MCP and implements:
 
 ```bash
 # Open spec to add notes
-lean-spec open 042
+harnspec open 042
 ```
 
 Add discovered details:
@@ -191,11 +191,11 @@ Add discovered details:
 
 ```bash
 # Mark complete
-$ lean-spec update 042 --status complete
+$ harnspec update 042 --status complete
 ✅ Updated 042-api-rate-limiting: status → complete
 
 # Validate project
-$ lean-spec validate
+$ harnspec validate
 ✅ All specs valid
 ```
 
@@ -211,7 +211,7 @@ Connect HarnSpec to Claude, Cursor, or other MCP-compatible AI:
 # Add to MCP settings
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["-y", "@HarnSpec/mcp"]
     }
@@ -285,13 +285,13 @@ Link related specs:
 
 ```bash
 # Spec 043 depends on 042 being complete
-lean-spec link 043 --depends-on 042
+harnspec link 043 --depends-on 042
 ```
 
 Check dependencies:
 
 ```bash
-$ lean-spec deps 043
+$ harnspec deps 043
 
 Dependency Graph for 043-user-dashboard
 
@@ -314,7 +314,7 @@ Required By:
 
 **Check token count:**
 ```bash
-lean-spec tokens 042
+harnspec tokens 042
 ```
 
 ### DO: Update Status Religiously
@@ -351,35 +351,35 @@ lean-spec tokens 042
 
 ```bash
 # 1. Create spec
-lean-spec create quick-feature
+harnspec create quick-feature
 
 # 2. Draft with AI
 "Draft minimal spec for [feature]"
 
 # 3. Start work
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 
 # 4. Implement
 "Implement according to spec <spec>"
 
 # 5. Complete
-lean-spec update <spec> --status complete
+harnspec update <spec> --status complete
 ```
 
 ### Complex Feature
 
 ```bash
 # 1. Create main spec
-lean-spec create complex-feature
+harnspec create complex-feature
 
 # 2. Draft with AI
 "Draft spec with sub-specs: DESIGN.md, TESTING.md"
 
 # 3. Link dependencies
-lean-spec link <spec> --depends-on <other-spec>
+harnspec link <spec> --depends-on <other-spec>
 
 # 4. Start work
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 
 # 5. Implement incrementally
 "Implement phase 1 according to spec <spec>"
@@ -387,26 +387,26 @@ lean-spec update <spec> --status in-progress
 "Implement phase 2"
 
 # 6. Complete
-lean-spec update <spec> --status complete
+harnspec update <spec> --status complete
 ```
 
 ### Refactoring
 
 ```bash
 # 1. Document current state
-lean-spec create refactor-auth
+harnspec create refactor-auth
 
 # 2. Define problem and solution
 "Draft spec explaining why refactor is needed"
 
 # 3. Start work
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 
 # 4. Implement with spec as guide
 "Refactor according to spec <spec>, preserving behavior"
 
 # 5. Complete
-lean-spec update <spec> --status complete
+harnspec update <spec> --status complete
 ```
 
 ## Troubleshooting
@@ -417,7 +417,7 @@ lean-spec update <spec> --status complete
 
 ```bash
 # Check token count
-lean-spec tokens 042
+harnspec tokens 042
 
 # If >3,500 tokens, split it
 # Create DESIGN.md for detailed design
@@ -441,7 +441,7 @@ lean-spec tokens 042
 
 ```bash
 # Open spec
-lean-spec open 042
+harnspec open 042
 
 # Add "Implementation Notes" section
 # Document actual approach vs. planned

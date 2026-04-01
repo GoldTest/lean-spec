@@ -60,7 +60,7 @@ fn is_draft_status_enabled(project_path: &FsPath) -> bool {
         draft_status: Option<DraftStatusConfig>,
     }
 
-    let config_path = project_path.join(".lean-spec/config.json");
+    let config_path = project_path.join(".harnspec/config.json");
     let Ok(content) = fs::read_to_string(config_path) else {
         return false;
     };

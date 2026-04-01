@@ -21,7 +21,6 @@ transitions:
 
 > **Status**: ⏳ In progress · **Priority**: High · **Created**: 2025-12-19 · **Tags**: rust, http, testing, api
 
-
 > Comprehensive integration test suite for Rust HTTP server before UI migration
 
 ## Overview
@@ -29,6 +28,7 @@ transitions:
 **Problem**: Rust HTTP server lacks comprehensive API tests. Before achieving UI parity, we need confidence that all existing endpoints work correctly and match expected behavior.
 
 **Goal**: Create comprehensive integration test suite covering:
+
 - All implemented endpoints (projects, specs, stats, deps, validation)
 - Error handling and edge cases
 - Multi-project mode scenarios
@@ -39,12 +39,14 @@ transitions:
 ## Current State
 
 **Existing Tests**: Minimal
+
 - Basic router creation test in `routes.rs`
 - Unit tests in `leanspec_core` for spec loading
 - No integration tests for HTTP endpoints
 - No end-to-end API tests
 
 **Coverage Gaps**:
+
 - ❌ No project management endpoint tests
 - ❌ No spec CRUD operation tests
 - ❌ No search/filter tests
@@ -83,18 +85,21 @@ rust/leanspec-http/tests/
 ### Test Strategy
 
 **Integration Tests** (primary focus):
+
 - Spin up HTTP server with test project registry
 - Make real HTTP requests via `reqwest`
 - Verify responses match expected format
 - Test error conditions and edge cases
 
 **Schema Compatibility Tests** (NEW):
+
 - Validate Rust response schemas match Next.js API schemas
 - Ensure field names match (camelCase vs snake_case)
 - Verify response structure compatibility
 - Test serialization consistency
 
 **Comparative Testing** (RECOMMENDED):
+
 - Run both Next.js API (`pnpm -F @leanspec/ui dev`) and Rust HTTP server side-by-side
 - Make identical requests to both servers with same test data
 - Compare JSON responses field-by-field
@@ -102,11 +107,13 @@ rust/leanspec-http/tests/
 - Catch subtle differences that static schema checks might miss
 
 **Test Fixtures**:
+
 - Reusable test projects with known spec structure
 - Sample specs with various statuses, priorities, tags
 - Projects with dependencies and sub-specs
 
 **Tools**:
+
 - `axum-test` or raw Axum router testing
 - `reqwest` for HTTP client
 - `serde_json` for response validation and comparison
@@ -118,6 +125,7 @@ rust/leanspec-http/tests/
 ## Plan
 
 ### Phase 1: Test Infrastructure (Day 1)
+
 - [x] Set up test module structure
 - [x] Create test fixture generator (sample specs)
 - [x] Create test server helper (spawn with temp registry)
@@ -128,6 +136,7 @@ rust/leanspec-http/tests/
 - [x] Add JSON response comparison utilities
 
 ### Phase 2: Project Management Tests (Day 2)
+
 - [x] Test GET `/api/projects` (list all, empty state, multi-project)
 - [x] Validate response schema matches Next.js `/api/local-projects`
 - [x] Test POST `/api/projects` (add valid, invalid path, duplicate)
@@ -140,6 +149,7 @@ rust/leanspec-http/tests/
 - [x] Test POST `/api/projects/refresh` (cleanup invalid)
 
 ### Phase 3: Spec Operations Tests (Day 3)
+
 - [x] Test GET `/api/specs` (list all, empty, with filters)
 - [x] Validate response schema matches Next.js `/api/projects/[id]/specs`
 - [x] Compare field serialization: camelCase vs snake_case
@@ -152,6 +162,7 @@ rust/leanspec-http/tests/
 - [x] Test POST `/api/search` (ranking by relevance)
 
 ### Phase 4: Stats & Dependencies Tests (Day 4)
+
 - [x] Test GET `/api/stats` (empty project, various statuses)
 - [x] Validate StatsResponse schema matches Next.js `/api/projects/[id]/stats`
 - [x] Compare field names: byStatus, byPriority, byTag
@@ -163,6 +174,7 @@ rust/leanspec-http/tests/
 - [x] Test GET `/api/deps/{spec}` (spec not found)
 
 ### Phase 5: Validation Tests (Day 4)
+
 - [x] Test GET `/api/validate` (all specs valid)
 - [x] Test GET `/api/validate` (detect missing required fields)
 - [x] Test GET `/api/validate` (detect excessive line count)
@@ -170,6 +182,7 @@ rust/leanspec-http/tests/
 - [x] Test GET `/api/validate/{spec}` (single spec validation)
 
 ### Phase 6: Multi-Project Scenarios (Day 5)
+
 - [x] Test project switching updates current context
 - [x] Test spec operations use current project
 - [x] Test stats reflect current project only
@@ -177,6 +190,7 @@ rust/leanspec-http/tests/
 - [x] Test concurrent project operations
 
 ### Phase 7: Error Handling (Day 5)
+
 - [x] Test 404 errors (not found resources)
 - [x] Test 400 errors (invalid input)
 - [x] Test 500 errors (internal errors)
@@ -187,6 +201,7 @@ rust/leanspec-http/tests/
 ## Success Criteria
 
 **Must Have**:
+
 - [x] 80%+ code coverage for handlers
 - [x] All happy path scenarios tested
 - [x] All error conditions tested
@@ -197,6 +212,7 @@ rust/leanspec-http/tests/
 - [x] Tests pass consistently
 
 **Should Have**:
+
 - [x] Performance benchmarks (response time < 100ms)
 - [x] Concurrent request testing
 - [x] Large dataset testing (100+ specs)
@@ -415,6 +431,7 @@ async fn test_search_relevance_ranking() {
 ## Test
 
 **Meta-testing** (tests for the test suite):
+
 - [x] All tests pass on clean run
 - [x] Tests clean up temp files
 - [x] Tests are deterministic (no flaky tests)
@@ -427,12 +444,14 @@ async fn test_search_relevance_ranking() {
 ### Schema Compatibility Strategy
 
 **Reference Implementation**: Next.js API routes in `packages/ui/src/app/api/`
+
 - `/api/local-projects` → Rust `/api/projects`
 - `/api/projects/[id]/specs` → Rust `/api/specs`
 - `/api/projects/[id]/stats` → Rust `/api/stats`
 - `/api/projects/[id]/dependencies` → Rust `/api/deps/{spec}`
 
 **Validation Approach**:
+
 1. Extract sample responses from Next.js API routes
 2. Compare field names and structure
 3. Validate camelCase serialization in Rust responses
@@ -440,6 +459,7 @@ async fn test_search_relevance_ranking() {
 5. Create compatibility tests that would fail on schema drift
 
 **Comparative Testing (Recommended)**:
+
 1. Run Next.js dev server: `pnpm -F @leanspec/ui dev` (port 3000)
 2. Run Rust HTTP server: `cargo run --bin leanspec-http` (port 3001)
 3. Point both at same test project directory
@@ -448,6 +468,7 @@ async fn test_search_relevance_ranking() {
 6. Validates not just schema but actual behavior
 
 **Benefits of Live Comparison**:
+
 - Catches subtle differences that static checks miss
 - Validates actual serialization behavior
 - Tests with real Next.js API implementation
@@ -455,13 +476,14 @@ async fn test_search_relevance_ranking() {
 - Confirms identical responses for same input
 
 **Setup for Comparative Tests**:
+
 ```bash
 # Terminal 1: Start Next.js API
-cd /path/to/lean-spec
+cd /path/to/harnspec
 pnpm -F @leanspec/ui dev
 
 # Terminal 2: Start Rust HTTP server
-cd /path/to/lean-spec/rust/leanspec-http
+cd /path/to/harnspec/rust/leanspec-http
 cargo run
 
 # Terminal 3: Run comparative tests
@@ -469,6 +491,7 @@ cargo test --test comparative -- --ignored
 ```
 
 **Key Fields to Validate**:
+
 - `specNumber` (not `spec_number`)
 - `specName` (not `spec_name`)
 - `contentMd` (not `content_md`)
@@ -491,6 +514,7 @@ cargo test --test comparative -- --ignored
 ### Why Schema Alignment Matters
 
 **API Compatibility** is critical because:
+
 - **@leanspec/ui-vite** expects exact same response format as Next.js APIs
 - Field names must match (camelCase in JSON, not snake_case)
 - Frontend code should work unchanged when switching backends
@@ -500,6 +524,7 @@ cargo test --test comparative -- --ignored
 ### Testing Philosophy
 
 **Focus on behavior, not implementation**:
+
 - Test HTTP responses, not internal state
 - Verify response formats match frontend expectations
 - **Validate schema compatibility with Next.js APIs**
@@ -507,6 +532,7 @@ cargo test --test comparative -- --ignored
 - Use realistic fixtures that mirror production data
 
 **Keep tests fast**:
+
 - Use in-memory project registry
 - Generate fixtures dynamically
 - Parallelize where possible
@@ -522,12 +548,14 @@ cargo test --test comparative -- --ignored
 ## Implementation Log
 
 ### 2025-12-19: Spec Created
+
 - Identified need for comprehensive API tests before UI migration
 - Defined test architecture and strategy
 - 5-day implementation plan
 - Priority: HIGH - prerequisite for Spec 190
 
 ### 2025-12-19: Schema Alignment Added
+
 - Added explicit schema compatibility testing with Next.js APIs
 - Documented key fields to validate (camelCase serialization)
 - Added comparative testing strategy (run both servers side-by-side)
@@ -535,6 +563,7 @@ cargo test --test comparative -- --ignored
 - Added example tests for live API comparison
 
 ### 2025-12-20: Test Suite Completed
+
 - ✅ Implemented comprehensive integration test suite (36 tests)
 - ✅ All 7 phases completed with full coverage
 - ✅ Phase 1: Test infrastructure with fixtures and helpers

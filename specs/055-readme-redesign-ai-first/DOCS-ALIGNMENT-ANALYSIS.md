@@ -9,6 +9,7 @@
 ✅ **Overall Status**: Documentation is well-aligned with current implementation and design principles.
 
 **Key Findings**:
+
 - First principles documentation is accurate and comprehensive
 - CLI reference matches actual implementation (all commands exist)
 - Current repo uses **flat structure** (global numbering) - matches default in config
@@ -19,6 +20,7 @@
 ### ✅ Well-Aligned Areas
 
 #### 1. First Principles (`docs/guide/first-principles.md`)
+
 **Status**: ✅ Excellent alignment
 
 - All 5 principles clearly documented
@@ -30,6 +32,7 @@
 **No changes needed.**
 
 #### 2. Philosophy (`docs/guide/philosophy.md`)
+
 **Status**: ✅ Good alignment
 
 - Mindset-focused (not just format/tool)
@@ -40,25 +43,28 @@
 **No changes needed.**
 
 #### 3. CLI Reference (`docs/reference/cli.md`)
+
 **Status**: ✅ Commands match implementation
 
 Verified all documented commands exist:
-- ✅ `lean-spec init`
-- ✅ `lean-spec create`
-- ✅ `lean-spec list`
-- ✅ `lean-spec update`
-- ✅ `lean-spec search`
-- ✅ `lean-spec archive`
-- ✅ `lean-spec view`
-- ✅ `lean-spec open`
-- ✅ `lean-spec templates`
-- ✅ `lean-spec stats`
-- ✅ `lean-spec board`
-- ✅ `lean-spec deps`
+
+- ✅ `harnspec init`
+- ✅ `harnspec create`
+- ✅ `harnspec list`
+- ✅ `harnspec update`
+- ✅ `harnspec search`
+- ✅ `harnspec archive`
+- ✅ `harnspec view`
+- ✅ `harnspec open`
+- ✅ `harnspec templates`
+- ✅ `harnspec stats`
+- ✅ `harnspec board`
+- ✅ `harnspec deps`
 
 **Minor inconsistency**: Documentation shows many examples with date-based structure (`specs/20251102/001-user-auth`), but current default is **flat structure** (`specs/001-user-auth/`).
 
 #### 4. AI Integration (`docs/ai-integration/index.md`)
+
 **Status**: ✅ Good alignment
 
 - Emphasizes AGENTS.md as primary integration
@@ -75,11 +81,13 @@ Verified all documented commands exist:
 #### 1. Structure Pattern Examples
 
 **Issue**: Many CLI examples in docs show date-based structure, but:
+
 - Current default is `pattern: 'flat'` with global numbering
 - Actual specs/ folder uses flat structure (`014-complete-custom-frontmatter/`, `055-readme-redesign-ai-first/`)
 - Config default has `prefix: ''` (no date prefix)
 
 **Examples showing old format**:
+
 ```bash
 # In CLI reference:
 specs/20251102/001-user-authentication  ❌ Old date-based
@@ -97,6 +105,7 @@ specs/001-user-authentication/           ✅ Current flat structure
 **File**: `docs/guide/getting-started.md`
 
 **Current text**: Shows correct structure explanation:
+
 - Project structure diagram with flat layout (`001-first-feature/`, `002-second-feature/`)
 - Note explaining default is flat with global numbering
 - Mentions date-based grouping as configuration option
@@ -110,10 +119,12 @@ specs/001-user-authentication/           ✅ Current flat structure
 #### 3. CLI Examples Consistency
 
 **Files affected**:
+
 - `docs/reference/cli.md`
 - `docs/guide/getting-started.md`
 
 **Current**: Mixed examples showing both formats
+
 - Some: `specs/20251102/001-user-auth` (date-based)
 - Some: `001-user-authentication` (flat)
 
@@ -156,22 +167,25 @@ Move structure explanation higher, before "Create Your First Spec" section.
 Add visual comparison showing:
 
 **Flat Structure (Default)**:
+
 - `specs/001-user-auth/`
 - `specs/002-api-gateway/`
 - `specs/archived/`
 
 **Date-based Grouping (Optional)**:
+
 - `specs/20251101/001-user-auth/`
 - `specs/20251101/002-api-gateway/`
 - `specs/archived/`
 
-Note: Configure in `.lean-spec/config.json` with `"pattern": "custom"` + `"groupExtractor": "{YYYYMMDD}"`.
+Note: Configure in `.harnspec/config.json` with `"pattern": "custom"` + `"groupExtractor": "{YYYYMMDD}"`.
 
 ### Priority 3: Add Structure Configuration Doc
 
 **File**: `docs-site/docs/reference/config.md` (or `docs/guide/folder-structure.md`)
 
 Create comprehensive guide showing:
+
 - Default flat structure
 - Date-based grouping configuration
 - Custom grouping (by milestone, epic, etc.)
@@ -196,17 +210,21 @@ Before publishing REDESIGN-REFINED.md to README.md:
 ## Files Requiring Updates
 
 ### High Priority
+
 1. `docs-site/docs/reference/cli.mdx` - Update all structure examples
 2. `docs-site/docs/guide/getting-started.mdx` - Clarify structure upfront
 
 ### Medium Priority
+
 3. `docs-site/docs/reference/config.mdx` - Document structure patterns (if exists)
-4. `docs-site/docs/guide/folder-structure.mdx` - Add if missing
+2. `docs-site/docs/guide/folder-structure.mdx` - Add if missing
 
 ### Low Priority
+
 5. Any other files with spec path examples (search for `specs/YYYYMMDD/`)
 
 ### Completed ✅
+
 - All documentation files converted from .md to .mdx
 - Build verification passed successfully
 

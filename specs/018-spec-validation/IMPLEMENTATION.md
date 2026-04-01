@@ -1,8 +1,8 @@
 # Implementation Plan
 
-8-phase implementation plan for the `lean-spec validate` command.
+8-phase implementation plan for the `harnspec validate` command.
 
-**Note:** This spec originally proposed expanding `lean-spec check`, but the implementation created `lean-spec validate` as a separate command to keep sequence checking and quality validation as separate concerns.
+**Note:** This spec originally proposed expanding `harnspec check`, but the implementation created `harnspec validate` as a separate command to keep sequence checking and quality validation as separate concerns.
 
 ## Status
 
@@ -17,14 +17,16 @@
 **Goal:** Create modular framework for validation rules
 
 **Completed Tasks:**
+
 - [x] Created validation framework architecture
 - [x] Implemented `ValidationRule` interface
 - [x] Created `LineCountValidator` with warning/error thresholds
-- [x] Implemented `lean-spec validate` command with `--max-lines` flag
+- [x] Implemented `harnspec validate` command with `--max-lines` flag
 - [x] Added integration tests
 - [x] Documented in README
 
-**Notes:** 
+**Notes:**
+
 - Built as separate `validate` command (not expansion of `check`)
 - Framework allows easy addition of new validators
 - Already in production use
@@ -36,6 +38,7 @@
 **Goal:** Validate spec frontmatter for required fields and valid values
 
 **Completed Tasks:**
+
 - [x] Create frontmatter validator module (`src/validators/frontmatter.ts`)
 - [x] Validate required fields present (status, created)
 - [x] Validate status values (planned, in-progress, complete, archived)
@@ -43,11 +46,12 @@
 - [x] Validate date formats (ISO 8601: YYYY-MM-DD or full timestamp)
 - [x] Validate tags format (must be array)
 - [x] Add comprehensive unit tests (27 tests passing)
-- [x] Integrate with `lean-spec validate` command
+- [x] Integrate with `harnspec validate` command
 - [ ] Validate custom fields (if defined in config) - deferred to future phase
 - [ ] Add `--frontmatter` flag for selective validation - deferred to future phase
 
-**Notes:** 
+**Notes:**
+
 - Most critical for catching common mistakes ✓
 - Enables comprehensive pre-commit hooks ✓
 - Prevents invalid specs from being created ✓
@@ -64,6 +68,7 @@
 **Goal:** Ensure specs follow structural conventions
 
 **Completed Tasks:**
+
 - [x] Create structure validator module (`src/validators/structure.ts`)
 - [x] Validate YAML frontmatter syntax
 - [x] Check for title (H1 heading)
@@ -71,10 +76,11 @@
 - [x] Check for empty sections (with proper subsection handling)
 - [x] Detect duplicate section headers
 - [x] Add comprehensive unit tests (17 tests passing)
-- [x] Integrate with `lean-spec validate` command
+- [x] Integrate with `harnspec validate` command
 - [x] Test against real repository specs
 
-**Notes:** 
+**Notes:**
+
 - Ensures spec consistency across team ✓
 - Template-specific validation rules (configurable)
 - Properly handles sections with subsections (doesn't flag as empty)
@@ -89,6 +95,7 @@
 **Goal:** Detect file corruption from failed edits
 
 **Completed Tasks:**
+
 - [x] Create corruption detector module (`src/validators/corruption.ts`)
 - [x] Detect duplicate sections at same level (delegated to structure validator)
 - [x] Validate code blocks are properly closed
@@ -96,10 +103,11 @@
 - [x] Detect content fragments (partial duplicates / merge artifacts)
 - [x] Validate markdown structure (unclosed formatting)
 - [x] Add comprehensive unit tests (19 tests passing)
-- [x] Integrate with `lean-spec validate` command
+- [x] Integrate with `harnspec validate` command
 - [x] Test against real repository specs
 
-**Notes:** 
+**Notes:**
+
 - Addresses real pain point we've experienced ✓
 - Runs by default to catch AI edit failures ✓
 - Critical for maintaining spec quality ✓
@@ -116,6 +124,7 @@
 **Goal:** Validate sub-spec files per spec 012 conventions
 
 **Completed Tasks:**
+
 - [x] Create sub-spec validator module (`src/validators/sub-spec.ts`)
 - [x] Check sub-spec naming conventions (uppercase .md files)
 - [x] Validate README.md references all sub-specs
@@ -123,10 +132,11 @@
 - [x] Detect orphaned sub-spec files (not linked from README)
 - [x] Validate cross-document references
 - [x] Add comprehensive unit tests (16 tests passing)
-- [x] Integrate with `lean-spec validate` command
+- [x] Integrate with `harnspec validate` command
 - [ ] Check for content duplication across sub-specs (deferred - complex analysis)
 
-**Notes:** 
+**Notes:**
+
 - Complements spec 012 (sub-spec files management) ✓
 - Important as teams adopt multi-file specs ✓
 - Enforces Context Economy principle per file ✓
@@ -144,13 +154,15 @@
 **Goal:** Validate spec content quality
 
 **Tasks:**
+
 - [ ] Minimum content length check
 - [ ] Detect TODO/FIXME in complete specs
 - [ ] Validate internal links
 - [ ] Check for placeholder text
-- [ ] Integrate with `lean-spec validate --content` flag
+- [ ] Integrate with `harnspec validate --content` flag
 
-**Notes:** 
+**Notes:**
+
 - Nice to have, can defer to v0.3.0 if time-constrained
 - Lower priority than corruption detection
 - Useful for quality gates
@@ -162,14 +174,16 @@
 **Goal:** Identify stale or abandoned specs
 
 **Tasks:**
+
 - [ ] Calculate spec age (created date)
 - [ ] Calculate last update (git or file mtime)
 - [ ] Warn on in-progress specs > 30 days
 - [ ] Warn on no updates > 90 days
 - [ ] Warn on planned specs > 60 days
-- [ ] Integrate with `lean-spec validate --staleness` flag
+- [ ] Integrate with `harnspec validate --staleness` flag
 
-**Notes:** 
+**Notes:**
+
 - Useful for maintenance
 - Lower priority for launch
 - Git integration adds complexity
@@ -181,7 +195,8 @@
 **Goal:** Automatically fix common issues
 
 **Tasks:**
-- [ ] Implement --fix flag for `lean-spec validate`
+
+- [ ] Implement --fix flag for `harnspec validate`
 - [ ] Add missing frontmatter fields
 - [ ] Format dates to ISO 8601
 - [ ] Sort frontmatter fields
@@ -190,7 +205,8 @@
 - [ ] Close unclosed code blocks
 - [ ] Report what was fixed
 
-**Notes:** 
+**Notes:**
+
 - Great UX feature
 - Can defer to post-launch iteration
 - Should be conservative (only fix obvious issues)
@@ -202,6 +218,7 @@
 **Goal:** Complete feature with docs and tests
 
 **Tasks:**
+
 - [ ] Add tests for all check types
 - [ ] Update README with expanded check command
 - [ ] Update AGENTS.md to mention comprehensive checking
@@ -211,7 +228,8 @@
 - [ ] Performance optimization (parallel checking)
 - [ ] Caching for repeated checks
 
-**Notes:** 
+**Notes:**
+
 - Essential for launch
 - Documentation is critical for adoption
 - Performance matters for large projects
@@ -221,6 +239,7 @@
 ## Launch Strategy (2025-11-04)
 
 ### v0.2.0 Scope
+
 - **MUST HAVE:** Phases 1-3 (refactored framework + frontmatter + structure validation)
 - **HIGHLY RECOMMENDED:** Phase 3.5 (sub-spec validation - enforces spec 012)
 - **HIGHLY RECOMMENDED:** Phase 4 (corruption detection - addresses real pain point)
@@ -228,11 +247,13 @@
 - **NICE TO HAVE:** Phases 5-6 (content, staleness)
 
 ### v0.3.0 Scope
+
 - Complete all remaining phases
 - Roll out comprehensive checking with backwards compatibility
 - Enable by default with config override
 
 ### Post-v0.3.0
+
 - Add advanced features based on user feedback
 - Custom validation rules
 - Performance optimizations
@@ -254,15 +275,19 @@
 ## Risks & Mitigation
 
 **Risk:** Breaking backwards compatibility
+
 - **Mitigation:** Comprehensive testing, config options, gradual rollout
 
 **Risk:** Performance degradation with many checks
+
 - **Mitigation:** Parallel checking, caching, incremental mode
 
 **Risk:** False positives in corruption detection
+
 - **Mitigation:** Conservative rules, allow configuration
 
 **Risk:** Scope creep (too many check types)
+
 - **Mitigation:** Focus on Phases 1-4 for launch, defer others
 
 ## Success Metrics
@@ -276,6 +301,7 @@
 ## Testing Strategy
 
 Each phase includes:
+
 - Unit tests for validator modules
 - Integration tests with real specs
 - Edge case testing
@@ -289,25 +315,29 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 ### For Existing Projects
 
 1. **Run initial validation:**
+
    ```bash
-   lean-spec validate --max-lines 400
+   harnspec validate --max-lines 400
    ```
 
 2. **Review and fix issues:**
+
    ```bash
-   lean-spec validate --fix  # When auto-fix is available
-   lean-spec validate        # Verify fixes
+   harnspec validate --fix  # When auto-fix is available
+   harnspec validate        # Verify fixes
    ```
 
 3. **Enable in CI:**
+
    ```yaml
-   - run: lean-spec validate --strict --format=json
+   - run: harnspec validate --strict --format=json
    ```
 
 4. **Add pre-commit hook:**
+
    ```bash
-   lean-spec check           # Sequence conflicts
-   lean-spec validate        # Quality validation
+   harnspec check           # Sequence conflicts
+   harnspec validate        # Quality validation
    ```
 
 ### For New Projects
@@ -318,13 +348,15 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 
 ## Alternative Approaches Considered
 
-### Separate `lean-spec validate` Command
+### Separate `harnspec validate` Command
 
-**Pros:** 
+**Pros:**
+
 - Clear separation of concerns
 - No backwards compatibility issues
 
 **Cons:**
+
 - Two commands for quality checking
 - User confusion (when to use which?)
 - More maintenance burden
@@ -334,10 +366,12 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 ### Always-On Comprehensive Checking
 
 **Pros:**
+
 - Maximum quality enforcement
 - Simple model
 
 **Cons:**
+
 - Breaking change
 - Performance impact for large projects
 - User pushback
@@ -347,10 +381,12 @@ See [TESTING.md](./TESTING.md) for detailed test plan.
 ### External Plugin System
 
 **Pros:**
+
 - Extensibility
 - Community contributions
 
 **Cons:**
+
 - Over-engineering for current needs
 - Added complexity
 - Maintenance burden

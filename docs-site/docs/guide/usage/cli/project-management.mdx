@@ -17,7 +17,7 @@ Get instant visibility into your project's health with board and stats commands.
 Visual kanban view of your specs:
 
 ```bash
-lean-spec board
+harnspec board
 ```
 
 Shows specs organized by status columns:
@@ -39,13 +39,13 @@ Filter the board view:
 
 ```bash
 # Show only high priority specs
-lean-spec board --priority high
+harnspec board --priority high
 
 # Show specs with specific tag
-lean-spec board --tag feature
+harnspec board --tag feature
 
 # Combine filters
-lean-spec board --priority high --tag api
+harnspec board --priority high --tag api
 ```
 
 ### Stats Command
@@ -53,7 +53,7 @@ lean-spec board --priority high --tag api
 Quick project metrics:
 
 ```bash
-lean-spec stats
+harnspec stats
 ```
 
 Shows:
@@ -68,7 +68,7 @@ Shows:
 Get detailed analytics:
 
 ```bash
-lean-spec stats --full
+harnspec stats --full
 ```
 
 Provides comprehensive project insights:
@@ -111,37 +111,37 @@ Provides comprehensive project insights:
 **Daily Standup:**
 ```bash
 # Quick project overview
-lean-spec board
+harnspec board
 
 # See what's in progress
-lean-spec board --status in-progress
+harnspec board --status in-progress
 
 # Check high priority items
-lean-spec board --priority high
+harnspec board --priority high
 ```
 
 **Sprint Planning:**
 ```bash
 # Review project health
-lean-spec stats --full
+harnspec stats --full
 
 # See what's ready to start
-lean-spec board --status planned
+harnspec board --status planned
 
 # Check capacity
-lean-spec stats
+harnspec stats
 ```
 
 **Weekly Review:**
 ```bash
 # Overall project metrics
-lean-spec stats --full
+harnspec stats --full
 
 # Review completed work
-lean-spec board --status complete
+harnspec board --status complete
 
 # Identify bottlenecks
-lean-spec board --status in-progress
+harnspec board --status in-progress
 ```
 
 ### Project Health Indicators
@@ -152,7 +152,7 @@ The board and stats commands help identify:
 - Too many in-progress specs (focus issues)
 - Old specs without updates (stale work)
 - High percentage of planned specs (execution gap)
-- Specs with unmet dependencies (check with `lean-spec deps`)
+- Specs with unmet dependencies (check with `harnspec deps`)
 
 **✅ Healthy Signals:**
 - Steady completion rate
@@ -184,20 +184,20 @@ Use `depends_on` for hard dependencies:
 
 ```bash
 # Spec A depends on Spec B
-lean-spec link spec-a --depends-on spec-b
+harnspec link spec-a --depends-on spec-b
 
 # Spec A depends on multiple specs
-lean-spec link spec-a --depends-on spec-b spec-c
+harnspec link spec-a --depends-on spec-b spec-c
 ```
 
 Shows differently from each side:
 
 ```bash
-$ lean-spec deps spec-a
+$ harnspec deps spec-a
 Depends On:
   → spec-b [in-progress]  # A depends on B
 
-$ lean-spec deps spec-b
+$ harnspec deps spec-b
 Required By:
   ← spec-a [planned]  # B is required by A
 ```
@@ -212,7 +212,7 @@ Required By:
 View all relationships for a spec:
 
 ```bash
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 Shows:
@@ -241,7 +241,7 @@ Only for true blockers where work order matters:
 
 ```bash
 # ✅ Good - Authentication needed before API gateway
-lean-spec link api-gateway --depends-on authentication
+harnspec link api-gateway --depends-on authentication
 
 # ❌ Overuse - Documentation doesn't block implementation
 # Instead: Document the relationship in the spec content
@@ -251,8 +251,8 @@ lean-spec link api-gateway --depends-on authentication
 
 ```bash
 # ❌ Bad - Circular dependency
-lean-spec link spec-a --depends-on spec-b
-lean-spec link spec-b --depends-on spec-a
+harnspec link spec-a --depends-on spec-b
+harnspec link spec-b --depends-on spec-a
 ```
 
 HarnSpec will warn about circular dependencies.
@@ -268,7 +268,7 @@ For specs that share context but don't block each other, document the connection
 Check dependencies:
 
 ```bash
-lean-spec deps <spec>
+harnspec deps <spec>
 ```
 
 Ensure all `depends_on` specs are complete before starting.
@@ -279,10 +279,10 @@ Map dependencies:
 
 ```bash
 # View dependency tree
-lean-spec deps feature-spec
+harnspec deps feature-spec
 
 # Check what's blocked
-lean-spec board --status planned
+harnspec board --status planned
 ```
 
 **Identifying Bottlenecks:**
@@ -291,7 +291,7 @@ Find specs blocking others:
 
 ```bash
 # Check what depends on this
-lean-spec deps <in-progress-spec>
+harnspec deps <in-progress-spec>
 
 # Look for "Required By" items
 ```
@@ -302,10 +302,10 @@ lean-spec deps <in-progress-spec>
 
 ```bash
 # Phase 2 depends on Phase 1
-lean-spec link phase-2 --depends-on phase-1
+harnspec link phase-2 --depends-on phase-1
 
 # Phase 3 depends on Phase 2
-lean-spec link phase-3 --depends-on phase-2
+harnspec link phase-3 --depends-on phase-2
 ```
 
 **Parallel Work:**
@@ -316,7 +316,7 @@ Features can be implemented in parallel. Document connections in spec content if
 
 ```bash
 # Tests blocked until feature done
-lean-spec link tests --depends-on core-feature
+harnspec link tests --depends-on core-feature
 ```
 
 ### Managing Changes
@@ -325,7 +325,7 @@ lean-spec link tests --depends-on core-feature
 
 ```bash
 # Add dependency
-lean-spec link my-spec --depends-on prerequisite-spec
+harnspec link my-spec --depends-on prerequisite-spec
 ```
 
 **Removing Dependencies:**
@@ -334,17 +334,17 @@ When a dependency is no longer needed:
 
 ```bash
 # Remove dependency
-lean-spec unlink my-spec --depends-on old-requirement
+harnspec unlink my-spec --depends-on old-requirement
 ```
 
 ## Best Practices
 
 ### Board & Stats
 
-1. **Check daily** - Start your day with `lean-spec board`
-2. **Review weekly** - Use `lean-spec stats --full` for trends
+1. **Check daily** - Start your day with `harnspec board`
+2. **Review weekly** - Use `harnspec stats --full` for trends
 3. **Limit WIP** - Keep in-progress specs under control
-4. **Update regularly** - Keep status current with `lean-spec update`
+4. **Update regularly** - Keep status current with `harnspec update`
 5. **Use priorities** - Focus on high-priority work first
 
 ### Dependencies
@@ -353,7 +353,7 @@ lean-spec unlink my-spec --depends-on old-requirement
 2. **Check before starting** - Ensure dependencies are met
 3. **Avoid circular deps** - Keep dependency chains simple
 4. **Document context in content** - For loosely coupled specs, mention relationships in the spec text rather than metadata
-5. **Use CLI commands** - `lean-spec link`/`unlink`, not manual edits
+5. **Use CLI commands** - `harnspec link`/`unlink`, not manual edits
 
 ## Next Steps
 

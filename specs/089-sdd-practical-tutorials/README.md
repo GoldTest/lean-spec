@@ -22,14 +22,15 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 Users struggle to understand how to use SDD in real practice. Current docs explain concepts but lack concrete, step-by-step tutorials showing actual workflow.
 
-**Problem**: 
+**Problem**:
+
 - Docs are concept-heavy, practice-light
 - No clear "getting started" path for new users
 - Users don't know when to write specs, what to include, how to maintain them
@@ -52,7 +53,7 @@ Users struggle to understand how to use SDD in real practice. Current docs expla
 3. **Managing Multiple Specs** (20 min)
    - Create related specs
    - Use dependencies and relationships
-   - Track progress with `lean-spec board`
+   - Track progress with `harnspec board`
    - Archive completed work
 
 4. **Working with Teams** (15 min)
@@ -75,12 +76,14 @@ Users struggle to understand how to use SDD in real practice. Current docs expla
 6. **Next steps**: Link to next tutorial or related content
 
 **Tutorial progression**:
+
 - Start simple (single spec, solo dev)
 - Build complexity gradually
 - Each tutorial builds on previous knowledge
 - Can be followed independently if user has prerequisites
 
 **Content principles**:
+
 - Show, don't tell: Real commands, real examples
 - Include expected output for every command
 - Use realistic scenarios (not toy examples)
@@ -88,6 +91,7 @@ Users struggle to understand how to use SDD in real practice. Current docs expla
 - Keep tutorials under 30 minutes each
 
 **Format**:
+
 - Each tutorial = separate doc page
 - Include video walkthrough (future enhancement)
 - Provide downloadable example project (future enhancement)
@@ -96,6 +100,7 @@ Users struggle to understand how to use SDD in real practice. Current docs expla
 ## Plan
 
 **Phase 1: Tutorial content**
+
 - [ ] Write "Your First Spec" tutorial
 - [ ] Write "SDD Workflow: Feature Development" tutorial
 - [ ] Write "Managing Multiple Specs" tutorial
@@ -103,12 +108,14 @@ Users struggle to understand how to use SDD in real practice. Current docs expla
 - [ ] Review tutorials with test users for clarity
 
 **Phase 2: Integration**
+
 - [ ] Add "Tutorials" section to docs-site
 - [ ] Create tutorial navigation/progression
 - [ ] Add "Quick Start" link to homepage pointing to first tutorial
 - [ ] Update README.md to mention tutorials
 
 **Phase 3: Enhancements (future)**
+
 - [ ] Record video walkthroughs
 - [ ] Create downloadable example projects
 - [ ] Add interactive playground/sandbox

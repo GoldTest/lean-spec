@@ -21,18 +21,19 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-11 · **Tags**: architecture, refactor, monorepo, v0.3.0-launch
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-Restructure lean-spec into a **pnpm monorepo** with a shared `@leanspec/core` package that provides platform-agnostic spec parsing, validation, and utilities. This enables code reuse across CLI, MCP server, and the upcoming web application while maintaining consistency in how specs are processed.
+Restructure harnspec into a **pnpm monorepo** with a shared `@leanspec/core` package that provides platform-agnostic spec parsing, validation, and utilities. This enables code reuse across CLI, MCP server, and the upcoming web application while maintaining consistency in how specs are processed.
 
 **Problem**: The web application (spec 035) needs to parse and validate specs identically to the CLI/MCP server, but currently ~40% of the codebase is tightly coupled to Node.js file system operations. Duplicating this logic would lead to drift and inconsistency.
 
 **Solution**: Extract shared logic into `@leanspec/core` with abstract storage interfaces, allowing the same parsing/validation code to work with both file systems (CLI) and GitHub API (web).
 
-**Why now?** 
+**Why now?**
+
 - Web app development starting (spec 035)
 - Need guaranteed consistency between CLI and web parsing
 - Already using pnpm (workspace support built-in)
@@ -43,7 +44,7 @@ Restructure lean-spec into a **pnpm monorepo** with a shared `@leanspec/core` pa
 ### Monorepo Structure
 
 ```
-lean-spec/                         # Root monorepo
+harnspec/                         # Root monorepo
 ├── package.json                   # Workspace root
 ├── pnpm-workspace.yaml           # pnpm workspaces config
 ├── turbo.json                    # Turborepo build orchestration (optional)
@@ -70,7 +71,7 @@ lean-spec/                         # Root monorepo
 │   │   └── tsconfig.json
 │   │
 │   ├── cli/                      # 🔧 CLI & MCP SERVER
-│   │   ├── package.json          # lean-spec (existing CLI)
+│   │   ├── package.json          # harnspec (existing CLI)
 │   │   ├── src/
 │   │   │   ├── cli.ts
 │   │   │   ├── mcp-server.ts
@@ -80,7 +81,7 @@ lean-spec/                         # Root monorepo
 │   │   │   └── utils/
 │   │   │       └── cli-helpers.ts
 │   │   └── bin/
-│   │       └── lean-spec.js
+│   │       └── harnspec.js
 │   │
 │   └── web/                      # 🌐 WEB APP (future - spec 035)
 │       ├── package.json          # @leanspec/web
@@ -163,7 +164,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 // Example usage in web:
 import { SpecLoader, GitHubStorage } from '@leanspec/web/adapters';
 
-const storage = new GitHubStorage(octokit, 'codervisor', 'lean-spec');
+const storage = new GitHubStorage(octokit, 'codervisor', 'harnspec');
 const loader = new SpecLoader(storage);
 const specs = await loader.loadAllSpecs({ includeArchived: false });
 ```
@@ -171,6 +172,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ### What Goes in Core?
 
 **✅ Include in `@leanspec/core`:**
+
 - **Type definitions**: `SpecInfo`, `SpecFrontmatter`, `SpecStatus`, `SpecPriority`, etc.
 - **Parsers**: Frontmatter parsing (gray-matter), spec content parsing
 - **Validators**: Frontmatter validation, structure validation, line count, sub-spec validation
@@ -178,6 +180,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - **Pure functions**: Any logic that doesn't depend on I/O
 
 **❌ Keep in `@leanspec/cli`:**
+
 - CLI command implementations
 - Terminal output formatting (colors, tables)
 - MCP server logic
@@ -185,6 +188,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - Git operations
 
 **❌ Goes in `@leanspec/web`:**
+
 - Next.js app code
 - React components
 - Database queries
@@ -194,6 +198,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ### Migration Strategy
 
 **Phase 1: Setup Monorepo (No Breaking Changes)**
+
 1. Create `pnpm-workspace.yaml`
 2. Create `packages/core/` structure
 3. Create `packages/cli/` and move existing code
@@ -201,6 +206,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 5. Ensure all tests pass
 
 **Phase 2: Extract Core Package**
+
 1. Copy shared code to `packages/core/`
 2. Refactor to use abstract storage interface
 3. Update CLI to use `@leanspec/core` + FileSystemStorage
@@ -208,6 +214,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 5. Ensure all tests pass
 
 **Phase 3: Optimize & Document**
+
 1. Add tests for core package
 2. Update documentation
 3. Publish `@leanspec/core` to npm (optional)
@@ -216,6 +223,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ## Plan
 
 ### Phase 1: Monorepo Setup (1-2 days)
+
 - [ ] Create `pnpm-workspace.yaml` config
 - [ ] Create `packages/` directory structure
 - [ ] Move existing code to `packages/cli/`
@@ -225,6 +233,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - [ ] Update CI/CD to handle monorepo structure
 
 ### Phase 2: Core Package Extraction (3-4 days)
+
 - [ ] Create `packages/core/` structure
 - [ ] Design abstract `SpecStorage` interface
 - [ ] Extract and refactor `frontmatter.ts` (remove fs dependencies)
@@ -236,6 +245,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - [ ] Update MCP server to use `@leanspec/core` + adapter
 
 ### Phase 3: Testing & Validation (2-3 days)
+
 - [ ] Write unit tests for core package
 - [ ] Write integration tests for storage adapters
 - [ ] Run full test suite (ensure >80% coverage maintained)
@@ -244,6 +254,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - [ ] Test MCP server end-to-end
 
 ### Phase 4: Documentation & Polish (1-2 days)
+
 - [ ] Document `@leanspec/core` API
 - [ ] Document storage adapter pattern
 - [ ] Update CONTRIBUTING.md with monorepo workflow
@@ -254,6 +265,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ## Test
 
 ### Unit Tests
+
 - [ ] Core parsers work with string input (no fs dependencies)
 - [ ] Validators work with in-memory data
 - [ ] Utils produce correct calculations
@@ -261,17 +273,20 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 - [ ] GitHubStorage adapter works with mocked Octokit
 
 ### Integration Tests
+
 - [ ] CLI commands work unchanged
 - [ ] MCP server works unchanged
 - [ ] Spec loading via FileSystemStorage matches old behavior
 - [ ] All existing tests pass with new structure
 
 ### Performance Tests
+
 - [ ] No performance regression in CLI operations
 - [ ] Spec loading time unchanged (<10ms)
 - [ ] Memory usage unchanged
 
 ### Quality Gates
+
 - [ ] Test coverage >80% maintained
 - [ ] All existing functionality works
 - [ ] No breaking changes for end users
@@ -282,6 +297,7 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ### Why Monorepo?
 
 **Benefits:**
+
 - ✅ Shared code between CLI and web (30-40% reusable)
 - ✅ Type safety across packages
 - ✅ Atomic commits across changes
@@ -291,11 +307,13 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 **Alternatives Considered:**
 
 **Option 1: Separate npm package**
+
 - ❌ More overhead (separate repo, publishing)
 - ❌ Slower iteration (need to publish to test)
 - ❌ Version coordination issues
 
 **Option 2: Code duplication**
+
 - ❌ High risk of drift/inconsistency
 - ❌ Double maintenance burden
 - ❌ Different parsing behavior = bugs
@@ -305,22 +323,26 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ### Dependencies
 
 **Required by:**
+
 - spec 035 (live-specs-showcase) - Needs `@leanspec/core` for GitHub parsing
 - spec 065 (v0.3 launch) - This is a critical path item
 
 **Blocks:**
+
 - Web app development cannot start without shared core
 - GitHub integration needs consistent parsing logic
 
 ### Migration Path
 
 **For end users:**
+
 - ✅ No breaking changes
 - ✅ CLI commands work identically
 - ✅ MCP server works identically
-- ✅ Same npm package name: `lean-spec`
+- ✅ Same npm package name: `harnspec`
 
 **For contributors:**
+
 - Updated CONTRIBUTING.md with monorepo workflow
 - Run `pnpm install` at root (installs all packages)
 - Run `pnpm test` at root (tests all packages)
@@ -329,15 +351,18 @@ const specs = await loader.loadAllSpecs({ includeArchived: false });
 ### Tools & Configuration
 
 **Workspace Management:**
+
 - pnpm workspaces (built-in, already using pnpm)
 - Turborepo (optional - adds build caching, can add later)
 
 **TypeScript:**
+
 - Shared `tsconfig.base.json` at root
 - Package-specific configs extend base
 - Path aliases for clean imports
 
 **Testing:**
+
 - Vitest at root (already using)
 - Run all tests: `pnpm test`
 - Run specific: `pnpm --filter @leanspec/core test`

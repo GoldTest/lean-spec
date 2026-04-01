@@ -24,7 +24,7 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-28 · **Tags**: mcp, tooling, dx, ai-agents
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -38,6 +38,7 @@ The `link` and `unlink` commands exist in CLI but are not exposed as MCP tools. 
 3. **Reality**: No `link.ts` in `packages/cli/src/mcp/tools/`
 
 This causes AI agents to:
+
 - Try to use a non-existent MCP tool
 - Fall back to CLI (extra step, breaks flow)
 - Sometimes forget to link at all (spec 128 incident)
@@ -45,7 +46,7 @@ This causes AI agents to:
 ### Workarounds (Current)
 
 1. Use `--related` / `--depends-on` at `create` time (works but easy to forget)
-2. Fall back to CLI: `lean-spec link <spec> --related <other>`
+2. Fall back to CLI: `harnspec link <spec> --related <other>`
 
 ## Design
 
@@ -54,6 +55,7 @@ This causes AI agents to:
 Create two new MCP tools following existing patterns:
 
 **`packages/cli/src/mcp/tools/link.ts`**
+
 ```typescript
 // Expose linkSpec() from commands/link.js
 inputSchema: {
@@ -64,6 +66,7 @@ inputSchema: {
 ```
 
 **`packages/cli/src/mcp/tools/unlink.ts`**
+
 ```typescript
 // Expose unlinkSpec() from commands/unlink.js
 inputSchema: {
@@ -80,8 +83,8 @@ Until tools are added, clarify the workaround:
 ```markdown
 | Action | MCP Tool | CLI Fallback |
 |--------|----------|--------------|
-| Link specs | `create --related` | `lean-spec link <spec> --related <other>` |
-| Unlink specs | ❌ CLI only | `lean-spec unlink <spec> --related <other>` |
+| Link specs | `create --related` | `harnspec link <spec> --related <other>` |
+| Unlink specs | ❌ CLI only | `harnspec unlink <spec> --related <other>` |
 ```
 
 ### Best Practice: Include relationships at creation
@@ -89,7 +92,7 @@ Until tools are added, clarify the workaround:
 When creating a spec that references others, always include `related` or `dependsOn`:
 
 ```
-mcp_lean-spec_create(
+mcp_harnspec_create(
   name: "my-feature",
   related: ["063", "047"]  // ← Don't forget!
 )
@@ -105,8 +108,8 @@ mcp_lean-spec_create(
 
 ## Test
 
-- [x] `mcp_lean-spec_link` tool registered and compiles
-- [x] `mcp_lean-spec_unlink` tool registered and compiles
+- [x] `mcp_harnspec_link` tool registered and compiles
+- [x] `mcp_harnspec_unlink` tool registered and compiles
 - [x] Build succeeds with new tools
 - [ ] Manual test with MCP client (deferred)
 

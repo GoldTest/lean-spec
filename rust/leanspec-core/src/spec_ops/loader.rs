@@ -508,7 +508,7 @@ impl SpecLoader {
         if is_in_archived_folder {
             eprintln!(
                 "⚠️  DEPRECATED: Spec '{}' is in archived/ folder. \
-                 Run 'lean-spec migrate-archived' to migrate to status-based archiving.",
+                 Run 'harnspec migrate-archived' to migrate to status-based archiving.",
                 spec_path
             );
         }

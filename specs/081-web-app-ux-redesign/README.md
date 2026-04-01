@@ -25,7 +25,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-14 · **Tags**: web, ux, design, enhancement
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development  
 **Dependencies**: Spec 068 (live-specs-ux-enhancements), **Spec 082 (web-realtime-sync-architecture) - CRITICAL BLOCKER**  
 **Related**: Spec 052 (branding-assets)
@@ -37,6 +37,7 @@ Comprehensive UX/UI redesign for the LeanSpec Web application (`@leanspec/web`) 
 **⚠️ CRITICAL BLOCKER IDENTIFIED**: This spec is **blocked** by spec 082 (web-realtime-sync-architecture). The current database-seeding architecture has a fundamental flaw - no realtime updates from filesystem. Spec 082 proposes removing the database entirely and using direct filesystem reads with smart caching. **This must be resolved before continuing with UX redesign** to avoid building on unstable foundations.
 
 **Why now?**
+
 - Current implementation (spec 068) completed foundational features but has UX issues
 - User testing revealed navigation confusion and layout inefficiencies
 - Missing branding integration (logo/favicon from spec 052)
@@ -44,6 +45,7 @@ Comprehensive UX/UI redesign for the LeanSpec Web application (`@leanspec/web`) 
 - Critical for broader adoption and professional appearance
 
 **What's the problem?**
+
 1. **Layout inefficiency**: Top navbar wastes horizontal space, metadata sidebar redundant with header
 2. **Navigation confusion**: Breadcrumbs in wrong location, sub-specs as tabs instead of tree structure
 3. **Missing branding**: No logo/favicon integration despite spec 052 completion
@@ -52,6 +54,7 @@ Comprehensive UX/UI redesign for the LeanSpec Web application (`@leanspec/web`) 
 
 **What's the solution?**
 Complete redesign with:
+
 - **Three-section navigation**: Home (dashboard) / Specs (unified list+board) / Stats
 - **GitHub link** moved to top navbar as icon (declutters sidebar)
 - **Compact top navbar** with logo, breadcrumbs, search, theme toggle, and GitHub link
@@ -68,6 +71,7 @@ Complete redesign with:
 **Current State**: No logo or favicon, uses placeholder text only
 
 **Changes Required:**
+
 - Import logo assets from spec 052 (`specs/052-branding-assets/`)
 - Use `logo-with-bg.svg` (theme-safe) for navbar light mode
 - Use `logo-dark-bg.svg` (cyan on dark) for navbar dark mode
@@ -76,6 +80,7 @@ Complete redesign with:
 - Ensure logo scales properly at navbar size (32px height)
 
 **Technical Approach:**
+
 ```tsx
 // packages/web/src/components/navigation.tsx
 <Link href="/" className="flex items-center space-x-2">
@@ -94,6 +99,7 @@ Complete redesign with:
 ```
 
 **Files:**
+
 - Copy from: `docs-site/static/img/logo-*.svg` and `docs-site/static/*.{ico,png}`
 - Copy to: `packages/web/public/`
 
@@ -104,6 +110,7 @@ Complete redesign with:
 **New Layout Architecture:**
 
 **Global Pages (Home, Specs, Stats):**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ Top Navbar (sticky, h-14)                                  │
@@ -126,6 +133,7 @@ Complete redesign with:
 ```
 
 **Spec Detail Page (Two Sidebars):**
+
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │ Top Navbar (sticky, h-14)                                   │
@@ -149,6 +157,7 @@ Complete redesign with:
 **Implementation Details:**
 
 **Top Navbar Changes:**
+
 - Remove horizontal nav items (moved to sidebar)
 - Add GitHub icon link at right edge (between theme toggle and nothing)
 - Move breadcrumb from spec detail page to navbar (always visible)
@@ -158,6 +167,7 @@ Complete redesign with:
 - Height: 56px (h-14)
 
 **Main Sidebar (New - Always Visible):**
+
 - Width: 240px, collapsible to 60px
 - Sticky positioning (top: 56px, height: calc(100vh - 56px))
 - Contains ONLY 3 primary sections:
@@ -169,6 +179,7 @@ Complete redesign with:
 - GitHub moved to top navbar (no longer in sidebar)
 
 **Specs Nav Sidebar (New - Spec Detail Page Only):**
+
 - Width: 280px, collapsible
 - Sticky positioning (top: 56px, height: calc(100vh - 56px))
 - Positioned to the right of Main Sidebar
@@ -180,6 +191,7 @@ Complete redesign with:
 - Only visible on spec detail pages
 
 **Component Structure:**
+
 ```tsx
 // New: src/components/main-sidebar.tsx
 export function MainSidebar({ currentPath }: Props) {
@@ -220,7 +232,7 @@ export function Navbar({ breadcrumb }: Props) {
           <SearchButton />
           <ThemeToggle />
           <Button variant="ghost" size="icon" asChild>
-            <a href="https://github.com/codervisor/lean-spec" target="_blank">
+            <a href="https://github.com/codervisor/harnspec" target="_blank">
               <Github className="h-5 w-5" />
             </a>
           </Button>
@@ -307,11 +319,13 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 
 ### 4. Specs Page (Unified List/Board)
 
-**Current State**: 
+**Current State**:
+
 - `/` = Spec List (cards with filters)
 - `/board` = Board view (kanban columns)
 
 **New Structure**:
+
 - Route: `/specs` (primary specs page)
 - Layout switcher: List view (default) or Board view
 - URL param: `?view=list` or `?view=board`
@@ -321,6 +335,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 ### 5. Spec Detail Page Redesign
 
 **Current Issues:**
+
 - Metadata sidebar duplicates info from header
 - Content has max-width constraint (artificially narrow on wide screens)
 - Timeline is horizontal (poor use of space)
@@ -359,6 +374,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 **Key Changes:**
 
 **Spec Header (Compact):**
+
 - Line 1: Spec number + Title
 - Line 2: Status badge, Priority badge, Tags, Actions dropdown
 - Line 3: Small metadata row: `Created: X · Updated: Y · Name: spec-name`
@@ -366,12 +382,14 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 - Sticky position: below navbar
 
 **Content Layout:**
+
 - Remove `max-w-6xl` constraint - use full available width
 - Remove left sidebar (metadata) entirely
 - Single column layout for content
 - Timeline embedded in markdown at appropriate section (not sidebar)
 
 **Sub-Spec Navigation:**
+
 - Move from horizontal tabs to left sidebar tree
 - Indent sub-specs under parent spec
 - Icons for sub-spec types (DESIGN.md, IMPLEMENTATION.md, etc.)
@@ -379,6 +397,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 - "Overview" = `README.md` (merge, don't duplicate)
 
 **Example Sidebar Tree:**
+
 ```
 ▼ 080 MCP Server Modular Architecture
   • Overview (README.md) ← selected
@@ -419,6 +438,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 ```
 
 **Visual Design:**
+
 - Left border line connecting all events
 - Icon + title + date for each event
 - Active events: solid icon, bold text
@@ -428,6 +448,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 ### 6. Specs Page - List View Improvements
 
 **Current Issues:**
+
 - No sorting controls (only filters)
 - Specs not sorted by ID descending
 - Cards are visually heavy
@@ -435,6 +456,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 **Changes:**
 
 **Sorting Controls:**
+
 ```tsx
 <Select value={sortBy} onValueChange={setSortBy}>
   <SelectItem value="id-desc">Newest First (ID ↓)</SelectItem>
@@ -447,6 +469,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 **Default Sort**: ID descending (newest specs at top)
 
 **Table View Option:**
+
 - Add toggle: List view (cards) vs Table view (compact)
 - Table columns: ID, Title, Status, Priority, Tags, Updated
 - Clickable rows navigate to spec detail
@@ -456,6 +479,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 **Integration**: List and Board are now unified on `/specs` page
 
 **Layout Switcher:**
+
 ```tsx
 // Add to /specs page
 <div className="flex items-center gap-2 mb-4">
@@ -474,6 +498,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 ```
 
 **Implementation:**
+
 - Single route: `/specs`
 - URL param: `?view=list` (default) or `?view=board`
 - Switcher persists choice in localStorage
@@ -482,6 +507,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 - Same spec card component, different container layouts
 
 **Navigation:**
+
 - `/` = Home dashboard (new)
 - `/specs` = Specs with list/board switcher
 - `/specs/[id]` = Spec detail page
@@ -491,17 +517,20 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 
 ### 8. Display `title` vs `name`
 
-**Current Implementation**: 
+**Current Implementation**:
+
 - `title` field in frontmatter (optional, can be null)
 - `name` field = spec folder name (always present)
 - H1 heading = first `# Heading` in markdown (always present per validation)
 
 **Clarification Needed**:
+
 - Which field is the "title"? The frontmatter `title` or the H1 heading?
 - Current code: `const displayTitle = spec.title || spec.specName`
 - This suggests frontmatter `title` is primary, fallback to `name`
 
 **Recommended Approach**:
+
 1. **H1 heading is the canonical title** (always present, validated)
 2. **Frontmatter `title`** can be different (for metadata/SEO)
 3. **Display logic**:
@@ -511,6 +540,7 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 4. **Fallback**: If H1 parsing fails → use frontmatter `title` → use `name`
 
 **Why H1 over frontmatter title?**
+
 - H1 is required by validation (spec 018)
 - H1 is what users see in markdown
 - H1 is the "true" document title
@@ -519,9 +549,11 @@ export function SpecsNavSidebar({ specs, currentPath, currentSpec }: Props) {
 ### 9. Sub-Spec Icons
 
 **Generic Icons** (default for unknown types):
+
 - 📄 Generic document icon (lucide-react `FileText`)
 
 **Pre-defined Icon Mappings:**
+
 ```tsx
 const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
   'README.md': { icon: FileText, color: 'text-blue-600' },
@@ -538,6 +570,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ```
 
 **Usage in Sidebar:**
+
 ```tsx
 <SpecTreeItem icon={Palette} color="text-purple-600">
   Design
@@ -549,12 +582,14 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Phase 1: Branding & Layout Foundation (Week 1)
 
 **Day 1-2: Branding Integration**
+
 - [x] Copy logo assets from spec 052 to `packages/web/public/`
 - [x] Update favicon references in `layout.tsx`
 - [x] Implement theme-aware logo switching in navbar
 - [x] Test logo rendering in light/dark modes
 
 **Day 3-5: Sidebar Implementation**
+
 - [x] Create `MainSidebar` component (3 items: Home/Specs/Stats)
 - [x] Create `SpecsNavSidebar` component (specs tree with sub-specs)
 - [x] Build collapsible specs tree with expand/collapse
@@ -563,6 +598,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Test two-sidebar layout on spec detail pages
 
 **Day 6-7: Top Navbar Redesign**
+
 - [x] Remove horizontal nav items from navbar
 - [x] Move breadcrumb to navbar (next to logo)
 - [x] Add GitHub icon link at right edge of navbar
@@ -572,6 +608,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Phase 2: Home Dashboard & Spec Detail (Week 2)
 
 **Day 8-9: Home Dashboard Implementation**
+
 - [x] Design dashboard layout (status cards + activity timeline + quick actions)
 - [x] Implement status overview cards (In Progress, Planned, Recently Added, Stats)
 - [x] Build activity timeline component (recent status changes, creations, completions)
@@ -580,6 +617,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Ensure dashboard loads quickly (<1s)
 
 **Day 10-11: Compact Spec Header**
+
 - [x] Redesign spec header with integrated metadata
 - [x] Remove "Back to Specs" button
 - [x] Add small metadata row (created, updated, name)
@@ -587,12 +625,14 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Display `title` prominently, `name` as metadata
 
 **Day 10-11: Content Layout**
+
 - [x] Remove max-width constraint on content
 - [x] Remove left metadata sidebar entirely
 - [x] Implement full-width single-column layout
 - [x] Ensure proper responsive behavior
 
 **Day 12-13: Sub-Spec Integration**
+
 - [x] Move sub-specs from tabs to specs nav sidebar tree
 - [x] Implement sub-spec icon mapping system
 - [x] Add expand/collapse for specs with sub-specs
@@ -601,6 +641,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Ensure specs nav sidebar only appears on spec detail pages
 
 **Day 14: Timeline Redesign**
+
 - [x] Implement vertical timeline component
 - [x] Embed timeline in content area (not sidebar)
 - [x] Add proper icons and visual states
@@ -609,6 +650,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Phase 3: Specs Page Unification (Week 3)
 
 **Day 15-16: Specs Page Route Changes**
+
 - [x] Move spec list from `/` to `/specs`
 - [x] Implement routing: `/` = dashboard, `/specs` = specs page
 - [x] Update all internal links to point to `/specs`
@@ -617,6 +659,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [ ] Implement table view option (toggle with card view)
 
 **Day 17-18: Board/List Layout Switcher**
+
 - [x] Add layout switcher component (List/Board toggle) to `/specs`
 - [x] Implement URL param handling (?view=list|board)
 - [x] Add localStorage persistence for layout preference
@@ -626,6 +669,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Test navigation flow consistency
 
 **Day 19-21: Polish & Testing**
+
 - [x] Fix any navigation routing issues
 - [x] Ensure all links work correctly
 - [ ] Test responsive behavior on mobile/tablet
@@ -635,12 +679,14 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Phase 4: Documentation & Deployment
 
 **Day 22-23: Documentation**
+
 - [ ] Update component documentation
 - [ ] Document new navigation patterns
 - [ ] Create migration notes for any breaking changes
 - [ ] Update README with new screenshots
 
 **Day 24-25: QA & Deployment**
+
 - [ ] Full regression testing (all pages)
 - [ ] Cross-browser testing (Chrome, Firefox, Safari)
 - [ ] Mobile testing (iOS Safari, Android Chrome)
@@ -653,12 +699,14 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Functional Testing
 
 **Branding:**
+
 - [x] Logo displays correctly in navbar (light mode)
 - [x] Logo switches to dark variant in dark mode
 - [x] Favicon appears in browser tabs
 - [x] All icon sizes render correctly
 
 **Layout:**
+
 - [x] Main sidebar appears on all pages with 3 items (Home, Specs, Stats)
 - [x] Specs nav sidebar appears only on spec detail pages
 - [x] Both sidebars are sticky and don't scroll with content
@@ -669,6 +717,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Two-sidebar layout doesn't feel cramped on spec detail pages
 
 **Spec Detail:**
+
 - [x] Spec header shows all metadata in compact format
 - [x] Title displays correctly (`title` field, not `name`)
 - [x] Name field shown in metadata row
@@ -679,6 +728,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Overview and README.md merged (no duplication)
 
 **Home Dashboard:**
+
 - [x] Dashboard loads quickly (<1s)
 - [x] Status overview cards display correct counts
 - [x] In Progress and Planned lists show relevant specs
@@ -688,6 +738,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Dashboard responsive on all screen sizes
 
 **Specs Page:**
+
 - [x] Route `/specs` works correctly
 - [x] Specs sorted by ID descending by default
 - [x] Sort controls change order correctly
@@ -695,6 +746,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - [x] Filters work in conjunction with sorting
 
 **Board/List Switcher:**
+
 - [x] Layout switcher appears on `/specs` page
 - [x] Switching between List and Board views works
 - [x] Layout preference persists via localStorage
@@ -739,6 +791,7 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Design Decisions
 
 **Why three-section navigation (Home/Specs/Stats)?**
+
 - **Clear purpose**: Each section has a distinct role
   - Home = Daily operational dashboard
   - Specs = Full spec collection (list/board)
@@ -747,12 +800,14 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - **GitHub in navbar**: External link, doesn't need sidebar prominence
 
 **Why move GitHub to navbar?**
+
 - **External link**: Doesn't belong in primary navigation
 - **Less prominent**: Not a primary workflow destination
 - **Space efficiency**: Navbar has room, sidebar is cleaner with 3 items
 - **Standard pattern**: Many apps put external links in top-right (GitHub, Twitter, etc.)
 
 **Why two sidebars on spec detail pages?**
+
 - **Separation of concerns**: Main nav (Home/Specs/Stats) vs Specs navigation
 - **Context preservation**: Main sidebar always visible for quick navigation
 - **Spec focus**: Specs nav sidebar only when needed (detail page)
@@ -760,16 +815,19 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 - **Standard pattern**: Matches tools like VS Code (activity bar + file explorer)
 
 **Why remove metadata sidebar on spec detail?**
+
 - **Signal-to-Noise**: Metadata in sidebar duplicates info from header (violates principle)
 - **Context Economy**: Reduces cognitive load by integrating metadata into header
 - **Space efficiency**: Frees up horizontal space for content (more important)
 
 **Why vertical timeline?**
+
 - **Visual hierarchy**: Vertical flow matches natural reading pattern
 - **Space efficiency**: Uses vertical space better (screens are wider than tall)
 - **Scalability**: Easier to add more events as specs evolve
 
 **Why merge Overview and README.md?**
+
 - **No duplication**: They contain the same content (violates Signal-to-Noise)
 - **Simplicity**: Reduces cognitive load (fewer tabs to understand)
 - **Clarity**: "Overview" is more intuitive than "README.md" for users
@@ -777,21 +835,25 @@ const SUB_SPEC_ICONS: Record<string, { icon: LucideIcon, color: string }> = {
 ### Technical Considerations
 
 **Sidebar State Persistence:**
+
 - Use `localStorage` to remember collapse state
 - Remember expanded specs in tree
 - Sync state across tabs (optional, via localStorage events)
 
 **Routing:**
+
 - Sub-spec routes: `/specs/[id]?subspec=DESIGN.md`
 - Preserve query params when navigating
 - Update breadcrumb based on current sub-spec
 
 **Performance:**
+
 - Virtualize specs tree if count exceeds 100
 - Lazy load sub-spec content on demand
 - Memoize expensive tree rendering
 
 **Mobile Strategy:**
+
 - Sidebar becomes slide-out drawer (overlay)
 - Hamburger menu in navbar triggers drawer
 - Breadcrumb remains visible on mobile

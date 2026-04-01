@@ -7,4 +7,4 @@
  * 
  * @see spec 181-typescript-deprecation-rust-migration
  */
-import './lean-spec-rust.js';
+import './harnspec-rust.js';

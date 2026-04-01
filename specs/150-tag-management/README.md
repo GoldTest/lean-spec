@@ -36,6 +36,7 @@ Mature LeanSpec projects suffer from **tag explosion**. This project alone has 9
 ### Solution
 
 Add tag governance and lifecycle management:
+
 1. **Optional tag registry** in `.leanspec/tags.yaml`
 2. **Granular tag operations**: add/remove individual tags
 3. **Tag maintenance**: rename, merge, bulk cleanup
@@ -83,24 +84,27 @@ tags:
 ### CLI Commands
 
 **Granular updates** (new):
+
 ```bash
-lean-spec tag add <spec> <tag...>       # Add tag(s) without replacing
-lean-spec tag remove <spec> <tag...>    # Remove specific tag(s)
+harnspec tag add <spec> <tag...>       # Add tag(s) without replacing
+harnspec tag remove <spec> <tag...>    # Remove specific tag(s)
 ```
 
 **Tag maintenance** (new):
+
 ```bash
-lean-spec tag list                       # List all tags with counts
-lean-spec tag rename <old> <new>         # Rename across all specs
-lean-spec tag merge <target> <sources>   # Merge synonyms into target
-lean-spec tag delete <tag>               # Remove tag from all specs
-lean-spec tag init                       # Generate tags.yaml from existing
+harnspec tag list                       # List all tags with counts
+harnspec tag rename <old> <new>         # Rename across all specs
+harnspec tag merge <target> <sources>   # Merge synonyms into target
+harnspec tag delete <tag>               # Remove tag from all specs
+harnspec tag init                       # Generate tags.yaml from existing
 ```
 
 **Existing (unchanged)**:
+
 ```bash
-lean-spec update <spec> --tags a,b,c    # Replace all tags (current)
-lean-spec list --tag api                 # Filter by tag (current)
+harnspec update <spec> --tags a,b,c    # Replace all tags (current)
+harnspec list --tag api                 # Filter by tag (current)
 ```
 
 ### MCP Tools
@@ -117,19 +121,23 @@ tag_merge(target, sources) // Consolidate synonyms
 ### Implementation Approach
 
 **Phase 1: Granular Operations** (High value, low risk)
+
 - `tag add` / `tag remove` for spec-level ops
 - No registry needed, works immediately
 
 **Phase 2: Tag Discovery**
+
 - `tag list` with counts and sorting
 - `tag init` to bootstrap registry from existing
 
 **Phase 3: Governance** (Optional)
-- Parse `.leanspec/tags.yaml` 
+
+- Parse `.leanspec/tags.yaml`
 - `suggest` mode: warn on unknown tags
 - `strict` mode: error on unknown tags
 
 **Phase 4: Maintenance**
+
 - `tag rename` / `tag merge` / `tag delete`
 - Bulk operations across all specs
 
@@ -153,24 +161,28 @@ interface TagUsage {
 ## Plan
 
 ### Phase 1: Granular Tag Operations
+
 - [ ] Add `addTags()` and `removeTags()` to core
 - [ ] Create `tag add` and `tag remove` CLI commands
 - [ ] Add MCP tools: `tag_add`, `tag_remove`
 - [ ] Update UI metadata editor with add/remove UX
 
 ### Phase 2: Tag Discovery
+
 - [ ] Implement `getAllTags()` with usage counts
 - [ ] Create `tag list` CLI command with formatting
 - [ ] Add `tag init` to generate registry template
 - [ ] Add MCP `tag_list` tool
 
 ### Phase 3: Optional Governance
+
 - [ ] Define `tags.yaml` schema and loader
 - [ ] Add validation in `suggest` mode (warnings)
 - [ ] Add validation in `strict` mode (errors)
 - [ ] Autocomplete support in CLI/MCP
 
 ### Phase 4: Bulk Maintenance
+
 - [ ] Implement `renameTag()` and `mergeTags()` in core
 - [ ] Create `tag rename`, `tag merge`, `tag delete` commands
 - [ ] Add corresponding MCP tools
@@ -178,21 +190,25 @@ interface TagUsage {
 ## Test
 
 ### Granular Operations
+
 - [ ] `tag add` appends without removing existing tags
 - [ ] `tag remove` only removes specified tags
 - [ ] Adding duplicate tag is idempotent
 - [ ] Removing non-existent tag succeeds silently
 
 ### Tag Discovery
+
 - [ ] `tag list` shows accurate counts
 - [ ] `tag init` creates valid YAML from existing tags
 
 ### Governance
+
 - [ ] Unknown tag with `mode: suggest` shows warning
 - [ ] Unknown tag with `mode: strict` fails with error
 - [ ] Aliases resolve correctly during search
 
 ### Bulk Operations
+
 - [ ] `tag rename` updates all specs atomically
 - [ ] `tag merge` consolidates into target, removes sources
 
@@ -208,6 +224,7 @@ interface TagUsage {
 ### Alternative: Hierarchical Tags
 
 Considered `ui/ux`, `ai/agents` hierarchy. Deferred because:
+
 - Adds complexity without proportional benefit
 - Flat tags + good governance covers most needs
 - Can add later if pain emerges

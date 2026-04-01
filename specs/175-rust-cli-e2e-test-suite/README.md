@@ -26,11 +26,13 @@ Port the comprehensive TypeScript E2E test suite (40+ test files) to Rust integr
 ### Background
 
 The TypeScript CLI has excellent test coverage:
+
 - **E2E tests**: spec-lifecycle, init, mcp-tools, create-with-content, regression tests
 - **Unit tests**: validators, frontmatter parsing, git utilities, spec loader
 - **Integration tests**: full command workflows
 
 The Rust implementation currently has:
+
 - ✅ Unit tests in `leanspec-core` (validators, spec_loader)
 - ❌ NO tests in `leanspec-cli`
 - ❌ NO integration/e2e tests
@@ -46,6 +48,7 @@ The Rust implementation currently has:
 ### Existing TypeScript Test Coverage
 
 **E2E Tests** (`packages/cli/src/__e2e__/`):
+
 - `spec-lifecycle.e2e.test.ts` - Create→Update→Archive workflows
 - `init.e2e.test.ts` - Project initialization
 - `mcp-tools.e2e.test.ts` - MCP server tools
@@ -53,10 +56,12 @@ The Rust implementation currently has:
 - `regression-template.e2e.test.ts` - Regression tests
 
 **Integration Tests**:
+
 - `integration.test.ts` - Multi-command workflows
 - `list-integration.test.ts` - List filtering
 
 **Unit Tests**:
+
 - Frontmatter parsing/validation
 - Git timestamp utilities
 - Spec loader functionality
@@ -67,6 +72,7 @@ The Rust implementation currently has:
 ## Plan
 
 ### Phase 1: Test Infrastructure
+
 - [ ] Add test dependencies (`assert_cmd`, `predicates`, optionally `insta`)
 - [ ] Create `tests/helpers/mod.rs` with utilities:
   - Temporary directory management
@@ -78,7 +84,9 @@ The Rust implementation currently has:
 - [ ] Set up CI/CD test pipeline integration
 
 ### Phase 2: Port Core E2E Tests
+
 Priority order (highest impact):
+
 - [ ] Port `spec-lifecycle.e2e.test.ts` → `tests/integration/spec_lifecycle.rs`
   - Create→update→archive workflows
   - Multi-spec creation with sequential numbering
@@ -104,6 +112,7 @@ Priority order (highest impact):
   - Edge cases
 
 ### Phase 3: Integration Test Coverage
+
 - [ ] Port `list-integration.test.ts` → `tests/integration/list.rs`
   - Status filtering
   - Tag filtering
@@ -136,7 +145,9 @@ Priority order (highest impact):
   - Warnings only mode
 
 ### Phase 4: Command Coverage Validation
+
 Ensure every CLI command has test coverage:
+
 - [ ] `agent` - AI agent dispatch
 - [ ] `analyze` - Spec complexity analysis
 - [ ] `archive` - Move spec to archived/
@@ -168,6 +179,7 @@ Ensure every CLI command has test coverage:
 - [ ] `view` - View spec details
 
 ### Phase 5: CI/CD Integration
+
 - [ ] Configure test execution in GitHub Actions
 - [ ] Set up test coverage reporting
 - [ ] Add test performance benchmarks
@@ -266,7 +278,7 @@ Rust equivalent:
 ```rust
 // Rust
 pub fn exec_cli(args: &[&str], cwd: &Path) -> TestResult {
-    Command::cargo_bin("lean-spec")?
+    Command::cargo_bin("harnspec")?
         .args(args)
         .current_dir(cwd)
         .assert()

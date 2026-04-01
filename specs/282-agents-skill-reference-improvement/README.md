@@ -16,16 +16,18 @@ updated_at: 2026-02-02T06:16:07.390387064Z
 
 ## Overview
 
-When `lean-spec init` installs skills to a project, the generated `AGENTS.md` uses a generic example path rather than the actual installed skill location. This creates confusion and requires manual updates.
+When `harnspec init` installs skills to a project, the generated `AGENTS.md` uses a generic example path rather than the actual installed skill location. This creates confusion and requires manual updates.
 
 ### Current Problem
 
 The `AGENTS-with-skill.md` template contains:
+
 ```markdown
 - **Location**: See your skills directory (e.g., `.github/skills/leanspec-sdd/SKILL.md`)
 ```
 
 But skills can be installed to various locations based on detected AI tool:
+
 - `.github/skills/` (GitHub Copilot)
 - `.claude/skills/` (Claude)
 - `.cursor/skills/` (Cursor)

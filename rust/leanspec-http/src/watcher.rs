@@ -173,7 +173,7 @@ fn should_ignore_path(path: &Path) -> bool {
         None => return true,
     };
 
-    if file_name.starts_with(".") && file_name != ".lean-spec" {
+    if file_name.starts_with(".") && file_name != ".harnspec" {
         return true;
     }
 

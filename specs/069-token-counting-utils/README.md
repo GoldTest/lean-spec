@@ -57,6 +57,7 @@ From spec 066 research findings:
 ### What's Missing
 
 **Current State**:
+
 - ✅ `ComplexityValidator` uses `tokenx` internally (will migrate to tiktoken)
 - ✅ Token thresholds defined (2K/3.5K/5K - hypotheses)
 - ❌ No CLI command to check token counts
@@ -65,6 +66,7 @@ From spec 066 research findings:
 - ❌ No breakdown by content type (code vs prose vs tables)
 
 **User Pain Points**:
+
 - Can't answer "How many tokens is this spec?"
 - Can't compare token counts across specs
 - Can't see token breakdown before/after edits
@@ -82,13 +84,13 @@ From spec 066 research findings:
    - Export for reuse across packages
 
 2. **CLI Commands** (`@leanspec/cli`)
-   - `lean-spec tokens <spec>` - Show token count for spec
-   - `lean-spec tokens <spec> --detailed` - Breakdown by file/type
-   - `lean-spec tokens --all` - Compare all specs
-   - Integration with `lean-spec analyze`
+   - `harnspec tokens <spec>` - Show token count for spec
+   - `harnspec tokens <spec> --detailed` - Breakdown by file/type
+   - `harnspec tokens --all` - Compare all specs
+   - Integration with `harnspec analyze`
 
 3. **MCP Tools** (Future)
-   - `mcp_lean-spec_tokens` - Query token counts
+   - `mcp_harnspec_tokens` - Query token counts
    - Enable AI agents to make token-aware decisions
    - Support context budget planning
 
@@ -102,7 +104,7 @@ From spec 066 research findings:
 ├──────────────┬──────────────────┬───────────────────────┤
 │  CLI         │   MCP Server     │   Internal (Validator)│
 │              │                  │                       │
-│ lean-spec    │  mcp_lean-spec  │  ComplexityValidator  │
+│ harnspec    │  mcp_harnspec  │  ComplexityValidator  │
 │   tokens     │    _tokens       │                       │
 └──────┬───────┴────────┬─────────┴──────────┬───────────┘
        │                │                    │
@@ -132,6 +134,7 @@ Based on spec 066 analysis of token counting packages:
 **Note**: We use `tiktoken` (official OpenAI package) NOT `gpt-tokenizer` mentioned in spec 066. The `tiktoken` npm package is the official JavaScript port.
 
 **Why tiktoken?**:
+
 - ✅ Exact BPE encoding used by GPT-4 and similar models
 - ✅ Official OpenAI tokenizer (ported to JS)
 - ✅ Battle-tested and maintained (1.1M+ weekly downloads)
@@ -140,13 +143,15 @@ Based on spec 066 analysis of token counting packages:
 - ✅ Fast enough for our use case (<50ms per spec)
 
 **Trade-offs**:
+
 - Bundle size: ~500KB (acceptable for core functionality)
 - Slightly slower than estimation (but negligible: <50ms per spec)
 - Model-specific encoding (we standardize on GPT-4/Claude encoding)
 
-**Package**: https://www.npmjs.com/package/tiktoken
+**Package**: <https://www.npmjs.com/package/tiktoken>
 
 **Usage**:
+
 ```typescript
 import { encoding_for_model } from 'tiktoken';
 
@@ -215,7 +220,7 @@ export class TokenCounter {
 #### Basic Command
 
 ```bash
-$ lean-spec tokens 059
+$ harnspec tokens 059
 Spec: 059-programmatic-spec-management
 Total: 2,100 tokens
 Files:
@@ -225,7 +230,7 @@ Files:
 #### With Sub-Specs
 
 ```bash
-$ lean-spec tokens 059 --include-sub-specs
+$ harnspec tokens 059 --include-sub-specs
 Spec: 059-programmatic-spec-management
 Total: 8,450 tokens
 Files:
@@ -241,7 +246,7 @@ Files:
 #### Detailed Breakdown
 
 ```bash
-$ lean-spec tokens 066 --detailed
+$ harnspec tokens 066 --detailed
 Spec: 066-context-economy-thresholds-refinement
 Total: 7,307 tokens
 
@@ -262,7 +267,7 @@ Recommendation: Consider splitting or using sub-specs
 #### Compare All Specs
 
 ```bash
-$ lean-spec tokens --all --sort-by tokens
+$ harnspec tokens --all --sort-by tokens
 ╭────────────────────────────────────────────────────────╮
 │ Token Counts (Top 10)                                   │
 ├─────────┬──────────────────────────────┬───────────────┤
@@ -283,7 +288,7 @@ Legend: ⚠️ = >3,500 tokens (review recommended)
 
 ```json
 {
-  "name": "mcp_lean-spec_tokens",
+  "name": "mcp_harnspec_tokens",
   "description": "Count tokens in spec or sub-spec for LLM context management",
   "parameters": {
     "specPath": {
@@ -303,12 +308,13 @@ Legend: ⚠️ = >3,500 tokens (review recommended)
 ```
 
 **Example Usage by AI Agent**:
+
 ```
 Agent: "I need to include spec 059 in context. Will it fit?"
-Tool call: mcp_lean-spec_tokens("059", includeSubSpecs=true)
+Tool call: mcp_harnspec_tokens("059", includeSubSpecs=true)
 Response: { total: 8450 }
 Agent: "That's too large. Let me just include README.md"
-Tool call: mcp_lean-spec_tokens("059")
+Tool call: mcp_harnspec_tokens("059")
 Response: { total: 2100 }
 Agent: "Perfect, that fits in my context budget."
 ```
@@ -316,6 +322,7 @@ Agent: "Perfect, that fits in my context budget."
 ## Plan
 
 ### Phase 1: Core Utilities (v0.3.0 - Week 1) ✅ COMPLETE
+
 - [x] Install `tiktoken` as dependency
 - [x] Create `TokenCounter` class in `@leanspec/core`
 - [x] Implement `countFile()` using `tiktoken`
@@ -325,6 +332,7 @@ Agent: "Perfect, that fits in my context budget."
 - [x] Export utilities from core package
 
 ### Phase 2: CLI Integration (v0.3.0 - Week 1-2) ✅ COMPLETE
+
 - [x] Add `tokens` command to CLI (using tiktoken)
 - [x] Implement `--include-sub-specs` flag
 - [x] Implement `--detailed` flag for breakdown
@@ -334,6 +342,7 @@ Agent: "Perfect, that fits in my context budget."
 - [x] Add `--json` flag for structured output
 
 ### Phase 3: Integration & Polish (v0.3.0 - Week 2) ✅ COMPLETE
+
 - [x] **Replace `tokenx` with `tiktoken` in `ComplexityValidator`**
 - [x] **Make token count the PRIMARY complexity metric** (line count secondary)
 - [x] Update validation thresholds based on exact token counts (2K/3.5K/5K)
@@ -342,11 +351,13 @@ Agent: "Perfect, that fits in my context budget."
 - [x] Documentation complete (comprehensive spec with research rationale)
 
 ### Phase 4: MCP Tool (Moved to Spec 070)
+
 - Deferred to separate spec for focused implementation
 - See spec 070-mcp-token-counting-tool for details
 - Infrastructure ready, just needs MCP server integration
 
 ### Phase 5: Advanced Features (Future - v0.4.0+)
+
 - [ ] Add token trends over time (git history)
 - [ ] Add context budget planning (`--budget` flag)
 - [ ] Add "will this fit?" checker for MCP tools
@@ -358,6 +369,7 @@ Agent: "Perfect, that fits in my context budget."
 ### Unit Tests ✅ COMPLETE
 
 **Core Utilities**:
+
 - [x] `countFile()` returns correct token counts
 - [x] `countSpec()` aggregates sub-specs correctly
 - [x] `analyzeBreakdown()` categorizes content types
@@ -365,6 +377,7 @@ Agent: "Perfect, that fits in my context budget."
 - [x] `formatCount()` produces readable output
 
 **Edge Cases**:
+
 - [x] Empty files (0 tokens)
 - [x] Very large files (>10K tokens)
 - [x] Files with only code blocks
@@ -377,7 +390,8 @@ Agent: "Perfect, that fits in my context budget."
 ### Integration Tests ✅ COMPLETE
 
 **CLI Commands**:
-- [x] `lean-spec tokens <spec>` shows basic count
+
+- [x] `harnspec tokens <spec>` shows basic count
 - [x] `--include-sub-specs` aggregates correctly
 - [x] `--detailed` shows breakdown
 - [x] `--all` lists all specs
@@ -390,6 +404,7 @@ Agent: "Perfect, that fits in my context budget."
 ### Validation Tests ✅ COMPLETE
 
 **Against Known Specs**:
+
 - [x] Spec 066: 8,073 tokens (problem threshold, matches validation)
 - [x] Spec 069: 4,936 tokens (warning threshold, matches validation)
 - [x] Spec 059: 3,364 tokens (good range)
@@ -401,6 +416,7 @@ Agent: "Perfect, that fits in my context budget."
 ### Consistency Tests ✅ COMPLETE
 
 **Validate tiktoken Behavior**:
+
 - [x] Token counts are consistent across multiple runs
 - [x] Proper memory cleanup (enc.free() called)
 - [x] Works with various content types (code, prose, tables)
@@ -412,11 +428,13 @@ Agent: "Perfect, that fits in my context budget."
 ### Quantitative ✅ ACHIEVED
 
 **Performance**:
+
 - [x] Token counting takes <50ms per spec (tested: ~40ms average)
 - [x] Aggregate counting (34 specs) takes <500ms (tested: ~407ms)
 - [x] Memory usage minimal with proper cleanup
 
 **Reliability**:
+
 - [x] Token counts are consistent and reproducible
 - [x] Matches validation thresholds correctly
 - [x] Uses same tokenization as GPT-4/Claude (tiktoken)
@@ -425,12 +443,14 @@ Agent: "Perfect, that fits in my context budget."
 ### Qualitative ✅ ACHIEVED
 
 **Developer Experience**:
+
 - [x] "Now I can see token counts easily" - CLI command working
 - [x] "Helps me understand Context Economy better" - Indicators show cost/effectiveness
 - [x] "Makes token-aware editing decisions" - Validation provides actionable feedback
 - [x] "CLI output is clear and actionable" - Formatted with colors, emojis, recommendations
 
 **AI Agent Experience** (Deferred to Spec 070):
+
 - [ ] "Can query token counts programmatically" - MCP tool needed
 - [ ] "Makes informed context budget decisions" - MCP tool needed
 - [ ] "Avoids overloading context windows" - MCP tool needed
@@ -441,12 +461,14 @@ Agent: "Perfect, that fits in my context budget."
 ### Why This Spec Exists
 
 **Separated from Spec 059** because:
+
 1. **Different lifecycle**: Token counting is foundational infrastructure, programmatic spec management builds on it
 2. **Clearer dependency**: Spec 059 *depends on* having token counting utilities
 3. **Reusable utilities**: Token counting is useful beyond just spec management (MCP tools, validation, CLI)
 4. **Context Economy**: Spec 059 is already 394 lines with 6 sub-specs - adding token counting details would violate its own principles
 
 **Dependency Relationship**:
+
 - Spec 066: Establishes *why* token counting matters (research, thresholds)
 - **Spec 069 (this)**: Provides *how* to count tokens (utilities, tools)
 - Spec 059: Uses token counting for *programmatic transformations*
@@ -484,6 +506,7 @@ From Spec 066:
 | Setup | Easy (`npm install tiktoken`) |
 
 **Decision Rationale**:
+
 - Token count is the **primary complexity metric** (spec 066 research)
 - Exact token counts are essential for reliable validation thresholds
 - ~500KB bundle cost is justified for core functionality
@@ -495,12 +518,14 @@ From Spec 066:
 ### Implementation Notes
 
 **Why tiktoken Over gpt-tokenizer?**
+
 - Spec 066 mentioned `gpt-tokenizer` (53.1 MB unpacked)
 - Better choice: `tiktoken` (official OpenAI port to JS)
 - Official, well-maintained, reasonable size (~500KB)
 - **v0.3.0 decision: Use tiktoken as single solution**
 
 **Why tiktoken Over tokenx?**
+
 - Token count is THE metric for complexity (spec 066 research)
 - tokenx estimation has ~10% variance which is too large for validation thresholds
 - Need exact counts to set reliable thresholds and measure effectiveness
@@ -508,6 +533,7 @@ From Spec 066:
 - Easy to install—no fallback complexity needed
 
 **Migration from tokenx**:
+
 - `ComplexityValidator` currently uses `tokenx`
 - Phase 3: Replace with `tiktoken` for exact counts
 - Update validation thresholds based on exact counts
@@ -516,7 +542,7 @@ From Spec 066:
 ### Open Questions
 
 1. **Display Format**: Show tokens always, or only on request?
-   - **Decision**: Show in `lean-spec list` with flag, dedicated `tokens` command for details
+   - **Decision**: Show in `harnspec list` with flag, dedicated `tokens` command for details
 
 2. **Sub-Spec Aggregation**: Default to including sub-specs or not?
    - **Decision**: Default to README only (most common), `--include-sub-specs` flag for all
@@ -528,7 +554,7 @@ From Spec 066:
    - **RESOLVED**: Install tiktoken in v0.3.0 as single dependency, no fallback
    - **Rationale**: Token count is primary metric, need exact counts, easy to setup
 
-5. **Integration with Analyze**: Show tokens in `lean-spec analyze`?
+5. **Integration with Analyze**: Show tokens in `harnspec analyze`?
    - **Decision**: Yes, prominently display exact token count in complexity analysis
 
 6. **Line Count Role**: Keep line count validation or remove it?

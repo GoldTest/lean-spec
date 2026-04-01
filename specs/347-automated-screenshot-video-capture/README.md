@@ -20,6 +20,7 @@ updated_at: 2026-03-02T02:41:41.168844731Z
 **Purpose**: Build an automated pipeline that captures screenshots and short demo videos of LeanSpec UI features, producing ready-to-use visual assets for the README and documentation site.
 
 **Problem**: The UI has evolved significantly (AI chat, sessions, file browser, hierarchy views, inline editing, settings page) but documentation screenshots are stale or missing. Manual screenshot capture is:
+
 - Tedious and error-prone (inconsistent viewport sizes, themes, data states)
 - Not reproducible (demo data differs each time)
 - Not maintained (screenshots rot as the UI evolves)
@@ -34,7 +35,8 @@ updated_at: 2026-03-02T02:41:41.168844731Z
 #### Layer 1: agent-browser Screenshot Capture (Core)
 
 A shell script that:
-1. Starts the LeanSpec UI dev server (`pnpm dev:web` or `lean-spec ui`)
+
+1. Starts the LeanSpec UI dev server (`pnpm dev:web` or `harnspec ui`)
 2. Seeds a demo project with representative spec data
 3. Uses `agent-browser` to navigate to each feature page and capture screenshots
 4. Produces consistently-sized PNG files in a known output directory
@@ -58,6 +60,7 @@ scripts/capture-screenshots.sh
 ```
 
 Key `agent-browser` commands per capture:
+
 ```bash
 # Example: Board view capture
 agent-browser open http://localhost:3000
@@ -74,6 +77,7 @@ agent-browser screenshot screenshots/chat-view.png
 ```
 
 Configuration:
+
 - **Viewport**: 1280x800 (standard for docs screenshots)
 - **Theme**: Light mode (better for documentation), with optional dark mode variants
 - **Demo data**: A fixture project with ~15 specs in various states, hierarchy, and dependencies
@@ -87,11 +91,13 @@ For polished demo videos and animated GIFs:
 3. Post-processing with Remotion for transitions, annotations, and branding
 
 Use cases:
+
 - Hero video for docs landing page (30s overview)
 - Feature-specific clips for each docs page (5-10s each)
 - GIF previews for README (board interaction, chat flow)
 
 Remotion adds value for:
+
 - Branded intros/outros and annotations
 - Smooth transitions between feature highlights
 - Consistent visual quality across all videos
@@ -105,7 +111,7 @@ A seed script or fixture project that creates consistent demo data:
 
 ```
 fixtures/demo-project/
-├── .lean-spec/config.json
+├── .harnspec/config.json
 └── specs/
     ├── 001-user-authentication/spec.md    (status: complete)
     ├── 002-dark-theme-support/spec.md     (status: in-progress)
@@ -145,6 +151,7 @@ docs-site/static/img/ui/
 ## Plan
 
 ### Phase 1: Screenshot Pipeline (Core — blocks spec 340)
+
 - [ ] Create demo project fixture with representative spec data
 - [ ] Write `scripts/capture-screenshots.sh` using agent-browser
 - [ ] Capture all key views (board, list, detail, chat, sessions, files, settings, stats, deps, search)
@@ -152,12 +159,14 @@ docs-site/static/img/ui/
 - [ ] Validate output images and place in docs-site/static/img/ui/
 
 ### Phase 2: Video Recording Pipeline
+
 - [ ] Write `scripts/capture-videos.sh` using agent-browser record
 - [ ] Record short interaction flows (board drag, chat conversation, search)
 - [ ] Convert .webm to .gif for README embedding
 - [ ] Add `capture:videos` pnpm script
 
 ### Phase 3: Remotion Integration (Future)
+
 - [ ] Set up Remotion project in docs-site or separate directory
 - [ ] Create composition templates for feature demos
 - [ ] Integrate agent-browser recordings as video sources

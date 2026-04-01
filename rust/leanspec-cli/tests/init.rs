@@ -1,6 +1,6 @@
 //! E2E Tests: init command scenarios
 //!
-//! Tests the `lean-spec init` command in realistic scenarios including:
+//! Tests the `harnspec init` command in realistic scenarios including:
 //! - Fresh initialization
 //! - Re-initialization (upgrade mode)
 //! - Force reset
@@ -31,12 +31,12 @@ fn test_init_fresh_project_with_yes_flag() {
 
     // Verify directory structure
     assert!(
-        dir_exists(&cwd.join(".lean-spec")),
-        ".lean-spec should exist"
+        dir_exists(&cwd.join(".harnspec")),
+        ".harnspec should exist"
     );
     assert!(dir_exists(&cwd.join("specs")), "specs should exist");
     assert!(
-        file_exists(&cwd.join(".lean-spec").join("config.json")),
+        file_exists(&cwd.join(".harnspec").join("config.json")),
         "config.json should exist"
     );
 }
@@ -76,7 +76,7 @@ fn test_init_creates_config_with_defaults() {
 
     init_project(cwd, true);
 
-    let config_content = read_file(&cwd.join(".lean-spec").join("config.json"));
+    let config_content = read_file(&cwd.join(".harnspec").join("config.json"));
     let config: serde_json::Value = serde_json::from_str(&config_content).expect("valid JSON");
 
     // Check default values - Rust implementation uses different field names
@@ -93,7 +93,7 @@ fn test_init_creates_templates_directory() {
 
     init_project(cwd, true);
 
-    let templates_dir = cwd.join(".lean-spec").join("templates");
+    let templates_dir = cwd.join(".harnspec").join("templates");
     assert!(
         dir_exists(&templates_dir),
         "templates directory should exist"
@@ -253,8 +253,8 @@ fn test_init_writes_vscode_mcp_config_when_detected() {
     );
     let contents = read_file(&mcp_config);
     assert!(
-        contents.contains("lean-spec"),
-        "mcp.json should register lean-spec server"
+        contents.contains("harnspec"),
+        "mcp.json should register harnspec server"
     );
 }
 
@@ -268,7 +268,7 @@ fn test_init_with_standard_template() {
     assert!(result.success);
 
     let config = serde_json::from_str::<serde_json::Value>(&read_file(
-        &cwd.join(".lean-spec").join("config.json"),
+        &cwd.join(".harnspec").join("config.json"),
     ))
     .expect("valid JSON");
 
@@ -293,7 +293,7 @@ fn test_init_with_detailed_template() {
     assert!(result.success);
 
     let config = serde_json::from_str::<serde_json::Value>(&read_file(
-        &cwd.join(".lean-spec").join("config.json"),
+        &cwd.join(".harnspec").join("config.json"),
     ))
     .expect("valid JSON");
 
@@ -338,7 +338,7 @@ fn test_regression_preserve_missing_templates() {
 
     // Setup: init, then delete templates
     init_project(cwd, true);
-    let templates_dir = cwd.join(".lean-spec").join("templates");
+    let templates_dir = cwd.join(".harnspec").join("templates");
     remove(&templates_dir);
 
     // Action: run init again (upgrade mode)
@@ -366,7 +366,7 @@ fn test_regression_init_example_flag_is_handled() {
     assert!(
         file_exists(
             &cwd.join("dark-theme")
-                .join(".lean-spec")
+                .join(".harnspec")
                 .join("config.json")
         ),
         "example should include LeanSpec config"

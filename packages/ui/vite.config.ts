@@ -15,7 +15,7 @@ function faviconPlugin(): Plugin {
   const isDevBuild = process.env.LEANSPEC_DEV_BUILD === 'true';
 
   return {
-    name: 'lean-spec-favicon',
+    name: 'harnspec-favicon',
     transformIndexHtml(html, ctx) {
       if (ctx.server || isDevBuild) {
         // Development mode or dev npm publish — use dev favicons

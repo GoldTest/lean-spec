@@ -2,7 +2,7 @@
 
 > Part of spec: [018-spec-validation](README.md)
 
-Configuration examples for different use cases of `lean-spec validate`.
+Configuration examples for different use cases of `harnspec validate`.
 
 ## Strict Mode (CI/CD)
 
@@ -195,30 +195,30 @@ Bare minimum for validation (uses most defaults):
 ### Apply Strict Mode
 
 ```bash
-# Add to .lean-spec/config.json, then run:
-lean-spec validate
+# Add to .harnspec/config.json, then run:
+harnspec validate
 
 # Or override via CLI:
-lean-spec validate --mode comprehensive
+harnspec validate --mode comprehensive
 ```
 
 ### Apply Relaxed Mode
 
 ```bash
 # Use during early development:
-lean-spec validate --mode quick
+harnspec validate --mode quick
 
 # Or with specific rules disabled:
-lean-spec validate --no-links --no-staleness
+harnspec validate --no-links --no-staleness
 ```
 
 ### Custom Workflow
 
 ```bash
 # Configure custom status values:
-# .lean-spec/config.json with custom allowedStatus
+# .harnspec/config.json with custom allowedStatus
 # Then validate normally:
-lean-spec validate
+harnspec validate
 ```
 
 ## Tips
@@ -227,4 +227,4 @@ lean-spec validate
 2. **Use strict mode in CI** - Catch issues before merge
 3. **Customize for your workflow** - Adapt `allowedStatus` and `requiredSections` to match your process
 4. **Use ignore paths wisely** - Don't validate archived or experimental specs
-5. **Test configuration** - Run `lean-spec validate --dry-run` to preview changes
+5. **Test configuration** - Run `harnspec validate --dry-run` to preview changes

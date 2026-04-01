@@ -21,14 +21,15 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17 · **Tags**: infrastructure, docs, monorepo
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-The `docs-site/` directory is currently nested in the lean-spec monorepo. This causes unnecessary Vercel deployments whenever any part of the monorepo changes, even when documentation hasn't been modified. 
+The `docs-site/` directory is currently nested in the harnspec monorepo. This causes unnecessary Vercel deployments whenever any part of the monorepo changes, even when documentation hasn't been modified.
 
 Migrating docs-site to a separate repository with git submodule integration will:
+
 - Decouple docs deployment from CLI/core development
 - Reduce unnecessary CI/CD runs and Vercel builds
 - Enable independent versioning and release cycles for documentation
@@ -38,32 +39,34 @@ Migrating docs-site to a separate repository with git submodule integration will
 
 ### Repository Structure
 
-**New repository**: `codervisor/lean-spec-docs`
+**New repository**: `codervisor/harnspec-docs`
+
 - Standalone Docusaurus project
 - Independent deployment to Vercel
 - Own package.json, dependencies, CI/CD
 
-**Main repository**: `codervisor/lean-spec`
-- Add `docs-site/` as git submodule pointing to `lean-spec-docs`
+**Main repository**: `codervisor/harnspec`
+
+- Add `docs-site/` as git submodule pointing to `harnspec-docs`
 - Update build scripts to handle submodule
 - Update CONTRIBUTING.md with submodule workflow
 
 ### Migration Strategy
 
 1. **Create new repository**
-   - Create `codervisor/lean-spec-docs` on GitHub
+   - Create `codervisor/harnspec-docs` on GitHub
    - Initialize with existing `docs-site/` content
    - Set up Vercel deployment for new repo
    - Configure build settings (same as current)
 
 2. **Remove from monorepo**
-   - Remove `docs-site/` directory from lean-spec
+   - Remove `docs-site/` directory from harnspec
    - Update root `package.json` workspaces config
    - Update `turbo.json` to remove docs-site tasks
    - Remove docs-site from `pnpm-workspace.yaml`
 
 3. **Add as submodule**
-   - `git submodule add https://github.com/codervisor/lean-spec-docs.git docs-site`
+   - `git submodule add https://github.com/codervisor/harnspec-docs.git docs-site`
    - Configure submodule to track `main` branch
    - Update `.gitmodules` with branch tracking
 
@@ -76,17 +79,20 @@ Migrating docs-site to a separate repository with git submodule integration will
 
 **Current setup**: Single Vercel project for entire monorepo
 **New setup**: Separate Vercel projects
-- `lean-spec` monorepo: Deploy only if CLI/core changes
-- `lean-spec-docs`: Deploy only on docs changes
+
+- `harnspec` monorepo: Deploy only if CLI/core changes
+- `harnspec-docs`: Deploy only on docs changes
 
 ### Developer Workflow
 
 **Clone with submodule**:
+
 ```bash
-git clone --recurse-submodules https://github.com/codervisor/lean-spec.git
+git clone --recurse-submodules https://github.com/codervisor/harnspec.git
 ```
 
 **Update docs**:
+
 ```bash
 cd docs-site
 git checkout main
@@ -97,9 +103,10 @@ git commit -m "chore: update docs submodule"
 ```
 
 **Work on docs**:
+
 ```bash
 cd docs-site
-# Make changes, commit to lean-spec-docs
+# Make changes, commit to harnspec-docs
 git push
 cd ..
 git add docs-site
@@ -108,11 +115,11 @@ git commit -m "chore: update docs submodule pointer"
 
 ## Plan
 
-- [x] Create `codervisor/lean-spec-docs` repository on GitHub
+- [x] Create `codervisor/harnspec-docs` repository on GitHub
 - [x] Copy `docs-site/` content to new repository
 - [ ] Set up Vercel deployment for new docs repo
 - [ ] Test docs build and deployment independently
-- [x] Remove `docs-site/` from lean-spec monorepo
+- [x] Remove `docs-site/` from harnspec monorepo
 - [x] Update workspace configs (package.json, pnpm-workspace.yaml, turbo.json)
 - [x] Add docs-site as git submodule
 - [x] Update CONTRIBUTING.md with submodule workflow
@@ -123,7 +130,7 @@ git commit -m "chore: update docs submodule pointer"
 ## Test
 
 - [ ] New docs repo builds successfully on Vercel
-- [ ] Docs deploy independently when pushed to lean-spec-docs
+- [ ] Docs deploy independently when pushed to harnspec-docs
 - [x] Main repo builds without docs-site directory
 - [x] Submodule clone works: `git clone --recurse-submodules`
 - [ ] Submodule update works: `git submodule update --remote`
@@ -149,4 +156,4 @@ git commit -m "chore: update docs submodule pointer"
 ### References
 
 - Current Vercel config: `vercel.json`, `docs-site/vercel.json`
-- Git submodules: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+- Git submodules: <https://git-scm.com/book/en/v2/Git-Tools-Submodules>

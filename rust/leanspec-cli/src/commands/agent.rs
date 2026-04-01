@@ -45,10 +45,10 @@ fn show_help() {
     );
     println!();
     println!("{}", "Usage:".bold());
-    println!("  lean-spec agent run <spec> [--agent <type>]  Dispatch spec to AI agent");
-    println!("  lean-spec agent list                         List available agents");
-    println!("  lean-spec agent status [spec]                Check agent session status");
-    println!("  lean-spec agent config <agent>               Set default agent");
+    println!("  harnspec agent run <spec> [--agent <type>]  Dispatch spec to AI agent");
+    println!("  harnspec agent list                         List available agents");
+    println!("  harnspec agent status [spec]                Check agent session status");
+    println!("  harnspec agent config <agent>               Set default agent");
     println!();
     println!("{}", "Supported Agents:".bold());
     println!("  claude   - Claude Code (CLI)");
@@ -59,9 +59,9 @@ fn show_help() {
     println!("  continue - Continue Dev");
     println!();
     println!("{}", "Examples:".bold());
-    println!("  lean-spec agent run 045 --agent claude");
-    println!("  lean-spec agent run 045 047 --parallel");
-    println!("  lean-spec agent list");
+    println!("  harnspec agent run 045 --agent claude");
+    println!("  harnspec agent run 045 047 --parallel");
+    println!("  harnspec agent list");
     println!();
 }
 
@@ -186,7 +186,7 @@ fn run_agent(
     }
 
     println!("{}", "✨ Agent dispatch complete".green());
-    println!("Use {} to check progress", "lean-spec agent status".cyan());
+    println!("Use {} to check progress", "harnspec agent status".cyan());
 
     Ok(())
 }
@@ -233,10 +233,10 @@ fn list_agents(output_format: &str) -> Result<(), Box<dyn Error>> {
     }
 
     println!();
-    println!("Set default: {}", "lean-spec agent config <agent>".cyan());
+    println!("Set default: {}", "harnspec agent config <agent>".cyan());
     println!(
         "Run agent:   {}",
-        "lean-spec agent run <spec> --agent <agent>".cyan()
+        "harnspec agent run <spec> --agent <agent>".cyan()
     );
     println!();
 

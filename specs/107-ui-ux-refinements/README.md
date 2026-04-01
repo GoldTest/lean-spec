@@ -16,7 +16,7 @@ completed: '2025-11-20'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-20 · **Tags**: ui, ux, lessons-learned
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -24,18 +24,21 @@ completed: '2025-11-20'
 This spec documents the refinements made to the Spec Detail page and Specs List/Board views to improve navigation, readability, and layout flexibility. The changes focus on Table of Contents (TOC) accessibility, precise anchor navigation, and enhanced list management controls.
 
 ### Key Improvements
-1.  **Responsive TOC Layout**: Replaced the floating button with a persistent sidebar on large screens.
-2.  **Precise Anchor Navigation**: Fixed offset issues caused by sticky headers.
-3.  **Visual Polish**: Implemented auto-hiding scrollbars to reduce visual clutter.
-4.  **Specs List Enhancements**: Added "Wide Mode" toggle and improved filter layout.
+
+1. **Responsive TOC Layout**: Replaced the floating button with a persistent sidebar on large screens.
+2. **Precise Anchor Navigation**: Fixed offset issues caused by sticky headers.
+3. **Visual Polish**: Implemented auto-hiding scrollbars to reduce visual clutter.
+4. **Specs List Enhancements**: Added "Wide Mode" toggle and improved filter layout.
 
 ## Current State
 
 ### 1. Hybrid TOC Layout (Spec Detail)
+
 - **Desktop (≥1280px)**: A sticky right sidebar displays the TOC. This utilizes the available screen real estate and allows users to scan the document structure without clicking a button.
 - **Mobile/Tablet (<1280px)**: Retains the floating action button (FAB) to open the TOC in a dialog, preserving screen space for content.
 
 ### 2. Dynamic Scroll Padding (Spec Detail)
+
 - **Problem**: Sticky headers obscured section titles when navigating to anchors.
 - **Solution**: Implemented dynamic `scroll-padding-top` calculation in `SpecDetailClient`.
   - Calculates the exact height of the sticky header (navbar + spec header).
@@ -44,6 +47,7 @@ This spec documents the refinements made to the Spec Detail page and Specs List/
   - **Fine-tuning**: Adjusted the offset (Header Height - 12px) to align the text baseline perfectly, accounting for heading margins.
 
 ### 3. Auto-Hiding Scrollbars
+
 - **Problem**: The TOC sidebar introduced a second vertical scrollbar next to the main page scrollbar, creating visual noise.
 - **Solution**: Created a `.scrollbar-auto-hide` utility class.
   - The scrollbar is invisible by default.
@@ -51,6 +55,7 @@ This spec documents the refinements made to the Spec Detail page and Specs List/
   - Applied to the TOC sidebar container.
 
 ### 4. Specs List & Board Enhancements
+
 - **Wide Mode Toggle**: Added a maximize/minimize button to toggle the container width between `max-w-7xl` and `w-full`. This is particularly useful for the Kanban board view with many columns.
 - **Improved Header Layout**:
   - Reorganized filters and search into a scrollable row for better mobile responsiveness.
@@ -60,26 +65,30 @@ This spec documents the refinements made to the Spec Detail page and Specs List/
 ## Lessons Learned
 
 ### Sticky Headers & Anchor Navigation
-- **`scroll-padding-top` vs `scroll-margin-top`**: 
+
+- **`scroll-padding-top` vs `scroll-margin-top`**:
   - `scroll-margin-top` on individual headings is brittle when header heights change (e.g., wrapping tags).
   - `scroll-padding-top` on the `<html>` element is superior as it can be dynamically updated via JavaScript to match the exact current header height.
-- **Navigation Method**: 
+- **Navigation Method**:
   - `element.scrollIntoView({ behavior: 'smooth', block: 'start' })` respects `scroll-padding-top` automatically.
   - Manual `window.scrollTo` calculations are error-prone and should be avoided when native APIs suffice.
 
 ### Visual Refinements
+
 - **Scrollbar UX**: "Double scrollbars" are a common UI smell in sidebars. Auto-hiding them is a clean pattern that maintains functionality without clutter.
 - **Offset Tuning**: Mathematical exactness (Header Height + Padding) doesn't always equal visual correctness. Small adjustments (e.g., `-12px`) are often needed to account for line-heights and margins.
 
 ## Implementation Details
 
 ### Files Modified
+
 - `packages/ui/src/components/spec-detail-client.tsx`: Layout changes, scroll padding logic.
 - `packages/ui/src/components/table-of-contents.tsx`: Refactored to support both Sidebar and Dialog modes.
 - `packages/ui/src/app/globals.css`: Added `.scrollbar-auto-hide` utility.
 - `packages/ui/src/app/specs/specs-client.tsx`: Added Wide Mode, updated header layout, view persistence.
 
 ### Code Snippet: Dynamic Scroll Padding
+
 ```typescript
 // Handle scroll padding for sticky header
 React.useEffect(() => {

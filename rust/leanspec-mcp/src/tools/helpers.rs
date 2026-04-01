@@ -70,7 +70,7 @@ pub(crate) fn resolve_project_root(specs_dir: &str) -> Result<PathBuf, String> {
 }
 
 pub(crate) fn load_config(project_root: &Path) -> LeanSpecConfig {
-    let config_path = project_root.join(".lean-spec").join("config.yaml");
+    let config_path = project_root.join(".harnspec").join("config.yaml");
     if config_path.exists() {
         LeanSpecConfig::load(&config_path).unwrap_or_default()
     } else {
@@ -91,7 +91,7 @@ struct ProjectConfig {
 }
 
 pub(crate) fn is_draft_status_enabled(project_root: &Path) -> bool {
-    let config_path = project_root.join(".lean-spec").join("config.json");
+    let config_path = project_root.join(".harnspec").join("config.json");
     let Ok(content) = std::fs::read_to_string(config_path) else {
         return false;
     };

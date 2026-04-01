@@ -12,14 +12,14 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/lean-spec"><img src="https://img.shields.io/npm/v/lean-spec.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/lean-spec"><img src="https://img.shields.io/npm/dm/lean-spec.svg" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/harnspec"><img src="https://img.shields.io/npm/v/harnspec.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/harnspec"><img src="https://img.shields.io/npm/dm/harnspec.svg" alt="npm downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </p>
 
 ---
 
-## Your specs are too big for AI to read.
+## Your specs are too big for AI to read
 
 Traditional specs overflow AI context windows. Your AI agent can't help because it can't fit the full context.
 
@@ -34,8 +34,8 @@ Specs under 300 lines. Intent-focused. Machine-readable. The SDD methodology des
 
 <p align="center">
   <a href="#try-it-now-5-minutes"><strong>Try It Now (5 Minutes) →</strong></a> •
-  <a href="https://www.lean-spec.dev"><strong>Documentation</strong></a> •
-  <a href="https://www.lean-spec.dev/docs/examples"><strong>Examples</strong></a>
+  <a href="https://harnspec.gitub.io"><strong>Documentation</strong></a> •
+  <a href="https://harnspec.gitub.io/docs/examples"><strong>Examples</strong></a>
 </p>
 
 ---
@@ -55,6 +55,7 @@ Your team has beautiful specs. None of them match the current code. Nobody updat
 You tried heavyweight RFCs—too slow, nobody maintains them. You tried "just code"—AI agents get lost, team misaligns. Where's the middle ground?
 
 **LeanSpec solves this:**
+
 - ✅ Specs fit in AI context windows (<300 lines)
 - ✅ Light enough to actually maintain (5 min updates)
 - ✅ Structured enough for AI agents to act on
@@ -79,7 +80,7 @@ priority: high
 # Unified Dashboard
 
 ## Overview
-Combine `lean-spec board` and `lean-spec stats` into a single, comprehensive
+Combine `harnspec board` and `harnspec stats` into a single, comprehensive
 project health view. Give users instant insight into project status,
 bottlenecks, and team velocity.
 
@@ -102,6 +103,7 @@ bottlenecks, and team velocity.
 ```
 
 **Notice:**
+
 - ✅ Under 300 lines (fits in AI context)
 - ✅ Intent is clear ("what" and "why")
 - ✅ Implementation details are minimal
@@ -115,6 +117,7 @@ bottlenecks, and team velocity.
 LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of working with AI.
 
 ### 🧠 Context Economy
+
 **Specs <300 lines → Fit in working memory**
 
 - Physics: AI context windows are bounded (~20K effective tokens)
@@ -123,6 +126,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 - **Result**: Keep specs under 300 lines, split complex features into sub-specs
 
 ### ✂️ Signal-to-Noise Maximization
+
 **Every word informs decisions → Or it's cut**
 
 - Every sentence must answer: "What decision does this inform?"
@@ -131,6 +135,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 - **Result**: Dense, actionable specs that respect reader attention
 
 ### 📈 Progressive Disclosure
+
 **Add structure only when you feel pain → Start simple**
 
 - Solo dev: Just `status` + `created`
@@ -139,6 +144,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 - **Result**: Structure adapts to team size, not the other way around
 
 ### 🎯 Intent Over Implementation
+
 **Capture "why" → Let "how" emerge**
 
 - Must have: Problem, intent, success criteria
@@ -147,6 +153,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 - **Result**: Specs stay relevant as implementation evolves
 
 ### 🌉 Bridge the Gap
+
 **Both humans AND AI must understand → Clear structure + natural language**
 
 - For humans: Overview, context, rationale
@@ -158,7 +165,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 
 **These aren't preferences—they're constraints.** Physics (context windows), biology (working memory), and economics (token costs) dictate what works.
 
-📖 [Deep dive: First Principles Guide →](https://www.lean-spec.dev/docs/guide/first-principles)
+📖 [Deep dive: First Principles Guide →](https://harnspec.gitub.io/docs/guide/first-principles)
 
 ---
 
@@ -171,6 +178,7 @@ LeanSpec isn't arbitrary rules—it's derived from fundamental constraints of wo
 ### 🤖 AI-Native Integration
 
 Works seamlessly with:
+
 - **Cursor** / **Copilot** - Give agents full context
 - **Aider** - Structured specs for autonomous coding
 - **Claude** via MCP - Direct spec access in conversations
@@ -185,7 +193,7 @@ Clear specs = better code generation. Simple.
 Track progress without leaving the terminal:
 
 ```bash
-$ lean-spec board
+$ harnspec board
 ┌──────────────────────────────────┐
 │ 📋 PLANNED │ 🚧 IN PROGRESS │ ✅ DONE │
 │ • api-v2   │ • user-auth    │ • cli  │
@@ -227,6 +235,7 @@ Custom fields supported. Adapts to your workflow.
 **Why specs get stale:** They're too painful to update.
 
 **LeanSpec solution:**
+
 - Short specs = 5 min updates
 - CLI tools = easy viewing/editing
 - Structured format = AI can help update
@@ -244,31 +253,33 @@ Custom fields supported. Adapts to your workflow.
 
 ```bash
 # Install
-npm install -g lean-spec
+npm install -g harnspec
 
 # Initialize in your project
 cd your-project
-lean-spec init
+harnspec init
 
 # Create your first spec
-lean-spec create user-authentication
+harnspec create user-authentication
 
 # View it
-lean-spec view user-authentication
+harnspec view user-authentication
 
 # See the Kanban board
-lean-spec board
+harnspec board
 ```
 
 **What you'll discover:**
+
 - ✅ Creating a spec takes <2 minutes
 - ✅ Structure is clear, not constraining  
 - ✅ You can start simple, add fields later
 - ✅ AI agents can immediately work with it
 
 **Next steps:**
-- 📘 [Full CLI Reference](https://www.lean-spec.dev/docs/cli-reference) - All commands with examples
-- 🎨 [Choose a Template](https://www.lean-spec.dev/docs/templates) - Minimal, standard, or enterprise
+
+- 📘 [Full CLI Reference](https://harnspec.gitub.io/docs/cli-reference) - All commands with examples
+- 🎨 [Choose a Template](https://harnspec.gitub.io/docs/templates) - Minimal, standard, or enterprise
 - 🤖 [AI Agent Setup](../../AGENTS.md) - Configure Cursor, Claude, Aider
 
 ---
@@ -276,15 +287,19 @@ lean-spec board
 ## Who's Using LeanSpec
 
 ### AI-First Development Teams
+
 Give agents clear context without context window overload. Works with Cursor, Copilot, Aider, Claude.
 
 ### Scaling Startups
+
 One methodology from solo dev → team → enterprise. Add structure progressively as you grow.
 
 ### Teams Outgrowing "Just Code"
+
 Need structure for AI agents and team alignment, but heavyweight processes are too slow.
 
 ### Developers Building AI Agents
+
 MCP-native specs for autonomous coding workflows. Structured input format agents can parse reliably.
 
 ---
@@ -314,7 +329,7 @@ Updates in 6mo
 
 **LeanSpec is built using LeanSpec.** Every feature, refactor, and design decision has a spec. All specs follow the first principles. We dogfood our own methodology.
 
-→ [Browse our specs](https://github.com/codervisor/lean-spec/tree/main/specs)
+→ [Browse our specs](https://github.com/codervisor/harnspec/tree/main/specs)
 
 ---
 
@@ -335,24 +350,28 @@ Updates in 6mo
 ## Learn More
 
 ### 📚 Documentation
-- [Getting Started Guide](https://www.lean-spec.dev/docs/getting-started) - Complete setup walkthrough
-- [First Principles](https://www.lean-spec.dev/docs/guide/first-principles) - The philosophy behind LeanSpec
-- [CLI Reference](https://www.lean-spec.dev/docs/cli-reference) - All commands with examples
+
+- [Getting Started Guide](https://harnspec.gitub.io/docs/getting-started) - Complete setup walkthrough
+- [First Principles](https://harnspec.gitub.io/docs/guide/first-principles) - The philosophy behind LeanSpec
+- [CLI Reference](https://harnspec.gitub.io/docs/cli-reference) - All commands with examples
 
 ### 🛠️ Integrations
+
 - [AI Agent Configuration](../../AGENTS.md) - Cursor, Copilot, Aider setup
 - [MCP Server](../../docs/MCP-SERVER.md) - Claude Desktop integration
-- [VS Code Extension](https://www.lean-spec.dev/docs/tools/vscode) - Enhanced editor support
+- [VS Code Extension](https://harnspec.gitub.io/docs/tools/vscode) - Enhanced editor support
 
 ### 🎓 Guides
-- [Custom Fields](https://www.lean-spec.dev/docs/guide/custom-fields) - Adapt to your workflow
-- [Sub-Specs](https://www.lean-spec.dev/docs/guide/sub-specs) - Manage complex features
-- [Folder Structure](https://www.lean-spec.dev/docs/guide/folder-structure) - Organize your specs
+
+- [Custom Fields](https://harnspec.gitub.io/docs/guide/custom-fields) - Adapt to your workflow
+- [Sub-Specs](https://harnspec.gitub.io/docs/guide/sub-specs) - Manage complex features
+- [Folder Structure](https://harnspec.gitub.io/docs/guide/folder-structure) - Organize your specs
 
 ### 🤝 Community
-- [GitHub Issues](https://github.com/codervisor/lean-spec/issues) - Report bugs or request features
+
+- [GitHub Issues](https://github.com/codervisor/harnspec/issues) - Report bugs or request features
 - [Contributing Guide](../../CONTRIBUTING.md) - Join the project
-- [Examples](https://www.lean-spec.dev/docs/examples) - Real-world usage patterns
+- [Examples](https://harnspec.gitub.io/docs/examples) - Real-world usage patterns
 
 ---
 

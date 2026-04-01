@@ -31,10 +31,10 @@ sidebar_position: 10
 
 ### \{name\}
 
-提供给 `lean-spec create` 的Spec名称。
+提供给 `harnspec create` 的Spec名称。
 
 ```bash
-lean-spec create user-authentication
+harnspec create user-authentication
 ```
 
 结果为：
@@ -97,7 +97,7 @@ created: 2025-11-02
 
 ## 自定义变量
 
-在 `.lean-spec/config.json` 中定义您自己的变量：
+在 `.harnspec/config.json` 中定义您自己的变量：
 
 ```json
 {
@@ -120,7 +120,7 @@ created: 2025-11-02
 
 ### 1. 创建或编辑模板
 
-`.lean-spec/templates/spec-template.md`：
+`.harnspec/templates/spec-template.md`：
 
 ```markdown
 ---
@@ -145,7 +145,7 @@ created: \{date\}
 
 ### 2. 配置变量
 
-`.lean-spec/config.json`：
+`.harnspec/config.json`：
 
 ```json
 {
@@ -161,7 +161,7 @@ created: \{date\}
 ### 3. 创建Spec
 
 ```bash
-lean-spec create user-authentication
+harnspec create user-authentication
 ```
 
 ### 4. 结果
@@ -276,7 +276,7 @@ created: 2025-11-02
 2. 变量名称拼写错误
 3. 配置文件未保存
 
-**解决方案：** 检查 `.lean-spec/config.json` 是否定义了变量。
+**解决方案：** 检查 `.harnspec/config.json` 是否定义了变量。
 
 ### 错误的值
 

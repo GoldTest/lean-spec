@@ -48,7 +48,7 @@ HarnSpec 优先保证上下文经济与信噪比：
 ## 让Spec保持“活”
 - 实现一开始或暂停就更新状态——状态描述工作进度，而非写作进度。
 - 在 `## Notes`/`## Evolution` 下记录发现与范围变更，方便后来者理解决策演变。
-- 合并前运行 `lean-spec validate` 与 `lean-spec tokens <spec>`，确保元数据完整、内容不过载。
+- 合并前运行 `harnspec validate` 与 `harnspec tokens <spec>`，确保元数据完整、内容不过载。
 - 定期检查链接（仪表板、MCP 命令、PR 等）是否仍然有效。
 
 健康检查清单：

@@ -11,12 +11,14 @@
 ### Hero Section Rewrite
 
 **BEFORE:**
+
 ```markdown
 **Spec-Driven Development for the AI era**
 Clarity without overhead. Structure that adapts, not constrains.
 ```
 
 **AFTER (Option A - Context Hook):**
+
 ```markdown
 **Your specs are too big for AI to read.**
 
@@ -27,6 +29,7 @@ Spec-Driven Development designed for human + AI collaboration.
 ```
 
 **AFTER (Option B - Superpower Hook):**
+
 ```markdown
 **Give AI the perfect spec. Get the perfect implementation.**
 
@@ -39,6 +42,7 @@ The SDD methodology for AI-first development.
 ### Problem Section Enhancement
 
 **BEFORE:**
+
 ```markdown
 ## Why LeanSpec?
 
@@ -51,6 +55,7 @@ The SDD methodology for AI-first development.
 ```
 
 **AFTER:**
+
 ```markdown
 ## The Problem with Traditional SDD
 
@@ -70,6 +75,7 @@ You tried RFCs—too heavy. You tried "just code"—AI agents get lost. Where's 
 ```
 
 **Why better:**
+
 - Concrete scenarios (reader sees themselves)
 - Specific pain points
 - Clear before/after
@@ -77,6 +83,7 @@ You tried RFCs—too heavy. You tried "just code"—AI agents get lost. Where's 
 ### Principles Section Integration
 
 **BEFORE:**
+
 ```markdown
 ## Core Principles
 
@@ -90,6 +97,7 @@ LeanSpec is built on 5 first principles:
 ```
 
 **AFTER:**
+
 ```markdown
 ## Built on First Principles
 
@@ -108,6 +116,7 @@ biology (working memory), and economics (token costs).
 ```
 
 **Why better:**
+
 - Icons for scannability
 - Reframes as constraints, not choices
 - Backs with science
@@ -120,6 +129,7 @@ biology (working memory), and economics (token costs).
 ### Add Visual Elements
 
 1. **Before/After Code Comparison**
+
    ```markdown
    ### Traditional RFC vs. LeanSpec
    
@@ -135,11 +145,12 @@ biology (working memory), and economics (token costs).
    ```
 
 2. **Quick Demo GIF/Screenshot**
-   - Show `lean-spec create → lean-spec view → lean-spec board`
+   - Show `harnspec create → harnspec view → harnspec board`
    - 5-10 seconds max
    - Proves it's real and easy
 
 3. **Stats Box** (Dogfooding Social Proof)
+
    ```markdown
    📊 **LeanSpec in Practice**
    • 54 specs | Average: 287 lines
@@ -161,7 +172,9 @@ biology (working memory), and economics (token costs).
 ## Part 9: Call-to-Action Strategy
 
 ### Current CTA Problem
+
 Multiple competing CTAs:
+
 - Quick Start
 - Documentation
 - Examples
@@ -176,11 +189,11 @@ Multiple competing CTAs:
 ```markdown
 ## Try It Now (5 Minutes)
 
-npm install -g lean-spec
+npm install -g harnspec
 cd your-project
-lean-spec init
-lean-spec create my-first-spec
-lean-spec view my-first-spec
+harnspec init
+harnspec create my-first-spec
+harnspec view my-first-spec
 
 **What you'll discover:**
 ✅ Creating a spec takes <2 minutes
@@ -191,6 +204,7 @@ lean-spec view my-first-spec
 ```
 
 **Why it works:**
+
 - Time-bound (5 minutes = low commitment)
 - Promise quick win
 - Concrete steps
@@ -201,24 +215,25 @@ lean-spec view my-first-spec
 ## Part 10: Integration with First Principles
 
 ### Key Insight
+
 The README itself should DEMONSTRATE the principles:
 
 1. **Context Economy**
    - Keep README under 200 lines
    - Link to deep dives instead of explaining everything
-   
+
 2. **Signal-to-Noise**
    - Cut generic statements
    - Every sentence should inform adoption decision
-   
+
 3. **Progressive Disclosure**
    - Hero → Problem → Solution → Principles → Try
    - Links for those who want more
-   
+
 4. **Intent Over Implementation**
    - Show WHY LeanSpec exists (context constraints)
    - Not just HOW to use it
-   
+
 5. **Bridge the Gap**
    - Human-friendly overview
    - Machine-readable badges/stats
@@ -240,17 +255,17 @@ The README itself should DEMONSTRATE the principles:
 
 ### Medium-Impact Changes
 
-7. **Simplify Features Section** → Connect features to outcomes
-8. **Add Quick Demo** → GIF or screenshot of CLI in action
-9. **Testimonials/Social Proof** → If available
-10. **Shorten Overall Length** → Apply Signal-to-Noise to README itself
+1. **Simplify Features Section** → Connect features to outcomes
+2. **Add Quick Demo** → GIF or screenshot of CLI in action
+3. **Testimonials/Social Proof** → If available
+4. **Shorten Overall Length** → Apply Signal-to-Noise to README itself
 
 ### Low-Impact Changes (Nice to Have)
 
-11. **Icons for Principles** → Visual landmarks
-12. **Comparison Table** → LeanSpec vs. alternatives
-13. **FAQ Section** → Address common objections
-14. **Community Links** → Discord, Twitter, GitHub Discussions
+1. **Icons for Principles** → Visual landmarks
+2. **Comparison Table** → LeanSpec vs. alternatives
+3. **FAQ Section** → Address common objections
+4. **Community Links** → Discord, Twitter, GitHub Discussions
 
 ---
 
@@ -259,18 +274,21 @@ The README itself should DEMONSTRATE the principles:
 ### How to Measure if README Redesign Works
 
 **Leading Indicators (Week 1-2):**
+
 - ⬆️ npm install rate
 - ⬆️ Time on README page
 - ⬆️ Scroll depth (% who read to bottom)
 - ⬆️ Click-through to docs
 
 **Lagging Indicators (Month 1-3):**
+
 - ⬆️ Active users (Weekly Active Specs Created)
 - ⬆️ GitHub stars
 - ⬆️ Retention (% who create 5+ specs)
 - ⬆️ Word of mouth (Twitter mentions, etc.)
 
 **Qualitative Signals:**
+
 - User feedback: "I installed because..."
 - Common questions asked (reveals unclear parts)
 - Where users drop off in funnel
@@ -280,6 +298,7 @@ The README itself should DEMONSTRATE the principles:
 ## Final Recommendation: The Redesign Approach
 
 ### Phase 1: Quick Wins (Do Now)
+
 1. Rewrite hero with context overflow hook
 2. Enhance problem section with scenarios
 3. Add dogfooding stats
@@ -289,19 +308,21 @@ The README itself should DEMONSTRATE the principles:
 **Impact**: High (addresses biggest weaknesses)
 
 ### Phase 2: Visual Enhancement (Next)
+
 5. Add before/after visual comparison
-6. Create quick demo GIF
-7. Add icons to principles
-8. Improve formatting/spacing
+2. Create quick demo GIF
+3. Add icons to principles
+4. Improve formatting/spacing
 
 **Time**: 4-5 hours
 **Impact**: Medium-High
 
 ### Phase 3: Social Proof (When Available)
+
 9. Add testimonials
-10. Usage stats
-11. "Used by" section
-12. Case studies
+2. Usage stats
+3. "Used by" section
+4. Case studies
 
 **Time**: Variable
 **Impact**: Medium (requires collecting data)
@@ -311,24 +332,28 @@ The README itself should DEMONSTRATE the principles:
 ## Appendix: Alternative Approaches Considered
 
 ### A: Manifesto Style
+
 - Lead with bold statement
 - Challenge status quo
 - Rallying cry for AI-first development
 - **Rejected**: Too confrontational, alienates some
 
 ### B: Tutorial Style  
+
 - Walk through creating first spec
 - Learning by doing
 - Interactive feel
 - **Rejected**: Too long, README isn't tutorial
 
 ### C: Technical Deep-Dive
+
 - Explain architecture
 - Show how it works internally
 - Developer-focused
 - **Rejected**: Wrong audience for README (docs are for this)
 
 ### D: Problem-Solution-Principles (Chosen)
+
 - Hook with problem
 - Show solution
 - Ground in principles

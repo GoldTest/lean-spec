@@ -30,6 +30,7 @@ transitions:
 The Rust CLI/MCP search implementation is significantly less capable than the TypeScript version that was deprecated and removed. Key features from specs 075 (Intelligent Search Engine) and 124 (Advanced Search Capabilities) were never ported to Rust.
 
 **Current state after quick fix (this PR)**:
+
 - ✅ Multi-term cross-field matching (terms can appear in any field)
 - ✅ Weighted scoring (title > path > tags > content)
 - ✅ Case-insensitive search
@@ -63,23 +64,23 @@ This is identified as the **#1 critical gap** in spec 182 (Rust Implementation G
 
 ```bash
 # Boolean operators
-lean-spec search "api AND security"
-lean-spec search "frontend OR backend"
-lean-spec search "api NOT deprecated"
+harnspec search "api AND security"
+harnspec search "frontend OR backend"
+harnspec search "api NOT deprecated"
 
 # Field-specific search
-lean-spec search "status:in-progress"
-lean-spec search "tag:api priority:high"
-lean-spec search "created:>2025-11"
+harnspec search "status:in-progress"
+harnspec search "tag:api priority:high"
+harnspec search "created:>2025-11"
 
 # Fuzzy matching
-lean-spec search "authetication~"  # finds "authentication"
+harnspec search "authetication~"  # finds "authentication"
 
 # Phrase search
-lean-spec search '"user authentication"'
+harnspec search '"user authentication"'
 
 # Combined
-lean-spec search "tag:api status:planned rust"
+harnspec search "tag:api status:planned rust"
 ```
 
 ### Architecture
@@ -98,6 +99,7 @@ Shared by CLI, MCP, and future HTTP server.
 ## Plan
 
 ### Phase 1: Query Parser Foundation
+
 - [x] Create `search` module in `leanspec-core`
 - [x] Define query AST types (Term, Field, Operator, Phrase)
 - [x] Implement tokenizer for query strings
@@ -105,6 +107,7 @@ Shared by CLI, MCP, and future HTTP server.
 - [x] Add unit tests for parser
 
 ### Phase 2: Field-Specific Search
+
 - [x] Implement `status:` filter
 - [x] Implement `tag:` filter
 - [x] Implement `priority:` filter
@@ -113,26 +116,30 @@ Shared by CLI, MCP, and future HTTP server.
 - [x] Add integration tests
 
 ### Phase 3: Boolean Operators
+
 - [x] Implement AND operator (current default)
 - [x] Implement OR operator
 - [x] Implement NOT operator
 - [x] Add tests for complex boolean expressions
 
 ### Phase 4: Enhanced Matching
+
 - [x] Implement quoted phrase search
 - [x] Implement fuzzy matching with Levenshtein distance
 - [x] Add configurable fuzzy threshold (~1, ~2)
 - [x] Add tests for fuzzy and phrase matching
 
 ### Phase 5: Integration
+
 - [x] Refactor CLI `search.rs` to use new search module
 - [x] Refactor MCP `tool_search` to use new search module
 - [x] Update search tool descriptions with examples
-- [x] Add search syntax help (`lean-spec search --help`)
+- [x] Add search syntax help (`harnspec search --help`)
 
 ## Test
 
 ### Parser Tests
+
 - [x] `"api AND security"` → AST with AND operator
 - [x] `"tag:api"` → AST with field filter
 - [x] `'"exact phrase"'` → AST with phrase term
@@ -140,22 +147,26 @@ Shared by CLI, MCP, and future HTTP server.
 - [x] Invalid queries return clear error messages
 
 ### Field Filter Tests
+
 - [x] `status:in-progress` returns only in-progress specs
 - [x] `tag:rust` returns only specs with "rust" tag
 - [x] `priority:high` returns only high-priority specs
 - [x] `created:>2025-11-01` returns specs created after date
 
 ### Boolean Tests
+
 - [x] `A AND B` returns intersection
 - [x] `A OR B` returns union
 - [x] `A NOT B` returns A minus B
 
 ### Fuzzy Tests
+
 - [x] `authetication~` matches "authentication"
 - [x] `clii~` matches "cli"
 - [x] Fuzzy threshold is configurable
 
 ### E2E Tests
+
 - [x] Combined queries work correctly
 - [ ] Performance: <100ms for 500 specs
 - [x] Backward compatibility: simple queries still work
@@ -163,16 +174,19 @@ Shared by CLI, MCP, and future HTTP server.
 ## Notes
 
 ### Dependencies
+
 - **Builds on**: spec 182 (gap analysis), spec 075 (original TypeScript impl)
 - **Depends on**: None (new module)
 - **Future**: spec 209 (embeddings search) will build on this
 
 ### Reference
+
 - TypeScript query parser: `packages/core/src/search/` (now deleted)
 - Spec 124 for query syntax design
 - Consider using `strsim` crate for Levenshtein distance
 
 ### Alternatives
+
 - **Tantivy**: Full-text search library, but overkill for 100-500 specs
 - **Nucleo**: Fuzzy matcher, good for completion but not full search
 - **Custom**: Preferred for control and minimal dependencies

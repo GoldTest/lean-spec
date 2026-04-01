@@ -13,12 +13,14 @@ priority: high
 ## Problem
 
 **Current state**: LeanSpec hard-codes `<date>/<NNN-short-name>/` structure
+
 - ✅ Good for chronological grouping
 - ❌ Too complex for small teams/solo devs
 - ❌ No flexibility for different workflows
 - ❌ Two-level nesting adds navigation overhead
 
 **Pain points:**
+
 - Solo devs don't need date-based grouping (frontmatter `created` is enough)
 - Teams want different patterns (sprint-based, milestone-based, flat)
 - Current structure feels over-engineered for simple use cases
@@ -33,11 +35,13 @@ priority: high
 **The honest answer: It depends on your file browser usage patterns.**
 
 **If you reference specs primarily through:**
-- ✅ `lean-spec` commands → Structure doesn't matter (search/filter handles it)
+
+- ✅ `harnspec` commands → Structure doesn't matter (search/filter handles it)
 - ✅ IDE search/grep → Structure doesn't matter (tools find it)
 - ✅ GitHub PR links → Structure doesn't matter (direct links)
 
 **If you reference specs by:**
+
 - 📁 Browsing `specs/` in file explorer → Structure matters a lot
 - 👀 Visually scanning folders → Structure affects discoverability
 - 🗂️ Manual navigation → Structure impacts cognitive load
@@ -45,6 +49,7 @@ priority: high
 ### Supported Patterns
 
 #### 1. **Flat Sequential** (Default - Recommended)
+
 ```
 specs/
 ├── 001-typescript-cli-migration/
@@ -54,6 +59,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -64,6 +70,7 @@ specs/
 ```
 
 **Optional: Add prefix to spec folders (still flat, just with naming)**
+
 ```json
 {
   "structure": {
@@ -75,12 +82,14 @@ specs/
 ```
 
 **Examples with prefixes:**
+
 - `"prefix": "{YYYYMMDD}-"` → `20251103-001-feature/`
 - `"prefix": "{YYYY-MM}-"` → `2025-11-001-feature/`
 - `"prefix": "spec-"` → `spec-001-feature/`
 - No prefix (default) → `001-feature/`
 
 **Result with date prefix:**
+
 ```
 specs/
 ├── 20251031-001-typescript-cli-migration/
@@ -90,23 +99,26 @@ specs/
 ```
 
 **Pros:**
+
 - ✅ Simplest mental model (one flat list)
 - ✅ Minimal navigation (no nested folders)
-- ✅ Easy references: `lean-spec update 11` or just `011-docusaurus-vercel`
+- ✅ Easy references: `harnspec update 11` or just `011-docusaurus-vercel`
 - ✅ File explorer shows all specs at once
 - ✅ Works like GitHub issues (familiar pattern)
 - ✅ No cognitive overhead deciding "which folder?"
 - ✅ Optional prefix gives chronological sorting without nesting
 
 **Cons:**
+
 - ❌ Long list in file explorer if 100+ specs (mitigated by date prefix sorting)
 - ❌ Can't easily see "what was worked on in October?" (unless using date prefix)
 - ❌ Requires frontmatter `created` for timeline views (or use date prefix)
 
 **Best for:**
+
 - Solo developers
 - Small teams (< 50 specs)
-- Projects using `lean-spec` commands primarily
+- Projects using `harnspec` commands primarily
 - Teams who filter/search rather than browse
 - Anyone who wants chronological sorting without folder nesting
 
@@ -117,6 +129,7 @@ specs/
 Any nested grouping structure extracted from frontmatter or date functions.
 
 ##### Example A: Date-Based (Current LeanSpec behavior)
+
 ```
 specs/
 ├── 20251031/
@@ -128,6 +141,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -139,6 +153,7 @@ specs/
 ```
 
 **Built-in date functions:**
+
 - `{YYYYMMDD}` → `20251103`
 - `{YYYY-MM-DD}` → `2025-11-03`
 - `{YYYY-MM}` → `2025-11`
@@ -147,6 +162,7 @@ specs/
 ---
 
 ##### Example B: Month-Based
+
 ```
 specs/
 ├── 2025-11/
@@ -158,6 +174,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -171,6 +188,7 @@ specs/
 ---
 
 ##### Example C: Milestone-Based
+
 ```
 specs/
 ├── milestone-1/
@@ -182,6 +200,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -196,6 +215,7 @@ specs/
 ---
 
 ##### Example D: Sprint-Based
+
 ```
 specs/
 ├── sprint-14/
@@ -206,6 +226,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -220,6 +241,7 @@ specs/
 ---
 
 ##### Example E: Release-Based
+
 ```
 specs/
 ├── v1.0/
@@ -231,6 +253,7 @@ specs/
 ```
 
 **Config:**
+
 ```json
 {
   "structure": {
@@ -259,26 +282,28 @@ milestone: 1  # ← This determines folder
 
 ```bash
 # LeanSpec automatically creates milestone-1/ folder
-lean-spec create feature-a --field milestone=1
+harnspec create feature-a --field milestone=1
 # → specs/milestone-1/001-feature-a/
 
-lean-spec create feature-b --field milestone=1
+harnspec create feature-b --field milestone=1
 # → specs/milestone-1/002-feature-b/
 
-lean-spec create feature-c --field milestone=2
+harnspec create feature-c --field milestone=2
 # → specs/milestone-2/003-feature-c/  # Auto-creates milestone-2/
 
 # Missing field uses fallback
-lean-spec create docs
+harnspec create docs
 # → specs/backlog/004-docs/  # Uses groupFallback
 ```
 
 **Built-in extractors:**
+
 - Date functions: `{YYYYMMDD}`, `{YYYY-MM-DD}`, `{YYYY-MM}`, `{YYYY}`, `{MM}`, `{DD}`
 - Frontmatter fields: `{fieldname}` → reads from `frontmatter.fieldname`
 - Combined: `{YYYY}/Q{quarter}` → `2025/Q4`
 
 **Pros:**
+
 - ✅ No manual folder management (auto-created)
 - ✅ Infinitely flexible (any grouping you want)
 - ✅ Semantic grouping (feature-related specs together)
@@ -286,12 +311,14 @@ lean-spec create docs
 - ✅ Date-based is just a special case
 
 **Cons:**
+
 - ❌ Two-level nesting
 - ❌ Need custom frontmatter fields for non-date grouping
 - ❌ Specs without field go to fallback folder
 - ❌ More complex config
 
 **Best for:**
+
 - Milestone/epic/sprint-based planning
 - Release-driven development
 - Time-boxed workflows (date/month grouping)
@@ -335,6 +362,7 @@ export interface LeanSpecConfig {
 ```
 
 **Pattern behavior:**
+
 - `pattern: 'flat'` → Single level, optionally with `prefix` on folder names
 - `pattern: 'custom'` → Two levels with `groupExtractor` determining parent folder
 
@@ -433,6 +461,7 @@ function extractGroup(
 ```
 
 **Examples:**
+
 ```typescript
 // Flat with no prefix (default)
 resolveSpecPath("my-feature", { pattern: 'flat', sequenceDigits: 3 })
@@ -482,13 +511,15 @@ const seq = await getGlobalNextSeq(specsDir, config.structure.sequenceDigits);
 ```
 
 **Why global sequences:**
-- ✅ Unique references: `lean-spec update 5` is unambiguous
+
+- ✅ Unique references: `harnspec update 5` is unambiguous
 - ✅ Simple mental model: Numbers never repeat
 - ✅ Works like GitHub issues/PRs
 - ✅ No confusion when switching patterns
 - ✅ Archives don't break references
 
 **Implementation:**
+
 ```typescript
 async function getGlobalNextSeq(specsDir: string, digits: number): Promise<string> {
   // Scan ALL subdirectories recursively for NNN- pattern
@@ -509,8 +540,9 @@ async function getGlobalNextSeq(specsDir: string, digits: number): Promise<strin
 **Existing projects:** Keep current structure unless explicitly changed
 
 **Config migration:**
+
 ```typescript
-// On lean-spec init, detect existing structure
+// On harnspec init, detect existing structure
 const hasDateDirs = await detectDateDirectories(specsDir);
 
 if (hasDateDirs) {
@@ -526,13 +558,13 @@ Commands should support multiple reference formats:
 
 ```bash
 # By number (works for all patterns)
-lean-spec update 11 --status complete
+harnspec update 11 --status complete
 
 # By name (searches across all groups)
-lean-spec update flexible-folder-structure --status complete
+harnspec update flexible-folder-structure --status complete
 
 # By full path (explicit)
-lean-spec update 20251103/001-flexible-folder-structure --status complete
+harnspec update 20251103/001-flexible-folder-structure --status complete
 ```
 
 Existing `resolveSpecPath()` handles this already!
@@ -540,17 +572,20 @@ Existing `resolveSpecPath()` handles this already!
 ## Implementation Plan
 
 ### Phase 1: Config Schema ✅
+
 - [x] Update `LeanSpecConfig` interface with `pattern` field
 - [x] Add pattern validation
 - [x] Set default to `flat` for new projects
 - [x] Detect existing structure on init
 
 ### Phase 2: Path Resolution ✅
+
 - [x] Refactor `create.ts` to use pattern-based paths
 - [x] Update `getNextSeq()` to handle flat vs grouped
 - [x] Test all patterns with sequential numbering
 
 ### Phase 3: Command Updates ⚠️
+
 - [x] Update `create` command
 - [x] Update `list` command (group display logic) - **Minor issue: still hardcoded to date grouping**
 - [x] Update `board` command
@@ -558,17 +593,20 @@ Existing `resolveSpecPath()` handles this already!
 - [x] Update `archive` command
 
 ### Phase 4: Migration Tools ✅
+
 - [x] Add `normalizeLegacyPattern()` to convert patterns automatically
 - [x] Detect current structure automatically
 - [x] Warn about breaking changes
 
 ### Phase 5: Documentation ⚠️
+
 - [ ] Update README with pattern examples
-- [ ] Add pattern selection to `lean-spec init` wizard
+- [ ] Add pattern selection to `harnspec init` wizard
 - [ ] Document migration guide
 - [x] Update template configs - **Issue: Templates still use legacy format**
 
 ### Phase 6: Testing ✅
+
 - [x] Integration tests for all patterns
 - [x] Test sequential number consistency
 - [x] Test spec resolution across patterns
@@ -577,12 +615,14 @@ Existing `resolveSpecPath()` handles this already!
 ## Files to Modify
 
 ### Core
+
 - `src/config.ts` - Add pattern field, update schema
 - `src/commands/create.ts` - Pattern-based path resolution
 - `src/utils/path-helpers.ts` - Update `getNextSeq()`, `resolveSpecPath()`
 - `src/spec-loader.ts` - Handle different directory structures
 
 ### Commands
+
 - `src/commands/list.ts` - Group display by pattern
 - `src/commands/board.ts` - Pattern-aware grouping
 - `src/commands/search.ts` - Search across patterns
@@ -590,16 +630,20 @@ Existing `resolveSpecPath()` handles this already!
 - `src/commands/init.ts` - Pattern selection wizard
 
 ### New Commands
+
 - `src/commands/migrate.ts` - Convert between patterns
 
 ### Tests
+
 - `src/integration.test.ts` - Add pattern scenarios
 - `src/commands.test.ts` - Test all patterns
 
 ### Templates
+
 - `templates/*/config.json` - Add pattern field with defaults
 
 ### Documentation
+
 - `README.md` - Show pattern examples
 - `docs-site/docs/guide/getting-started.md` - Pattern selection
 - `docs-site/docs/reference/config.md` - Pattern reference
@@ -612,7 +656,7 @@ Existing `resolveSpecPath()` handles this already!
 - [x] Sequential numbering consistent within each pattern
 - [x] Spec references work across all patterns
 - [x] Migration between patterns doesn't break links
-- [ ] `lean-spec init` offers pattern selection
+- [ ] `harnspec init` offers pattern selection
 - [ ] Documentation covers all patterns
 - [x] Zero breaking changes for existing users
 
@@ -665,7 +709,7 @@ Existing `resolveSpecPath()` handles this already!
 
 ### 📋 Remaining Work (Optional Polish)
 
-1. **Pattern selection wizard in `lean-spec init`**
+1. **Pattern selection wizard in `harnspec init`**
    - Currently line 72-74 shows TODO for custom setup flow
    - Would improve UX to let users choose pattern during init
 
@@ -681,12 +725,14 @@ Existing `resolveSpecPath()` handles this already!
 ### 🎯 Verification Results
 
 **Test Run**: All tests passing (98/98)
+
 - Flexible Folder Structure: 10/10 ✅
 - Integration tests: 5/5 ✅
 - Command tests: 30/30 ✅
 - Other tests: 53/53 ✅
 
 **Files Modified**:
+
 - ✅ `src/config.ts` - Schema + helper functions
 - ✅ `src/commands/create.ts` - Pattern-based creation
 - ✅ `src/commands/archive.ts` - Flat archive structure
@@ -694,6 +740,7 @@ Existing `resolveSpecPath()` handles this already!
 - ✅ `src/commands.test.ts` - Comprehensive test coverage
 
 **Backward Compatibility**: ✅ Zero breaking changes
+
 - Legacy patterns auto-converted
 - Existing date-based projects continue working
 - Archive behavior consistent
@@ -726,7 +773,7 @@ Existing `resolveSpecPath()` handles this already!
    - No manual migration required
    - Backward compatible
 
-6. **Display in `lean-spec list` for flat pattern:**
+6. **Display in `harnspec list` for flat pattern:**
    - ⚠️ **Partially Resolved**: Currently hardcoded to date grouping
    - **Options considered**:
      - Group by month from frontmatter `created` ✓ (best for chronological view)
@@ -737,17 +784,20 @@ Existing `resolveSpecPath()` handles this already!
 ## Why This Matters
 
 **Aligns with LeanSpec philosophy:**
+
 - ✅ Simple default (flat) for 80% of users
 - ✅ Flexible enough for complex workflows
 - ✅ Progressive complexity (start simple, add structure when needed)
 - ✅ No forced overhead
 
 **Competitive advantage:**
+
 - Other SDD tools force their structure
 - LeanSpec adapts to YOUR workflow
 
 **User experience:**
-- Easier references: `lean-spec update 5` vs `lean-spec update 20251103/001-feature`
+
+- Easier references: `harnspec update 5` vs `harnspec update 20251103/001-feature`
 - Less navigation overhead
 - Familiar pattern (like GitHub issues)
 - Still supports chronological grouping when needed

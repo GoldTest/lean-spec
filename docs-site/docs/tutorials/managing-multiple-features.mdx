@@ -24,7 +24,7 @@ Real projects have multiple features in flight. Learn how to manage them without
 Get hands-on with a pre-configured dashboard project:
 
 ```bash
-npx lean-spec init --example dashboard-widgets
+npx harnspec init --example dashboard-widgets
 cd dashboard-widgets
 npm install
 npm run dev
@@ -145,7 +145,7 @@ Each with `status: planned` and tags `['dashboard', 'contacts']`.
 
 List all your specs:
 ```bash
-lean-spec list
+harnspec list
 ```
 
 Output:
@@ -163,7 +163,7 @@ Output:
 
 Use the board view for workflow status:
 ```bash
-lean-spec board
+harnspec board
 ```
 
 Shows Kanban columns: Planned → In Progress → Complete
@@ -174,7 +174,7 @@ Shows Kanban columns: Planned → In Progress → Complete
 
 Search by tag:
 ```bash
-lean-spec list --tags contacts
+harnspec list --tags contacts
 ```
 
 Or ask your AI:
@@ -186,7 +186,7 @@ The AI runs the search and shows you the results with context.
 
 Search by keyword:
 ```bash
-lean-spec search "validation"
+harnspec search "validation"
 ```
 
 Finds specs mentioning validation across all content. Perfect for avoiding duplicate work.
@@ -205,7 +205,7 @@ Implement spec 022.
 
 Check status anytime:
 ```bash
-lean-spec list --status in-progress
+harnspec list --status in-progress
 ```
 
 Shows:
@@ -226,7 +226,7 @@ Link spec 023 as depending on spec 022 (needs validation logic first).
 
 Or manually:
 ```bash
-lean-spec link 023 --depends-on 022
+harnspec link 023 --depends-on 022
 ```
 
 Now when you view spec 023:
@@ -244,7 +244,7 @@ The AI knows to check spec 022 before implementing 023. It won't start bulk impo
 
 **View dependencies:**
 ```bash
-lean-spec deps 023
+harnspec deps 023
 ```
 
 Shows:
@@ -257,14 +257,14 @@ Shows:
 
 As you finish each feature:
 ```bash
-lean-spec update 021 --status complete
-lean-spec update 022 --status complete
-lean-spec update 023 --status complete
+harnspec update 021 --status complete
+harnspec update 022 --status complete
+harnspec update 023 --status complete
 ```
 
 Check project health:
 ```bash
-lean-spec stats
+harnspec stats
 ```
 
 Output:
@@ -295,7 +295,7 @@ You managed a multi-spec project without chaos:
 - Status buried in git commits
 
 **With HarnSpec:**
-- Single source of truth (`lean-spec list`)
+- Single source of truth (`harnspec list`)
 - Dependency tracking prevents ordering mistakes
 - Search finds related work instantly
 - Status tracking built-in
@@ -305,15 +305,15 @@ The CLI commands + AI integration give you project visibility without leaving yo
 ## Key Techniques
 
 **Discovery:**
-- `lean-spec list` - See everything
-- `lean-spec board` - Visualize workflow
-- `lean-spec search` - Find by keyword
-- `lean-spec list --tags <tag>` - Filter by category
+- `harnspec list` - See everything
+- `harnspec board` - Visualize workflow
+- `harnspec search` - Find by keyword
+- `harnspec list --tags <tag>` - Filter by category
 
 **Management:**
-- `lean-spec deps` - Show dependencies
-- `lean-spec link --depends-on` - Document blocking work
-- `lean-spec stats` - Project health check
+- `harnspec deps` - Show dependencies
+- `harnspec link --depends-on` - Document blocking work
+- `harnspec stats` - Project health check
 - Multiple specs `in-progress` OK if independent
 
 **AI Integration:**
@@ -326,7 +326,7 @@ The CLI commands + AI integration give you project visibility without leaving yo
 Practice with your project:
 - Create 2-3 related specs
 - Tag them by feature area
-- Try `lean-spec list`, `board`, `search`
+- Try `harnspec list`, `board`, `search`
 - Document one dependency
 
 **Learn more:**
@@ -334,4 +334,4 @@ Practice with your project:
 - [Finding Specs](/docs/guide/usage/cli/finding-specs) - Advanced search patterns
 - [Project Management](/docs/guide/usage/cli/project-management) - Board, stats, dependencies
 
-**Questions?** See [FAQ](/docs/faq) or [ask the community](https://github.com/codervisor/lean-spec/discussions).
+**Questions?** See [FAQ](/docs/faq) or [ask the community](https://github.com/codervisor/harnspec/discussions).

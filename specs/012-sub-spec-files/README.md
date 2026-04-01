@@ -17,24 +17,27 @@ completed: '2025-11-02'
 ## Implementation Status
 
 **Phase 1 (Core Support) - ✅ Implemented (2025-11-06)**
+
 - ✅ `loadSubFiles()` function implemented in `spec-loader.ts`
-- ✅ `lean-spec files <spec>` command implemented
-- ✅ `lean-spec view <spec>/SUBFILE.md` - View sub-spec files directly
-- ✅ `lean-spec open <spec>/SUBFILE.md` - Open sub-spec files in editor
+- ✅ `harnspec files <spec>` command implemented
+- ✅ `harnspec view <spec>/SUBFILE.md` - View sub-spec files directly
+- ✅ `harnspec open <spec>/SUBFILE.md` - Open sub-spec files in editor
 - ✅ Sub-spec viewing with all output modes (formatted, --raw, --json)
 - ✅ Full test coverage for sub-spec viewing
 - ✅ Documentation updated (README.md, AGENTS.md, CLI help)
 
 **Not Yet Implemented:**
-- ⏸️ Phase 2: Enhanced `lean-spec create` with `--files` option
-- ⏸️ Phase 3: `lean-spec validate` link checker
-- ⏸️ Phase 4: `lean-spec merge` command
+
+- ⏸️ Phase 2: Enhanced `harnspec create` with `--files` option
+- ⏸️ Phase 3: `harnspec validate` link checker
+- ⏸️ Phase 4: `harnspec merge` command
 
 **Key Feature:** You can now view and open sub-spec files using paths like:
+
 ```bash
-lean-spec view 045/IMPLEMENTATION.md
-lean-spec view my-spec/TESTING.md --raw
-lean-spec open 012/DESIGN.md
+harnspec view 045/IMPLEMENTATION.md
+harnspec view my-spec/TESTING.md --raw
+harnspec open 012/DESIGN.md
 ```
 
 ## Overview
@@ -44,6 +47,7 @@ Enable specs to contain multiple organized documents beyond just `README.md`. As
 **Current State**: Each spec is a single `README.md` file. Some specs informally add extra files (e.g., `SUMMARY.md`, `TEST_SUMMARY.md`), but there's no standardized approach or tooling support.
 
 **Goal**: Provide a lightweight, discoverable system for organizing multi-document specs that:
+
 - Keeps the main `README.md` as the entry point (backwards compatible)
 - Allows structured sub-documents with clear naming conventions
 - Provides CLI commands to discover and work with sub-files
@@ -87,6 +91,7 @@ Real-world scenarios where single-file specs break down:
 ### File Organization Principles
 
 **1. README.md is Always the Entry Point**
+
 - Every spec MUST have a `README.md`
 - It contains the frontmatter (single source of truth for metadata)
 - It provides overview and links to sub-documents
@@ -155,30 +160,30 @@ This spec is organized into multiple documents:
 
 ### CLI Commands
 
-#### 1. `lean-spec create` Enhancement
+#### 1. `harnspec create` Enhancement
 
 Support creating specs with templates that include sub-files:
 
 ```bash
 # Create spec with sub-files from template
-lean-spec create my-api-spec --template=api
+harnspec create my-api-spec --template=api
 # Creates: README.md, API.md, SCHEMAS.md, EXAMPLES.md
 
 # Create spec with custom sub-files
-lean-spec create my-feature --files=TESTING.md,MIGRATION.md
+harnspec create my-feature --files=TESTING.md,MIGRATION.md
 # Creates: README.md, TESTING.md, MIGRATION.md
 
 # Add sub-file to existing spec
-lean-spec add specs/20251101/001-my-spec/TESTING.md
+harnspec add specs/20251101/001-my-spec/TESTING.md
 # Creates TESTING.md with proper template and links
 ```
 
-#### 2. `lean-spec files` - List Sub-Documents
+#### 2. `harnspec files` - List Sub-Documents
 
 Show all files in a spec:
 
 ```bash
-$ lean-spec files specs/20251101/009-sub-spec-files
+$ harnspec files specs/20251101/009-sub-spec-files
 
 📄 Files in 009-sub-spec-files
 
@@ -198,17 +203,18 @@ Total: 6 files, 61.5 KB
 ```
 
 **Options:**
+
 - `--type=docs` - Show only markdown documents
 - `--type=assets` - Show only assets
 - `--tree` - Show as tree structure
 - `--json` - Output as JSON
 
-#### 3. `lean-spec toc` - Generate Table of Contents
+#### 3. `harnspec toc` - Generate Table of Contents
 
 Auto-generate cross-document table of contents:
 
 ```bash
-$ lean-spec toc specs/20251101/009-sub-spec-files
+$ harnspec toc specs/20251101/009-sub-spec-files
 
 # 009-sub-spec-files
 
@@ -234,16 +240,17 @@ $ lean-spec toc specs/20251101/009-sub-spec-files
 ```
 
 **Options:**
+
 - `--depth=2` - Control heading depth
 - `--output=TOC.md` - Write to file
 - `--insert` - Insert into README.md
 
-#### 4. `lean-spec validate` - Check Spec Integrity
+#### 4. `harnspec validate` - Check Spec Integrity
 
 Validate spec structure and cross-references:
 
 ```bash
-$ lean-spec validate specs/20251101/009-sub-spec-files
+$ harnspec validate specs/20251101/009-sub-spec-files
 
 ✓ README.md exists and has valid frontmatter
 ✓ All sub-documents linked from README.md
@@ -255,6 +262,7 @@ $ lean-spec validate specs/20251101/009-sub-spec-files
 ```
 
 **Checks:**
+
 - README.md exists with valid frontmatter
 - All sub-documents are referenced from README.md or other docs
 - No broken internal links
@@ -263,16 +271,17 @@ $ lean-spec validate specs/20251101/009-sub-spec-files
 - Naming convention compliance
 
 **Options:**
+
 - `--fix` - Auto-fix issues (add links, remove orphans)
 - `--strict` - Fail on warnings
 - `--check-external` - Validate external links too
 
-#### 5. `lean-spec merge` - Combine Multi-Doc Spec
+#### 5. `harnspec merge` - Combine Multi-Doc Spec
 
 Merge all documents into single file for sharing:
 
 ```bash
-$ lean-spec merge specs/20251101/009-sub-spec-files
+$ harnspec merge specs/20251101/009-sub-spec-files
 
 📦 Merging 009-sub-spec-files...
 
@@ -285,6 +294,7 @@ Created: specs/20251101/009-sub-spec-files-MERGED.md (8.5 KB)
 ```
 
 Output structure:
+
 ```markdown
 # 009-sub-spec-files (Merged)
 
@@ -307,6 +317,7 @@ Output structure:
 ```
 
 **Options:**
+
 - `--output=file.md` - Custom output path
 - `--include-assets` - Embed images as base64
 - `--pdf` - Generate PDF (requires pandoc)
@@ -317,6 +328,7 @@ Output structure:
 Extend template system to support multi-file specs:
 
 **New Template Structure:**
+
 ```
 templates/api-spec/
 ├── config.json
@@ -330,6 +342,7 @@ templates/api-spec/
 ```
 
 **config.json Enhancement:**
+
 ```json
 {
   "name": "api-spec",
@@ -357,17 +370,19 @@ templates/api-spec/
 ### Integration with Existing Commands
 
 **Search Enhancement:**
+
 ```bash
 # Search across all spec documents
-lean-spec search "authentication" --all-docs
+harnspec search "authentication" --all-docs
 
 # Search only in specific sub-document type
-lean-spec search "test" --in=TESTING.md
+harnspec search "test" --in=TESTING.md
 ```
 
 **Stats Enhancement:**
+
 ```bash
-$ lean-spec stats --verbose
+$ harnspec stats --verbose
 
 📊 Spec Statistics
 
@@ -439,6 +454,7 @@ export async function loadAllSpecs(options: {
 **Scenario**: Team is designing a new REST API with 20+ endpoints.
 
 **Structure**:
+
 ```
 specs/20251101/010-user-api-v2/
 ├── README.md           # Overview, design decisions, goals
@@ -452,9 +468,10 @@ specs/20251101/010-user-api-v2/
 ```
 
 **Workflow**:
+
 ```bash
 # Create from template
-lean-spec create user-api-v2 --template=api-spec
+harnspec create user-api-v2 --template=api-spec
 
 # Work on different aspects
 code specs/.../README.md        # High-level design
@@ -462,13 +479,13 @@ code specs/.../ENDPOINTS.md     # Endpoint details
 code specs/.../AUTHENTICATION.md # Auth design
 
 # Validate structure
-lean-spec validate specs/.../user-api-v2
+harnspec validate specs/.../user-api-v2
 
 # Generate unified TOC
-lean-spec toc specs/.../user-api-v2 --insert
+harnspec toc specs/.../user-api-v2 --insert
 
 # Share with stakeholders
-lean-spec merge specs/.../user-api-v2 --pdf
+harnspec merge specs/.../user-api-v2 --pdf
 ```
 
 ### Use Case 2: Complex Feature with Testing
@@ -476,6 +493,7 @@ lean-spec merge specs/.../user-api-v2 --pdf
 **Scenario**: Building a payment system with extensive testing requirements.
 
 **Structure**:
+
 ```
 specs/20251101/011-payment-processing/
 ├── README.md           # Feature overview and goals
@@ -494,6 +512,7 @@ specs/20251101/011-payment-processing/
 **Scenario**: Evaluating multiple approaches for caching strategy.
 
 **Structure**:
+
 ```
 specs/20251101/012-caching-strategy/
 ├── README.md           # Research goals and summary
@@ -508,47 +527,52 @@ specs/20251101/012-caching-strategy/
 ```
 
 **Workflow**:
+
 ```bash
 # Create research spec
-lean-spec create caching-strategy
+harnspec create caching-strategy
 
 # Add sub-documents as you research
-lean-spec add specs/.../caching-strategy/REDIS.md
-lean-spec add specs/.../caching-strategy/MEMCACHED.md
+harnspec add specs/.../caching-strategy/REDIS.md
+harnspec add specs/.../caching-strategy/MEMCACHED.md
 
 # Generate comparison TOC
-lean-spec toc specs/.../caching-strategy
+harnspec toc specs/.../caching-strategy
 
 # Validate completeness
-lean-spec validate specs/.../caching-strategy
+harnspec validate specs/.../caching-strategy
 ```
 
 ## Implementation Plan
 
 ### Phase 1: Core Support (v1.0)
+
 - [ ] Update `SpecInfo` type to include `subFiles`
 - [ ] Implement `loadSubFiles()` function
-- [ ] Add `--include-sub-files` option to `lean-spec list`
-- [ ] Add `lean-spec files <spec>` command
+- [ ] Add `--include-sub-files` option to `harnspec list`
+- [ ] Add `harnspec files <spec>` command
 - [ ] Update templates to support sub-file definitions
 - [ ] Document naming conventions
 
 ### Phase 2: Creation & Management (v1.1)
-- [ ] Enhance `lean-spec create` with `--files` option
-- [ ] Add `lean-spec add <spec>/<file>` command
+
+- [ ] Enhance `harnspec create` with `--files` option
+- [ ] Add `harnspec add <spec>/<file>` command
 - [ ] Create sub-file templates for common types
 - [ ] Add API spec template with sub-files
 - [ ] Update documentation
 
 ### Phase 3: Validation & Tools (v1.2)
-- [ ] Implement `lean-spec validate` command
+
+- [ ] Implement `harnspec validate` command
 - [ ] Add link checker for cross-references
 - [ ] Add orphan file detection
-- [ ] Implement `lean-spec toc` command
+- [ ] Implement `harnspec toc` command
 - [ ] Add TOC auto-insertion
 
 ### Phase 4: Advanced Features (v2.0)
-- [ ] Implement `lean-spec merge` command
+
+- [ ] Implement `harnspec merge` command
 - [ ] Add PDF export support (via pandoc)
 - [ ] Enhance search to include all sub-documents
 - [ ] Add stats for sub-file distribution
@@ -557,6 +581,7 @@ lean-spec validate specs/.../caching-strategy
 ## Testing
 
 ### Unit Tests
+
 - [ ] `loadSubFiles()` returns all markdown files except README.md
 - [ ] `loadSubFiles()` classifies files correctly (docs vs assets)
 - [ ] `loadSubFiles()` includes content when requested
@@ -564,20 +589,22 @@ lean-spec validate specs/.../caching-strategy
 - [ ] Empty spec directory returns empty sub-files array
 
 ### Integration Tests
-- [ ] `lean-spec files` lists all sub-documents correctly
-- [ ] `lean-spec files --type=docs` filters to markdown only
-- [ ] `lean-spec files --tree` shows proper hierarchy
-- [ ] `lean-spec create --files=X,Y` creates all files
-- [ ] `lean-spec add` creates properly templated file
-- [ ] `lean-spec validate` detects broken links
-- [ ] `lean-spec validate` detects orphaned files
-- [ ] `lean-spec toc` generates correct TOC
-- [ ] `lean-spec toc --insert` updates README.md correctly
-- [ ] `lean-spec merge` combines all documents
-- [ ] `lean-spec search --all-docs` searches sub-files
+
+- [ ] `harnspec files` lists all sub-documents correctly
+- [ ] `harnspec files --type=docs` filters to markdown only
+- [ ] `harnspec files --tree` shows proper hierarchy
+- [ ] `harnspec create --files=X,Y` creates all files
+- [ ] `harnspec add` creates properly templated file
+- [ ] `harnspec validate` detects broken links
+- [ ] `harnspec validate` detects orphaned files
+- [ ] `harnspec toc` generates correct TOC
+- [ ] `harnspec toc --insert` updates README.md correctly
+- [ ] `harnspec merge` combines all documents
+- [ ] `harnspec search --all-docs` searches sub-files
 - [ ] Templates with sub-files create all documents
 
 ### Edge Cases
+
 - [ ] Spec with only README.md (no sub-files)
 - [ ] Spec with 50+ sub-files (performance)
 - [ ] Sub-file with circular references
@@ -601,6 +628,7 @@ lean-spec validate specs/.../caching-strategy
 **Decision**: Always require README.md with frontmatter.
 
 **Rationale**:
+
 - Backwards compatibility with existing specs
 - Clear entry point for tools and humans
 - Single source of truth for metadata
@@ -612,6 +640,7 @@ lean-spec validate specs/.../caching-strategy
 **Decision**: Recommend standard names (TESTING.md, API.md) but don't enforce.
 
 **Rationale**:
+
 - Discoverability: predictable names help navigation
 - Tooling: standard names enable smart defaults
 - Convention over configuration: reduce decision fatigue
@@ -624,6 +653,7 @@ lean-spec validate specs/.../caching-strategy
 **Decision**: Keep all documents at spec root level (flat structure).
 
 **Rationale**:
+
 - Simpler to discover and link
 - Avoid over-organization
 - Assets can live in `assets/` subdirectory
@@ -633,9 +663,10 @@ lean-spec validate specs/.../caching-strategy
 
 ### Why Not Automatic TOC in README.md?
 
-**Decision**: Make TOC generation opt-in (`lean-spec toc --insert`).
+**Decision**: Make TOC generation opt-in (`harnspec toc --insert`).
 
 **Rationale**:
+
 - Not all specs need TOC (simple ones don't benefit)
 - Manual control over when/where TOC appears
 - Avoid auto-generated content in version control
@@ -650,15 +681,17 @@ lean-spec validate specs/.../caching-strategy
 Specs with informal sub-files (like `SUMMARY.md`) will continue working. New commands will simply recognize them.
 
 **No breaking changes**:
+
 - Existing specs with only README.md: no change
-- Existing specs with extra files: now discoverable via `lean-spec files`
+- Existing specs with extra files: now discoverable via `harnspec files`
 - All existing commands continue working
 
 **Gradual adoption**:
+
 1. Start using recommended naming conventions
 2. Add links in README.md to sub-documents
-3. Use `lean-spec validate` to check structure
-4. Use `lean-spec toc` to auto-generate navigation
+3. Use `harnspec validate` to check structure
+4. Use `harnspec toc` to auto-generate navigation
 
 ## Documentation Updates
 
@@ -686,7 +719,7 @@ Specs with informal sub-files (like `SUMMARY.md`) will continue working. New com
    - Sub-files provide detailed content
    - Use validation to detect inconsistencies
 
-3. **Should `lean-spec search` include sub-files by default?**
+3. **Should `harnspec search` include sub-files by default?**
    - Yes - search all content by default
    - Add `--main-only` flag to search only README.md
 
@@ -704,7 +737,7 @@ Specs with informal sub-files (like `SUMMARY.md`) will continue working. New com
 
 - 20% of new specs use sub-files within 2 months
 - Zero complaints about backward compatibility
-- `lean-spec files` command used regularly (top 5 commands)
+- `harnspec files` command used regularly (top 5 commands)
 - Templates with sub-files are popular choices
 - Documentation receives positive feedback
 

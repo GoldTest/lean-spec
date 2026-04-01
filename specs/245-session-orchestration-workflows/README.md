@@ -127,6 +127,7 @@ interface QualityCheck {
 **Standard Gates**:
 
 1. **Test Gate**: Run test suite, check for failures
+
    ```typescript
    {
      name: 'test_execution',
@@ -137,6 +138,7 @@ interface QualityCheck {
    ```
 
 2. **Spec Coverage Gate**: Verify all spec requirements are implemented
+
    ```typescript
    {
      name: 'spec_compliance',
@@ -151,6 +153,7 @@ interface QualityCheck {
    ```
 
 3. **Acceptance Criteria Gate**: Validate ACs explicitly
+
    ```typescript
    {
      name: 'acceptance_criteria',
@@ -227,22 +230,22 @@ function buildSessionContext(chain: ChainedSession[]): SessionContext {
 
 ```bash
 # Start orchestrated workflow for a spec
-lean-spec orchestrate <spec> --max-iterations 10
+harnspec orchestrate <spec> --max-iterations 10
 
 # View chain status
-lean-spec chain status <chain_id>
+harnspec chain status <chain_id>
 
 # List all sessions in a chain
-lean-spec chain sessions <chain_id>
+harnspec chain sessions <chain_id>
 
 # View chain history
-lean-spec chain logs <chain_id> --follow
+harnspec chain logs <chain_id> --follow
 
 # Cancel chain
-lean-spec chain cancel <chain_id>
+harnspec chain cancel <chain_id>
 
 # Retry failed chain from specific session
-lean-spec chain retry <chain_id> --from-session 3
+harnspec chain retry <chain_id> --from-session 3
 ```
 
 ### HTTP API
@@ -313,8 +316,8 @@ WS /api/chains/:chain_id/stream
 ### Phase 3: CLI & API (Week 5)
 
 - [ ] **CLI Commands**
-  - [ ] `lean-spec orchestrate` command
-  - [ ] `lean-spec chain` subcommands
+  - [ ] `harnspec orchestrate` command
+  - [ ] `harnspec chain` subcommands
   - [ ] Chain status and monitoring
   - [ ] Cancel and retry operations
 

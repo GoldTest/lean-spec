@@ -45,9 +45,9 @@ fn get_example_projects() -> Vec<ExampleProject> {
             tags: vec!["starter".to_string(), "minimal".to_string()],
         },
         ExampleProject {
-            name: "lean-spec (this project)".to_string(),
+            name: "harnspec (this project)".to_string(),
             description: "The LeanSpec tool itself - a complex real-world example".to_string(),
-            url: "https://github.com/leanspec/lean-spec".to_string(),
+            url: "https://github.com/leanspec/harnspec".to_string(),
             tags: vec![
                 "monorepo".to_string(),
                 "rust".to_string(),

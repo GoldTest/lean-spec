@@ -22,7 +22,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: Critical · **Created**: 2025-11-13 · **Tags**: search, mcp, cli, core, ranking, v0.3.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -32,6 +32,7 @@ transitions:
 **Why Now**: Search is foundational for AI agents and human users to discover relevant specs. As projects grow (60+ specs in our own repo), poor search becomes a bottleneck. AI agents need intelligent search to provide better context. **Included in v0.3 release** - critical for AI agent performance optimization theme.
 
 **Current Limitations**:
+
 - No relevance ranking (first match = best match)
 - No fuzzy matching (typos fail completely)
 - No phrase/proximity search
@@ -114,12 +115,14 @@ function calculateScore(match: RawMatch): number {
 ```
 
 **Query Processing**:
+
 - Split on whitespace → implicit AND logic
 - Quote detection → phrase search (future)
 - Operator support → AND/OR/NOT (future)
 - Case-insensitive by default
 
 **Match Context**:
+
 - Show 80 chars before/after match (not 1 line)
 - Smart boundary detection (sentence/paragraph)
 - Deduplicate nearby matches
@@ -155,7 +158,7 @@ packages/cli/src/
 ### CLI Output Redesign
 
 ```bash
-$ lean-spec search "authentication flow"
+$ harnspec search "authentication flow"
 
 🔍 Found 4 specs (searched 68 specs in 45ms)
 
@@ -181,8 +184,8 @@ $ lean-spec search "authentication flow"
 3. 051-user-session-management (62% match) [planned]
    ...
 
-View full spec: lean-spec view 042
-Search in spec: lean-spec view 042 | grep -i "authentication"
+View full spec: harnspec view 042
+Search in spec: harnspec view 042 | grep -i "authentication"
 ```
 
 ### MCP Response Format
@@ -326,7 +329,7 @@ Search in spec: lean-spec view 042 | grep -i "authentication"
 
 ### Real-World Tests (Dogfooding)
 
-Test on lean-spec repo with 68+ specs:
+Test on harnspec repo with 68+ specs:
 
 - [ ] "authentication" finds OAuth2 spec first (not random match)
 - [ ] "token count" finds token-counting specs, not specs mentioning "tokens"
@@ -345,6 +348,7 @@ Test on lean-spec repo with 68+ specs:
 ### Research Findings
 
 **Modern Search Expectations** (from GitHub, VSCode, etc.):
+
 - Relevance ranking is non-negotiable
 - Field-weighted scoring (title > body)
 - Fuzzy matching for typos
@@ -352,6 +356,7 @@ Test on lean-spec repo with 68+ specs:
 - Fast (<100ms)
 
 **LeanSpec Context** (from spec 066, 069, 071):
+
 - Projects typically have 20-100 specs
 - Specs average 1,500 tokens (6,000 chars)
 - Search needs to work for AI agents (structured results)
@@ -360,12 +365,14 @@ Test on lean-spec repo with 68+ specs:
 ### Alternatives Considered
 
 **Full-Text Search Libraries**:
+
 - ❌ **Lunr.js**: 7KB minified, overkill for small datasets, adds dependency
 - ❌ **FlexSearch**: Fastest, but complex API, harder to customize scoring
 - ❌ **Fuse.js**: Fuzzy search focused, weak relevance ranking
 - ✅ **Custom Engine**: Full control, no dependencies, optimized for LeanSpec
 
 **Why Custom**:
+
 - Simple algorithm (200 LOC)
 - No external dependencies
 - Perfect control over scoring
@@ -390,7 +397,8 @@ Test on lean-spec repo with 68+ specs:
 
 **Breaking Changes**: None (additive feature, existing search still works)
 
-**Backward Compatibility**: 
+**Backward Compatibility**:
+
 - CLI command interface unchanged
 - MCP tool returns superset of current fields
 - Existing scripts/integrations continue working

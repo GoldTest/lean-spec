@@ -39,6 +39,7 @@ gemini "implement feature X"
 ```
 
 Instead of managing ACP streams in the browser, LeanSpec should:
+
 1. Compose the full shell command with the resolved prompt
 2. Execute it in the user's terminal (or a managed shell)
 3. Capture and display the output as plain logs
@@ -47,15 +48,17 @@ Instead of managing ACP streams in the browser, LeanSpec should:
 ### Scope
 
 **In Scope**:
+
 - Shell command composition using runner registry definitions (`command`, `args`, `prompt_flag`)
 - Direct terminal execution (subprocess spawn, no ACP handshake)
 - Prompt injection via runner-specific flags (e.g., `--prompt`, `--print`, positional arg)
 - Log capture from stdout/stderr
 - Session status tracking
-- CLI command for quick session execution: `lean-spec run --runner copilot -p "prompt"`
+- CLI command for quick session execution: `harnspec run --runner copilot -p "prompt"`
 - Copy-to-clipboard of composed command for manual execution
 
 **Out of Scope**:
+
 - ACP protocol integration (leave as-is, don't remove)
 - Frontend session streaming UI redesign
 - Interactive terminal embedding in browser
@@ -72,12 +75,14 @@ Use the existing `RunnerDefinition` fields to compose the shell command:
 ```
 
 Examples with current runner definitions:
+
 - **Copilot**: `copilot --allow-all --prompt "implement the following specs: ..."`
 - **Claude**: `claude --dangerously-skip-permissions --print "implement the following specs: ..."`
 - **Gemini**: `gemini "implement the following specs: ..."`
 - **Codex**: `codex "implement the following specs: ..."`
 
 The `prompt_flag` field in `runners.json` already controls this:
+
 - `"--prompt"` → `copilot --prompt "..."`
 - `"--print"` → `claude --print "..."`
 - `null` → positional argument: `codex "..."`
@@ -93,19 +98,19 @@ The `prompt_flag` field in `runners.json` already controls this:
 
 ```bash
 # Quick run with inline prompt
-lean-spec run -p "add error handling to auth module"
+harnspec run -p "add error handling to auth module"
 
 # Run with specific runner
-lean-spec run --runner copilot -p "fix the login bug"
+harnspec run --runner copilot -p "fix the login bug"
 
 # Run with spec context
-lean-spec run --spec 337 --runner claude
+harnspec run --spec 337 --runner claude
 
 # Dry-run: show the command without executing
-lean-spec run --runner copilot -p "add tests" --dry-run
+harnspec run --runner copilot -p "add tests" --dry-run
 
 # Use default runner from config
-lean-spec run -p "refactor the database layer"
+harnspec run -p "refactor the database layer"
 ```
 
 ### Backend Changes
@@ -118,13 +123,14 @@ lean-spec run -p "refactor the database layer"
 ### Runner Protocol Detection
 
 Extend the existing `infer_runner_protocol()` to support a `shell` protocol:
+
 - Default all runners to `shell` protocol
 - Only use `acp` when explicitly configured or when `--acp` flag is requested
 - Allow per-runner protocol override in `runners.json`
 
 ## Requirements
 
-- [x] `lean-spec run` CLI command with `-p` flag for inline prompts
+- [x] `harnspec run` CLI command with `-p` flag for inline prompts
 - [x] `--runner` flag to select runner (falls back to default)
 - [x] `--spec` flag to attach spec context (uses `build_context_prompt`)
 - [x] `--dry-run` flag to display composed command without executing
@@ -144,12 +150,14 @@ Extend the existing `infer_runner_protocol()` to support a `shell` protocol:
 ## Technical Notes
 
 ### Key Files
+
 - `rust/leanspec-core/src/sessions/runner.rs` — `RunnerDefinition`, `build_command()`, `prompt_flag`
 - `rust/leanspec-core/src/sessions/manager/lifecycle.rs` — `start_session()`, `build_context_prompt()`
 - `rust/leanspec-cli/src/commands/session.rs` — CLI session commands
 - `schemas/runners.json` — runner schema with `prompt_flag` field
 
 ### Existing Infrastructure
+
 - `RunnerDefinition.build_command()` already composes the command with args
 - `build_context_prompt()` already resolves spec content into a prompt string
 - `prompt_flag` field already exists in the runner schema and definitions
@@ -157,10 +165,10 @@ Extend the existing `infer_runner_protocol()` to support a `shell` protocol:
 
 ## Acceptance Criteria
 
-- [x] `lean-spec run -p "prompt"` executes the default runner with the given prompt
-- [x] `lean-spec run --runner copilot -p "prompt"` uses the specified runner
-- [x] `lean-spec run --spec 337` resolves spec content as the prompt
-- [x] `lean-spec run --dry-run` prints the composed command without executing
+- [x] `harnspec run -p "prompt"` executes the default runner with the given prompt
+- [x] `harnspec run --runner copilot -p "prompt"` uses the specified runner
+- [x] `harnspec run --spec 337` resolves spec content as the prompt
+- [x] `harnspec run --dry-run` prints the composed command without executing
 - [x] Session is created and tracked in the database with correct status
 - [x] Runner output (stdout/stderr) is captured in session logs
 - [x] Works with all built-in runners (copilot, claude, gemini, codex, opencode)
@@ -170,13 +178,15 @@ Extend the existing `infer_runner_protocol()` to support a `shell` protocol:
 Verified against implementation and test execution.
 
 Completed:
-- Added top-level `lean-spec run` with `-p`, `--runner`, `--spec`, `--dry-run`, `--model`, and `--acp` support.
+
+- Added top-level `harnspec run` with `-p`, `--runner`, `--spec`, `--dry-run`, `--model`, and `--acp` support.
 - Default runner sessions now resolve to shell protocol unless a runner or invocation explicitly selects ACP.
 - Dry-run prints the composed command using runner `prompt_flag` and model override handling.
 - Session creation persists selected protocol/model metadata and execution continues to capture stdout/stderr logs with exit-code-based status.
 - Added Rust unit/integration coverage for protocol resolution, command previewing, model arg injection, top-level run flows, dry-run output, and spec-context prompts.
 
 Validation:
+
 - `cargo test --manifest-path rust/Cargo.toml -p leanspec-core --features 'sessions storage' --quiet`
 - `cargo test --manifest-path rust/Cargo.toml -p leanspec-cli --test session --quiet`
 - `pnpm typecheck`

@@ -19,6 +19,7 @@ updated_at: 2026-01-20T03:16:27.806752540Z
 Implement file watcher infrastructure to automatically detect spec edits from AI tools and trigger validation. This is the foundation for automatic corruption detection since most spec editing happens via AI tool built-ins (Cursor, Claude, Copilot) rather than LeanSpec commands.
 
 **The Problem:**
+
 - AI tools edit spec files directly (not via MCP/CLI)
 - Corruption goes undetected until manual validation
 - Post-command hooks can't catch external edits
@@ -28,6 +29,7 @@ Implement file watcher infrastructure to automatically detect spec edits from AI
 Watch `specs/**/*.md` for changes and trigger validation with smart debouncing to handle sequential edits gracefully.
 
 **Key Requirements:**
+
 - Detect external file changes within 2-3 seconds
 - Handle sequential edits without multiple validations
 - Wait for editing session to finish (file stability + grace period)
@@ -70,6 +72,7 @@ Watch `specs/**/*.md` for changes and trigger validation with smart debouncing t
 
 **Challenge:**
 AI agents make multiple edits in quick succession:
+
 ```
 10:00:00.100 - Edit line 45 (add section)
 10:00:00.250 - Edit line 78 (add code block)
@@ -186,6 +189,7 @@ export class SpecWatcher extends EventEmitter {
 ### Integration Points
 
 **Desktop App:**
+
 ```typescript
 const watcher = new SpecWatcher(config.watcher);
 
@@ -204,8 +208,9 @@ watcher.start();
 ```
 
 **CLI Daemon:**
+
 ```bash
-$ lean-spec watch
+$ harnspec watch
 [Watcher] Started watching specs/**/*.md
 [Watcher] Press Ctrl+C to stop
 
@@ -215,6 +220,7 @@ $ lean-spec watch
 ```
 
 **MCP Server:**
+
 ```typescript
 // Watcher runs as part of server
 const watcher = new SpecWatcher(config.watcher);
@@ -246,7 +252,7 @@ watcher.on('spec-changed', (event) => {
 - [ ] Implement sequential edit debouncing (grace period)
 - [ ] Add event emitter for spec-changed events
 - [ ] Write unit tests (30+ test cases)
-- [ ] Add CLI daemon command: `lean-spec watch`
+- [ ] Add CLI daemon command: `harnspec watch`
 - [ ] Integrate into Desktop app
 - [ ] Integrate into MCP server
 - [ ] Add configuration loading
@@ -257,6 +263,7 @@ watcher.on('spec-changed', (event) => {
 ## Test
 
 ### Debouncing Tests
+
 - [ ] Single edit triggers validation after grace period
 - [ ] Multiple rapid edits trigger single validation
 - [ ] Edit count is tracked correctly
@@ -264,11 +271,13 @@ watcher.on('spec-changed', (event) => {
 - [ ] Grace period is configurable
 
 ### File Stability Tests
+
 - [ ] Doesn't trigger during active file writes
 - [ ] Waits for file to stabilize (no writes for threshold)
 - [ ] Stability threshold is configurable
 
 ### Integration Tests
+
 - [ ] Detects changes from any editor (VS Code, Vim, etc.)
 - [ ] Detects changes from AI tools (Cursor, Claude)
 - [ ] Works with manual edits
@@ -277,6 +286,7 @@ watcher.on('spec-changed', (event) => {
 - [ ] Cleans up resources on stop
 
 ### Performance Tests
+
 - [ ] Memory usage < 50MB
 - [ ] CPU usage < 5% when idle
 - [ ] Handles 100+ specs without issues
@@ -285,14 +295,17 @@ watcher.on('spec-changed', (event) => {
 ## Notes
 
 **Dependencies:**
+
 - `chokidar` - File watcher library (battle-tested, widely used)
 
 **Deployment:**
+
 - Desktop app: Always running
-- CLI daemon: `lean-spec watch` command
+- CLI daemon: `harnspec watch` command
 - MCP server: Optional, can be disabled
 
 **Future Enhancements:**
+
 - Watch sub-spec files (DESIGN.md, IMPLEMENTATION.md, etc.)
 - Configurable file patterns (ignore certain files)
 - Batch validation (multiple specs changed together)

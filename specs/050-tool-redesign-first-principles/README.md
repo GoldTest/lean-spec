@@ -21,14 +21,15 @@ transitions:
 
 > **Status**: 📦 Archived · **Priority**: Medium · **Created**: 2025-11-05 · **Tags**: architecture, cli, mcp, redesign, first-principles, dx, v0.3.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 **Purpose**: Redesign CLI and MCP tools by applying the 5 LeanSpec first principles from spec 049, creating tools that practice what we preach.
 
-**Why Now**: 
+**Why Now**:
+
 - We've established clear first principles (spec 049)
 - Current tools evolved organically without systematic design
 - Need to dogfood our own philosophy in the implementation
@@ -42,13 +43,15 @@ transitions:
 
 ### Current Tool State
 
-**CLI (`lean-spec` command)**:
+**CLI (`harnspec` command)**:
+
 - 15+ commands with inconsistent patterns
 - Some commands do too much (`stats` vs `stats --full`)
 - Error messages vary in helpfulness
 - No clear mental model for users
 
 **MCP Server**:
+
 - Good functionality but complex interface
 - Some operations require multiple round-trips
 - Not optimized for AI agent workflows
@@ -65,12 +68,14 @@ transitions:
 ### Design Constraints
 
 **Human Usage** (CLI):
+
 - Working memory: 7±2 items
 - Need discoverable commands
 - Want quick feedback loops
 - Prefer consistent patterns
 
 **AI Usage** (MCP):
+
 - Token efficiency critical
 - Clear success/failure states
 - Batching for complex operations
@@ -90,44 +95,48 @@ transitions:
 **Solution**: Group by mental model, progressive disclosure
 
 #### Level 1: Discovery (Context Economy)
+
 ```bash
-lean-spec                    # Show overview + 3 most common commands
-lean-spec help               # Show all commands, grouped by purpose
-lean-spec status             # Project health at-a-glance
+harnspec                    # Show overview + 3 most common commands
+harnspec help               # Show all commands, grouped by purpose
+harnspec status             # Project health at-a-glance
 ```
 
 #### Level 2: Core Operations (Signal-to-Noise)
+
 ```bash
 # View/Navigate (most common)
-lean-spec list              # Smart defaults, most relevant first
-lean-spec view <spec>       # Single spec, optimized display
-lean-spec search <query>    # Focused search with ranking
+harnspec list              # Smart defaults, most relevant first
+harnspec view <spec>       # Single spec, optimized display
+harnspec search <query>    # Focused search with ranking
 
 # Modify (when needed)
-lean-spec create <name>     # Guided creation with templates
-lean-spec update <spec>     # Status/metadata only
-lean-spec edit <spec>       # Open in editor
+harnspec create <name>     # Guided creation with templates
+harnspec update <spec>     # Status/metadata only
+harnspec edit <spec>       # Open in editor
 
 # Project (occasional)
-lean-spec board            # Kanban view
-lean-spec stats            # Key metrics only
+harnspec board            # Kanban view
+harnspec stats            # Key metrics only
 ```
 
 #### Level 3: Advanced (Progressive Disclosure)
+
 ```bash
 # Analysis (when pain is felt)
-lean-spec validate         # Check first principles adherence  
-lean-spec complexity       # Detailed complexity analysis
-lean-spec deps <spec>      # Relationship analysis
-lean-spec split <spec>     # Guided spec splitting
+harnspec validate         # Check first principles adherence  
+harnspec complexity       # Detailed complexity analysis
+harnspec deps <spec>      # Relationship analysis
+harnspec split <spec>     # Guided spec splitting
 
 # Power User (specific needs)
-lean-spec stats --full     # Comprehensive analytics
-lean-spec export           # Various formats
-lean-spec init             # Project setup
+harnspec stats --full     # Comprehensive analytics
+harnspec export           # Various formats
+harnspec init             # Project setup
 ```
 
 **Key Changes**:
+
 - Grouped by frequency of use (Context Economy)
 - Each command has single clear purpose (Signal-to-Noise)  
 - Advanced features hidden until needed (Progressive Disclosure)
@@ -140,6 +149,7 @@ lean-spec init             # Project setup
 **Solution**: Batch operations, rich context in responses
 
 #### Core Operations
+
 ```typescript
 // Single spec operations (atomic)
 view(specPath: string, options?: ViewOptions) -> SpecWithContext
@@ -158,6 +168,7 @@ health() -> ProjectHealth
 ```
 
 **Key Changes**:
+
 - Rich context in every response (Context Economy for AI)
 - Structured errors with actionable guidance (Signal-to-Noise)
 - Batch operations reduce round-trips (Progressive Disclosure)
@@ -167,47 +178,52 @@ health() -> ProjectHealth
 ### Shared Principles: Output Design
 
 #### Context Economy in Output
+
 ```bash
 # Bad: Information overload
-lean-spec list
+harnspec list
 049-leanspec-first-principles | planned | created: 2025-11-04 | priority: critical | tags: philosophy,meta,foundation,principles | related: 048-spec-complexity-analysis,043-official-launch-02,012-sub-spec-files | 1,042 lines (warning: >400) | last modified: 2 hours ago
 
 # Good: Essential info, detail on demand  
-lean-spec list
+harnspec list
 📋 049 leanspec-first-principles (critical)
 ✅ 048 spec-complexity-analysis 
 🔄 047 git-timestamps (in-progress)
 
-lean-spec list --verbose  # Detail when requested
-lean-spec view 049        # Full context for specific spec
+harnspec list --verbose  # Detail when requested
+harnspec view 049        # Full context for specific spec
 ```
 
 #### Signal-to-Noise in Commands
+
 ```bash
 # Bad: Ambiguous what it does
-lean-spec show 049 --with-meta --include-related --format=detailed
+harnspec show 049 --with-meta --include-related --format=detailed
 
 # Good: Clear intent, smart defaults
-lean-spec view 049        # Show spec (formatted by default)
-lean-spec view 049 --raw  # Raw when needed (progressive disclosure)
-lean-spec view 049 --json # Structured when needed
+harnspec view 049        # Show spec (formatted by default)
+harnspec view 049 --raw  # Raw when needed (progressive disclosure)
+harnspec view 049 --json # Structured when needed
 ```
 
 ### Implementation Strategy
 
 #### Phase 1: CLI Core Redesign
+
 - Implement new command grouping
 - Standardize output formats  
 - Add progressive disclosure patterns
 - Maintain backward compatibility with deprecation warnings
 
 #### Phase 2: MCP Optimization
+
 - Implement batch operations
 - Standardize response structures
 - Add rich error context
 - Optimize for AI workflows
 
 #### Phase 3: Integration
+
 - Ensure CLI and MCP use same core logic
 - Unified configuration system
 - Consistent behavior across interfaces
@@ -216,10 +232,12 @@ lean-spec view 049 --json # Structured when needed
 ## Plan
 
 ### Phase 1: Foundation (Week 1-2)
+
 **Goal**: New CLI command structure with backward compatibility
 
 **Tasks**:
-- [ ] Design new command hierarchy 
+
+- [ ] Design new command hierarchy
 - [ ] Implement core command groups (view/modify/project)
 - [ ] Add progressive disclosure for advanced commands
 - [ ] Create unified output formatting system
@@ -227,14 +245,17 @@ lean-spec view 049 --json # Structured when needed
 - [ ] Update help system to show grouped commands
 
 **Success Criteria**:
+
 - New users find commands intuitively
 - Output fits in terminal without scrolling (Context Economy)
 - Every command has single clear purpose (Signal-to-Noise)
 
 ### Phase 2: MCP Optimization (Week 3-4)  
+
 **Goal**: Batch-first MCP with rich context
 
 **Tasks**:
+
 - [ ] Implement batch operations for multi-spec workflows
 - [ ] Redesign response structures with full context
 - [ ] Add structured error handling with actionable guidance
@@ -242,14 +263,17 @@ lean-spec view 049 --json # Structured when needed
 - [ ] Create MCP performance benchmarks
 
 **Success Criteria**:
+
 - AI agents can accomplish tasks in fewer round-trips
 - Rich context reduces need for additional queries
 - Clear success/failure states for all operations
 
 ### Phase 3: Integration & Polish (Week 5-6)
+
 **Goal**: Unified experience across interfaces
 
 **Tasks**:
+
 - [ ] Ensure CLI and MCP use same underlying logic
 - [ ] Create unified configuration system
 - [ ] Add cross-interface consistency tests
@@ -257,14 +281,17 @@ lean-spec view 049 --json # Structured when needed
 - [ ] Documentation updates reflecting new philosophy
 
 **Success Criteria**:
+
 - Identical behavior between CLI and MCP for same operations
 - Performance meets or exceeds current implementation
 - Documentation demonstrates first principles in practice
 
 ### Phase 4: Validation (Week 7)
+
 **Goal**: Prove we practice what we preach
 
 **Tasks**:
+
 - [ ] User testing with both interfaces
 - [ ] Measure adherence to first principles
 - [ ] Gather feedback from AI agent usage
@@ -272,6 +299,7 @@ lean-spec view 049 --json # Structured when needed
 - [ ] Create case studies of improvements
 
 **Success Criteria**:
+
 - Tools demonstrate all 5 first principles
 - Users report improved experience
 - AI agents more efficient in workflows
@@ -282,26 +310,31 @@ lean-spec view 049 --json # Structured when needed
 ### First Principles Validation
 
 **Context Economy** (Tools fit in working memory):
+
 - [ ] CLI commands grouped into 3 clear levels
 - [ ] MCP operations batchable to reduce context
 - [ ] Output designed for human/AI consumption limits
 
 **Signal-to-Noise Maximization** (Every element informs decisions):
+
 - [ ] Each command has single clear purpose
 - [ ] Output contains only actionable information
 - [ ] Error messages guide toward resolution
 
 **Progressive Disclosure** (Complexity when pain is felt):
+
 - [ ] Basic commands handle 80% of use cases
 - [ ] Advanced features available but not prominent
 - [ ] `--verbose` and detailed modes for when needed
 
 **Intent Over Implementation** (Why, not just how):
+
 - [ ] Command names reflect user goals, not system operations
 - [ ] Help text explains purpose, not just syntax
 - [ ] Error messages explain what user was trying to achieve
 
 **Bridge the Gap** (Human + AI alignment):
+
 - [ ] Same operations available in CLI and MCP
 - [ ] Consistent data structures across interfaces
 - [ ] Output formats optimized for both human and machine parsing
@@ -309,16 +342,19 @@ lean-spec view 049 --json # Structured when needed
 ### User Experience Tests
 
 **New User Journey**:
+
 - [ ] Can discover main commands in <2 minutes
 - [ ] Can complete basic workflow (create/view/update) without documentation
 - [ ] Advanced features discoverable when needed
 
 **AI Agent Efficiency**:
+
 - [ ] Common workflows require fewer tool calls
 - [ ] Batch operations reduce token usage
 - [ ] Error recovery is automated where possible
 
 **Performance Benchmarks**:
+
 - [ ] CLI response time <100ms for common commands
 - [ ] MCP operations complete in comparable time to current implementation  
 - [ ] Memory usage within acceptable bounds
@@ -326,6 +362,7 @@ lean-spec view 049 --json # Structured when needed
 ### Philosophy Demonstration
 
 **Can we say our tools demonstrate LeanSpec?**:
+
 - [ ] Tools embody the principles they enable
 - [ ] Implementation structure follows first principles
 - [ ] User experience optimized through first-principles lens
@@ -334,18 +371,21 @@ lean-spec view 049 --json # Structured when needed
 ## Success Metrics
 
 **Quantitative**:
+
 - CLI command discovery time: <2 minutes (vs current ~5 minutes)
 - AI agent efficiency: 30% fewer tool calls for common workflows
 - User task completion: 90% success rate without documentation
 - Performance: Match or exceed current implementation
 
 **Qualitative**:
+
 - Tools feel "lean" and focused
 - Clear mental model for command organization
 - AI agents can use efficiently without extensive prompting
 - Implementation demonstrates first principles in practice
 
 **Philosophy Validation**:
+
 - Tools practice what LeanSpec preaches
 - Can point to tools as examples of first-principles thinking
 - Users understand LeanSpec philosophy through tool usage
@@ -356,6 +396,7 @@ lean-spec view 049 --json # Structured when needed
 ### Why This Redesign Matters
 
 This is foundational work because:
+
 - **Credibility**: Tools must practice LeanSpec philosophy  
 - **Usability**: First principles create better user experiences
 - **Teaching**: Tools become examples of the methodology
@@ -371,6 +412,7 @@ This is foundational work because:
 ### Success Indicators
 
 We'll know this succeeded when:
+
 - New users intuitively discover commands
 - AI agents accomplish tasks more efficiently  
 - Tools feel like natural extensions of LeanSpec thinking
@@ -387,6 +429,7 @@ We'll know this succeeded when:
 **Archived**: 2025-11-10
 
 **Reason**: Spec was too broad and many of its proposed improvements have already been implemented incrementally through other specs:
+
 - Spec 039: simplify-viewer-commands
 - Spec 045: unified-dashboard  
 - Spec 046: stats-dashboard-refactor

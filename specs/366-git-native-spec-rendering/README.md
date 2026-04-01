@@ -34,11 +34,11 @@ Git-native rendering lets specs be **first-class citizens in the repo** — read
 
 ## Design
 
-### 1. Spec Index Generation (`lean-spec render`)
+### 1. Spec Index Generation (`harnspec render`)
 
 Generate a navigable index document from specs that renders natively in git platforms.
 
-- `lean-spec render` — generates `SPECS.md` (or configurable output) at repo root
+- `harnspec render` — generates `SPECS.md` (or configurable output) at repo root
 - Index includes: spec title, status, priority, tags, relationships
 - Status badges using markdown image syntax (compatible with GitHub/GitLab)
 - Grouped views: by status, by priority, by parent/child hierarchy
@@ -59,7 +59,7 @@ Ensure individual spec files render well in git platforms.
 
 Keep the rendered index in sync via CI.
 
-- GitHub Action / GitLab CI template to run `lean-spec render` on spec changes
+- GitHub Action / GitLab CI template to run `harnspec render` on spec changes
 - Auto-commit updated `SPECS.md` or open a PR with changes
 - Pre-commit hook option for local workflows
 - Configurable: which files to generate, output directory
@@ -94,7 +94,7 @@ Supported `format` values: `github`, `gitlab`, `bitbucket`, `generic`
 
 ## Plan
 
-- [ ] Implement `lean-spec render` command (CLI + MCP)
+- [ ] Implement `harnspec render` command (CLI + MCP)
 - [ ] Generate `SPECS.md` index with status grouping and badges
 - [ ] Generate relative markdown links between specs
 - [ ] Add navigation headers to individual spec files (opt-in)
@@ -108,7 +108,7 @@ Supported `format` values: `github`, `gitlab`, `bitbucket`, `generic`
 
 ## Test
 
-- [ ] `lean-spec render` generates valid `SPECS.md` with all specs listed
+- [ ] `harnspec render` generates valid `SPECS.md` with all specs listed
 - [ ] Generated links resolve correctly in GitHub markdown preview
 - [ ] Generated links resolve correctly in GitLab markdown preview
 - [ ] Status badges render as expected on each platform

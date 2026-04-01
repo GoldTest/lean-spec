@@ -24,7 +24,7 @@ transitions:
 The current Rust monorepo has tightly coupled components scattered across packages. Key issues:
 
 1. **Sessions Management** - Embedded in `leanspec-http/src/sessions/` but CLI needs it
-2. **Database Infrastructure** - SQLite code duplicated (sessions.db, chat.db) 
+2. **Database Infrastructure** - SQLite code duplicated (sessions.db, chat.db)
 3. **Chat Storage** - Tightly coupled to HTTP server (`leanspec-http/src/chat_store.rs`)
 4. **AI Worker Management** - HTTP-specific but conceptually independent (`leanspec-http/src/ai/`)
 5. **Project Registry** - Could be shared infrastructure (`leanspec-http/src/project_registry.rs`)
@@ -169,6 +169,7 @@ graph TD
 ### Module Responsibilities in Core
 
 #### `core::db` (NEW)
+
 - SQLite connection management with WAL mode
 - Connection pooling for concurrent access
 - Schema migrations infrastructure
@@ -177,6 +178,7 @@ graph TD
 - Transaction support
 
 #### `core::sessions` (MOVED FROM HTTP)
+
 - Session types and lifecycle (`types.rs`)
 - Session database operations (`database.rs`)
 - Tool adapters (Claude, Copilot, Codex, OpenCode) in `adapters/` subdirectory
@@ -184,12 +186,14 @@ graph TD
 - Process spawning and log capture
 
 #### `core::storage` (MOVED FROM HTTP)
+
 - Chat store (SQLite-backed chat sessions)
 - Project registry (multi-project support)
-- Configuration persistence (`~/.lean-spec/config.json`)
+- Configuration persistence (`~/.harnspec/config.json`)
 - Generic storage abstractions
 
 #### `core::ai` (MOVED FROM HTTP)
+
 - AI worker management
 - Worker protocol definitions
 - Chat payload handling via IPC
@@ -197,6 +201,7 @@ graph TD
 #### Updated Packages
 
 **`leanspec-http`** (REDUCED SCOPE)
+
 - HTTP routes and handlers **only**
 - Request/response serialization
 - Middleware (CORS, logging)
@@ -204,6 +209,7 @@ graph TD
 - All business logic delegates to `core::`
 
 **`leanspec-cli`** (SIMPLIFIED)
+
 - Command definitions and parsing
 - Output formatting
 - Direct usage of `core::sessions`, `core::storage`
@@ -212,6 +218,7 @@ graph TD
 ## Plan
 
 ### Phase 1: Expand Core Dependencies
+
 - [ ] Update `leanspec-core/Cargo.toml` to add infrastructure deps:
   - `rusqlite = { version = "0.31", features = ["bundled"] }`
   - `tokio = { workspace = true }`
@@ -220,6 +227,7 @@ graph TD
   - `dirs = "5.0"`
   - `which = "6.0"`
 - [ ] Add optional features for infrastructure components:
+
   ```toml
   [features]
   default = []
@@ -228,9 +236,11 @@ graph TD
   ai = ["tokio", "async-trait"]
   full = ["sessions", "storage", "ai"]
   ```
+
 - [ ] Verify workspace Cargo.lock updates
 
 ### Phase 2: Create Database Infrastructure Module
+
 - [ ] Create `leanspec-core/src/db/` directory
 - [ ] Create `leanspec-core/src/db/mod.rs` with shared connection management
 - [ ] Implement WAL mode and busy timeout settings
@@ -239,6 +249,7 @@ graph TD
 - [ ] Add comprehensive unit tests
 
 ### Phase 3: Move Sessions to Core
+
 - [ ] Create `leanspec-core/src/sessions/` directory
 - [ ] Move `sessions/types.rs` → `core::sessions::types`
 - [ ] Move `sessions/db.rs` → `core::sessions::database` (refactor to use `core::db`)
@@ -255,6 +266,7 @@ graph TD
 - [ ] Port all unit tests from original files
 
 ### Phase 4: Move Storage to Core
+
 - [ ] Create `leanspec-core/src/storage/` directory
 - [ ] Move `chat_store.rs` → `core::storage::chat` (refactor to use `core::db`)
 - [ ] Move `project_registry.rs` → `core::storage::projects`
@@ -263,6 +275,7 @@ graph TD
 - [ ] Port all unit tests
 
 ### Phase 5: Move AI Worker to Core
+
 - [ ] Create `leanspec-core/src/ai/` directory
 - [ ] Move `ai/manager.rs` → `core::ai::manager`
 - [ ] Move `ai/protocol.rs` → `core::ai::protocol`
@@ -271,6 +284,7 @@ graph TD
 - [ ] Port all unit tests
 
 ### Phase 6: Update HTTP Package
+
 - [ ] Delete moved modules from `leanspec-http/src/`:
   - `sessions/` directory
   - `ai/` directory
@@ -278,9 +292,11 @@ graph TD
   - `project_registry.rs`
   - `config.rs`
 - [ ] Update `leanspec-http/Cargo.toml` to enable core features:
+
   ```toml
   leanspec-core = { path = "../leanspec-core", features = ["full"] }
   ```
+
 - [ ] Update all imports to use `leanspec_core::`
 - [ ] Simplify `state.rs` to use core modules directly
 - [ ] Update handlers to delegate to core
@@ -288,11 +304,14 @@ graph TD
 - [ ] Update API documentation
 
 ### Phase 7: Update CLI Package
+
 - [ ] Remove `leanspec-http` dependency from `leanspec-cli/Cargo.toml`
 - [ ] Update `leanspec-cli/Cargo.toml` to enable core features:
+
   ```toml
   leanspec-core = { path = "../leanspec-core", features = ["sessions", "storage"] }
   ```
+
 - [ ] Update `src/commands/session.rs`:
   - Change line 2: `use leanspec_http::config::config_dir;` → `use leanspec_core::storage::config::config_dir;`
   - Change line 3: `use leanspec_http::sessions::{...};` → `use leanspec_core::sessions::{...};`
@@ -301,17 +320,20 @@ graph TD
 - [ ] Measure and document binary size reduction
 
 ### Phase 8: Update MCP Package (if needed)
+
 - [ ] Check if MCP uses any moved modules
 - [ ] Update imports if necessary
 - [ ] Run MCP test suite
 
 ### Phase 9: Final Integration
+
 - [ ] Update workspace `Cargo.toml` if needed
 - [ ] Run full workspace build: `cargo build --workspace`
 - [ ] Run all tests: `cargo test --workspace`
 - [ ] Run clippy: `cargo clippy --workspace -- -D warnings`
 
 ### Phase 10: Documentation & Cleanup
+
 - [ ] Update `leanspec-core/README.md` with expanded scope
 - [ ] Document new modules in `leanspec-core/src/lib.rs`
 - [ ] Update architecture docs
@@ -321,24 +343,28 @@ graph TD
 ## Test
 
 ### Unit Tests
+
 - [ ] `core::db`: Connection management, migrations, error handling
 - [ ] `core::sessions`: Session lifecycle, tool adapters, database ops
 - [ ] `core::storage`: Chat store, project registry, config management
 - [ ] `core::ai`: Worker management, protocol handling
 
 ### Integration Tests
+
 - [ ] Sessions: Full lifecycle (Create → Start → Monitor → Stop)
 - [ ] Storage: Multi-project management, chat CRUD operations
 - [ ] CLI: Session commands work with new core modules
 - [ ] HTTP: API endpoints delegate correctly to core
 
 ### Regression Tests
+
 - [ ] All existing E2E tests pass
 - [ ] CLI functionality unchanged
 - [ ] HTTP API contracts maintained
 - [ ] MCP tools continue working
 
 ### Performance Tests
+
 - [ ] CLI startup time improved (HTTP deps removed)
 - [ ] Session creation/management latency unchanged
 - [ ] Database query performance maintained
@@ -349,6 +375,7 @@ graph TD
 ### Current Code References
 
 **CLI Session Command** (`leanspec-cli/src/commands/session.rs:2-3`):
+
 ```rust
 use leanspec_http::config::config_dir;
 use leanspec_http::sessions::{SessionDatabase, SessionManager, SessionMode, SessionStatus};
@@ -448,6 +475,7 @@ Reduced duplication: ~500 LOC (shared db infrastructure)
 ### Verification Checklist
 
 Before marking complete:
+
 - [ ] `cargo build --workspace` succeeds
 - [ ] `cargo test --workspace` passes
 - [ ] `cargo clippy --workspace -- -D warnings` clean

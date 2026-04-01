@@ -84,7 +84,7 @@ async fn test_empty_project_stats() {
     let registry_dir = TempDir::new().unwrap();
     let registry_file = registry_dir
         .path()
-        .join(".lean-spec-test")
+        .join(".harnspec-test")
         .join("projects.json");
 
     let config = leanspec_http::ServerConfig::default();

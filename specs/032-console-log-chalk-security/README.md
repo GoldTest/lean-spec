@@ -12,7 +12,7 @@ completed: '2025-11-03'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: security, refactor
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -28,8 +28,9 @@ completed: '2025-11-03'
 3. **Output Integrity**: Attackers could craft inputs that alter display or hide information
 
 **Attack Vector Example**:
+
 ```
-lean-spec create "\x1b[0m\x1b[31mFAKE ERROR\x1b[0m"
+harnspec create "\x1b[0m\x1b[31mFAKE ERROR\x1b[0m"
 ```
 
 ## Design
@@ -79,11 +80,13 @@ lean-spec create "\x1b[0m\x1b[31mFAKE ERROR\x1b[0m"
 ## Notes
 
 **Libraries to consider**:
+
 - `strip-ansi` - Well-maintained library for stripping ANSI codes
 - `ansi-regex` - For detection/validation
 
 **Files with console.log + chalk**:
+
 - 40+ instances found across 7 files
 - Most concentrated in `board.ts` (18), `search.ts` (8), `files.ts` (9)
 
-**Severity**: High - This affects all user-facing output and could be exploited in automated environments or CI/CD pipelines where lean-spec commands process untrusted input.
+**Severity**: High - This affects all user-facing output and could be exploited in automated environments or CI/CD pipelines where harnspec commands process untrusted input.

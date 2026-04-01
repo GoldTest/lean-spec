@@ -26,6 +26,7 @@ transitions:
 **Context**: Over the past months, LeanSpec has successfully migrated from Next.js SSR architecture to a modern Vite SPA + Rust HTTP Server architecture. The migration work is complete and proven through specs 184-207.
 
 **Current Reality**:
+
 - ✅ **Vite SPA** (`@leanspec/ui-vite`) is feature-complete and production-ready
 - ✅ **Rust HTTP Server** (`@leanspec/http-server`) is built, tested, and working
 - ✅ **Desktop app** fully integrated with ui-vite (specs 204-207)
@@ -45,6 +46,7 @@ transitions:
 **Solution**: Officially deprecate and archive Next.js UI, promote Vite+Rust as the primary architecture, and update all references.
 
 **What This Is NOT**:
+
 - Not a new feature - this is cleanup of completed migration
 - Not a rewrite - Vite SPA already exists and works
 - Not breaking existing installations - users on CLI will auto-use new architecture
@@ -105,11 +107,13 @@ packages/
 ### Removal Strategy
 
 **Phase 1: Remove Legacy Next.js Package**
+
 ```bash
 rm -rf packages/ui-legacy-nextjs
 ```
 
 **Phase 2: Promote Vite**
+
 ```bash
 git mv packages/ui-vite packages/ui
 # Update package name: @leanspec/ui-vite → @leanspec/ui
@@ -117,6 +121,7 @@ git mv packages/ui-vite packages/ui
 ```
 
 **Phase 3: Update References**
+
 - CI/CD workflows (remove Next.js builds)
 - Documentation (all UI references point to Vite)
 - Root scripts (remove Next.js dev/build commands)
@@ -124,6 +129,7 @@ git mv packages/ui-vite packages/ui
 - Agent instructions (remove Next.js references)
 
 **Phase 4: Cleanup**
+
 - Remove Next.js from pnpm-workspace
 - Remove Next.js from turbo.json
 - Update CONTRIBUTING.md
@@ -132,22 +138,26 @@ git mv packages/ui-vite packages/ui
 ### What Gets Removed
 
 **Deleted entirely**:
+
 - Legacy Next.js package folder and all SSR/SSG assets
 - Legacy API route and server utilities
 - Next.js-specific dependencies and configuration
 
 **Keep as Reference**:
+
 - Test files may have useful patterns
 - Complex components might inform future work
 - DB schema if we ever add persistence
 
 **Delete Completely**:
+
 - `.next/` build artifacts (gitignored anyway)
 - `node_modules/` (gitignored anyway)
 
 ### What Stays Active
 
 **No changes needed**:
+
 - `@leanspec/ui-components` - Already shared, works with Vite
 - `@leanspec/http-server` - Already Rust-based
 - `@leanspec/desktop` - Already uses ui-vite
@@ -159,6 +169,7 @@ git mv packages/ui-vite packages/ui
 **Package Rename Strategy**:
 
 Option 1: **Keep version continuity** (Recommended)
+
 ```json
 // packages/ui/package.json (formerly ui-vite)
 {
@@ -169,6 +180,7 @@ Option 1: **Keep version continuity** (Recommended)
 ```
 
 Option 2: **Fresh start**
+
 ```json
 {
   "name": "@leanspec/ui",
@@ -182,11 +194,13 @@ Option 2: **Fresh start**
 ### CLI Integration
 
 **Current State**: CLI already uses correct architecture
-- `lean-spec ui` command spawns HTTP server + opens browser
+
+- `harnspec ui` command spawns HTTP server + opens browser
 - No changes needed to CLI logic
 - Already using `@leanspec/http-server` package
 
 **After Rename**:
+
 - CLI continues working exactly the same
 - Internally points to `@leanspec/ui` (now Vite)
 - No breaking changes for users
@@ -216,7 +230,7 @@ Option 2: **Fresh start**
    - Update translation file paths (packages/ui/src/locales → no longer exists)
    - Update dev commands
 
-5. **docs-site/** (docs.lean-spec.dev)
+5. **docs-site/** (docs.harnspec.dev)
    - Architecture overview
    - Development setup guide
    - Contributing guide
@@ -244,10 +258,12 @@ Option 2: **Fresh start**
 ### Risk Mitigation
 
 **Rollback Plan**:
+
 1. Use git tag before removal: `pre-nextjs-removal`
 2. Revert via git history if needed
 
 **Testing Strategy**:
+
 1. Full CI/CD run after rename
 2. Manual smoke test of web UI
 3. Manual smoke test of desktop app
@@ -257,15 +273,18 @@ Option 2: **Fresh start**
 ### Translation File Migration
 
 **Current State**:
+
 - Next.js UI: `packages/ui/src/locales/en/common.json` (will be archived)
 - Vite UI: `packages/ui-vite/src/locales/en/common.json` (will become primary)
 - MCP: `packages/mcp/src/locales/en/common.json` (no change)
 
 **After Rename**:
+
 - Primary: `packages/ui/src/locales/en/common.json` (from ui-vite)
 - MCP: `packages/mcp/src/locales/en/common.json` (no change)
 
 **AGENTS.md Update Required**:
+
 ```diff
 - Update both `en/common.json` and `zh-CN/common.json` in `packages/ui/src/locales/` and `packages/mcp/src/locales/`
 + Update both `en/common.json` and `zh-CN/common.json` in `packages/ui/src/locales/` (Vite UI) and `packages/mcp/src/locales/`
@@ -289,7 +308,7 @@ Option 2: **Fresh start**
   - [ ] Verify no errors in console
   
 - [ ] **Verify CLI Integration**
-  - [ ] Test `lean-spec ui` command in test project
+  - [ ] Test `harnspec ui` command in test project
   - [ ] Verify HTTP server starts
   - [ ] Verify browser opens to correct URL
   - [ ] Verify no Next.js processes spawned
@@ -302,12 +321,14 @@ Option 2: **Fresh start**
 ### Phase 2: Remove Next.js Package (1 hour)
 
 - [x] **Create git tag for rollback**
+
   ```bash
   git tag -a pre-nextjs-removal -m "State before removing Next.js UI"
   git push origin pre-nextjs-removal
   ```
 
 - [x] **Delete legacy Next.js package from repo**
+
   ```bash
   rm -rf packages/ui-legacy-nextjs
   ```
@@ -315,11 +336,13 @@ Option 2: **Fresh start**
 ### Phase 3: Promote Vite to Primary UI (1 hour)
 
 - [x] **Rename ui-vite to ui**
+
   ```bash
   git mv packages/ui-vite packages/ui
   ```
 
 - [x] **Update package.json**
+
   ```diff
   {
   - "name": "@leanspec/ui-vite",
@@ -335,6 +358,7 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Create bin/ui.js launcher** (if needed)
+
   ```javascript
   #!/usr/bin/env node
   // Starts HTTP server and opens browser
@@ -342,6 +366,7 @@ Option 2: **Fresh start**
   ```
 
 - [x] **Update imports in desktop package**
+
   ```diff
   // packages/desktop/package.json
   {
@@ -359,6 +384,7 @@ Option 2: **Fresh start**
   ```
 
 - [x] **Update turbo.json**
+
   ```diff
   {
     "pipeline": {
@@ -377,6 +403,7 @@ Option 2: **Fresh start**
 ### Phase 4: Update Root Configuration (1 hour)
 
 - [x] **Update root package.json scripts**
+
   ```diff
   {
     "scripts": {
@@ -389,12 +416,14 @@ Option 2: **Fresh start**
   ```
 
 - [x] **Update pnpm-workspace.yaml overrides**
+
   ```diff
   packageExtensions:
     # No legacy Next.js package remains in the workspace
   ```
 
 - [x] **Verify workspace integrity**
+
   ```bash
   pnpm install
   pnpm -r list --depth=0  # Should show @leanspec/ui, not ui-vite
@@ -435,6 +464,7 @@ Option 2: **Fresh start**
 ### Phase 6: Update CI/CD (1.5 hours)
 
 - [ ] **Update .github/workflows/ci.yml**
+
   ```diff
   - name: Build Next.js UI
   - run: pnpm --filter @leanspec/ui build
@@ -449,6 +479,7 @@ Option 2: **Fresh start**
   - [ ] Ensure legacy Next.js UI is not published (package removed)
 
 - [x] **Update version sync scripts**
+
   ```diff
   // scripts/sync-versions.ts
   const packages = [
@@ -462,6 +493,7 @@ Option 2: **Fresh start**
   ```
 
 - [x] **Update publish scripts**
+
   ```diff
   // scripts/publish-main-packages.ts
   const packages = [
@@ -472,6 +504,7 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Test CI/CD locally**
+
   ```bash
   pnpm build
   pnpm typecheck
@@ -482,6 +515,7 @@ Option 2: **Fresh start**
 ### Phase 7: Testing & Validation (2 hours)
 
 - [ ] **Build all packages**
+
   ```bash
   pnpm clean
   pnpm install
@@ -489,6 +523,7 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Run test suites**
+
   ```bash
   pnpm test           # All unit tests
   pnpm typecheck      # TypeScript compilation
@@ -497,6 +532,7 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Test web UI manually**
+
   ```bash
   pnpm dev:web
   # Open http://localhost:3000
@@ -504,20 +540,23 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Test desktop app**
+
   ```bash
   pnpm dev:desktop
   # Test: same as web UI plus window controls, projects manager
   ```
 
 - [ ] **Test CLI launcher** (in separate test project)
+
   ```bash
   cd /tmp/test-leanspec
-  lean-spec init
-  lean-spec ui
+  harnspec init
+  harnspec ui
   # Verify HTTP server starts and browser opens
   ```
 
 - [ ] **Test npm publishing (dry-run)**
+
   ```bash
   pnpm pre-release
   pnpm prepare-publish
@@ -525,6 +564,7 @@ Option 2: **Fresh start**
   ```
 
 - [ ] **Verify bundle sizes**
+
   ```bash
   du -sh packages/ui/dist/        # Should be ~1-2MB uncompressed
   gzip -9 < packages/ui/dist/assets/*.js | wc -c  # Should be ~150KB gzipped
@@ -533,6 +573,7 @@ Option 2: **Fresh start**
 ### Phase 8: Commit & Release (1 hour)
 
 - [ ] **Commit changes**
+
   ```bash
   git add -A
   git commit -m "feat: Remove Next.js UI, promote Vite+Rust as primary architecture
@@ -556,23 +597,27 @@ Option 2: **Fresh start**
   - Label: breaking-change, architecture, migration
 
 - [ ] **After PR approval: Tag and release**
+
   ```bash
   git tag -a v0.3.0 -m "LeanSpec v0.3.0: Vite+Rust Architecture"
   git push origin main --tags
   ```
 
 - [ ] **Publish to npm**
+
   ```bash
   pnpm publish-main-packages  # Publishes @leanspec/ui (Vite version)
   ```
 
 - [ ] **Verify npm package**
+
   ```bash
   npm info @leanspec/ui
   # Should show v0.3.0 with Vite description
   ```
 
 - [ ] **Update CHANGELOG.md**
+
   ```markdown
   ## [0.3.0] - 2026-01-12
   
@@ -583,7 +628,7 @@ Option 2: **Fresh start**
   - 10x faster with Rust HTTP backend
   
   ### Migration
-  - No action required for CLI users (`lean-spec ui` works the same)
+  - No action required for CLI users (`harnspec ui` works the same)
   - npm package name unchanged (@leanspec/ui)
   - Desktop app automatically uses new architecture
   
@@ -599,6 +644,7 @@ Option 2: **Fresh start**
 ### Completed Work (2026-01-16)
 
 **Core Migration (100% Complete)**:
+
 - ✅ Removed legacy Next.js UI package from the repo
 - ✅ Promoted Vite SPA to `@leanspec/ui` (renamed from `@leanspec/ui-vite`)
 - ✅ Updated all desktop imports and dependencies
@@ -609,6 +655,7 @@ Option 2: **Fresh start**
 - ✅ Removed desktop legacy UI server support
 
 **Documentation Updates (70% Complete)**:
+
 - ✅ Root README.md updated
 - ✅ CONTRIBUTING.md updated
 - ✅ packages/README.md updated
@@ -619,11 +666,13 @@ Option 2: **Fresh start**
 - ⚠️ docs-site/ updates not fully verified
 
 **Release Tooling (100% Complete)**:
+
 - ✅ Version sync scripts updated (no `ui-vite` references)
 - ✅ publish-main-packages.ts now publishes `@leanspec/ui`
 - ✅ Lockfile refreshed after renames
 
 **Legacy Cleanup (Deferred to Spec 215)**:
+
 - ✅ Removed `SPECS_DIR` from turbo.json passThroughEnv
 - ⚠️ `LEANSPEC_SPECS_DIR` still used in:
   - rust/npm-dist/mcp-wrapper.js
@@ -632,6 +681,7 @@ Option 2: **Fresh start**
 - **Note**: Full environment variable cleanup tracked in [Spec 215](../215-remove-single-project-mode/) (Remove Single-Project Mode and SPECS_MODE Environment Variable)
 
 **Testing & Validation (Deferred)**:
+
 - Migration is working in production (shipped in v0.2.x releases)
 - Comprehensive test suite runs regularly via CI
 - Formal pre/post-removal checklists deemed unnecessary (migration completed incrementally)
@@ -661,7 +711,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - [ ] Vite UI builds without errors
 - [ ] Vite UI bundle size is ~492KB (not 150MB+)
 - [ ] Desktop app builds and runs with ui-vite
-- [ ] CLI `lean-spec ui` works with HTTP server
+- [ ] CLI `harnspec ui` works with HTTP server
 - [ ] All tests pass (unit, integration, e2e)
 - [ ] TypeScript compilation passes
 - [ ] Linting passes (JS + Rust)
@@ -680,6 +730,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Functional Testing
 
 **Web UI** (`pnpm dev:web`):
+
 - [ ] Specs list page renders
 - [ ] Spec detail page renders markdown correctly
 - [ ] Stats page shows charts
@@ -692,6 +743,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - [ ] No console errors
 
 **Desktop App** (`pnpm dev:desktop`):
+
 - [ ] All web UI tests pass
 - [ ] Window controls work (minimize, maximize, close)
 - [ ] Title bar renders correctly
@@ -702,8 +754,9 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - [ ] Bundle size similar to before
 
 **CLI Launcher** (test in separate project):
-- [ ] `lean-spec init` works
-- [ ] `lean-spec ui` starts HTTP server
+
+- [ ] `harnspec init` works
+- [ ] `harnspec ui` starts HTTP server
 - [ ] Browser opens to correct URL
 - [ ] UI loads and functions
 - [ ] No Next.js processes in background
@@ -733,6 +786,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Why Now?
 
 **Migration is complete** - Specs 184-207 finished months of work:
+
 - Vite SPA has 100% feature parity with Next.js
 - Rust HTTP server is production-tested
 - Desktop fully integrated
@@ -740,6 +794,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - Performance proven (10x faster)
 
 **Keeping both is costly**:
+
 - Maintenance overhead (fix bugs twice)
 - Translation duplication (two sets of i18n files)
 - CI/CD complexity (build/test both)
@@ -747,6 +802,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - Documentation drift (two architectures to explain)
 
 **No risk to users**:
+
 - CLI already uses new architecture
 - npm package name stays the same
 - Rollback plan exists (archived code + git tag)
@@ -755,6 +811,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### What This Achieves
 
 **Technical Benefits**:
+
 - ✅ Single UI codebase (Vite SPA)
 - ✅ Single backend (Rust HTTP server)
 - ✅ Unified architecture (web + desktop)
@@ -763,6 +820,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - ✅ Simpler CI/CD
 
 **Developer Benefits**:
+
 - ✅ Clear primary implementation
 - ✅ Less code to maintain
 - ✅ Faster builds
@@ -770,6 +828,7 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 - ✅ Single translation file set
 
 **User Benefits**:
+
 - ✅ Faster load times
 - ✅ Better performance
 - ✅ Consistent UX across platforms
@@ -779,26 +838,31 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Risks & Mitigation
 
 **Risk 1: Unforeseen Next.js dependency**
+
 - Mitigation: Thorough testing before removal
 - Rollback: Git tag + archived code
 - Timeline: Can restore in <30 minutes
 
 **Risk 2: npm publish breaks**
+
 - Mitigation: Dry-run testing before release
 - Rollback: Previous npm version still available
 - Timeline: Can republish old version if needed
 
 **Risk 3: Desktop integration breaks**
+
 - Mitigation: Already tested in specs 204-207
 - Rollback: Revert desktop package.json imports
 - Timeline: <10 minutes to fix
 
 **Risk 4: Documentation becomes outdated**
+
 - Mitigation: Update docs in same PR
 - Rollback: Git history has old docs
 - Timeline: Docs can be updated independently
 
 **Risk 5: CLI launcher breaks**
+
 - Mitigation: Test in fresh project before commit
 - Rollback: CLI already uses new architecture (no change needed)
 - Timeline: N/A - CLI shouldn't break
@@ -806,21 +870,25 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Alternatives Considered
 
 **Alternative 1: Keep both implementations**
+
 - Pros: Zero risk, gradual transition
 - Cons: Maintenance burden, confusion, bloat
 - Rejected: Migration is complete, no benefit to keeping both
 
 **Alternative 2: Delete Next.js entirely**
+
 - Pros: Clean slate, no archive baggage
 - Cons: No rollback option, lose reference code
 - Rejected: Too risky without rollback plan
 
 **Alternative 3: Publish both as separate packages**
+
 - Pros: Users can choose
 - Cons: Maintenance overhead, split ecosystem
 - Rejected: No demand for Next.js version
 
 **Selected: Archive Next.js, promote Vite**
+
 - Pros: Clear primary, rollback available, clean architecture
 - Cons: One-time migration effort
 - Best balance of safety and clarity
@@ -828,24 +896,28 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Post-Removal Roadmap
 
 **Immediate (v0.3.0)**:
+
 - ✅ Next.js removed
 - ✅ Vite promoted
 - ✅ Documentation updated
 - ✅ npm published
 
 **Short-term (v0.3.x)**:
+
 - Polish Vite UI based on user feedback
 - Add missing features (if any discovered)
 - Performance optimizations
 - Better error handling
 
 **Mid-term (v0.4.0+)**:
+
 - Legacy Next.js package removed from the repo
 - Extract more shared components
 - WebSocket for live updates
 - Advanced visualization features
 
 **Long-term (v1.0.0)**:
+
 - Stabilize API
 - Production-grade performance
 - Comprehensive documentation
@@ -854,22 +926,26 @@ The core goal is **100% complete**: Next.js is removed, Vite is promoted as the 
 ### Related Specs
 
 **Migration Foundation**:
+
 - [184](../184-ui-packages-consolidation/) - Unified UI Architecture (Umbrella)
 - [185](../185-ui-components-extraction/) - UI Components Extraction
 - [186](../186-rust-http-server/) - Rust HTTP Server
 - [187](../187-vite-spa-migration/) - Vite SPA Migration
 
 **Feature Parity**:
+
 - [190](../190-ui-vite-parity-rust-backend/) - UI-Vite Parity (Umbrella)
 - [192](../192-backend-api-parity/) - Backend API Parity
 - [193](../193-frontend-ui-parity/) - Frontend UI Parity
 
 **Testing & Quality**:
+
 - [191](../191-rust-http-api-test-suite/) - Rust HTTP API Tests
 - [194](../194-api-contract-test-suite/) - API Contract Tests
 - [195](../195-api-contract-test-failures/) - API Contract Test Failures
 
 **Desktop Integration**:
+
 - [204](../204-desktop-ui-vite-integration/) - Desktop UI Integration
 - [205](../205-desktop-ui-vite-alignment-fixes/) - Desktop UI Alignment Fixes
 - [206](../206-desktop-navigation-seamless-integration/) - Desktop Navigation

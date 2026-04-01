@@ -29,7 +29,7 @@ completed: '2025-11-26'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-26 · **Tags**: mcp, ai-agents, ux, init, dx
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -39,18 +39,21 @@ completed: '2025-11-26'
 Real user feedback indicates significant friction with current AGENTS.md approach:
 
 **Issue 1: Tool-Specific File Names**
+
 - Claude Code doesn't read `AGENTS.md` by default - requires `CLAUDE.md`
 - Gemini CLI looks for `GEMINI.md`
 - Other tools have their own conventions
 - Users must manually create symlinks, breaking quick-start experience
 
 **Issue 2: AGENTS.md Not MCP-Focused**
+
 - Current template mentions CLI commands as primary method
 - MCP tools appear as "alternative" rather than preferred approach
 - AI agents default to CLI or manual file operations instead of MCP tools
 - User quote: "效果不是很好" (not working well)
 
 **Issue 3: SDD Compliance Degrades Over Time**
+
 - AI agents create specs correctly initially
 - After 2-3 conversations, agents forget to update specs with progress
 - No clear reminder about ongoing SDD obligations
@@ -66,7 +69,8 @@ Real user feedback indicates significant friction with current AGENTS.md approac
 ### Success Criteria
 
 After implementation:
-- ✅ `lean-spec init` creates tool-specific symlinks (CLAUDE.md → AGENTS.md, etc.)
+
+- ✅ `harnspec init` creates tool-specific symlinks (CLAUDE.md → AGENTS.md, etc.)
 - ✅ AGENTS.md emphasizes MCP tools as PRIMARY method
 - ✅ AI agents use MCP tools (not CLI) for spec operations
 - ✅ AI agents maintain SDD compliance across multi-turn conversations
@@ -76,7 +80,7 @@ After implementation:
 
 ### Part 1: Multi-Tool Symlink Support
 
-**During `lean-spec init`:**
+**During `harnspec init`:**
 
 ```
 ? Which AI tools do you use? (Select all that apply)
@@ -92,44 +96,49 @@ Creating agent instruction files...
 ```
 
 **File Structure After Init:**
+
 ```
 project/
 ├── AGENTS.md           # Primary file (always created)
 ├── CLAUDE.md → AGENTS.md   # Symlink for Claude Code
 ├── GEMINI.md → AGENTS.md   # Symlink for Gemini CLI (if selected)
-└── .lean-spec/
+└── .harnspec/
 ```
 
 **Why Symlinks?**
+
 - Single source of truth (edit AGENTS.md, all tools see updates)
 - No duplication or sync issues
 - Git-friendly (symlinks track correctly)
 - Easy to add more tools later
 
 **Non-Interactive Mode:**
+
 ```bash
 # Create all common symlinks
-lean-spec init -y --agent-tools all
+harnspec init -y --agent-tools all
 
 # Create specific symlinks
-lean-spec init -y --agent-tools claude,gemini
+harnspec init -y --agent-tools claude,gemini
 
 # Skip symlinks (legacy behavior)
-lean-spec init -y --agent-tools none
+harnspec init -y --agent-tools none
 ```
 
 ### Part 2: MCP-First AGENTS.md Rewrite
 
 **Current Structure (Problems):**
+
 ```markdown
 ## Essential Commands
 **Discovery:**
-- `lean-spec list` - See all specs
-- `lean-spec search "<query>"` - Find relevant specs
+- `harnspec list` - See all specs
+- `harnspec search "<query>"` - Find relevant specs
 ...
 ```
 
 **New Structure (MCP-First):**
+
 ```markdown
 ## 🔧 How to Manage Specs
 
@@ -156,10 +165,10 @@ If you have LeanSpec MCP server configured, **ALWAYS use MCP tools**:
 ### Fallback: CLI Commands
 
 If MCP is not available, use CLI:
-- `lean-spec board` - Project overview
-- `lean-spec list` - See all specs
-- `lean-spec create <name>` - Create new spec
-- `lean-spec update <spec> --status <status>` - Update status
+- `harnspec board` - Project overview
+- `harnspec list` - See all specs
+- `harnspec create <name>` - Create new spec
+- `harnspec update <spec> --status <status>` - Update status
 
 **Check MCP availability first**: If you see LeanSpec tools in your available tools, use them!
 ```
@@ -250,7 +259,7 @@ return {
 **New Interactive Init:**
 
 ```
-$ lean-spec init
+$ harnspec init
 
 Welcome to LeanSpec! 🚀
 
@@ -272,8 +281,8 @@ Welcome to LeanSpec! 🚀
     No - CLI-only instructions
 
 Creating LeanSpec project...
-  ✓ .lean-spec/config.json
-  ✓ .lean-spec/templates/
+  ✓ .harnspec/config.json
+  ✓ .harnspec/templates/
   ✓ specs/
   ✓ AGENTS.md (with MCP-first instructions)
   ✓ CLAUDE.md → AGENTS.md
@@ -289,6 +298,7 @@ Next steps:
 ## Plan
 
 ### Phase 1: Multi-Tool Symlink Support
+
 - [x] Add AI tool selection to init prompts
 - [x] Create symlink generation logic (CLAUDE.md, GEMINI.md, etc.)
 - [x] Add `--agent-tools` CLI flag for non-interactive mode
@@ -297,6 +307,7 @@ Next steps:
 - [ ] Test symlinks work with actual AI tools
 
 ### Phase 2: MCP-First AGENTS.md
+
 - [x] Rewrite `packages/cli/templates/standard/AGENTS.md`
 - [x] Rewrite `packages/cli/templates/detailed/AGENTS.md`
 - [x] Add "How to Manage Specs" section with MCP-first approach
@@ -305,6 +316,7 @@ Next steps:
 - [x] Update SDD Workflow with MCP tools
 
 ### Phase 3: SDD Compliance Reinforcement
+
 - [x] Add "SDD Workflow Checkpoints" section to AGENTS.md
 - [x] Add "Common Mistakes" section with clear ❌/✅ examples
 - [x] Create `checkpoint` MCP prompt for periodic reminders
@@ -312,6 +324,7 @@ Next steps:
 - [x] Add stale spec warnings to board/list outputs
 
 ### Phase 4: Documentation & Testing
+
 - [x] Update docs-site MCP integration guide
 - [x] Update agent-configuration.mdx with new structure
 - [x] Add Chinese translations for new content
@@ -323,7 +336,8 @@ Next steps:
 ## Test
 
 ### Multi-Tool Symlinks
-- [x] `lean-spec init` shows AI tool selection prompt
+
+- [x] `harnspec init` shows AI tool selection prompt
 - [x] Selecting "Claude Code" creates CLAUDE.md symlink
 - [x] Selecting "Gemini CLI" creates GEMINI.md symlink
 - [x] Symlinks point to AGENTS.md correctly
@@ -333,12 +347,14 @@ Next steps:
 - [x] Windows handles lack of symlink support gracefully
 
 ### MCP-First Content
+
 - [x] AGENTS.md lists MCP tools before CLI commands
 - [x] MCP vs CLI comparison table is clear
 - [x] "Check MCP availability" guidance is prominent
 - [x] SDD Workflow uses MCP tool names (not CLI)
 
 ### SDD Compliance
+
 - [x] "SDD Workflow Checkpoints" section exists in AGENTS.md
 - [x] "Common Mistakes" section lists anti-patterns clearly
 - [x] `checkpoint` MCP prompt returns useful reminder
@@ -347,6 +363,7 @@ Next steps:
 - [ ] AI agents update specs after completing work
 
 ### Real-World Validation
+
 - [ ] User with Claude Code reports improved experience
 - [ ] AI agent uses MCP tools (verified via MCP logs)
 - [ ] Specs stay in sync over multi-turn conversations
@@ -357,6 +374,7 @@ Next steps:
 ### Why Not Just Rename AGENTS.md?
 
 Considered renaming AGENTS.md to tool-specific names:
+
 - ❌ Breaks existing projects
 - ❌ No single source of truth
 - ❌ Must maintain multiple files
@@ -377,6 +395,7 @@ Considered renaming AGENTS.md to tool-specific names:
 ### MCP Tool Priority Order
 
 For AGENTS.md, recommend tools in this order:
+
 1. `board` - Best first-run experience (visual, comprehensive)
 2. `list` - Alternative overview
 3. `search` - Finding specific specs
@@ -389,12 +408,14 @@ For AGENTS.md, recommend tools in this order:
 **Core Problem:** LLMs have no memory between sessions. AGENTS.md is read once.
 
 **Mitigations:**
+
 1. Make critical info unmissable (top of file, emojis, formatting)
 2. Add checkpoints (periodic reminders via MCP prompt)
 3. Tool-level reminders (in MCP responses)
 4. User training (documentation on how to prompt effectively)
 
 **Not Solvable:**
+
 - Can't force agents to re-read AGENTS.md mid-session
 - Can't inject reminders into arbitrary conversations
 - Can't modify agent system prompts directly
@@ -430,6 +451,7 @@ For AGENTS.md, recommend tools in this order:
 ### Bug Fixes (Post-Completion)
 
 **2025-11-26: Quick Start mode wasn't showing AI tool selection**
+
 - Issue: The AI tool selection prompt was only shown in "Choose template" mode, not "Quick start" mode
 - Root cause: Condition `setupMode !== 'quick'` incorrectly skipped the prompt
 - Fix: Removed the `setupMode !== 'quick'` condition; now AI tools prompt shows for all interactive modes

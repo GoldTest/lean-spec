@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - leanspec-data:/home/leanspec/.lean-spec
+      - leanspec-data:/home/leanspec/.harnspec
       # Mount project directories as needed:
       # - /path/to/project-a:/projects/project-a:ro
       # - /path/to/project-b:/projects/project-b:ro

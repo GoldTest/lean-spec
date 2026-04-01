@@ -136,9 +136,9 @@ impl LeanSpecConfig {
         serde_yaml::from_str(&content).map_err(ConfigError::Parse)
     }
 
-    /// Load configuration from the default location (.lean-spec/config.yaml)
+    /// Load configuration from the default location (.harnspec/config.yaml)
     pub fn load_default() -> Result<Self, ConfigError> {
-        let config_path = PathBuf::from(".lean-spec/config.yaml");
+        let config_path = PathBuf::from(".harnspec/config.yaml");
         if config_path.exists() {
             Self::load(&config_path)
         } else {

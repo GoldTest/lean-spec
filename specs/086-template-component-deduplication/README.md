@@ -21,23 +21,27 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17 · **Tags**: refactoring, templates, maintenance
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 ### Problem
+
 Template component files in `packages/cli/templates/_shared/agents-components/` contain significant code redundancy. When updating shared content (like status tracking requirements), we must edit multiple files with duplicate content, creating maintenance burden and risk of inconsistency.
 
 **Example redundancy patterns:**
+
 - `core-rules-base.md` and `core-rules-enterprise.md` both have "Never use nested code blocks" rule
 - `discovery-commands-{minimal,standard,enterprise}.md` share common intro text and progressive command additions
 - `essential-commands-{minimal,standard,enterprise}.md` have massive overlap (15→28→38 lines with shared sections)
 
 ### Why Now
+
 We just improved status update instructions in AGENTS.md and had to update the same content in multiple files. This highlighted the maintenance problem and showed we need a DRY solution before making more updates.
 
 ### Success Criteria
+
 - Shared content exists in exactly ONE file
 - Pattern-specific differences in separate addition files
 - Build system composes components automatically
@@ -51,14 +55,17 @@ We just improved status update instructions in AGENTS.md and had to update the s
 Apply composition pattern (already proven for quality-standards):
 
 **1. Extract Shared Components**
+
 - Create base files with only truly common content
 - Name pattern: `{section}-shared.md`
 
 **2. Create Pattern-Specific Additions**
+
 - Files with only differences per pattern
 - Name pattern: `{section}-{pattern}-additions.md`
 
 **3. Use Array Composition in Config**
+
 ```json
 "essentialCommands": [
   "essential-commands-shared.md",
@@ -69,17 +76,20 @@ Apply composition pattern (already proven for quality-standards):
 ### Files to Refactor
 
 **Priority 1: Essential Commands** (highest redundancy)
+
 - Shared: Header, Discovery, Viewing, Working basics, closing line
 - Minimal: Only basic commands
 - Standard: + Project Overview, Token Management, more detail
 - Enterprise: + Enterprise-specific commands
 
 **Priority 2: Discovery Commands** (progressive additions)
+
 - Shared: Intro text + base commands (stats, board, list, search)
 - Standard additions: + deps
 - Enterprise additions: + gantt
 
 **Priority 3: Core Rules** (one shared line)
+
 - Shared: "Never use nested code blocks" rule
 - Base additions: Base-specific rules
 - Enterprise additions: Enterprise-specific rules
@@ -87,6 +97,7 @@ Apply composition pattern (already proven for quality-standards):
 ## Plan
 
 ### Phase 1: Essential Commands Refactoring ✅ COMPLETE
+
 - [x] Analyze redundancy in essential-commands files
 - [x] Create `essential-commands-shared.md` with common content
 - [x] Create `essential-commands-minimal-additions.md`
@@ -97,6 +108,7 @@ Apply composition pattern (already proven for quality-standards):
 - [x] Delete old files
 
 ### Phase 2: Discovery Commands Refactoring ✅ COMPLETE
+
 - [x] Create `discovery-commands-shared.md`
 - [x] Create pattern-specific addition files
 - [x] Update build script if needed (support for discoveryCommands array)
@@ -105,6 +117,7 @@ Apply composition pattern (already proven for quality-standards):
 - [x] Delete old files
 
 ### Phase 3: Core Rules Refactoring ✅ COMPLETE
+
 - [x] Create `core-rules-shared.md`
 - [x] Create pattern-specific addition files
 - [x] Update configs
@@ -112,6 +125,7 @@ Apply composition pattern (already proven for quality-standards):
 - [x] Delete old files
 
 ### Phase 4: Audit Other Components
+
 - [ ] Review remaining component files for redundancy
 - [ ] Document any other refactoring opportunities
 
@@ -127,7 +141,9 @@ Apply composition pattern (already proven for quality-standards):
 ## Notes
 
 ### Already Completed (Quality Standards)
+
 We successfully refactored quality-standards using this same approach:
+
 - Created `quality-standards-shared.md` (common standards)
 - Created `quality-standards-{minimal,enterprise}-additions.md`
 - Created `status-update-triggers.md` (extracted from workflow files)
@@ -136,11 +152,14 @@ We successfully refactored quality-standards using this same approach:
 This serves as the proven pattern for the remaining refactorings.
 
 ### Build Script Enhancements
+
 Already supports:
+
 - `string | string[]` for workflow and qualityStandards
 - `readComponents()` function for composition
 
 May need to extend support to:
+
 - `discoveryCommands` (currently only string)
 - `coreRules` (currently only string)
 - `essentialCommands` (currently optional string)

@@ -20,7 +20,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-20 · **Tags**: mcp, ux, prompts, ai-agents
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -36,11 +36,13 @@ Refine MCP prompts based on actual usage patterns. Add commonly used prompts for
 ### Current Prompts Analysis
 
 **Existing prompts:**
+
 1. `create-feature-spec` - Guided feature spec creation
 2. `find-related-specs` - Discover related specs by topic
 3. `update-spec-status` - Quick status update workflow
 
 **Usage assessment:**
+
 - `create-feature-spec`: Redundant - agents can use `create` tool directly
 - `find-related-specs`: Partially useful but too narrow - agents already search with `search`/`list` tools
 - `update-spec-status`: Good for quick updates, keep but simplify
@@ -48,12 +50,14 @@ Refine MCP prompts based on actual usage patterns. Add commonly used prompts for
 ### New Prompts to Add
 
 #### 1. Project Progress Overview
+
 **Name**: `project-progress-overview`  
 **Purpose**: Generate comprehensive project status report combining specs, git history, and metrics
 
 **Args**: None (zero arguments for simplicity)
 
 **Prompt template**:
+
 ```
 Analyze project progress and provide a comprehensive overview:
 
@@ -65,13 +69,16 @@ Analyze project progress and provide a comprehensive overview:
 ```
 
 #### 2. Project Roadmap Planning
+
 **Name**: `plan-project-roadmap`  
 **Purpose**: Interactive roadmap planning with phases, tasks, and dependencies
 
 **Args**:
+
 - `goal` (string, required) - High-level project goal or milestone
 
 **Prompt template**:
+
 ```
 Plan project roadmap for: {goal}
 
@@ -89,9 +96,11 @@ Provide actionable next steps to implement this roadmap.
 ### Prompts to Revise/Remove
 
 **Remove**:
+
 - `create-feature-spec` - Too narrow, agents should use tools directly
 
 **Revise**:
+
 - `find-related-specs` → Remove (redundant with tools)
 - `update-spec-status` → Simplified to only required args (specPath, status)
 
@@ -112,12 +121,14 @@ Provide actionable next steps to implement this roadmap.
 ## Test
 
 **Manual Testing**:
+
 - [ ] Invoke `project-progress-overview` in Copilot/Claude
 - [ ] Invoke `plan-project-roadmap` with sample goal
 - [ ] Verify removed prompts don't appear in MCP prompt list
 - [ ] Verify revised prompts work as expected
 
 **Validation Criteria**:
+
 - [ ] New prompts generate useful, actionable output
 - [ ] Prompts leverage existing MCP tools effectively
 - [ ] Prompt templates are clear and guide AI behavior
@@ -126,6 +137,7 @@ Provide actionable next steps to implement this roadmap.
 ## Notes
 
 **Design Rationale**:
+
 - Focus on high-level workflow prompts, not micro-tasks
 - Prompts should orchestrate tool usage, not replace tools
 - Keep prompts minimal - signal-to-noise principle applies here too
@@ -134,23 +146,28 @@ Provide actionable next steps to implement this roadmap.
 **Changes Summary**:
 
 **Added:**
+
 1. `project-progress-overview` - Comprehensive project status report combining specs, git history, and metrics
 2. `plan-project-roadmap` - Interactive roadmap planning with phases, tasks, and dependencies
 
 **Removed:**
+
 1. `create-feature-spec` - Too narrow, agents use `create` tool directly
 2. `find-related-specs` - Redundant with `search`/`list` tools
 
 **Modified:**
+
 1. `update-spec-status` - Simplified to only required arguments (specPath, status)
 
 **Simplification Rationale:**
+
 - Too many optional arguments cause confusion
 - `project-progress-overview` now has zero arguments (always includes metrics, uses 2-week timeframe)
 - `plan-project-roadmap` has one required argument (goal), always reviews existing work
 - `update-spec-status` keeps only required args, agents can call `update` tool directly for other fields
 
 **Implementation Notes**:
+
 - All prompts include explicit tool usage guidance
 - Prompts generate actionable workflows, not just instructions
 - New prompts leverage multiple tools in sequence (board, stats, list, deps, git commands)

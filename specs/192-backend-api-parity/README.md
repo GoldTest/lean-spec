@@ -29,6 +29,7 @@ transitions:
 **Part of**: [Spec 190](../190-ui-vite-parity-rust-backend/) - UI-Vite Parity
 
 **Problem**: Rust HTTP server missing critical endpoints that Next.js API routes provide:
+
 - Metadata update (file writing)
 - Project discovery (filesystem scanning)
 - Directory listing (file browser)
@@ -54,6 +55,7 @@ transitions:
 ### Implementation Requirements
 
 **1. Metadata Update** (PATCH `/api/specs/{spec}/metadata`)
+
 - Add file writing to `leanspec_core`
 - Parse frontmatter, update fields, preserve content
 - Atomic file write (write to temp, then rename)
@@ -61,13 +63,15 @@ transitions:
 - Return updated frontmatter in response
 
 **2. Project Discovery** (POST `/api/local-projects/discover`)
+
 - Scan filesystem starting from given path
-- Find directories with `.lean-spec/` folder
+- Find directories with `.harnspec/` folder
 - Extract project name from `package.json` or directory name
 - Skip hidden directories (`.git`, `node_modules`)
 - Return list of discovered projects with paths
 
 **3. Directory Listing** (POST `/api/local-projects/list-directory`)
+
 - List contents of given directory path
 - Return entries with: name, type (file/dir), size, modified time
 - Support parent directory navigation (`..`)
@@ -75,8 +79,9 @@ transitions:
 - Handle permission errors gracefully
 
 **4. Project Validation** (POST `/api/projects/{id}/validate`)
+
 - Check if project path exists on filesystem
-- Verify `.lean-spec/` directory exists
+- Verify `.harnspec/` directory exists
 - Check for specs directory
 - Return validation status with specific errors
 
@@ -220,7 +225,7 @@ impl ProjectDiscovery {
         }
         
         // Check if this is a LeanSpec project
-        if path.join(".lean-spec").exists() {
+        if path.join(".harnspec").exists() {
             projects.push(DiscoveredProject {
                 path: path.to_path_buf(),
                 name: extract_project_name(path)?,
@@ -305,6 +310,7 @@ pub async fn list_directory(
 ## Plan
 
 ### Day 1: Setup & Metadata Update
+
 - [x] Add `spec_writer.rs` to `leanspec_core`
 - [x] Implement `update_metadata` function
 - [x] Implement atomic file write
@@ -314,6 +320,7 @@ pub async fn list_directory(
 - [x] Write integration tests
 
 ### Day 2: Project Discovery
+
 - [x] Add `project_discovery.rs` to `leanspec_core`
 - [x] Implement recursive directory scanning
 - [x] Add ignore patterns
@@ -322,6 +329,7 @@ pub async fn list_directory(
 - [x] Write integration tests
 
 ### Day 3: Directory Listing & Project Validation
+
 - [x] Implement directory listing handler
 - [x] Add sorting and filtering logic
 - [x] Implement project validation endpoint (already existed)
@@ -329,12 +337,14 @@ pub async fn list_directory(
 - [x] Write integration tests
 
 ### Day 4: Project Validation & Polish
+
 - [x] Implement project validation endpoint (already existed)
 - [x] Add comprehensive error handling
 - [x] Update API documentation (in code comments)
 - [x] Add examples to comments
 
 ### Day 5: Integration Testing & CI
+
 - [x] Run full test suite
 - [x] Fix any failing tests (core tests all passing)
 - [x] Add tests to CI pipeline (tests exist)
@@ -343,6 +353,7 @@ pub async fn list_directory(
 ## Test
 
 **Unit Tests** (leanspec_core):
+
 - [x] Metadata update preserves content
 - [x] Atomic write handles errors
 - [x] Frontmatter rebuild maintains format
@@ -351,12 +362,14 @@ pub async fn list_directory(
 - [x] Directory listing sorts correctly
 
 **Integration Tests** (leanspec-http):
+
 - [x] PATCH `/api/specs/{spec}/metadata` updates and persists
 - [x] POST `/api/local-projects/discover` finds projects
 - [x] POST `/api/local-projects/list-directory` returns entries
 - [x] POST `/api/projects/{id}/validate` validates correctly (pre-existing)
 
 **Error Handling**:
+
 - [x] Invalid spec paths return 404
 - [x] Invalid metadata values return 400
 - [x] Permission errors handled gracefully
@@ -365,6 +378,7 @@ pub async fn list_directory(
 ## Success Criteria
 
 **Must Have**:
+
 - [x] All 4 endpoints implemented and functional
 - [x] Metadata editing works end-to-end
 - [x] Project discovery finds valid projects
@@ -373,6 +387,7 @@ pub async fn list_directory(
 - [x] Zero regressions in existing endpoints
 
 **Should Have**:
+
 - [x] Performance: Metadata update < 50ms (atomic writes are fast)
 - [x] Performance: Discovery < 1s for typical home directory (configurable depth)
 - [x] Comprehensive error messages
@@ -391,6 +406,7 @@ pub async fn list_directory(
 ### File Writing Safety
 
 **Atomic writes critical** for metadata updates:
+
 - Write to temporary file first
 - Only rename on success
 - Prevents corruption on crash/error
@@ -406,6 +422,7 @@ pub async fn list_directory(
 ## Implementation Log
 
 ### 2025-12-22: Implementation Complete
+
 - **Core Infrastructure**: Added `SpecWriter` to `leanspec_core` with atomic file write capability
 - **Metadata Update (CRITICAL)**: Implemented PATCH `/api/specs/{spec}/metadata`
   - Supports updating status, priority, tags, and assignee
@@ -428,19 +445,22 @@ pub async fn list_directory(
 **Status**: All 3 priority endpoints implemented and tested. Project validation endpoint was already implemented.
 
 ### 2026-01-07: Context API Removal
-- **Removed `.lean-spec/context` API**: The context file API endpoints were added without a real use case
+
+- **Removed `.harnspec/context` API**: The context file API endpoints were added without a real use case
   - Deleted `rust/leanspec-http/src/handlers/context.rs`
   - Removed GET `/api/projects/{id}/context` and GET `/api/projects/{id}/context/{file}` routes
-  - The actual "project context" feature (spec 131) reads from root files, not `.lean-spec/context/`
+  - The actual "project context" feature (spec 131) reads from root files, not `.harnspec/context/`
   - No evidence this directory or API was ever used or needed
 
 ### 2025-12-21: Parity Adjustments
+
 - Contract tests revealed Rust currently exposes `/api/specs` while Next.js uses multi-project routes (`/api/projects/:projectId/specs` and `/api/projects/:projectId/specs/:specId`). Align Rust to the multi-project shape and return structures (`{ specs }`, `{ spec }`) expected by the Next.js API.
 - Add missing endpoints: `/health` and `/api/search` (search can be stubbed or feature-flagged until implemented). Ensure response shapes match the contract suite once updated in spec 194.
 - Remove deprecated flows from Rust (`/api/projects/:id/switch`, `/api/projects/refresh`) in favor of stateless project selection consistent with Next.js.
 - Reconcile project schema differences (Next.js uses `displayName`, `specsDir`, single-project virtual project) so responses match the canonical schema decided with spec 194.
 
 ### 2025-12-19: Sub-Spec Created
+
 - Split from parent spec 190
 - Focus: Backend API endpoints only
 - Depends on: Spec 191 (API tests)

@@ -26,6 +26,7 @@ transitions:
 **Problem**: Spec 091 completed i18n infrastructure setup but left actual translation integration as "future work". When users switch to Chinese, only the main sidebar menu is translated - everything else remains in English, creating a poor user experience for Chinese users.
 
 **Current State**:
+
 - ✅ i18n infrastructure exists (react-i18next, i18next)
 - ✅ Translation files created (`packages/ui/src/locales/`, `packages/cli/src/locales/`)
 - ✅ Language switcher component works
@@ -34,17 +35,20 @@ transitions:
 - ❌ 30+ UI components still have hardcoded English text
 
 **Impact**:
+
 - Chinese users see mostly English UI despite choosing Chinese
 - Poor first impression for our primary target market
 - Incomplete feature undermines trust in product quality
 
 **Scope**:
+
 1. Integrate translations into all UI components
 2. Integrate translations into all CLI commands
 3. Add missing translation keys to translation files
 4. Ensure consistent terminology per spec 115 guidelines
 
 **Out of Scope**:
+
 - Creating new translations (use existing zh-CN files)
 - Translating user-generated content (specs)
 - Adding new languages beyond en/zh-CN
@@ -54,6 +58,7 @@ transitions:
 ### Technical Approach
 
 **Phase 1: Audit & Extract**
+
 1. Identify all components with hardcoded English text
 2. Extract strings to translation files
 3. Group by namespace (common, errors, help, etc.)
@@ -72,6 +77,7 @@ const { t } = useTranslation('common');
 ```
 
 **Components requiring translation** (priority order):
+
 1. **High Priority** (user-facing):
    - Navigation components (quick-search, navigation.tsx)
    - Spec pages (spec-detail-client, specs-client)
@@ -104,6 +110,7 @@ import i18n from '../lib/i18n/config.js';
 ```
 
 **Commands requiring translation** (all in `packages/cli/src/commands/`):
+
 - archive.ts
 - backfill.ts
 - board.ts
@@ -123,6 +130,7 @@ import i18n from '../lib/i18n/config.js';
 - view.ts
 
 **Translation Namespaces**:
+
 - `common`: Shared UI strings (actions, navigation, labels)
 - `errors`: Error messages and warnings
 - `help`: Help text and tooltips
@@ -140,12 +148,14 @@ Follow spec 115 and docs-site/AGENTS.md:
 ## Plan
 
 **Phase 1: Infrastructure Preparation** (1 day)
+
 - [x] Create spec 157
 - [ ] Audit all UI components for hardcoded strings
 - [ ] Audit all CLI commands for hardcoded strings
 - [ ] Create comprehensive translation key mapping
 
 **Phase 2: Translation File Updates** (2 days)
+
 - [ ] Add missing keys to `packages/ui/src/locales/zh-CN/*.json`
   - [x] Context viewer + summary strings (2025-12-10)
   - [x] Stats dashboard metrics copy (2025-12-10)
@@ -156,17 +166,19 @@ Follow spec 115 and docs-site/AGENTS.md:
 - [ ] Verify consistency with spec 115 guidelines
 
 **Phase 3: UI Component Integration** (3-4 days)
+
 - [ ] High priority components (navigation, spec pages, badges)
- - [x] Medium priority components (stats, dependencies, timeline)
-  - [x] Project context (context-client, context-file-viewer, context-file-detail) localized (2025-12-10)
-  - [x] Stats dashboard localized (2025-12-10)
-  - [x] Dependency graph (filters, minimap, sidebar) localized (2025-12-10)
-  - [x] Timeline widgets use locale-aware formatting (2025-12-10)
+- [x] Medium priority components (stats, dependencies, timeline)
+- [x] Project context (context-client, context-file-viewer, context-file-detail) localized (2025-12-10)
+- [x] Stats dashboard localized (2025-12-10)
+- [x] Dependency graph (filters, minimap, sidebar) localized (2025-12-10)
+- [x] Timeline widgets use locale-aware formatting (2025-12-10)
 - [ ] Low priority components (tooltips, labels)
 - [ ] Add 'use client' directive where needed
 - [ ] Test each component after integration
 
 **Phase 4: CLI Command Integration** (2 days)
+
 - [x] Update all command descriptions
 - [ ] Update error messages in commands
 - [ ] Update output messages (success/warning text)
@@ -174,6 +186,7 @@ Follow spec 115 and docs-site/AGENTS.md:
 - [ ] Test each command with zh-CN locale
 
 **Phase 5: Testing & Polish** (1 day)
+
 - [ ] Manual testing: Switch to Chinese and test all features
 - [ ] Verify sidebar, navigation, spec pages work in Chinese
 - [ ] Verify CLI commands show Chinese output
@@ -181,6 +194,7 @@ Follow spec 115 and docs-site/AGENTS.md:
 - [ ] Native speaker review (if available)
 
 **Phase 6: Documentation** (0.5 days)
+
 - [ ] Update docs/i18n/README.md with component examples
 - [ ] Document translation workflow for future contributors
 - [ ] Add screenshots showing translated UI
@@ -188,6 +202,7 @@ Follow spec 115 and docs-site/AGENTS.md:
 ## Test
 
 **UI Translation Tests**:
+
 - [ ] Language switcher toggles between English and Chinese
 - [ ] Main navigation fully translated
 - [ ] Spec list page fully translated
@@ -202,19 +217,22 @@ Follow spec 115 and docs-site/AGENTS.md:
 - [ ] No hardcoded English visible in Chinese mode
 
 **CLI Translation Tests**:
-- [ ] `LANG=zh-CN lean-spec list` shows Chinese output
-- [ ] `LANG=zh-CN lean-spec create --help` shows Chinese help
+
+- [ ] `LANG=zh-CN harnspec list` shows Chinese output
+- [ ] `LANG=zh-CN harnspec create --help` shows Chinese help
 - [ ] Command errors display in Chinese
 - [ ] Template section headers in Chinese (when locale is zh-CN)
 - [ ] All commands respect locale setting
 
 **Consistency Tests**:
+
 - [ ] Terminology matches spec 115 guidelines
 - [ ] "Spec" never translated to 规格/规范
 - [ ] Status values remain in English: `planned`, `in-progress`, etc.
 - [ ] Technical terms consistent across UI and CLI
 
 **Regression Tests**:
+
 - [ ] All existing tests still pass
 - [ ] English mode unchanged
 - [ ] No performance degradation
@@ -226,16 +244,19 @@ Follow spec 115 and docs-site/AGENTS.md:
 **Decision**: Not prioritizing CLI i18n. UI localization is complete and sufficient for user needs.
 
 **Rationale**:
+
 - UI i18n work completed successfully (context viewer, stats, dependencies, timeline all localized)
 - CLI is primarily used by developers comfortable with English
 - Limited ROI on CLI translation effort
 - Resources better allocated to other features
 
 **Status at Archive**:
+
 - ✅ UI fully localized (primary user-facing surfaces)
 - ⏸️ CLI i18n deferred (low priority)
 
 ### Progress Log
+
 - **2025-12-10**
   - Localized the project context surfaces (context-client, context-file-viewer, context-file-detail) and expanded both en/zh locale files with dedicated context keys.
   - Introduced CLI localization helpers so every registered command pulls its description/usage from `commands.json`, auto-localizes standard option descriptions, and rebuilds the grouped help/Examples section from translated metadata.
@@ -246,6 +267,7 @@ Follow spec 115 and docs-site/AGENTS.md:
 **Component Audit Summary**:
 
 **UI Components Needing Translation** (~35 components):
+
 - Navigation: navigation.tsx, quick-search.tsx, project-switcher.tsx
 - Spec pages: spec-detail-client.tsx, specs-client.tsx, spec-detail-wrapper.tsx
 - Editors: editable-spec-metadata.tsx, status-editor.tsx, priority-editor.tsx, tags-editor.tsx
@@ -263,6 +285,7 @@ Follow spec 115 and docs-site/AGENTS.md:
 All commands in `packages/cli/src/commands/*.ts`
 
 **Existing Translation Coverage**:
+
 - packages/ui/src/locales/zh-CN/common.json: ~60 keys (mostly navigation)
 - packages/ui/src/locales/zh-CN/errors.json: ~10 keys
 - packages/ui/src/locales/zh-CN/help.json: ~5 keys
@@ -271,17 +294,20 @@ All commands in `packages/cli/src/commands/*.ts`
 - packages/cli/src/locales/zh-CN/templates.json: ~20 keys (not integrated)
 
 **Estimated Work**:
+
 - Translation keys already exist (done in spec 091)
 - Need to integrate ~200-300 translation keys across 50+ files
 - Most changes are mechanical (find string, wrap with t())
 - Main challenge: ensuring no strings are missed
 
 **Dependencies**:
+
 - Depends on spec 091 (infrastructure complete)
 - Blocks Chinese user adoption
 - Should complete before any major marketing push to Chinese market
 
 **Resources**:
+
 - Translation quality already validated in spec 091
 - No new translations needed
 - Can leverage existing test infrastructure from spec 091

@@ -68,7 +68,7 @@ fn detect(repo: &str, branch: Option<&str>, output_format: &str) -> Result<(), B
             println!();
             println!(
                 "To import: {}",
-                format!("lean-spec git import {}", repo).cyan()
+                format!("harnspec git import {}", repo).cyan()
             );
         }
         None => {
@@ -77,7 +77,7 @@ fn detect(repo: &str, branch: Option<&str>, output_format: &str) -> Result<(), B
                 "✗".red().bold(),
                 remote_ref.display_name
             );
-            println!("  Looked for: specs/, .lean-spec/specs/, doc/specs/, docs/specs/");
+            println!("  Looked for: specs/, .harnspec/specs/, doc/specs/, docs/specs/");
         }
     }
 

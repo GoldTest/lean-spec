@@ -50,7 +50,7 @@ AI：[通过 MCP 搜索Spec："authentication"]
 ### 1. 安装 HarnSpec
 
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 ```
 
 ### 2. 配置您的 AI 工具
@@ -64,9 +64,9 @@ npm install -g lean-spec
 ```json
 {
   "github.copilot.chat.mcp.servers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "${workspaceFolder}"
     }
   }
@@ -85,9 +85,9 @@ npm install -g lean-spec
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "/absolute/path/to/your/project"
     }
   }
@@ -104,7 +104,7 @@ npm install -g lean-spec
 List all specs in this project.
 ```
 
-预期：AI 使用 MCP 调用 `lean-spec list` 并显示结果。
+预期：AI 使用 MCP 调用 `harnspec list` 并显示结果。
 
 ```
 What does spec 042 describe?
@@ -256,7 +256,7 @@ HarnSpec MCP 服务器为 AI 助手提供这些工具：
 **检查：**
 1. MCP 服务器在设置中配置
 2. `cwd` 指向正确的项目目录
-3. 项目有Spec（手动运行 `lean-spec list`）
+3. 项目有Spec（手动运行 `harnspec list`）
 4. 配置更改后重新启动 AI 工具
 
 ### MCP 命令不工作
@@ -264,7 +264,7 @@ HarnSpec MCP 服务器为 AI 助手提供这些工具：
 **尝试：**
 ```bash
 # 直接测试 MCP 服务器
-npx lean-spec mcp
+npx harnspec mcp
 
 # 验证它启动时没有错误
 ```
@@ -274,10 +274,10 @@ npx lean-spec mcp
 **验证：**
 ```bash
 # 检查Spec存在
-lean-spec list
+harnspec list
 
 # 检查搜索工作
-lean-spec search "test query"
+harnspec search "test query"
 ```
 
 ## 最佳实践

@@ -9,7 +9,7 @@ Configure AI coding agents to work effectively with HarnSpec through AGENTS.md i
 
 ## AGENTS.md Overview
 
-`AGENTS.md` serves as permanent instructions for AI coding agents in your repository. When you run `lean-spec init`, this file is created with HarnSpec guidance.
+`AGENTS.md` serves as permanent instructions for AI coding agents in your repository. When you run `harnspec init`, this file is created with HarnSpec guidance.
 
 **Purpose:**
 - Provide context about your project
@@ -23,7 +23,7 @@ HarnSpec now supports **Agent Skills** via a SKILL.md file. This is the preferre
 
 **Project skill location:**
 
-- .github/skills/HarnSpec-sdd/SKILL.md (installed via `lean-spec skill install`)
+- .github/skills/HarnSpec-sdd/SKILL.md (installed via `harnspec skill install`)
 
 **Why use a skill?**
 - Cross-platform: works with Claude, Cursor, Codex, and other skill-compatible tools
@@ -87,16 +87,16 @@ Different AI tools expect different instruction file names. HarnSpec automatical
 
 ```bash
 # Default: creates CLAUDE.md symlink (most common use case)
-lean-spec init -y
+harnspec init -y
 
 # Create symlinks for specific tools
-lean-spec init -y --agent-tools claude,gemini
+harnspec init -y --agent-tools claude,gemini
 
 # Create symlinks for all supported tools
-lean-spec init -y --agent-tools all
+harnspec init -y --agent-tools all
 
 # Skip symlinks (legacy behavior)
-lean-spec init -y --agent-tools none
+harnspec init -y --agent-tools none
 ```
 
 **Note:** On Windows, copies are created instead of symlinks (requires admin privileges).
@@ -220,12 +220,12 @@ If you have HarnSpec MCP tools available, **ALWAYS use them**:
 
 If MCP tools are not available, use CLI commands:
 
-    lean-spec board              # Project overview
-    lean-spec list               # See all specs
-    lean-spec search "query"     # Find relevant specs
-    lean-spec create <name>      # Create new spec
-    lean-spec update <spec> --status <status>  # Update status
-    lean-spec deps <spec>        # Show dependencies
+    harnspec board              # Project overview
+    harnspec list               # See all specs
+    harnspec search "query"     # Find relevant specs
+    harnspec create <name>      # Create new spec
+    harnspec update <spec> --status <status>  # Update status
+    harnspec deps <spec>        # Show dependencies
 
 **Tip:** Check if you have HarnSpec MCP tools available before using CLI.
 
@@ -307,7 +307,7 @@ Use `tokens` tool to check spec size.
 Claude Code reads `CLAUDE.md` by default. HarnSpec automatically creates this symlink:
 
 ```bash
-# After lean-spec init
+# After harnspec init
 ls -la CLAUDE.md
 # CLAUDE.md -> AGENTS.md
 ```
@@ -319,7 +319,7 @@ ls -la CLAUDE.md
 Gemini CLI reads `GEMINI.md`. Create with:
 
 ```bash
-lean-spec init -y --agent-tools gemini
+harnspec init -y --agent-tools gemini
 ```
 
 ### GitHub Copilot
@@ -502,7 +502,7 @@ Ask your AI agent these questions to verify HarnSpec integration:
 ```
 Show me the project board.
 ```
-Expected: Agent uses MCP `board` tool (or `lean-spec board` CLI)
+Expected: Agent uses MCP `board` tool (or `harnspec board` CLI)
 
 **Test 2: Can it search specs?**
 ```
@@ -543,7 +543,7 @@ It's important to...
 ✅ **Good:**
 ```markdown
 1. Read README.md first
-2. Check existing specs with `lean-spec list`
+2. Check existing specs with `harnspec list`
 3. Follow HarnSpec principles (see AGENTS.md)
 ```
 

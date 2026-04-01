@@ -52,7 +52,7 @@ Spec创建的日期（ISO 8601 格式）。
 created: 2025-11-02
 ```
 
-当您使用 `lean-spec create` 时，这会自动填充。
+当您使用 `harnspec create` 时，这会自动填充。
 
 ## 可选字段
 
@@ -67,7 +67,7 @@ tags: [api, security, mvp]
 
 **用法：**
 ```bash
-lean-spec list --tag=api
+harnspec list --tag=api
 ```
 
 ### priority
@@ -87,7 +87,7 @@ priority: high
 
 **用法：**
 ```bash
-lean-spec list --priority=high
+harnspec list --priority=high
 ```
 
 ### completed
@@ -105,7 +105,7 @@ completed: 2025-11-05
 
 ## 自定义字段
 
-您可以在 `.lean-spec/config.json` 中定义自定义字段：
+您可以在 `.harnspec/config.json` 中定义自定义字段：
 
 ```json
 {
@@ -129,8 +129,8 @@ completed: 2025-11-05
 
 **用法：**
 ```bash
-lean-spec create feature --field assignee=alice --field sprint=42
-lean-spec list --field epic=PROJ-123
+harnspec create feature --field assignee=alice --field sprint=42
+harnspec list --field epic=PROJ-123
 ```
 
 详情请参见[自定义字段](/zh-Hans/docs/guide/usage/advanced-features/custom-fields)。
@@ -149,7 +149,7 @@ HarnSpec 从frontmatter自动生成视觉徽章：
 - ✅ 已完成
 - 📦 已归档
 
-当您使用 `lean-spec update` 时，这些徽章会自动更新。
+当您使用 `harnspec update` 时，这些徽章会自动更新。
 
 ## 完整示例
 
@@ -181,7 +181,7 @@ sprint: 42
 推荐的方法：
 
 ```bash
-lean-spec update 001 --status=complete --priority=critical
+harnspec update 001 --status=complete --priority=critical
 ```
 
 这会更新frontmatter和视觉徽章。
@@ -194,7 +194,7 @@ lean-spec update 001 --status=complete --priority=critical
 2. 修改 `---` 标记之间的 YAML
 3. 保存文件
 
-注意：手动编辑不会自动更新视觉徽章。运行 `lean-spec update` 进行同步。
+注意：手动编辑不会自动更新视觉徽章。运行 `harnspec update` 进行同步。
 
 ## 最佳实践
 
@@ -207,7 +207,7 @@ lean-spec update 001 --status=complete --priority=critical
 :::
 
 :::tip 定期更新状态
-保持状态最新。使用 `lean-spec list` 查看进行中的内容。
+保持状态最新。使用 `harnspec list` 查看进行中的内容。
 :::
 
 :::tip 不要过度自定义

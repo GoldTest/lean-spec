@@ -16,7 +16,7 @@ updated_at: '2025-11-26T06:03:32.190Z'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-06 · **Tags**: documentation, quality, launch, v0.2.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -24,6 +24,7 @@ updated_at: '2025-11-26T06:03:32.190Z'
 **Goal**: Ensure documentation site is 100% accurate for v0.2.0 launch
 
 Pre-launch audit discovered critical inaccuracies in docs-site that would confuse users:
+
 - Wrong template names (referenced `solo-dev`, `team`, `api-first` that don't exist)
 - Incorrect default folder structure (showed date-grouped when default is flat)
 - Outdated tool references (VitePress instead of Docusaurus)
@@ -38,6 +39,7 @@ Pre-launch audit discovered critical inaccuracies in docs-site that would confus
 ### Approach
 
 Comprehensive audit of all documentation:
+
 1. **Structure audit** - Navigation, file organization
 2. **Content accuracy** - Examples match CLI behavior
 3. **Link validation** - No broken references
@@ -64,21 +66,21 @@ Comprehensive audit of all documentation:
 
 #### ⚠️ Medium (All Fixed)
 
-5. **Blog Truncation Marker Missing**
+1. **Blog Truncation Marker Missing**
    - Added `<!-- truncate -->` to blog post
 
-6. **Outdated Tool References**
+2. **Outdated Tool References**
    - Fixed `development.mdx` (VitePress → Docusaurus)
 
-7. **Broken Link** in development guide
+3. **Broken Link** in development guide
 
-8. **Inaccurate Project Structure** documentation
+4. **Inaccurate Project Structure** documentation
 
-9. **Outdated Templates Documentation**
+5. **Outdated Templates Documentation**
    - `templates.mdx` referenced non-existent templates
    - Updated to actual templates: minimal, standard, enterprise
 
-10. **Duplicate Content**
+6. **Duplicate Content**
     - Removed `quick-start.mdx` (duplicated getting-started)
     - Updated navigation and links
 
@@ -87,18 +89,22 @@ Comprehensive audit of all documentation:
 **Total: 19 files**
 
 **Content files (11):**
+
 - `docs/ai-integration/` - 4 files (setup, index, best-practices, examples)
 - `docs/guide/` - 6 files (getting-started, templates, custom-fields, frontmatter, development)
 - `docs/reference/` - 1 file (cli)
 
 **Configuration (2):**
+
 - `blog/authors.yml` - Created
 - `blog/2025-11-02-welcome.mdx` - Updated
 
 **Removed (1):**
+
 - `docs/guide/quick-start.mdx` - Removed (duplicated getting-started)
 
 **Structural:**
+
 - `sidebars.ts` - Updated navigation
 
 ## Plan
@@ -132,9 +138,10 @@ cd docs-site && npm run build
 ```
 
 All examples tested against actual CLI:
-- ✅ `lean-spec init` prompts match docs
-- ✅ `lean-spec create` output matches examples
-- ✅ `lean-spec list` format matches docs
+
+- ✅ `harnspec init` prompts match docs
+- ✅ `harnspec create` output matches examples
+- ✅ `harnspec list` format matches docs
 - ✅ Folder structure aligns with default config
 
 ## Sub-Specs
@@ -169,4 +176,3 @@ All examples tested against actual CLI:
 - Spec 043: v0.2.0 launch (parent spec)
 - Spec 051: AGENTS.md and README updates
 - Accomplishes "Documentation accuracy verified" success criterion
-

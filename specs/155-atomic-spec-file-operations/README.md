@@ -60,29 +60,33 @@ async function atomicWriteFile(filePath: string, content: string): Promise<void>
 ### Implementation Strategy
 
 **Shared implementation in `@leanspec/core`:**
+
 - Create `src/utils/atomic-file.ts` with `atomicWriteFile()` function
 - Export from core package for use across CLI, MCP, UI
 
 **Update call sites:**
+
 1. **CLI package** (`packages/cli/src/`):
    - `frontmatter.ts`: `updateFrontmatter()` function
    - `commands/create.ts`: `createSpec()` function (main file + template copies)
-   
+
 2. **MCP package** (`packages/mcp/src/`):
    - Uses CLI functions internally, inherits fix automatically
-   
+
 3. **UI package** (`packages/ui/src/`):
    - `app/api/projects/[id]/specs/[spec]/metadata/route.ts`: PATCH handler
 
 ### Trade-offs
 
 **Pros:**
+
 - Guaranteed atomic writes (no partial corruption)
 - Standard pattern used by npm, git, editors
 - Simple implementation (~20 lines)
 - Cross-platform (POSIX + Windows)
 
 **Cons:**
+
 - Small performance overhead (extra syscalls)
 - Temp file cleanup needed on error
 - Requires disk space for temp file
@@ -105,24 +109,29 @@ async function atomicWriteFile(filePath: string, content: string): Promise<void>
 ### Files Changed
 
 **Core Package (`@leanspec/core`):**
+
 - `src/utils/atomic-file.ts` - New atomic write utility (write-then-rename pattern)
 - `src/utils/atomic-file.test.ts` - Unit tests (11 tests, all passing)
 - `src/index.ts` - Export `atomicWriteFile` function
 
-**CLI Package (`lean-spec`):**
+**CLI Package (`harnspec`):**
+
 - `src/frontmatter.ts` - Replace `fs.writeFile` with `atomicWriteFile` in `updateFrontmatter()`
 - `src/commands/create.ts` - Replace `fs.writeFile` with `atomicWriteFile` for main file and template copies
 - `src/commands/atomic-operations.test.ts` - Integration tests (5 tests, all passing)
 
 **UI Package (`@leanspec/ui`):**
+
 - `src/app/api/projects/[id]/specs/[spec]/metadata/route.ts` - Replace `writeFile` with `atomicWriteFile` in PATCH handler
 
 **MCP Package:**
+
 - No changes needed - uses CLI functions internally, inherits atomic writes automatically
 
 ### Test Results
 
 **Unit Tests (Core):** ✅ 11/11 passing
+
 - Write file atomically
 - Overwrite existing file
 - Handle multi-line content
@@ -136,6 +145,7 @@ async function atomicWriteFile(filePath: string, content: string): Promise<void>
 - Propagate write errors
 
 **Integration Tests (CLI):** ✅ 5/5 passing
+
 - Concurrent spec updates without corruption
 - Concurrent spec creations without conflicts
 - No temp files after operations
@@ -196,20 +206,22 @@ describe('concurrent spec updates', () => {
 ### Manual Testing
 
 1. **Race condition test:**
+
    ```bash
    # Terminal 1
-   lean-spec update 001-test --status=in-progress
+   harnspec update 001-test --status=in-progress
    
    # Terminal 2 (same time)
-   lean-spec update 001-test --priority=high
+   harnspec update 001-test --priority=high
    
    # Verify: cat specs/001-test/README.md has valid frontmatter
    ```
 
 2. **Crash recovery test:**
+
    ```bash
    # Kill process mid-write
-   lean-spec create test-spec &
+   harnspec create test-spec &
    kill -9 $!
    
    # Verify: no .tmp-* files left, no corrupted specs

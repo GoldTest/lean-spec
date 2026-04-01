@@ -80,15 +80,15 @@ specs/NNN-feature-name/
 
 **使用：**
 ```bash
-lean-spec init --template detailed
+harnspec init --template detailed
 ```
 
 ## 选择模板
 
-运行 `lean-spec init` 并选择"选择模板"：
+运行 `harnspec init` 并选择"选择模板"：
 
 ```bash
-lean-spec init
+harnspec init
 ```
 
 ```
@@ -103,7 +103,7 @@ lean-spec init
 
 ## 自定义模板
 
-您可以在 `.lean-spec/templates/` 中创建自己的模板。
+您可以在 `.harnspec/templates/` 中创建自己的模板。
 
 ### 单文件模板
 
@@ -111,8 +111,8 @@ lean-spec init
 
 1. 创建模板文件：
 ```bash
-mkdir -p .lean-spec/templates
-touch .lean-spec/templates/my-template.md
+mkdir -p .harnspec/templates
+touch .harnspec/templates/my-template.md
 ```
 
 2. 使用占位符编辑模板：
@@ -132,7 +132,7 @@ created: {date}
 [您的自定义章节...]
 ```
 
-3. 在 `.lean-spec/config.json` 中注册：
+3. 在 `.harnspec/config.json` 中注册：
 ```json
 {
   "template": "my-template.md",
@@ -145,7 +145,7 @@ created: {date}
 
 或使用 CLI：
 ```bash
-lean-spec templates add my-template my-template.md
+harnspec templates add my-template my-template.md
 ```
 
 ### 目录模板（多文件）
@@ -154,14 +154,14 @@ lean-spec templates add my-template my-template.md
 
 1. 创建模板目录：
 ```bash
-mkdir -p .lean-spec/templates/api-spec
+mkdir -p .harnspec/templates/api-spec
 ```
 
 2. 创建主模板（必须包含 `README.md`）：
 ```bash
-touch .lean-spec/templates/api-spec/README.md
-touch .lean-spec/templates/api-spec/ENDPOINTS.md
-touch .lean-spec/templates/api-spec/SCHEMAS.md
+touch .harnspec/templates/api-spec/README.md
+touch .harnspec/templates/api-spec/ENDPOINTS.md
+touch .harnspec/templates/api-spec/SCHEMAS.md
 ```
 
 3. 注册目录：
@@ -176,12 +176,12 @@ touch .lean-spec/templates/api-spec/SCHEMAS.md
 
 或使用 CLI：
 ```bash
-lean-spec templates add api api-spec
+harnspec templates add api api-spec
 ```
 
 4. 使用模板：
 ```bash
-lean-spec create my-api --template=api
+harnspec create my-api --template=api
 # 创建：specs/NNN-my-api/
 #   ├── README.md
 #   ├── ENDPOINTS.md
@@ -245,7 +245,7 @@ priority: medium
 
 要在项目中途更改模板：
 
-1. 更新 `.lean-spec/config.json`：
+1. 更新 `.harnspec/config.json`：
 ```json
 {
   "template": "new-template.md"
@@ -271,7 +271,7 @@ priority: medium
 :::
 
 :::tip 共享模板
-导出您的 `.lean-spec/templates/` 目录以与其他团队或项目共享。
+导出您的 `.harnspec/templates/` 目录以与其他团队或项目共享。
 :::
 
 ---

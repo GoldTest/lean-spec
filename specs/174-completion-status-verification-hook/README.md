@@ -38,6 +38,7 @@ When AI agents complete work on a spec, they often update `status: complete` pre
 ### Solution
 
 Add a **verification checkpoint** in the `update` command/tool (CLI & MCP) that:
+
 - Triggers when `status` changes to `complete`
 - Parses spec README for unchecked checkboxes (`- [ ]`)
 - Provides actionable feedback to AI agents about outstanding items
@@ -51,7 +52,7 @@ This creates a **feedback loop** where agents learn to verify their work before 
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  AI Agent: lean-spec update 174 --status complete│
+│  AI Agent: harnspec update 174 --status complete│
 └────────────────┬────────────────────────────────┘
                  │
                  ▼
@@ -88,11 +89,13 @@ This creates a **feedback loop** where agents learn to verify their work before 
 ### Detection Logic
 
 **When to trigger:**
+
 - Status transition: `planned|in-progress → complete`
-- Command: `lean-spec update <spec> --status complete`
+- Command: `harnspec update <spec> --status complete`
 - MCP tool: `update` with status field change
 
 **What to check:**
+
 ```rust
 use leanspec_core::validators::CompletionVerifier;
 use leanspec_core::types::{VerificationResult, CheckboxItem};
@@ -121,6 +124,7 @@ impl CompletionVerifier {
 ### Feedback Format
 
 **CLI Output:**
+
 ```
 ⚠️  Spec has 3 outstanding checklist items:
 
@@ -135,6 +139,7 @@ impl CompletionVerifier {
 ```
 
 **MCP Tool Response:**
+
 ```json
 {
   "error": "INCOMPLETE_CHECKLIST",
@@ -160,7 +165,7 @@ impl CompletionVerifier {
     "progress": "12/15 items complete (80%)",
     "suggestions": [
       "Review outstanding items and complete them",
-      "Update checkboxes: lean-spec view 174",
+      "Update checkboxes: harnspec view 174",
       "Or mark as work-in-progress: --status in-progress"
     ]
   }
@@ -170,6 +175,7 @@ impl CompletionVerifier {
 ### Configuration
 
 Add optional config to allow/bypass:
+
 ```json
 // .leanspec/config.json
 {
@@ -181,8 +187,9 @@ Add optional config to allow/bypass:
 ```
 
 **Override flag:**
+
 ```bash
-lean-spec update 174 --status complete --force  # Skip verification
+harnspec update 174 --status complete --force  # Skip verification
 ```
 
 ## Plan
@@ -297,16 +304,19 @@ Note: Locales update deferred - Rust CLI uses English by default; i18n strategy 
 ### Design Decisions
 
 **Why checkboxes only?**
+
 - Structured, unambiguous signal of completion criteria
 - Already widely used in specs (Plan, Test sections)
 - Easy to parse reliably without AI/NLP
 
 **Why warning instead of hard block?**
+
 - Humans may have valid reasons to mark complete (e.g., deferred items)
 - Flexibility reduces friction while maintaining awareness
 - `--force` flag provides escape hatch
 
 **Why not validate during status update in any direction?**
+
 - Only `→ complete` transition matters for quality gate
 - Other transitions (planned→in-progress) don't require verification
 - Keeps feedback focused and actionable

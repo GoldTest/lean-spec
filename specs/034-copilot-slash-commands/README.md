@@ -23,7 +23,7 @@ transitions:
 
 > **Status**: 📦 Archived · **Priority**: Medium · **Created**: 2025-11-03 · **Tags**: vscode, copilot, ai, ux, v0.2.0-optional
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -37,28 +37,33 @@ Add LeanSpec integration directly into VS Code via GitHub Copilot Chat using sla
 **Implementation Options:**
 
 **Option A: Chat Participant** (Recommended)
-- Register `@lean-spec` chat participant via VS Code extension
-- Natural language interactions: `@lean-spec what's the status of auth system?`
+
+- Register `@harnspec` chat participant via VS Code extension
+- Natural language interactions: `@harnspec what's the status of auth system?`
 - Context-aware: can reference open files, workspace, current work
 
 **Option B: Slash Commands**
-- Register commands like `/lean-spec-search`, `/lean-spec-create`, `/lean-spec-status`
+
+- Register commands like `/harnspec-search`, `/harnspec-create`, `/harnspec-status`
 - More structured but less conversational
 - Fallback if participant API has limitations
 
 **Key Features:**
-- `/lean-spec search <query>` or `@lean-spec search for authentication specs`
-- `/lean-spec status` or `@lean-spec show me what's in progress`
-- `/lean-spec create` or `@lean-spec help me create a spec for this feature`
-- `/lean-spec read <spec>` or `@lean-spec show me the API redesign spec`
-- `/lean-spec update <spec> --status <status>` or `@lean-spec mark auth-system as complete`
+
+- `/harnspec search <query>` or `@harnspec search for authentication specs`
+- `/harnspec status` or `@harnspec show me what's in progress`
+- `/harnspec create` or `@harnspec help me create a spec for this feature`
+- `/harnspec read <spec>` or `@harnspec show me the API redesign spec`
+- `/harnspec update <spec> --status <status>` or `@harnspec mark auth-system as complete`
 
 **Context Integration:**
+
 - Automatically detect related specs based on open files
 - Suggest creating specs when Copilot detects new feature work
 - Link spec references in code comments to full specs
 
 **Architecture:**
+
 - Extend existing VS Code extension (spec 006)
 - Use VS Code Chat Participant API or Slash Command API
 - Reuse LeanSpec CLI logic via TypeScript imports
@@ -93,19 +98,23 @@ Add LeanSpec integration directly into VS Code via GitHub Copilot Chat using sla
 ## Notes
 
 **GitHub Copilot Chat APIs:**
-- Chat Participants: https://code.visualstudio.com/api/extension-guides/chat
+
+- Chat Participants: <https://code.visualstudio.com/api/extension-guides/chat>
 - Language Model API for context
 
 **Design Principles:**
+
 - Conversational over command-line syntax
 - Smart defaults based on workspace context
 - Clear feedback and error messages
 - Don't interrupt flow—augment it
 
 **Related:**
+
 - VS Code extension (spec 006) - base extension to extend
 - MCP server (spec 019) - similar capabilities, different context (Claude Desktop vs VS Code)
 
 **Open Questions:**
+
 - Should this replace or complement the VS Code extension sidebar?
 - Can we auto-generate spec suggestions from PR descriptions?

@@ -8,7 +8,7 @@
 //! - Multi-project support via shared project registry
 //! - Direct integration with `leanspec_core` (no CLI spawning)
 //! - RESTful JSON API for specs, stats, dependencies, validation
-//! - Configuration system via `~/.lean-spec/config.json`
+//! - Configuration system via `~/.harnspec/config.json`
 //!
 //! ## Usage
 //!

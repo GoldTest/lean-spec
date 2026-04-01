@@ -25,7 +25,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: docs, dogfooding, web, v0.3.0-launch
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -33,12 +33,14 @@ completed: '2025-11-17'
 Build a fullstack web application for browsing and showcasing LeanSpec specifications in rich, interactive format. The platform will support both the LeanSpec project's own specs (dogfooding) and public GitHub repositories that use LeanSpec, creating a community showcase and discovery platform.
 
 **Core Value Props:**
+
 1. **Interactive Spec Browser**: Beautiful, rich-formatted spec viewing experience
 2. **GitHub Integration**: Automatically sync specs from public GitHub repos
 3. **Community Showcase**: Discover how teams use LeanSpec in production
 4. **Living Documentation**: Real-time view of project progress and specs
 
-**Why now?** 
+**Why now?**
+
 - We're actively using LeanSpec to build LeanSpec (dogfooding)
 - Users need a low-friction way to explore specs without installing CLI
 - GitHub integration enables community growth and real-world examples
@@ -49,6 +51,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ### High-Level Architecture
 
 **Three-Tier Fullstack Application:**
+
 - **Frontend**: Next.js 14+ with React, Tailwind CSS, shadcn/ui
 - **Backend**: Next.js API routes with GitHub integration (Octokit)
 - **Database**: PostgreSQL (production) / SQLite (dev) for caching and performance
@@ -57,6 +60,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ### Key Features
 
 **MVP (Phase 1):**
+
 - Browse LeanSpec's own specs (dogfooding)
 - Rich markdown rendering with syntax highlighting
 - Kanban board view by status
@@ -64,18 +68,21 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - Search and filtering
 
 **Phase 2: GitHub Integration**
+
 - Add public GitHub repos by URL
 - Automatic sync from GitHub to database
 - Multi-project support
 - Scheduled sync (cron jobs)
 
 **Phase 3: Community**
+
 - Public project discovery
 - Featured projects showcase
 - Cross-project search
 - Export and sharing features
 
 **Phase 4: Advanced (Future)**
+
 - GitHub OAuth for private repos
 - Real-time sync via webhooks
 - Version history and diffs
@@ -84,6 +91,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ### Core Features (MVP)
 
 **Essential Functionality:**
+
 - Browse LeanSpec's own specs (dogfooding)
 - Rich markdown rendering with syntax highlighting
 - Kanban board view by status
@@ -92,6 +100,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - Responsive design for mobile/desktop
 
 **Basic UI Implementation:**
+
 - shadcn/ui component library (Button, Card, Badge, etc.)
 - Tailwind CSS v3 with design tokens
 - Lucide React icons for status/priority
@@ -114,6 +123,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ### Foundation Complete (2025-11-12)
 
 **✅ Core UI Implementation:**
+
 - Icon system integrated (Lucide React throughout)
 - Visual design system (color-coded status/priority, elevation, transitions)
 - Component library (shadcn/ui components replacing raw HTML)
@@ -124,6 +134,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 **Remaining for MVP**: Error handling, testing, documentation, deployment. Advanced UX polish moved to spec 068.
 
 ### Previously Completed
+
 - ✅ Next.js 16 project initialized with TypeScript, Tailwind CSS
 - ✅ SQLite database with Drizzle ORM fully configured
 - ✅ Database schema created and migrations applied
@@ -142,6 +153,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 **Note**: Major UX/UI enhancements have been split into **spec 068** (live-specs-ux-enhancements) to keep specs focused. The items below marked with "→ Spec 068" will be addressed there.
 
 **Major UX/UI Problems - Must Fix:**
+
 - [ ] **Color Scheme Issue** - Planned (orange) and In-Progress (blue) colors are backwards - swap them → **Spec 068**
 - [ ] **Stats Page Incomplete** - Major page with missing/incomplete sections → **Spec 068**
 - [ ] **Spec Detail Page - No Sidebar for Spec Navigation** - Missing sidebar to quickly switch between different specs (not TOC) → **Spec 068**
@@ -154,12 +166,14 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] **Dark Theme Strong Tags** - Similar color issues with `<strong>` elements throughout → **Spec 068**
 
 **High Priority - Still Needed:**
+
 - [ ] **Quick Search Modal (Cmd+K)** - Fuzzy search with keyboard shortcuts → **Spec 068**
 - [ ] **Loading Skeletons** - Add Suspense boundaries and skeleton loaders for async content → **Spec 068**
 - [ ] **Enhanced Empty States** - More helpful messaging with actions (currently basic) → **Spec 068**
 - [ ] **Toast Notifications** - System for user feedback (create/update/delete actions) → **Spec 068**
 
 **Core Functionality:**
+
 - [ ] Advanced search and filtering functionality (beyond basic filters)
 - [ ] Error boundaries and error pages (404, 500) - currently basic
 - [ ] Unit tests for database queries
@@ -167,17 +181,20 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] Update README with proper documentation
 
 **Accessibility & Performance:**
+
 - [ ] WCAG AA compliance audit and fixes
 - [ ] Keyboard navigation testing (Cmd+K support)
 - [ ] Mobile responsive refinements
 - [ ] Performance optimization (code splitting, lazy loading)
 
 **Deployment:**
+
 - [ ] Deploy MVP to Vercel
 
 ## Plan
 
 ### Phase 1: Foundation & MVP (2-3 weeks) - ~70% Complete
+
 - [x] Initialize Next.js project with TypeScript, Tailwind, shadcn/ui
 - [x] Setup database (Drizzle + PostgreSQL/SQLite)
 - [x] Create schema and migrations
@@ -188,6 +205,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] Deploy MVP to Vercel
 
 ### Phase 2: GitHub Integration (2-3 weeks) - Not Started
+
 - [ ] GitHub API client with Octokit
 - [ ] Repo validation and spec discovery
 - [ ] Sync orchestrator (fetch, parse, store)
@@ -197,6 +215,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] Error handling and logging
 
 ### Phase 3: Community & Discovery (2-3 weeks) - Not Started
+
 - [ ] Public project explorer
 - [ ] Full-text search across projects
 - [ ] Spec relationship visualization
@@ -205,6 +224,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] Performance optimization (caching, SEO)
 
 ### Phase 4: Advanced Features (Future) - Not Started
+
 - [ ] GitHub OAuth for private repos
 - [ ] Real-time webhooks
 - [ ] Version history and diffs
@@ -217,18 +237,21 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ## Test
 
 ### Unit Tests
+
 - [ ] Database queries and mutations
 - [ ] GitHub API client functions
 - [ ] Spec parser (frontmatter + markdown)
 - [ ] Utility functions
 
 ### Integration Tests
+
 - [ ] API routes with test database
 - [ ] Full GitHub sync flow (mocked)
 - [ ] Database migrations
 - [ ] Spec relationship resolution
 
 ### E2E Tests (Playwright)
+
 - [ ] Browse and search specs
 - [ ] Spec detail page rendering
 - [ ] Add project flow
@@ -237,12 +260,14 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 - [ ] Cross-browser compatibility
 
 ### Performance Tests
+
 - [ ] Page load times < 2s
 - [ ] Database queries < 100ms
 - [ ] Sync completion time for typical repo
 - [ ] Concurrent user load testing
 
 ### Accessibility
+
 - [ ] WCAG 2.1 AA compliance
 - [ ] Keyboard navigation
 - [ ] Screen reader support
@@ -253,12 +278,14 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ### Implementation Details
 
 **Database:**
+
 - SQLite (331KB) with 32 seeded specs from LeanSpec project
 - Tables: `projects`, `specs`, `spec_relationships`, `sync_logs`
 - Drizzle ORM with full relations and cascading deletes
 - Migration: `drizzle/0000_reflective_thena.sql`
 
 **Technology Stack:**
+
 - Next.js 16.0.1 with App Router
 - React 19.2.0 with Server Components
 - Drizzle ORM 0.38.3 with better-sqlite3
@@ -302,6 +329,7 @@ Build a fullstack web application for browsing and showcasing LeanSpec specifica
 ---
 
 **For detailed information, see:**
+
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical architecture, database, GitHub integration
 - [IMPLEMENTATION.md](./IMPLEMENTATION.md) - Phased implementation plan with timelines
 - **Spec 068** - UI/UX enhancements and polish

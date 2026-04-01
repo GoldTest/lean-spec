@@ -177,12 +177,12 @@ fn write_mcp_config(
         }
     };
 
-    if servers_map.contains_key("lean-spec") {
+    if servers_map.contains_key("harnspec") {
         return Ok(McpWriteOutcome::Skipped);
     }
 
     let mcp_entry = build_mcp_entry();
-    servers_map.insert("lean-spec".to_string(), mcp_entry);
+    servers_map.insert("harnspec".to_string(), mcp_entry);
 
     write_json(path, &config)?;
 

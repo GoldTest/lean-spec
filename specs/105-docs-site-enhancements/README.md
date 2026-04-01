@@ -16,7 +16,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-18
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -26,23 +26,27 @@ This spec addresses comprehensive improvements to the documentation site based o
 ### Problems
 
 **Content Structure Issues:**
+
 - Navigation hierarchy is confusing for first-time users
 - Content is scattered across multiple levels when it should be consolidated
 - Tutorial content includes video walkthrough placeholders that don't align with AI-first approach
 
 **Content Accuracy Issues:**
+
 - Outdated references to line-count metrics instead of token-based
 - Usage docs don't match current implementation
 - Reference docs may be out of sync with codebase
 
 **Translation & Localization Issues:**
+
 - Examples section not translated to Chinese
 - Missing translations in other sections
 - Poor quality Chinese translations in landing page
 - "Web App" needs better Chinese translation
 
 **Missing Content:**
-- `lean-spec ui` / `@leanspec/ui` package not documented (needs separate spec)
+
+- `harnspec ui` / `@leanspec/ui` package not documented (needs separate spec)
 
 ### Goals
 
@@ -56,11 +60,13 @@ This spec addresses comprehensive improvements to the documentation site based o
 ### 1. Information Architecture Restructuring
 
 **Introduction Section:**
+
 - Simplify "Overview" - make it concise and intuitive for first-timers
 - Consider merging with "Core Concepts -> What Is LeanSpec" for consistency
 - Move "Migrating to LeanSpec" to top-level navigation (beside Roadmap)
 
 **Core Concepts Reorganization:**
+
 - Rename "Understanding Specs" → "Understanding LeanSpec" (broader scope)
 - Remove "Terminology Overview" as separate page
 - Restructure terminology directly after "Understanding LeanSpec":
@@ -73,25 +79,30 @@ This spec addresses comprehensive improvements to the documentation site based o
   - Help users transition from beginner → intermediate/advanced
 
 **Usage Section Restructuring:**
+
 - Remove "AI-Assisted Workflows -> Writing Specs AI Can Execute"
 - Lift "AI-Assisted Workflows" docs up one level (after "Advanced Features")
 
 **Examples Section:**
+
 - Fix: Default doc should not be named "index" (use proper descriptive name)
 
 ### 2. Content Updates
 
 **Switch from Line-Count to Token-Based:**
+
 - Audit all docs for line-count references (especially "Advanced Topics")
 - Replace with token-based metrics
 - Ensure consistency with current implementation
 
 **Update Outdated Content:**
+
 - Review all "Usage" docs against current codebase
 - Update "Reference" tab to match current CLI implementation
 - Verify code examples and command outputs are current
 
 **Tutorial Content:**
+
 - Remove video walkthrough placeholders (timestamps like 00:30, 02:10)
 - Rewrite tutorials emphasizing AI-assisted workflow:
   - Human developer expresses intent
@@ -101,11 +112,13 @@ This spec addresses comprehensive improvements to the documentation site based o
 ### 3. Translation & Localization
 
 **Complete Missing Translations:**
+
 - Translate all "Examples" docs to Chinese
 - Audit for other missing translations (systematic review)
 - Ensure feature parity between English and Chinese versions
 
 **Improve Translation Quality:**
+
 - Landing page: Replace "轻量级规范方法论，助力 AI 驱动开发" with better tagline
   - Consider: Focus on clarity and natural Chinese phrasing
   - Avoid literal translation
@@ -115,7 +128,8 @@ This spec addresses comprehensive improvements to the documentation site based o
 ### 4. Deferred Items
 
 **Out of Scope for This Spec:**
-- `lean-spec ui` / `@leanspec/ui` documentation (track in separate spec)
+
+- `harnspec ui` / `@leanspec/ui` documentation (track in separate spec)
 
 ### Technical Approach
 
@@ -142,6 +156,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 ## Status Update · 2025-11-20
 
 **Completed (All Phases)**
+
 - ✅ **Introduction Simplification (Phase 2)**: Simplified `docs/guide/index.mdx` to be concise and intuitive. Merged "Principles" and "When to Write" from `what-is-leanspec.mdx` into `understanding-leanspec.mdx` (both English and Chinese) and deleted the redundant file.
 - ✅ **Final Validation (Phase 5)**:
   - Fixed broken links in English and Chinese docs caused by file deletion.
@@ -157,6 +172,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 ## Status Update · 2025-11-19
 
 **Completed (Phases 1-3)**
+
 - ✅ Navigation restructure (`docs-site/sidebars.ts`) now surfaces Migration, Core Concepts, and AI-Assisted content in the intended beginner → advanced order.
 - ✅ `docs-site/docs/guide/understanding-leanspec.mdx` (and the zh-Hans translation) fully replaces the old "Understanding Specs" doc with deeper rationale and working-memory guidance.
 - ✅ Terminology was consolidated: sub-spec coverage folded into `guide/terminology/spec.mdx`, and the new `guide/terminology/built-in-metadata.mdx` (plus zh-Hans) replaces the individual status/dependency/tag pages.
@@ -193,6 +209,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 ## Plan
 
 ### Phase 1: Content Audit
+
 - [x] Grep search for "line" references that should be "token"
 - [x] Review "Advanced Topics" docs for line-count metrics
 - [x] List all "Usage" docs and check against current implementation
@@ -201,6 +218,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] List all "Examples" that need Chinese translation
 
 ### Phase 2: Information Architecture
+
 - [x] Update sidebars.ts for navigation restructure
 - [x] Simplify "Introduction -> Overview" (docs/guide/index.mdx is 150 lines, needs condensing)
 - [x] Move "Migrating to LeanSpec" to top level
@@ -212,6 +230,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] Fix "Examples" default doc name
 
 ### Phase 3: Content Updates
+
 - [x] Replace all line-count references with token-based
 - [x] Update outdated "Usage" docs
 - [x] Update "Reference" docs to match current CLI
@@ -220,6 +239,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] Update code examples and command outputs
 
 ### Phase 4: Translation & Localization
+
 - [x] Translate remaining "Examples" to Chinese (2 remaining: cross-team-official-launch, refactoring-monorepo-core)
 - [x] Fill other translation gaps identified in audit
 - [x] Improve landing page Chinese tagline
@@ -227,12 +247,14 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] Verify feature parity between languages
 
 ### Phase 5: Validation
+
 - [x] Build docs-site and verify no broken links
 - [x] Review navigation flow (beginner → advanced)
 - [x] Spot-check translations for quality
 - [x] Verify all commands and examples work
 
 ### Usage Doc Audit (Completed)
+
 | Path | Review status | Notes |
 | --- | --- | --- |
 | `guide/usage/essential-usage/spec-structure.mdx` | ✅ | Verified with CLI |
@@ -252,6 +274,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 ## Test
 
 ### Navigation & Structure
+
 - [x] Introduction section is concise and intuitive for new users
 - [x] "Migrating to LeanSpec" appears at top level beside Roadmap
 - [x] "Understanding LeanSpec" (renamed) appears in Core Concepts
@@ -260,6 +283,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] Examples section has proper default doc name (not "index")
 
 ### Content Accuracy
+
 - [x] No line-count references remain (all token-based)
 - [x] All "Usage" docs match current implementation
 - [x] All "Reference" docs match current CLI
@@ -267,23 +291,27 @@ This spec addresses comprehensive improvements to the documentation site based o
 - [x] Command outputs are current
 
 ### Tutorial Quality
+
 - [x] No video walkthrough placeholders (timestamps removed)
 - [x] Tutorials emphasize AI-assisted workflow
 - [x] Clear examples of intent → AI spec creation → implementation
 
 ### Translation Completeness
+
 - [x] All English docs have Chinese equivalents
 - [x] Examples section fully translated
 - [x] Landing page Chinese tagline reads naturally
 - [x] "Web App" has appropriate Chinese translation
 
 ### Build & Technical
+
 - [x] `npm run build` succeeds in docs-site
 - [x] No broken links or 404s
 - [x] Cross-references work between restructured pages
 - [x] Navigation hierarchy makes sense (test with fresh eyes)
 
 ### User Experience
+
 - [x] New users can understand LeanSpec quickly from Introduction
 - [x] Core Concepts provide depth for learning
 - [x] Terminology concepts have "why" and "how" explanations
@@ -295,7 +323,7 @@ This spec addresses comprehensive improvements to the documentation site based o
 
 All 18 feedback points from initial review:
 
-1. ✓ Missing `lean-spec ui` docs → Deferred to separate spec
+1. ✓ Missing `harnspec ui` docs → Deferred to separate spec
 2. ✓ "Introduction -> Overview" too long → Simplify
 3. ✓ Move "Migrating to LeanSpec" → Top level
 4. ✓ Remove video walkthrough placeholders from tutorials

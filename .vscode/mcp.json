@@ -1,6 +1,6 @@
 {
 	"servers": {
-		"lean-spec": {
+		"harnspec": {
 			"type": "stdio",
 			"command": "npx",
 			"args": [

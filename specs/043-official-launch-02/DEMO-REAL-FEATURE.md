@@ -28,6 +28,7 @@ Show the **complete LeanSpec workflow** by implementing a real feature from the 
 ### SCENE 1: Project Discovery (45 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "What features are planned for the v0.2.0 launch?"
 
@@ -43,9 +44,10 @@ AI: [Uses MCP: list(status="planned", tags=["v0.2.0-launch"])]
 ```
 
 **[Terminal]**
+
 ```bash
 # Verify in terminal
-npx lean-spec list --status planned --tags v0.2.0-launch
+npx harnspec list --status planned --tags v0.2.0-launch
 ```
 
 ---
@@ -53,6 +55,7 @@ npx lean-spec list --status planned --tags v0.2.0-launch
 ### SCENE 2: Review Existing Spec (60 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "Show me spec 035"
 
@@ -86,6 +89,7 @@ AI: [Uses MCP: view("035-live-specs-showcase")]
 ```
 
 **[VS Code - Right side]**
+
 - Show spec file: `specs/035-live-specs-showcase/README.md`
 - Highlight frontmatter, success criteria section
 
@@ -94,6 +98,7 @@ AI: [Uses MCP: view("035-live-specs-showcase")]
 ### SCENE 3: Update Status & Start Work (30 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "Yes, let's start. Update the status."
 
@@ -109,8 +114,9 @@ AI: [Uses MCP: update("035", status="in-progress")]
 ```
 
 **[Terminal]**
+
 ```bash
-npx lean-spec board
+npx harnspec board
 # Shows 035 now in "In Progress" column
 ```
 
@@ -131,6 +137,7 @@ Phase 1: Create the specs showcase section
 **[VS Code shows AI creating/editing files]**
 
 1. **Create**: `docs-site/docs/dogfooding/index.mdx`
+
    ```mdx
    ---
    title: LeanSpec's Specs (Dogfooding)
@@ -143,12 +150,14 @@ Phase 1: Create the specs showcase section
    ```
 
 2. **Create**: `docs-site/src/components/SpecsList.tsx`
+
    ```tsx
    // Component that loads and displays specs
    // Uses spec-loader.ts from main package
    ```
 
 3. **Update**: `docs-site/sidebars.ts`
+
    ```ts
    // Add "Dogfooding" section to sidebar
    dogfooding: [
@@ -159,6 +168,7 @@ Phase 1: Create the specs showcase section
    ```
 
 **[Terminal running in background]**
+
 ```bash
 cd docs-site
 npm run build
@@ -170,6 +180,7 @@ npm run build
 ### SCENE 5: Validation (45 seconds)
 
 **[Terminal]**
+
 ```bash
 # Build succeeds
 npm run build
@@ -181,12 +192,14 @@ npm run serve
 ```
 
 **[Browser]**
+
 - Navigate to `http://localhost:3000/docs/dogfooding`
 - Show **live specs list** rendering
 - Click into a spec (like 042 or 043)
 - Show **spec content displayed** with frontmatter
 
 **[AI Chat]**
+
 ```
 AI: "Implementation complete! Let me verify against success criteria:
     
@@ -204,6 +217,7 @@ AI: "Implementation complete! Let me verify against success criteria:
 ### SCENE 6: Check Against Spec (30 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "Let's validate this matches what we spec'd"
 
@@ -225,6 +239,7 @@ AI: [Uses MCP: validate()]
 ### SCENE 7: Update Spec & Commit (45 seconds)
 
 **[AI Chat]**
+
 ```
 Human: "Yes, update the spec to reflect what's done"
 
@@ -250,6 +265,7 @@ AI: [Edits spec 035]
 ```
 
 **[Terminal]**
+
 ```bash
 git add .
 git commit -m "feat: add live specs showcase (spec 035 phase 1)
@@ -267,12 +283,14 @@ git push
 ### SCENE 8: Live Result & Wrap-Up (45 seconds)
 
 **[Browser]**
+
 - Show deployed site (if using Vercel/Netlify with auto-deploy)
-- Navigate to `https://lean-spec.dev/docs/dogfooding`
+- Navigate to `https://harnspec.dev/docs/dogfooding`
 - Show **real specs** from the project
 - Click through a few examples
 
 **[AI Chat]**
+
 ```
 Human: "Show the project board now"
 
@@ -290,6 +308,7 @@ AI: [Uses MCP: board()]
 ```
 
 **[Voiceover or text overlay]**
+
 ```
 "From spec to production in under 8 minutes.
 
@@ -311,6 +330,7 @@ not documentation that follows it."
 ## Key Visual Moments
 
 **Timestamps for editing:**
+
 - **0:00-0:45** - AI searches roadmap, finds spec 035
 - **0:45-1:45** - AI displays full spec with success criteria
 - **1:45-2:15** - Status update to "in-progress"
@@ -325,6 +345,7 @@ not documentation that follows it."
 ## Recording Setup
 
 ### Screen Layout
+
 ```
 ┌────────────────────────────────────────────────────┐
 │  AI Chat (Claude/Copilot)  │  VS Code + Terminal  │
@@ -336,6 +357,7 @@ not documentation that follows it."
 ```
 
 ### Pre-Recording Checklist
+
 - [ ] Clean git state (commit any changes)
 - [ ] Spec 035 status set to "planned" (not "in-progress" yet)
 - [ ] docs-site/ directory ready
@@ -344,6 +366,7 @@ not documentation that follows it."
 - [ ] Have deployment pipeline ready (Vercel auto-deploy)
 
 ### During Recording
+
 - [ ] Show AI tool calls (MCP integration)
 - [ ] Keep code visible as AI writes it
 - [ ] Show terminal output (build times, success messages)
@@ -351,6 +374,7 @@ not documentation that follows it."
 - [ ] Narrate or add captions for clarity
 
 ### Post-Production
+
 - [ ] Speed up boring parts (file creation, build time)
 - [ ] Zoom in on success criteria validation
 - [ ] Highlight git commit message with spec reference
@@ -377,20 +401,24 @@ If 8 minutes is too long, focus on:
 ## Why This Demo is Compelling
 
 ### Shows Real Workflow
+
 ❌ **Not**: Toy example with fake feature  
 ✅ **Is**: Actual feature from real roadmap
 
 ### Demonstrates Value
+
 - **For AI**: Spec provides clear implementation guide
 - **For Human**: Spec documents decisions and rationale
 - **For Team**: Spec enables async collaboration
 
 ### Proves Dogfooding
+
 - Building LeanSpec with LeanSpec
 - Transparency in development
 - Real-world usage, not contrived examples
 
 ### End-to-End Story
+
 1. Feature exists in roadmap
 2. Spec guides implementation
 3. Validation checks against spec
@@ -404,12 +432,14 @@ If 8 minutes is too long, focus on:
 ## Success Metrics
 
 **Demo succeeds if viewers:**
+
 - ✅ See how specs guide real implementation
 - ✅ Understand AI + spec collaboration model
 - ✅ Recognize validation catches scope creep
 - ✅ Want to try LeanSpec on their projects
 
 **Demo fails if:**
+
 - ❌ Looks staged or artificial
 - ❌ Feature seems trivial/not useful
 - ❌ Workflow seems slower than "just coding"
@@ -420,6 +450,7 @@ If 8 minutes is too long, focus on:
 ## Next Steps
 
 **Ready to record?**
+
 1. Review this script
 2. Prepare environment (clean git, MCP working)
 3. Practice once (dry run without recording)
@@ -427,6 +458,7 @@ If 8 minutes is too long, focus on:
 5. Edit and publish
 
 **Want to refine?**
+
 - Adjust timing (longer/shorter sections)
 - Change feature (if 035 too complex)
 - Simplify (skip some validation steps)

@@ -67,7 +67,7 @@ async fn test_circular_dependency_handling() {
     let registry_dir = TempDir::new().unwrap();
     let registry_file = registry_dir
         .path()
-        .join(".lean-spec-test")
+        .join(".harnspec-test")
         .join("projects.json");
 
     let config = leanspec_http::ServerConfig::default();

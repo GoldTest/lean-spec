@@ -14,7 +14,7 @@ updated_at: '2025-11-26T06:03:31.642Z'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-05 · **Tags**: design, launch, v0.2.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Dependencies**: Spec 043 (Official Launch v0.2.0)
 
 ## Overview
@@ -22,6 +22,7 @@ updated_at: '2025-11-26T06:03:31.642Z'
 Export LeanSpec brand assets in all required formats and deploy across documentation, repository, and marketing channels for the v0.2.0 launch.
 
 **Logo Selected:** Version 3 of Concept D - "The Bracket"
+
 - Minimalist bracket frame with "LS" monogram
 - Represents bounded context (Context Economy principle)
 - Code-like aesthetic, scales perfectly 16px-512px
@@ -32,6 +33,7 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 ### Asset Requirements
 
 **Logo Formats:**
+
 - [x] SVG (vector, primary)
   - [x] `logo-with-bg.svg` (dark on white, theme-safe) - ✅ Created
   - [x] `logo-dark-bg.svg` (cyan on dark, for dark mode) - ✅ Created
@@ -41,12 +43,14 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 - [x] Favicon (ICO format, 16x16, 32x32) - ✅ Created
 
 **Social Media Assets:**
+
 - [x] GitHub social preview (1280x640px PNG) - ✅ Created
 - [x] Twitter/X card (1200x630px PNG) - ✅ Created (same as Open Graph)
 - [x] Open Graph image (1200x630px PNG) - ✅ Created
 - [ ] LinkedIn banner (1584x396px PNG) - Not needed for v0.2.0
 
 **Documentation:**
+
 - [x] Logo in README.md header - ✅ Added (theme-safe version)
 - [x] Branding guidelines document - ✅ Created (`docs-site/static/BRANDING.md`)
 - [x] Logo in docs site navbar with dark mode support - ✅ Configured
@@ -56,6 +60,7 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 ### Design Rationale
 
 **Why the bracket logo?**
+
 1. **Context Economy** - Brackets visually represent "bounded context"
 2. **Developer-friendly** - Brackets are familiar to developers (code syntax)
 3. **Scalable** - Simple geometric shapes scale perfectly at any size
@@ -65,6 +70,7 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 ## Plan
 
 **Phase 1: Export Core Assets** ✅ COMPLETE
+
 - [x] Create SVG variants (with-bg, dark-bg, transparent) - ✅ DONE
 - [x] Update README with theme-safe logo - ✅ DONE
 - [x] Update docs site with theme-aware logos - ✅ DONE
@@ -73,18 +79,21 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 - [x] Generate favicon files - ✅ DONE
 
 **Phase 2: Deploy to Docs Site** ✅ COMPLETE
+
 - [x] Verify logo rendering in navbar - ✅ DONE
 - [x] Replace favicon files - ✅ DONE
 - [x] Update social card image reference - ✅ DONE
 - [x] Test dark/light mode logo switching - ✅ DONE
 
 **Phase 3: Marketing Assets** ✅ COMPLETE
+
 - [x] Create GitHub social preview image - ✅ DONE
 - [x] Create Twitter/X card design - ✅ DONE
 - [x] Create Open Graph image - ✅ DONE
 - [x] Add meta tags to docs site - ✅ DONE (automatic via Docusaurus)
 
 **Phase 4: Repository Updates**
+
 - [x] Add favicon to repository root - ✅ DONE
 - [ ] Update GitHub repository settings (manual step post-merge)
 - [ ] Add to CHANGELOG for v0.2.0 (will be done in spec 043)
@@ -104,6 +113,7 @@ Export LeanSpec brand assets in all required formats and deploy across documenta
 ### Tools for Export
 
 **SVG to PNG conversion:**
+
 ```bash
 # Using rsvg-convert (install via homebrew)
 brew install librsvg
@@ -115,6 +125,7 @@ rsvg-convert -w 256 -h 256 logo.svg > logo-256.png
 ```
 
 **Favicon generation:**
+
 ```bash
 # Using ImageMagick
 brew install imagemagick
@@ -124,6 +135,7 @@ convert logo-32.png logo-16.png favicon.ico
 ### Links to Spec 043
 
 This spec supports the branding checklist in spec 043 (MARKETING.md):
+
 - Export logo in all formats
 - Create favicon files
 - Update docs site

@@ -111,7 +111,7 @@ pub fn create_empty_project() -> TempDir {
 }
 
 fn seed_template_dir(root: &std::path::Path) {
-    let templates_dir = root.join(".lean-spec").join("templates");
+    let templates_dir = root.join(".harnspec").join("templates");
     std::fs::create_dir_all(&templates_dir).expect("Failed to create templates dir");
     let template_path = templates_dir.join("spec-template.md");
     if !template_path.exists() {

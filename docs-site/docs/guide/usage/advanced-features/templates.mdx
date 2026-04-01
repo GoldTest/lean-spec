@@ -80,15 +80,15 @@ specs/NNN-feature-name/
 
 **Usage:**
 ```bash
-lean-spec init --template detailed
+harnspec init --template detailed
 ```
 
 ## Choosing a Template
 
-Run `lean-spec init` and choose "Choose a template":
+Run `harnspec init` and choose "Choose a template":
 
 ```bash
-lean-spec init
+harnspec init
 ```
 
 ```
@@ -103,7 +103,7 @@ lean-spec init
 
 ## Custom Templates
 
-You can create your own templates in `.lean-spec/templates/`.
+You can create your own templates in `.harnspec/templates/`.
 
 ### Single-File Templates
 
@@ -111,8 +111,8 @@ For simple, consistent spec structures:
 
 1. Create template file:
 ```bash
-mkdir -p .lean-spec/templates
-touch .lean-spec/templates/my-template.md
+mkdir -p .harnspec/templates
+touch .harnspec/templates/my-template.md
 ```
 
 2. Edit template with placeholders:
@@ -132,7 +132,7 @@ created: {date}
 [Your custom sections...]
 ```
 
-3. Register in `.lean-spec/config.json`:
+3. Register in `.harnspec/config.json`:
 ```json
 {
   "template": "my-template.md",
@@ -145,7 +145,7 @@ created: {date}
 
 Or use CLI:
 ```bash
-lean-spec templates add my-template my-template.md
+harnspec templates add my-template my-template.md
 ```
 
 ### Directory-Based Templates (Multi-File)
@@ -154,14 +154,14 @@ For complex specs that need multiple files (like DESIGN.md, PLAN.md, TEST.md):
 
 1. Create template directory:
 ```bash
-mkdir -p .lean-spec/templates/api-spec
+mkdir -p .harnspec/templates/api-spec
 ```
 
 2. Create the main template (`README.md` is required):
 ```bash
-touch .lean-spec/templates/api-spec/README.md
-touch .lean-spec/templates/api-spec/ENDPOINTS.md
-touch .lean-spec/templates/api-spec/SCHEMAS.md
+touch .harnspec/templates/api-spec/README.md
+touch .harnspec/templates/api-spec/ENDPOINTS.md
+touch .harnspec/templates/api-spec/SCHEMAS.md
 ```
 
 3. Register the directory:
@@ -176,12 +176,12 @@ touch .lean-spec/templates/api-spec/SCHEMAS.md
 
 Or use CLI:
 ```bash
-lean-spec templates add api api-spec
+harnspec templates add api api-spec
 ```
 
 4. Use the template:
 ```bash
-lean-spec create my-api --template=api
+harnspec create my-api --template=api
 # Creates: specs/NNN-my-api/
 #   ├── README.md
 #   ├── ENDPOINTS.md
@@ -245,7 +245,7 @@ Customize sections to fit your needs.
 
 To change templates mid-project:
 
-1. Update `.lean-spec/config.json`:
+1. Update `.harnspec/config.json`:
 ```json
 {
   "template": "new-template.md"
@@ -271,7 +271,7 @@ Not every spec needs every section. Use what adds value, skip what doesn't.
 :::
 
 :::tip Share Templates
-Export your `.lean-spec/templates/` directory to share with other teams or projects.
+Export your `.harnspec/templates/` directory to share with other teams or projects.
 :::
 
 ---

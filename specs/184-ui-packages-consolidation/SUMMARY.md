@@ -3,11 +3,13 @@
 ## Changes Made
 
 ### 1. ✅ Config Format: YAML → JSON
-- Changed `~/.lean-spec/config.yaml` to `~/.lean-spec/config.json`
+
+- Changed `~/.harnspec/config.yaml` to `~/.harnspec/config.json`
 - **Rationale**: Consistency with `projects.json`, easier Rust parsing, more standard
 - Updated all references in code examples and documentation
 
 ### 2. ✅ Multi-Project by Default (Web + Desktop)
+
 - Removed "Web: single-project, Desktop: multi-project" distinction
 - **New**: Both platforms use multi-project architecture
 - **Desktop**: Tauri file dialog for folder picker
@@ -28,6 +30,7 @@
 ```
 
 **Umbrella Spec (184)** now contains:
+
 - Problem statement and motivation
 - High-level architecture overview
 - Coordination timeline
@@ -35,35 +38,41 @@
 - Related specs and dependencies
 
 **Moved to Sub-Specs**:
+
 - 185: Component extraction details, API, tests
 - 186: HTTP server implementation, endpoints, config
 - 187: Vite migration, API client, routing
 
 ## Files Created/Modified
 
-### Created:
+### Created
+
 - `specs/184-ui-packages-consolidation/SPLIT.md` - Split plan and rationale
 - `specs/184-ui-packages-consolidation/SUMMARY.md` - This file
 
-### Modified:
+### Modified
+
 - `specs/184-ui-packages-consolidation/README.md` - Trimmed to umbrella spec
   - Added `depends_on: [185, 186, 187]` in frontmatter
   - 872 lines → 155 lines
   - 7714 tokens → 1273 tokens ✅
 
-### Backed Up:
+### Backed Up
+
 - `specs/184-ui-packages-consolidation/README-old.md` - Original full spec
 - `specs/184-ui-packages-consolidation/README.md.backup` - Pre-trim backup
 
 ## Next Steps
 
 **Immediate**:
+
 1. Create spec 185 (UI Components Extraction)
 2. Create spec 186 (Rust HTTP Server)
 3. Create spec 187 (Vite SPA Migration)
-4. Link dependencies: `lean-spec link 184 --depends-on 185,186,187`
+4. Link dependencies: `harnspec link 184 --depends-on 185,186,187`
 
 **Implementation**:
+
 - Week 1: Work on 185 + 186 in parallel
 - Week 2: Start 187 (depends on 185 + 186)
 - Week 3-4: Integration and launch
@@ -72,17 +81,17 @@
 
 ```bash
 # Verify token count
-./bin/lean-spec.js tokens 184
+./bin/harnspec.js tokens 184
 # Result: 1273 tokens ✅ Optimal
 
 # Verify dependencies (after creating sub-specs)
-./bin/lean-spec.js deps 184 --mode upstream
+./bin/harnspec.js deps 184 --mode upstream
 # Should show: 185, 186, 187
 
-./bin/lean-spec.js deps 185 --mode downstream
+./bin/harnspec.js deps 185 --mode downstream
 # Should show: 184, 187
 
-./bin/lean-spec.js deps 186 --mode downstream
+./bin/harnspec.js deps 186 --mode downstream
 # Should show: 184, 187
 ```
 

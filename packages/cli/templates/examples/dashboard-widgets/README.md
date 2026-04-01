@@ -1,10 +1,11 @@
 # Dashboard Widgets Demo
 
-> **Tutorial**: [Managing Multiple Features](https://lean-spec.dev/docs/tutorials/multiple-features)
+> **Tutorial**: [Managing Multiple Features](https://harnspec.dev/docs/tutorials/multiple-features)
 
 ## Scenario
 
 You're building an analytics dashboard for a SaaS product. The dashboard has some basic widgets (stats cards and a simple chart), but the product team wants to add three new widgets:
+
 - **Recent Activity Feed** - Show latest user actions
 - **Performance Metrics** - Display system health indicators  
 - **Quick Actions Panel** - Common shortcuts for users
@@ -14,12 +15,14 @@ Each widget needs to be designed, implemented, and integrated into the dashboard
 ## What's Here
 
 A minimal React + Vite dashboard with:
+
 - Grid layout for widgets
 - Two existing widgets (Stats, Chart)
 - Reusable widget wrapper component
 - Mock data utilities
 
 **Files:**
+
 - `src/App.jsx` - Main dashboard component
 - `src/components/Dashboard.jsx` - Dashboard grid layout
 - `src/components/widgets/` - Existing widgets
@@ -45,6 +48,7 @@ Add three new widgets to the dashboard. Follow the tutorial and ask your AI assi
 > "Help me add three new widgets to this dashboard using LeanSpec: Recent Activity Feed, Performance Metrics, and Quick Actions Panel."
 
 The AI will guide you through:
+
 1. Creating specs for each widget (or one unified spec)
 2. Designing the widget interfaces
 3. Implementing components

@@ -1,6 +1,7 @@
 **1. Review Checklist**
 
 Every spec review should check:
+
 - [ ] Spec is <400 lines (or split into sub-specs)
 - [ ] Every section informs decisions
 - [ ] Intent (why) is clear
@@ -11,12 +12,14 @@ Every spec review should check:
 **2. "Split Early, Split Often"**
 
 **Cultural norm:**
+
 - Don't wait for 600 lines to split
 - At 300 lines, ask: "Should this be split?"
 - At 400 lines, actively plan splitting
 - Use sub-specs proactively, not reactively
 
 **Anti-pattern:**
+
 - "Let's keep everything in one file for now"
 - "We'll split it later if needed" (never happens)
 - "It's just a little over 400 lines" (becomes 600+)
@@ -24,6 +27,7 @@ Every spec review should check:
 **3. "Every Word Must Earn Its Keep"**
 
 **Practice:** During spec reviews, challenge content:
+
 - "What decision does this sentence inform?"
 - "Can we infer this from context?"
 - "Is this obvious or can we remove it?"
@@ -32,6 +36,7 @@ Every spec review should check:
 **4. "Intent First, Details Later"**
 
 **Writing order:**
+
 1. Write Overview (why + what)
 2. Define success criteria (how we'll know)
 3. Sketch Design (high-level approach)
@@ -44,6 +49,7 @@ Every spec review should check:
 **1. Showcase Well-Structured Specs**
 
 Maintain a "gallery" of exemplary specs:
+
 - Spec 012 (sub-spec files) - Good use of splitting
 - Spec 047 (git backfill) - Right amount of detail
 - Spec 049 (this one) - Demonstrates sub-specs
@@ -51,6 +57,7 @@ Maintain a "gallery" of exemplary specs:
 **2. Splitting Case Studies**
 
 Document before/after of spec splits:
+
 - Spec 018: 591 lines → README (200) + VALIDATION (180) + TESTING (150)
 - Spec 045: 1,166 lines → README (250) + DASHBOARD (300) + COMPONENTS (350) + DESIGN (266)
 - Show improved maintainability
@@ -58,6 +65,7 @@ Document before/after of spec splits:
 **3. Dogfooding Stories**
 
 Share learnings:
+
 - "How we caught ourselves violating our principles"
 - "The 600-line spec problem and how we fixed it"
 - "Why we built sub-specs but didn't use them"
@@ -75,6 +83,7 @@ In documentation, show how to resolve common conflicts using first principles.
 **3. AGENTS.md Guidance**
 
 Update AI agent instructions with:
+
 - First principles
 - Conflict resolution framework
 - When to split specs
@@ -89,6 +98,7 @@ Update AI agent instructions with:
 **1. Spec Health Metrics**
 
 Track over time:
+
 - Average spec length (target: <300 lines)
 - % specs over 400 lines (target: 0%)
 - % specs over 300 lines (target: <20%)
@@ -98,6 +108,7 @@ Track over time:
 **2. Maintenance Metrics**
 
 Track:
+
 - Time to update specs (should decrease)
 - Frequency of spec updates (should increase)
 - Specs not updated in 90 days (target: <10%)
@@ -106,16 +117,18 @@ Track:
 **3. Usage Metrics**
 
 Track tool usage:
-- `lean-spec validate` runs per week
-- `lean-spec complexity` checks
-- `lean-spec split` usage
-- `lean-spec files` navigation
+
+- `harnspec validate` runs per week
+- `harnspec complexity` checks
+- `harnspec split` usage
+- `harnspec files` navigation
 
 ### Alerting
 
 **1. Spec Complexity Alerts**
 
 Automated alerts:
+
 - 🟡 Spec approaching 300 lines
 - 🟠 Spec exceeds 400 lines
 - 🔴 Spec exceeds 600 lines (urgent)
@@ -123,12 +136,14 @@ Automated alerts:
 **2. Staleness Alerts**
 
 Track freshness:
+
 - ⚠️ Spec not updated in 60 days (minor concern)
 - 🚨 Spec not updated in 90 days (needs review)
 
 **3. Project Health Alerts**
 
 Weekly/monthly reports:
+
 - Average spec complexity trend (↑ bad, ↓ good)
 - Number of specs needing attention
 - Dogfooding health (are we following our principles?)
@@ -138,6 +153,7 @@ Weekly/monthly reports:
 **1. Regular Retrospectives**
 
 Monthly or quarterly:
+
 - Review specs created/updated
 - Check adherence to first principles
 - Identify patterns (good and bad)
@@ -146,6 +162,7 @@ Monthly or quarterly:
 **2. Threshold Tuning**
 
 Based on data:
+
 - Are 300/400/600 the right thresholds?
 - Should they vary by spec type?
 - What's the actual context window usage?
@@ -153,6 +170,7 @@ Based on data:
 **3. Tooling Iteration**
 
 Improve based on usage:
+
 - What tools are used most?
 - What problems still occur?
 - What new tools are needed?
@@ -163,36 +181,42 @@ Improve based on usage:
 ## Implementation Roadmap
 
 ### Phase 1: Foundation (Immediate)
+
 - [ ] Add first principles to README.md
 - [ ] Add conflict resolution to AGENTS.md
 - [ ] Document 300/400/600 line thresholds
 - [ ] Update review checklist
 
 ### Phase 2: Detection (v0.2.0)
-- [ ] Implement `lean-spec validate --max-lines`
-- [ ] Implement `lean-spec complexity <spec>`
-- [ ] Implement `lean-spec health`
-- [ ] Add warnings to `lean-spec list` for large specs
+
+- [ ] Implement `harnspec validate --max-lines`
+- [ ] Implement `harnspec complexity <spec>`
+- [ ] Implement `harnspec health`
+- [ ] Add warnings to `harnspec list` for large specs
 
 ### Phase 3: Guidance (v0.3.0)
-- [ ] Implement `lean-spec split <spec>` (interactive)
-- [ ] Implement `lean-spec simplify <spec>` (suggestions)
-- [ ] Implement `lean-spec files <spec>` (sub-spec nav)
+
+- [ ] Implement `harnspec split <spec>` (interactive)
+- [ ] Implement `harnspec simplify <spec>` (suggestions)
+- [ ] Implement `harnspec files <spec>` (sub-spec nav)
 - [ ] Add AI-powered complexity analysis
 
 ### Phase 4: Prevention (v0.3.0+)
+
 - [ ] Create git hook templates
 - [ ] Create GitHub Action for PR checks
 - [ ] Add CI/CD validation examples
 - [ ] Implement `--strict` mode enforcement
 
 ### Phase 5: Culture (Ongoing)
+
 - [ ] Document exemplary specs
 - [ ] Share splitting case studies
 - [ ] Create first principles guide
 - [ ] Add onboarding materials
 
 ### Phase 6: Metrics (v0.4.0)
+
 - [ ] Track spec health over time
 - [ ] Implement alerting system
 - [ ] Create health dashboard

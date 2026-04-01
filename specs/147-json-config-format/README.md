@@ -23,7 +23,8 @@ completed: '2025-12-10'
 ## Overview
 
 Replace YAML with JSON as the default configuration format for the UI project registry:
-- `~/.lean-spec/projects.yaml` → `~/.lean-spec/projects.json`
+
+- `~/.harnspec/projects.yaml` → `~/.harnspec/projects.json`
 
 ### Problem
 
@@ -40,7 +41,7 @@ YAML's `js-yaml` library uses line wrapping by default that can corrupt multi-li
 
 ## Design
 
-1. **Change config file path**: `PROJECTS_CONFIG_FILE` → `~/.lean-spec/projects.json`
+1. **Change config file path**: `PROJECTS_CONFIG_FILE` → `~/.harnspec/projects.json`
 2. **Update save logic**: Replace `yaml.dump()` with `JSON.stringify(data, null, 2)`
 3. **Update load logic**: Replace `yaml.load()` with `JSON.parse()`
 4. **Migration**: Auto-migrate existing YAML to JSON on first load

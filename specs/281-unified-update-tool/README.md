@@ -29,6 +29,7 @@ Currently spec updates require multiple tool calls for combined metadata + conte
 4. `toggle_checklist_item` - Checklist toggle
 
 **Problems:**
+
 - Full content replacement is error-prone and wasteful
 - Multiple round-trips increase latency and token usage
 - Race conditions between separate calls (content hash conflicts)
@@ -143,6 +144,7 @@ When `oldString` matches multiple locations in the spec:
 | `first` | Replace first match only | When order is predictable |
 
 **Default behavior (`unique`):**
+
 ```json
 {
   "replacements": [{
@@ -154,6 +156,7 @@ When `oldString` matches multiple locations in the spec:
 ```
 
 **Resolution: Add context lines:**
+
 ```json
 {
   "replacements": [{
@@ -164,6 +167,7 @@ When `oldString` matches multiple locations in the spec:
 ```
 
 **Bulk replacement with `all`:**
+
 ```json
 {
   "replacements": [{
@@ -175,6 +179,7 @@ When `oldString` matches multiple locations in the spec:
 ```
 
 **Error messages should be helpful:**
+
 - "Found 0 matches" → Suggest checking for typos or whitespace
 - "Found N matches" → Suggest adding 2-3 lines of surrounding context
 - Include line numbers of matches to help debugging
@@ -182,6 +187,7 @@ When `oldString` matches multiple locations in the spec:
 ### Operation Priority
 
 When multiple content operations are provided:
+
 1. `content` (full replacement) takes precedence - **all other content ops ignored**
 2. `replacements` applied in array order (first match wins per replacement)
 3. `sectionUpdates` applied in array order  
@@ -194,30 +200,30 @@ When multiple content operations are provided:
 
 ```bash
 # Existing (unchanged)
-lean-spec update 001 --status in-progress
+harnspec update 001 --status in-progress
 
 # NEW: String replacement (preferred for surgical edits)
-lean-spec update 001 --replace "old text" "new text"
+harnspec update 001 --replace "old text" "new text"
 
 # NEW: Replace all occurrences
-lean-spec update 001 --replace "TODO" "DONE" --match-all
+harnspec update 001 --replace "TODO" "DONE" --match-all
 
 # NEW: Multiple replacements
-lean-spec update 001 \
+harnspec update 001 \
   --replace "- [ ] Task 1" "- [x] Task 1" \
   --replace "- [ ] Task 2" "- [x] Task 2"
 
 # NEW: Check off items while updating status (shorthand)
-lean-spec update 001 --status in-progress --check "Implement core logic"
+harnspec update 001 --status in-progress --check "Implement core logic"
 
 # NEW: Uncheck item (shorthand)
-lean-spec update 001 --uncheck "Add tests"
+harnspec update 001 --uncheck "Add tests"
 
 # NEW: Update section content
-lean-spec update 001 --section "Notes" --append "Decision: Use Option A"
+harnspec update 001 --section "Notes" --append "Decision: Use Option A"
 
 # Combined operations
-lean-spec update 001 \
+harnspec update 001 \
   --status complete \
   --check "All tests pass" \
   --check "Code reviewed"
@@ -274,20 +280,24 @@ The MCP `update` tool schema for AI agents:
 ### Implementation Location
 
 **MCP (Rust):**
+
 - `rust/leanspec-mcp/src/tools/specs.rs` - Extend `tool_update()` function
 - Add content parsing and section manipulation
 
 **CLI (Rust):**
+
 - `rust/leanspec-cli/src/commands/update.rs` - Add new flags
 - Reuse core logic from mcp module
 
 **HTTP API:**
+
 - `PATCH /api/projects/:id/specs/:spec` already supports content updates
 - May need minor extension for batch section updates
 
 ## Plan
 
 ### Phase 1: Core Implementation
+
 - [ ] Extend `UpdateSpecInput` struct with content fields
 - [ ] Implement string replacement logic (`replacements` array)
 - [ ] Add section update logic to `update_frontmatter`
@@ -295,12 +305,14 @@ The MCP `update` tool schema for AI agents:
 - [ ] Add operation priority enforcement
 
 ### Phase 2: MCP Tool Update
+
 - [ ] Update `tool_update` in specs.rs to handle new params
 - [ ] Update tool schema with `replacements` as primary content edit method
 - [ ] Handle content hash for concurrency control
 - [ ] Add error handling for non-matching oldString
 
 ### Phase 3: CLI Extension
+
 - [ ] Add `--replace` flag to update command (takes two args)
 - [ ] Add `--match-all` and `--match-first` flags for match mode
 - [ ] Add `--check`, `--uncheck` flags to update command
@@ -308,12 +320,14 @@ The MCP `update` tool schema for AI agents:
 - [ ] Update help text and documentation
 
 ### Phase 4: Testing
+
 - [ ] Unit tests for combined operations
 - [ ] E2E tests for CLI new flags
 - [ ] MCP integration tests
 - [ ] Conflict resolution tests (hash mismatch)
 
 ### Phase 5: Documentation
+
 - [ ] Update cli.mdx reference
 - [ ] Update MCP README
 - [ ] Update COMMANDS.md skill reference
@@ -321,6 +335,7 @@ The MCP `update` tool schema for AI agents:
 ## Test
 
 ### Unit Tests
+
 - [ ] Metadata-only update still works (regression)
 - [ ] Content-only update works
 - [ ] Combined metadata + content in single call
@@ -338,10 +353,11 @@ The MCP `update` tool schema for AI agents:
 - [ ] Full content replacement ignores partial ops
 
 ### E2E Tests
-- [ ] `lean-spec update 001 --replace "old" "new"`
-- [ ] `lean-spec update 001 --replace "TODO" "DONE" --match-all`
-- [ ] `lean-spec update 001 --status complete --check "Done"`
-- [ ] `lean-spec update 001 --section Overview --append "More info"`
+
+- [ ] `harnspec update 001 --replace "old" "new"`
+- [ ] `harnspec update 001 --replace "TODO" "DONE" --match-all`
+- [ ] `harnspec update 001 --status complete --check "Done"`
+- [ ] `harnspec update 001 --section Overview --append "More info"`
 - [ ] Error on hash mismatch
 - [ ] **Error message suggests context lines when replacement fails**
 - [ ] **Error message includes line numbers of duplicate matches**
@@ -353,24 +369,28 @@ The MCP `update` tool schema for AI agents:
 Inspired by VS Code's `replace_string_in_file`, which agents like GitHub Copilot use successfully:
 
 **Why full replacement is problematic:**
+
 - Requires knowing entire file content
 - Easy to accidentally overwrite concurrent changes  
 - Large payloads increase token usage
 - Hard to review what actually changed
 
 **Why string replacement works:**
+
 - Agents naturally describe changes as "replace X with Y"
 - Context lines ensure unique matching
 - Minimal payload = faster, cheaper
 - Clear diff for review
 
 **Error handling with `matchMode`:**
+
 - **No match found**: Error with suggestion to check for typos/whitespace
 - **Multiple matches + `unique`**: Error listing line numbers, suggest adding context
 - **Multiple matches + `all`**: Replace all occurrences
 - **Multiple matches + `first`**: Replace first occurrence only
 
 **Why `unique` is the default:**
+
 - Safest for AI agents (prevents unintended bulk changes)
 - Forces explicit context, reducing errors
 - Matches VS Code's `replace_string_in_file` behavior
@@ -378,11 +398,13 @@ Inspired by VS Code's `replace_string_in_file`, which agents like GitHub Copilot
 ### Alternatives Considered
 
 **Batch Endpoint:** Considered a `/batch` endpoint accepting an array of operations. Rejected because:
+
 - Over-engineered for the common case
 - Harder for AI agents to reason about
 - Validation complexity increases
 
 **New `patch` Tool:** Considered a separate `patch` tool. Rejected because:
+
 - Fragments the API surface
 - Agents must learn when to use `update` vs `patch`
 - Backward compatibility concerns
@@ -408,7 +430,7 @@ Inspired by VS Code's `replace_string_in_file`, which agents like GitHub Copilot
 
 ### Resolved Questions
 
-6. **How to handle duplicate matches?**
+1. **How to handle duplicate matches?**
    - **Resolved:** Added `matchMode` parameter with options:
      - `unique` (default): Error if multiple matches - forces context inclusion
      - `all`: Replace all occurrences  

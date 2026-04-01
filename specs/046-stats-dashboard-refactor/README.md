@@ -32,6 +32,7 @@ Simplify and consolidate analytics/dashboard commands to create focused, PM-frie
 ### The Problem
 
 Current command structure doesn't align with user needs:
+
 1. "Analytics" is too verbose - "Stats" is more concise
 2. Stats shows too much by default - Users need quick glance
 3. Smart insights are siloed - Should be unified  
@@ -41,43 +42,48 @@ Current command structure doesn't align with user needs:
 ### Solution
 
 **Command Changes:**
+
 ```bash
 # Before
-lean-spec analytics    # Too verbose
-lean-spec dashboard    # Separate command  
-lean-spec board        # Kanban only
+harnspec analytics    # Too verbose
+harnspec dashboard    # Separate command  
+harnspec board        # Kanban only
 
 # After (v0.2.0)
-lean-spec stats             # Essential metrics (default)
-lean-spec stats --full      # Full analytics
-lean-spec board             # Kanban + health summary
-lean-spec board --simple    # Kanban only
+harnspec stats             # Essential metrics (default)
+harnspec stats --full      # Full analytics
+harnspec board             # Kanban + health summary
+harnspec board --simple    # Kanban only
 
 # REMOVED:
-lean-spec analytics    # → use `lean-spec stats`
-lean-spec dashboard    # → use `lean-spec board`
+harnspec analytics    # → use `harnspec stats`
+harnspec dashboard    # → use `harnspec board`
 ```
 
 ## Key Changes
 
 ### 1. Rename analytics → stats
+
 - Shorter, more intuitive name
 - Matches common CLI patterns
 - Less intimidating for PMs
 
 ### 2. Simplify default stats output
+
 - Focus on actionable insights
 - Health score at a glance
 - "Needs Attention" highlights issues
 - Prompt for `--full` if users want more
 
 ### 3. Enhance board with health summary
+
 - Add health box at top of board
 - Show totals, completion %, alerts
 - Include velocity snapshot
 - Keep kanban columns below
 
 ### 4. Remove dashboard command
+
 - Functionality merged into enhanced board
 - Reduces command sprawl
 - Simpler mental model
@@ -97,40 +103,47 @@ Detailed information split for Context Economy:
 ### Breaking Changes
 
 **v0.2.0 removes**:
-- `lean-spec analytics` → use `lean-spec stats`
-- `lean-spec dashboard` → use `lean-spec board`
+
+- `harnspec analytics` → use `harnspec stats`
+- `harnspec dashboard` → use `harnspec board`
 
 Migration path documented in CHANGELOG.
 
 ### What Shipped
 
 **Phase 1: Rename analytics → stats** ✅
+
 - Merged analytics.ts into stats.ts
 - Removed analytics command
 - Updated all documentation
 
 **Phase 2: Simplify stats output** ✅
+
 - Default shows essential metrics only
 - `--full` flag for detailed view
 - Smart insights integrated
 
 **Phase 3: Enhance board** ✅
+
 - Health summary box at top
 - Velocity snapshot included
 - `--simple` flag for original view
 
 **Phase 4: Remove dashboard** ✅
+
 - Command deleted
 - Functionality available via board
 
 ## Impact
 
 **Before:**
+
 - 4 overlapping commands (analytics, dashboard, stats, board)
 - Confusion about which to use
 - Too much detail by default
 
 **After:**
+
 - 2 focused commands (stats, board)
 - Clear use cases
 - PM-friendly defaults

@@ -22,7 +22,7 @@ completed: '2025-11-17'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-17
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -30,6 +30,7 @@ completed: '2025-11-17'
 Users need real-world examples of SDD in action. LeanSpec project itself uses SDD extensively - showcase this to demonstrate practical value and best practices.
 
 **Problem**:
+
 - Users see LeanSpec has 90+ specs but don't see how they were actually used
 - No examples of spec evolution during development
 - Missing "show, don't tell" evidence that SDD works
@@ -57,6 +58,7 @@ Users need real-world examples of SDD in action. LeanSpec project itself uses SD
    - Demonstrate team coordination
 
 **Each case study includes**:
+
 - Original spec content
 - Implementation approach
 - Challenges encountered
@@ -76,6 +78,7 @@ Users need real-world examples of SDD in action. LeanSpec project itself uses SD
 7. **AI Agent Collaboration**: How AI agents used the spec
 
 **Selection criteria for case studies**:
+
 - Completed specs (status: complete or archived)
 - Representative of common use cases
 - Various complexity levels (simple → complex)
@@ -83,6 +86,7 @@ Users need real-world examples of SDD in action. LeanSpec project itself uses SD
 - Show both successes and challenges
 
 **Presentation**:
+
 - Create "Case Studies" section in docs-site
 - Each case study = separate page
 - Include screenshots/diagrams where helpful
@@ -90,6 +94,7 @@ Users need real-world examples of SDD in action. LeanSpec project itself uses SD
 - Show before/after code where relevant
 
 **Anti-patterns to avoid**:
+
 - Cherry-picking only perfect examples
 - Hiding challenges or mistakes
 - Making it look effortless (be honest about iteration)
@@ -97,23 +102,27 @@ Users need real-world examples of SDD in action. LeanSpec project itself uses SD
 ## Plan
 
 **Phase 1: Case study selection**
+
 - [ ] Review completed specs, identify good candidates
 - [ ] Select 4 specs covering different scenarios
 - [ ] Gather context: git history, PR discussions, implementation details
 
 **Phase 2: Case study writing**
+
 - [ ] Write Simple Feature case study (spec 071)
 - [ ] Write Complex Feature case study (spec 082)
 - [ ] Write Refactoring case study (spec 067)
 - [ ] Write Cross-Team Feature case study (spec 043)
 
 **Phase 3: Integration**
+
 - [ ] Create "Case Studies" section in docs-site
 - [ ] Add case study navigation
 - [ ] Link from homepage/getting started
 - [ ] Add "How LeanSpec uses SDD" overview page
 
 **Phase 4: Maintenance**
+
 - [ ] Add more case studies over time (target: 1 per quarter)
 - [ ] Update case studies as specs evolve
 - [ ] Collect user feedback on case studies

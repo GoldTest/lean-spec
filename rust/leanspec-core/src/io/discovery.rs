@@ -26,7 +26,7 @@ pub struct DiscoveredProject {
     pub path: PathBuf,
     /// Project name (from package.json or directory name)
     pub name: String,
-    /// Whether this project has a .lean-spec directory
+    /// Whether this project has a .harnspec directory
     pub has_lean_spec: bool,
     /// Path to specs directory
     pub specs_dir: Option<PathBuf>,
@@ -108,7 +108,7 @@ impl ProjectDiscovery {
         }
 
         // Check if this directory is a LeanSpec project
-        let lean_spec_dir = path.join(".lean-spec");
+        let lean_spec_dir = path.join(".harnspec");
         if lean_spec_dir.exists() && lean_spec_dir.is_dir() {
             let name = self.extract_project_name(path)?;
             let specs_dir = self.find_specs_dir(path);
@@ -248,8 +248,8 @@ mod tests {
         let project_dir = dir.join(name);
         fs::create_dir_all(&project_dir).unwrap();
 
-        // Create .lean-spec directory
-        fs::create_dir_all(project_dir.join(".lean-spec")).unwrap();
+        // Create .harnspec directory
+        fs::create_dir_all(project_dir.join(".harnspec")).unwrap();
 
         // Create specs directory
         fs::create_dir_all(project_dir.join("specs")).unwrap();

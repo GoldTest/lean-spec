@@ -4,7 +4,7 @@
  * 
  * This script ensures all Rust packages use the same version as the root package.json. It updates:
  * - Rust workspace version in rust/Cargo.toml
- * - CLI platform packages (lean-spec-darwin-x64, etc.)
+ * - CLI platform packages (harnspec-darwin-x64, etc.)
  * - MCP platform packages (@leanspec/mcp-darwin-x64, etc.)
  * - HTTP server platform packages (@leanspec/http-darwin-x64, etc.)
  * 
@@ -23,7 +23,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const RUST_DIR = path.join(ROOT_DIR, 'rust');
 const RUST_CARGO_TOML = path.join(RUST_DIR, 'Cargo.toml');
 const PACKAGES_DIR = path.join(ROOT_DIR, 'packages');
-const REPOSITORY_URL = 'https://github.com/codervisor/lean-spec.git';
+const REPOSITORY_URL = 'https://github.com/codervisor/harnspec.git';
 
 interface PlatformInfo {
   os: string;
@@ -55,7 +55,7 @@ const PACKAGE_FAMILIES: PackageFamily[] = [
     label: 'CLI',
     packageDir: path.join(PACKAGES_DIR, 'cli', 'binaries'),
     packagePrefix: '@leanspec/cli',
-    binaryName: 'lean-spec',
+    binaryName: 'harnspec',
     description: 'LeanSpec CLI binary'
   },
   {

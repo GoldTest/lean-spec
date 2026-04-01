@@ -33,13 +33,14 @@ Currently, relationship validation is incomplete at write-time:
 
 | Layer                | Parent Cycle | Dep Cycle | Self-Ref | Hierarchy/Dep Conflict |
 | -------------------- | ------------ | --------- | -------- | ---------------------- |
-| `lean-spec validate` | ✅ Full       | ✅ Full    | ✅        | ❌                      |
+| `harnspec validate` | ✅ Full       | ✅ Full    | ✅        | ❌                      |
 | MCP `set_parent`     | ⚠️ Self only  | N/A       | ✅        | ❌                      |
 | MCP `link`           | N/A          | ❌         | ❌        | ❌                      |
 | MCP `relationships`  | ❌            | ❌         | ❌        | ❌                      |
 | CLI `rel add`        | ❌            | ❌         | ❌        | ❌                      |
 
 This allows invalid states:
+
 1. **Parent cycles**: `A→B→C→A` in parent chain
 2. **Dependency cycles**: `A depends_on B depends_on C depends_on A`
 3. **Hierarchy/dependency conflicts**: A spec that `depends_on` its own parent or children
@@ -219,6 +220,7 @@ pub fn validate_dependency_addition(
 ## Plan
 
 ### Phase 1: Parent Cycle Detection
+
 - [x] Extract cycle detection to shared utility in leanspec-core
 - [x] Add cycle check to MCP `set_parent` tool
 - [x] Add cycle check to MCP `relationships` tool (parent operations)
@@ -226,36 +228,42 @@ pub fn validate_dependency_addition(
 - [x] Add descriptive error message showing the cycle path
 
 ### Phase 1.5: Dependency Cycle Detection
+
 - [x] Add dependency cycle check to MCP `link` tool
 - [x] Add dependency cycle check to MCP `relationships` tool (depends_on operations)
 - [x] Add dependency cycle check to CLI `rel add --depends-on` command
 - [x] Add descriptive error message showing the cycle path
 
 ### Phase 2: Hierarchy/Dependency Conflict Detection
+
 - [x] Implement conflict detection in leanspec-core
 - [x] Add conflict check to MCP `relationships` tool (depends_on operations)
 - [x] Add conflict check to CLI `rel add --depends-on` command
 - [x] Add clear error messages explaining the conflict
 
 ### Phase 3: Documentation
+
 - [x] Update SKILL.md with relationship decision tree
 - [x] Add examples to CLI help
 
 ## Test
 
 **Parent Cycles:**
+
 - [x] Direct self-reference rejected: `A → A`
 - [x] Two-node cycle rejected: `A → B → A`
 - [x] Multi-node cycle rejected: `A → B → C → A`
 - [x] Valid parent assignment works
 
 **Dependency Cycles:**
+
 - [x] Self-dependency rejected: `A depends_on A`
 - [x] Two-node cycle rejected: `A depends_on B depends_on A`
 - [x] Multi-node cycle rejected: `A → B → C → A`
 - [x] Valid dependency addition works
 
 **Hierarchy/Dependency Conflicts:**
+
 - [x] Cannot `depends_on` your own parent
 - [x] Cannot `depends_on` your own children
 - [x] Parent cannot `depends_on` its child
@@ -263,6 +271,7 @@ pub fn validate_dependency_addition(
 - [x] Clearing relationships always works
 
 **Error Messages:**
+
 - [x] Parent cycle error shows full path
 - [x] Dependency cycle error shows full path
 - [x] Conflict error explains the issue clearly

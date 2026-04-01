@@ -13,13 +13,13 @@ sidebar_position: 4
 检查Spec的质量问题：
 
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 默认验证所有Spec。检查特定Spec：
 
 ```bash
-lean-spec validate <spec-1> <spec-2>
+harnspec validate <spec-1> <spec-2>
 ```
 
 ## 质量检查
@@ -77,7 +77,7 @@ HarnSpec 也检查行数作为安全网（400 行警告 / 500 行最大值），
 ### 清洁验证
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ✅ 所有Spec有效！
 
@@ -90,7 +90,7 @@ $ lean-spec validate
 ### 有警告
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ⚠️  发现警告：
 
@@ -107,7 +107,7 @@ $ lean-spec validate
 ### 有错误
 
 ```bash
-$ lean-spec validate
+$ harnspec validate
 
 ❌ 发现错误：
 
@@ -131,26 +131,26 @@ $ lean-spec validate
 
 ```bash
 # 更严格的Token阈值
-lean-spec validate --warning-threshold 4000
+harnspec validate --warning-threshold 4000
 
 # 更宽松的阈值
-lean-spec validate --warning-threshold 6000
+harnspec validate --warning-threshold 6000
 
 # 自定义行数支撑
-lean-spec validate --max-lines 500
+harnspec validate --max-lines 500
 ```
 
 ### 验证特定方面
 
 ```bash
 # 仅检查复杂性（Token）
-lean-spec validate --check complexity
+harnspec validate --check complexity
 
 # 仅检查frontmatter
-lean-spec validate --check frontmatter
+harnspec validate --check frontmatter
 
 # 仅检查结构
-lean-spec validate --check structure
+harnspec validate --check structure
 ```
 
 ## 修复验证问题
@@ -180,17 +180,17 @@ IMPLEMENTATION.md (1,500 Token) ✅ - 实现计划（100% 有效性）
 
 **问题**：frontmatter字段无效或缺失
 
-**解决方案**：使用 `lean-spec update` 修复：
+**解决方案**：使用 `harnspec update` 修复：
 
 ```bash
 # 修复状态
-lean-spec update <spec> --status in-progress
+harnspec update <spec> --status in-progress
 
 # 修复优先级
-lean-spec update <spec> --priority high
+harnspec update <spec> --priority high
 
 # 修复标签
-lean-spec update <spec> --tags feature,api
+harnspec update <spec> --tags feature,api
 ```
 
 ### 结构问题
@@ -209,7 +209,7 @@ lean-spec update <spec> --tags feature,api
 提交前运行：
 
 ```bash
-lean-spec validate
+harnspec validate
 ```
 
 在提交更改之前修复任何错误。
@@ -230,8 +230,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install -g lean-spec
-      - run: lean-spec validate
+      - run: npm install -g harnspec
+      - run: harnspec validate
 ```
 
 ### 定期审查
@@ -240,13 +240,13 @@ jobs:
 
 ```bash
 # 检查整体健康状况
-lean-spec validate
+harnspec validate
 
 # 详细分析
-lean-spec stats --full
+harnspec stats --full
 
 # 审查大型Spec（Token焦点）
-lean-spec tokens --all --include-sub-specs
+harnspec tokens --all --include-sub-specs
 ```
 
 ## 何时拆分

@@ -148,8 +148,8 @@ gh workflow run publish.yml --field dev=true
 gh workflow run publish.yml --field dev=true --field dry_run=true
 
 # Install and test
-npm install -g lean-spec@dev
-lean-spec --version
+npm install -g harnspec@dev
+harnspec --version
 ```
 
 ### Version Management
@@ -165,7 +165,7 @@ LeanSpec uses optional dependencies for platform-specific Rust binaries:
 
 | Type | Packages |
 |------|----------|
-| **Main** (published) | `lean-spec`, `@leanspec/mcp`, `@leanspec/ui` |
+| **Main** (published) | `harnspec`, `@leanspec/mcp`, `@leanspec/ui` |
 | **Platform** (published) | `@leanspec/cli-{platform}`, `@leanspec/mcp-{platform}` (5 platforms each) |
 | **Internal** (not published) | `@leanspec/desktop`, `@leanspec/ui-components` |
 
@@ -196,7 +196,7 @@ git diff $(git describe --tags --abbrev=0)..HEAD --stat
 Add under `## [Unreleased]` using these categories: **Added**, **Changed**, **Fixed**, **Deprecated**, **Removed**, **Security**, **Technical**.
 
 ```markdown
-- **Feature Name** ([spec 123](https://web.lean-spec.dev/specs/123)) - Brief description
+- **Feature Name** ([spec 123](https://harnspec.gitub.io/specs/123)) - Brief description
   - Sub-bullet with implementation details
 ```
 
@@ -212,7 +212,7 @@ Add under `## [Unreleased]` using these categories: **Added**, **Changed**, **Fi
 ### Creating a Release
 
 1. Move entries from `[Unreleased]` to new version: `## [X.Y.Z] - YYYY-MM-DD`
-2. Add release link at bottom: `[X.Y.Z]: https://github.com/codervisor/lean-spec/releases/tag/vX.Y.Z`
+2. Add release link at bottom: `[X.Y.Z]: https://github.com/codervisor/harnspec/releases/tag/vX.Y.Z`
 
 ---
 

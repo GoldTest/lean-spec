@@ -44,25 +44,30 @@ transitions:
 ### Key Observations
 
 **1. Sub-specs Improve Readability**
+
 - Spec 059 (394 lines): Has 6 sub-spec files → README is just an overview
 - Spec 049 (374 lines): Has 5 sub-spec files → Progressive disclosure works
 - These are **easier to navigate** than 300-line single-file specs
 
 **2. Section Density Matters More Than Line Count**
+
 - Spec 049: 9 lines/section → Easy to scan and understand
 - Spec 016: 15 lines/section + 26 code blocks → Cognitively heavier despite fewer lines
 
 **3. Code Block Density is a Complexity Factor**
+
 - High code density (like spec 016 with 26 blocks) increases cognitive load
 - Code requires more attention than prose
 - Not captured by simple line counting
 
 **4. Structure Trumps Size**
+
 - A well-organized 400-line spec with clear sections and sub-specs
 - Is MORE readable than a poorly structured 250-line spec
 - Current validation misses this
 
 **5. Token Count Reveals True Cognitive Load**
+
 - Spec 016: Only 315 lines but **~2,400 tokens** (26 code blocks = dense)
 - Spec 049: 374 lines but only **~1,700 tokens** (pure prose, no code)
 - Research shows: Quality drops beyond 50K tokens, 6x cost difference between 2,000-line vs 300-line specs
@@ -79,6 +84,7 @@ if (lines > 300) return WARNING;
 ```
 
 **Issues**:
+
 1. ❌ Doesn't account for structure (section organization)
 2. ❌ Doesn't account for density (code blocks, lists, tables)
 3. ❌ Doesn't account for sub-specs (progressive disclosure)
@@ -226,28 +232,33 @@ Instead of hard line limits:
 ### Examples Applied to Current Specs
 
 **Spec 059 (394 lines, ~2,100 tokens, 32 sections, 8 code blocks, 6 sub-specs)**:
+
 - Token score: 20 (~2,100 tokens)
 - Structure modifier: -30 (has sub-specs)
 - **Total: -10 points** → ✅ Excellent | Cost: 1.8x | AI: 90%
 
 **Spec 016 (315 lines, ~2,400 tokens, 20 sections, 26 code blocks, no sub-specs)**:
+
 - Token score: 20 (~2,400 tokens)
 - Structure modifier: -15 (20 sections, good chunking)
 - **Total: 5 points** → ✅ Good | Cost: 2.0x | AI: 90%
 - **Key insight**: Token count captures code density automatically
 
 **Spec 051 (339 lines, ~1,600 tokens, 28 sections, 4 code blocks, no sub-specs)**:
+
 - Token score: 0 (~1,600 tokens)
 - Structure modifier: -15 (28 sections, good chunking)
 - **Total: -15 points** → ✅ Excellent | Cost: 1.3x | AI: 100%
 
 **Spec 049 (374 lines, ~1,700 tokens, 38 sections, 0 code blocks, 5 sub-specs)**:
+
 - Token score: 0 (~1,700 tokens)
 - Structure modifier: -30 (has sub-specs, 38 sections)
 - **Total: -30 points** → ✅ Excellent | Cost: 1.4x | AI: 100%
 - **Key insight**: Sub-specs + good structure = optimal
 
 **Hypothetical: 280 lines, ~1,400 tokens, 5 sections, no code blocks, no sub-specs**:
+
 - Token score: 0 (~1,400 tokens)
 - Structure modifier: +20 (only 5 sections, poor chunking)
 - **Total: 20 points** → ✅ Good | Cost: 1.2x | AI: 100%
@@ -258,6 +269,7 @@ Instead of hard line limits:
 ### Phase 1: Add Complexity Metrics (v0.3.0)
 
 Enhance validation to collect:
+
 ```typescript
 interface SpecComplexity {
   lineCount: number;
@@ -274,6 +286,7 @@ interface SpecComplexity {
 ### Phase 2: Implement Complexity Scoring (v0.3.0)
 
 Add new validator:
+
 ```typescript
 class ComplexityScoreValidator implements ValidationRule {
   name = 'complexity-score';
@@ -333,16 +346,17 @@ if (complexityScore < 60 && lineCount < 500) {
 ### Phase 4: Educate Users (v0.3.0)
 
 Update guidance:
+
 - AGENTS.md: Explain complexity factors beyond line count
 - README.md: Show examples of good vs. poor structure
 - Validation output: Explain WHY a spec is complex
-- CLI: Add `lean-spec complexity <spec>` command for detailed analysis
+- CLI: Add `harnspec complexity <spec>` command for detailed analysis
 
 ## Research Evidence
 
 ### 1. Token Count is Critical
 
-**Source**: [AI Agent Performance Blog Post](https://www.lean-spec.dev/blog/ai-agent-performance)
+**Source**: [AI Agent Performance Blog Post](https://harnspec.gitub.io/blog/ai-agent-performance)
 
 - **Finding**: 2,000-line spec costs **6x more** than 300-line spec
 - **Finding**: Quality degradation happens **even within context limits** (not just at 50K)
@@ -381,12 +395,14 @@ Update guidance:
 ### Key Takeaway
 
 **Token count is a better predictor of AI performance than line count** because:
+
 1. Direct measure of LLM input cost
 2. Accounts for content density (code vs prose)
 3. Backed by research showing **non-linear degradation patterns**
 4. Correlates with actual AI effectiveness
 
 **Degradation Gradient** (based on research):
+
 - **<2K tokens**: Baseline performance (~100% effectiveness)
 - **2-5K tokens**: Early degradation begins (~85-95% effectiveness)
 - **5-10K tokens**: Noticeable degradation (~65-85% effectiveness)
@@ -398,6 +414,7 @@ For validation, we use conservative thresholds (5K tokens = severe penalty) to c
 ## Implementation Plan
 
 ### Phase 1: Research & Metrics ✅ (This spec)
+
 - [x] Investigate current specs
 - [x] Identify complexity factors
 - [x] Propose scoring algorithm
@@ -405,6 +422,7 @@ For validation, we use conservative thresholds (5K tokens = severe penalty) to c
 - [x] Get feedback on approach
 
 ### Phase 2: Core Implementation (v0.3.0 - Next)
+
 - [ ] Install `tokenx` for token estimation
 - [ ] Implement simplified `calculateComplexityScore()` function
 - [ ] Use **hypothesis thresholds** (2K/3.5K/5K tokens) initially
@@ -413,25 +431,30 @@ For validation, we use conservative thresholds (5K tokens = severe penalty) to c
 - [ ] Integrate with existing validation framework
 
 ### Phase 3: CLI Integration (v0.3.0)
-- [ ] Add `lean-spec complexity <spec>` command
+
+- [ ] Add `harnspec complexity <spec>` command
 - [ ] Show breakdown: token score, structure modifier
 - [ ] Display cost multiplier and AI effectiveness estimates
 - [ ] Provide actionable suggestions
-- [ ] Update `lean-spec validate` output
+- [ ] Update `harnspec validate` output
 
 ### Phase 4: Documentation (v0.3.0)
+
 - [ ] Update AGENTS.md with complexity guidance
 - [ ] Update README.md with examples
 - [ ] Create "good structure" showcase
 - [ ] Document that thresholds are hypotheses pending validation
 
 ### Phase 5: Empirical Validation (Future - v0.4.0+)
+
 **Deferred until we have:**
+
 - More real-world usage data from v0.3.0
 - Clear methodology for LLM integration
 - Resources for comprehensive benchmarking
 
 **Tasks when ready:**
+
 - [ ] Implement benchmark framework (already stubbed in `src/benchmark/`)
 - [ ] Define benchmark tasks for 10+ specs
 - [ ] Run benchmarks to validate thresholds
@@ -439,6 +462,7 @@ For validation, we use conservative thresholds (5K tokens = severe penalty) to c
 - [ ] Publish empirical findings
 
 ### Phase 6: Advanced Features (v0.4.0+)
+
 - [ ] Complexity trends over time
 - [ ] Project-wide complexity dashboard
 - [ ] Automated splitting suggestions
@@ -455,6 +479,7 @@ We have two viable approaches for token counting, each with different tradeoffs:
 **Fast, lightweight estimation** - Best for validation thresholds where perfect accuracy isn't critical.
 
 **Pros:**
+
 - ✅ 94% accuracy compared to full tokenizers
 - ✅ Just **2kB** bundle size with **zero dependencies**
 - ✅ Very fast - no tokenization overhead
@@ -463,15 +488,18 @@ We have two viable approaches for token counting, each with different tradeoffs:
 - ✅ 45K+ weekly downloads
 
 **Cons:**
+
 - ❌ Not 100% accurate (6-12% error margin)
 - ❌ Estimation-based, not true BPE encoding
 
 **Installation:**
+
 ```bash
 npm install tokenx
 ```
 
 **Usage:**
+
 ```typescript
 import { estimateTokenCount, isWithinTokenLimit } from 'tokenx';
 
@@ -483,6 +511,7 @@ const needsReview = !isWithinTokenLimit(specContent, 5000);
 ```
 
 **Accuracy benchmarks:**
+
 - English prose: 10-12% error margin
 - Code (TypeScript): 6.18% error margin
 - Large text (31K tokens): 12.29% error margin
@@ -494,6 +523,7 @@ const needsReview = !isWithinTokenLimit(specContent, 5000);
 **Precise tokenization** - Port of OpenAI's tiktoken with 100% accuracy.
 
 **Pros:**
+
 - ✅ **100% accurate** - exact BPE encoding
 - ✅ Supports all OpenAI models (GPT-4o, GPT-4, GPT-3.5, etc.)
 - ✅ Fastest full tokenizer on NPM (faster than WASM bindings)
@@ -502,16 +532,19 @@ const needsReview = !isWithinTokenLimit(specContent, 5000);
 - ✅ 283K+ weekly downloads, trusted by Microsoft, Elastic
 
 **Cons:**
+
 - ❌ **53.1 MB** unpacked size (vs 2kB for tokenx)
 - ❌ Slower than estimation (but still fastest full tokenizer)
 - ❌ Model-specific - need to import correct encoding
 
 **Installation:**
+
 ```bash
 npm install gpt-tokenizer
 ```
 
 **Usage:**
+
 ```typescript
 import { encode, countTokens, isWithinTokenLimit } from 'gpt-tokenizer';
 // or model-specific: from 'gpt-tokenizer/model/gpt-4o'
@@ -528,6 +561,7 @@ const needsReview = !isWithinTokenLimit(specContent, 5000);
 ```
 
 **Accuracy:**
+
 - 100% accurate (port of OpenAI's tiktoken)
 - Benchmarked against OpenAI's Python library
 
@@ -536,18 +570,21 @@ const needsReview = !isWithinTokenLimit(specContent, 5000);
 ### Recommendation: Hybrid Approach
 
 **For v0.3.0, use tokenx:**
+
 - Fast validation during CLI commands
 - 2kB size won't bloat the package
 - 94% accuracy is sufficient for warnings/errors
 - 6-12% margin is acceptable for thresholds
 
 **Future: Offer gpt-tokenizer as optional**
+
 - Add as peer dependency (optional install)
 - Use if available for exact counts
 - Fall back to tokenx if not installed
 - Display "estimated" vs "exact" in output
 
 **Implementation:**
+
 ```typescript
 // Try exact tokenizer first, fall back to estimation
 let tokenCount: number;
@@ -574,23 +611,27 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 **The Problem**: Current thresholds (2K/3.5K/5K tokens) are hypotheses based on research, not validated on LeanSpec's actual use case.
 
 **The Challenge**: Building a proper benchmark suite requires:
+
 - Clear methodology for LLM integration and evaluation
 - Significant time investment for framework + test data
 - Real-world usage patterns from v0.3.0 to guide validation
 - Resources for running benchmarks across multiple models
 
 **The Pragmatic Approach**:
+
 1. **v0.3.0**: Ship complexity scoring with research-based thresholds (good enough to start)
 2. **Collect data**: Gather real-world usage patterns, see which specs trigger warnings
 3. **v0.4.0+**: Build benchmark framework when we have clearer requirements
 
 **Validation Framework Stub** (see `src/benchmark/` for implementation):
+
 - Type definitions and interfaces ready
 - Complexity analysis functions implemented
 - Benchmark task examples defined
 - LLM integration and statistical analysis deferred
 
 **When ready to validate**, the framework will answer:
+
 - Does token count predict performance better than line count?
 - Where does degradation actually start? (2K? 3K? 5K?)
 - How much do sub-specs improve AI comprehension?
@@ -628,6 +669,7 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 ## Success Criteria
 
 ### Phase 2-4: Initial Implementation (v0.3.0)
+
 - ✅ Spec 059 (394 lines, 6 sub-specs) scores well (≤25 points)
 - ✅ Poorly structured specs flagged even if short
 - ✅ Users understand WHY a spec is complex (clear breakdown)
@@ -637,6 +679,7 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 - ✅ Thresholds documented as hypotheses, not validated facts
 
 ### Phase 5: Empirical Validation (v0.4.0+ - When Ready)
+
 - ✅ Token count predicts performance better than line count (R² > 0.7 vs < 0.5)
 - ✅ Degradation thresholds validated within ±500 tokens of hypothesis
 - ✅ Sub-specs show measurable quality improvement (>5% accuracy)
@@ -644,6 +687,7 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 - ✅ Multi-turn degradation measured and documented
 
 ### User Experience (All Phases)
+
 - ✅ Complexity scores align with user intuition
 - ✅ Suggestions are actionable and specific
 - ✅ AGENTS.md reflects current best practices (hypothesis-based for v0.3.0)
@@ -660,15 +704,18 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 ### Why This Matters
 
 **Current Problem**: False positives and false negatives
+
 - We're warning about well-structured 394-line specs (false positive)
 - We're missing dense 280-line specs with poor structure (false negative)
 
 **Impact**:
+
 - Users may ignore warnings if they seem arbitrary
 - AI agents get confused about when to split
 - We're not measuring what we actually care about (readability, not just length)
 
 **Solution**: Measure complexity more holistically
+
 - Line count remains important but not sufficient
 - Structure, density, and progressive disclosure matter
 - Give users actionable feedback
@@ -676,6 +723,7 @@ console.log(`Tokens: ${tokenCount} ${isExact ? '(exact)' : '(estimated ±6%)'}`)
 ### The Meta-Learning
 
 This spec itself demonstrates the principle:
+
 - 410 lines, ~2,200 tokens (includes code examples)
 - Well-structured with clear sections (28 sections)
 - Each section is scannable and focused
@@ -683,6 +731,7 @@ This spec itself demonstrates the principle:
 - References research with clear citations
 
 **Applying the simplified scoring to this spec:**
+
 - Token score: 20 (~2,200 tokens, in good range)
 - Structure modifier: -15 (28 sections, good chunking, no sub-specs)
 - **Total: 5 points** → ✅ Good | Cost: 1.8x | AI: 90%
@@ -699,6 +748,7 @@ Using new rules: "✅ Good: Score 5/100 - well-structured, token count acceptabl
 ### ✅ What's Done
 
 **Core Implementation Exists**:
+
 - `ComplexityValidator` class implemented in `packages/core/src/validators/complexity.ts`
 - Token estimation using `tokenx` package (installed and working)
 - Multi-dimensional scoring algorithm implemented
@@ -706,6 +756,7 @@ Using new rules: "✅ Good: Score 5/100 - well-structured, token count acceptabl
 - All token thresholds and structure modifiers coded as designed
 
 **Build Status**:
+
 - `@leanspec/core` package builds successfully
 - `@leanspec/cli` package builds successfully
 - `tokenx` dependency properly installed
@@ -713,12 +764,14 @@ Using new rules: "✅ Good: Score 5/100 - well-structured, token count acceptabl
 ### 🐛 Issues Found
 
 **1. Sub-Spec Detection Bug (Critical)**
+
 - **Problem**: `hasSubSpecs` detected by text pattern matching, not actual file existence
 - **Current Code**: `/\b(DESIGN|IMPLEMENTATION|TESTING|CONFIGURATION|API|MIGRATION)\.md\b/.test(content)`
 - **Issue**: Spec 066 mentions "DESIGN.md" in documentation → gets -30 bonus it doesn't deserve
 - **Impact**: False negatives - specs get structure bonuses for merely documenting sub-specs
 
 **2. Silent Warning Issue**
+
 - **Problem**: Complexity validator produces no output even when it should warn
 - **Actual Score for Spec 066**:
   - 706 lines
@@ -732,6 +785,7 @@ Using new rules: "✅ Good: Score 5/100 - well-structured, token count acceptabl
 - **Hypothesis**: Warning not being formatted/displayed (need to debug formatter or result handling)
 
 **3. Old Line Count Validator Still Active**
+
 - **Current Behavior**: Shows "Error: Spec exceeds 400 lines (706 lines)"
 - **Expected**: Complexity validator should be primary, line count as backstop
 - **Decision Needed**: Should old validator be:
@@ -742,6 +796,7 @@ Using new rules: "✅ Good: Score 5/100 - well-structured, token count acceptabl
 ### 🔧 Fixes Needed for Next Session
 
 **Priority 1: Fix Sub-Spec Detection**
+
 ```typescript
 // Current (WRONG):
 const hasSubSpecs = /\b(DESIGN|IMPLEMENTATION|TESTING|CONFIGURATION|API|MIGRATION)\.md\b/.test(content);
@@ -759,12 +814,14 @@ const hasSubSpecs = mdFiles.length > 0;
 **Location**: `packages/core/src/validators/complexity.ts`, line ~160
 
 **Priority 2: Debug Silent Warning**
+
 - Add logging to see if validator is running and producing results
 - Check if `ValidationResult` with warnings is being filtered out
 - Verify formatter (`validate-formatter.ts`) handles complexity validator output
 - Test with simpler spec to isolate issue
 
 **Priority 3: Coordinate Line Count Validator**
+
 - Decide on line count validator role (keep, adjust, or remove)
 - Update thresholds if keeping (suggest 500/600 instead of 300/400)
 - Document relationship between validators in code comments
@@ -772,15 +829,18 @@ const hasSubSpecs = mdFiles.length > 0;
 ### 📊 Test Cases for Validation
 
 **Test with Spec 066** (this spec):
+
 - Expected: Score 60 (no sub-specs) → "split" recommendation → ERROR
 - Currently: Score 30 (false bonus) → "review" → WARNING (but silent)
 
 **Test with Spec 049** (has 5 sub-specs):
+
 - 374 lines, ~1,700 tokens, 38 sections, 5 sub-spec files
 - Expected: Score -30 → "excellent" → PASS
 - Should verify this works correctly
 
 **Test with Spec 059** (has 6 sub-specs):
+
 - 394 lines, ~2,100 tokens, 32 sections, 6 sub-spec files
 - Expected: Score -10 → "excellent" → PASS
 - Should verify this works correctly

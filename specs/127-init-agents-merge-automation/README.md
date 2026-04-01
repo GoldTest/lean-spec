@@ -25,20 +25,21 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-27 · **Tags**: init, dx, ai-agents, onboarding, automation
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 ### Problem
 
-Current `lean-spec init` workflow with existing `AGENTS.md` files is too manual:
+Current `harnspec init` workflow with existing `AGENTS.md` files is too manual:
 
 1. **Manual Merge Execution**: User must manually invoke AI tool with the merge prompt:
+
    ```bash
-   copilot -p "follow .lean-spec/MERGE-AGENTS-PROMPT.md to edit AGENTS.md" --allow-all-tools
+   copilot -p "follow .harnspec/MERGE-AGENTS-PROMPT.md to edit AGENTS.md" --allow-all-tools
    ```
-   
+
 2. **No AI CLI Auto-Detection**: We already detect AI tools in spec 126, but don't leverage this to **automatically execute** the merge
 
 3. **Extra Step After Init**: User sees instructions but has to manually copy/paste or run a separate command
@@ -46,17 +47,17 @@ Current `lean-spec init` workflow with existing `AGENTS.md` files is too manual:
 ### Current Flow (Pain Points)
 
 ```
-lean-spec init
+harnspec init
   ↓
 Found existing AGENTS.md
   ↓
 Choose: "AI-Assisted Merge (recommended)"
   ↓
 ✓ Created AI consolidation prompt
-→ .lean-spec/MERGE-AGENTS-PROMPT.md
+→ .harnspec/MERGE-AGENTS-PROMPT.md
   ↓
 📝 Next steps:
-  1. Open .lean-spec/MERGE-AGENTS-PROMPT.md  ← Manual
+  1. Open .harnspec/MERGE-AGENTS-PROMPT.md  ← Manual
   2. Send it to your AI coding assistant      ← Manual
   3. Let AI create the consolidated AGENTS.md ← Manual
   4. Review and commit the result             ← Manual
@@ -65,7 +66,7 @@ Choose: "AI-Assisted Merge (recommended)"
 ### Proposed Flow
 
 ```
-lean-spec init
+harnspec init
   ↓
 Found existing AGENTS.md
   ↓
@@ -84,6 +85,7 @@ Running: copilot -p "..." --allow-all-tools
 ### Goal
 
 Make AGENTS.md merging a **single-step operation** by:
+
 1. Auto-detecting installed AI CLI tools (reusing spec 126 detection)
 2. Offering to automatically execute the merge using detected tool
 3. Falling back to manual instructions only when no CLI is available
@@ -136,12 +138,15 @@ async function executeMergeWithAI(
 ### User Flow Options
 
 **Option A: Direct Execution (Recommended)**
+
 - Detect CLI → Ask to auto-execute → Run merge → Show result
 
 **Option B: Command Suggestion**  
+
 - Detect CLI → Show ready-to-run command → User copies/executes
 
 **Option C: Hybrid**
+
 - Detect CLI → Show command → Ask "Run now? (Y/n)"
 
 **Decision**: Use **Option C (Hybrid)** - Shows command for transparency, asks permission before executing
@@ -259,31 +264,35 @@ async function handleExistingFiles(
 **Manual Tests:**
 
 - [ ] **Fresh project with existing AGENTS.md + copilot installed**
+
   ```bash
   mkdir test-project && cd test-project
   echo "# My Project\n\nExisting instructions..." > AGENTS.md
-  lean-spec init
+  harnspec init
   # Expected: Detects copilot, asks to auto-merge, executes successfully
   ```
 
 - [ ] **No CLI detected**
+
   ```bash
   # In environment without AI CLIs
-  lean-spec init
+  harnspec init
   # Expected: Falls back to manual instructions (current behavior)
   ```
 
 - [ ] **Auto-merge declined**
+
   ```bash
-  lean-spec init
+  harnspec init
   # Choose AI-Assisted Merge
   # Say "No" to auto-merge
   # Expected: Shows manual instructions
   ```
 
 - [ ] **With -y flag**
+
   ```bash
-  lean-spec init -y
+  harnspec init -y
   # Expected: Auto-merges without asking if CLI detected
   ```
 
@@ -303,10 +312,11 @@ Before implementation, verify exact CLI syntax for each tool:
 ### Alternative: Command-to-Clipboard
 
 If execution feels too invasive, alternative:
+
 ```
 🔍 Detected: copilot CLI
 Command copied to clipboard:
-  copilot -p "follow .lean-spec/MERGE-AGENTS-PROMPT.md..." --allow-all-tools
+  copilot -p "follow .harnspec/MERGE-AGENTS-PROMPT.md..." --allow-all-tools
 
 Paste in terminal to merge automatically.
 ```

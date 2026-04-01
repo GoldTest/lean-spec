@@ -25,6 +25,7 @@ completed: '2025-11-02'
 | **LeanSpec** | ✅ No | ✅ No | Lean & adaptive |
 
 **The Gap**: Developers don't want to choose between:
+
 - "Lightweight but inflexible" (OpenSpec)
 - "Flexible but heavyweight" (BMAD, SpecKit, Kiro)
 
@@ -35,12 +36,14 @@ completed: '2025-11-02'
 **Current State**: README.md is **383 lines** - we're shooting ourselves in the foot!
 
 **The Irony**: A project built to solve "over-documentation" has an overwhelming README that violates its own principles:
+
 - ❌ Too much upfront information (contradicts our core message)
 - ❌ Unclear information hierarchy (hides the competitive advantage)
 - ❌ Mixed audiences without clear paths (confuses potential users)
 - ❌ Hard to scan quickly (doesn't demonstrate being "lean")
 
 **Impact**:
+
 - Potential users never discover we solve their pain
 - Core differentiation gets lost in details
 - Looks hypocritical ("preach lean, write verbose")
@@ -77,13 +80,15 @@ README must immediately communicate:
 **Why This Works**: It doesn't just organize information—it demonstrates our core value through the README itself.
 
 **Structure:**
+
 1. **Value Proposition Hook** (4-5 lines) - The problem we solve + why we're different
 2. **Quick Proof** (3-4 lines) - One concrete example showing flexibility
-3. **Install & Start** (5-7 lines) - `pnpm install` → `lean-spec init` → Done
+3. **Install & Start** (5-7 lines) - `pnpm install` → `harnspec init` → Done
 4. **Core Commands** (5-7 lines) - Most common operations
 5. **Learn More** (2-3 lines) - Links to deeper docs for different audiences
 
 **What Gets Moved:**
+
 - `docs/PHILOSOPHY.md` ← Principles and methodology (the "why LeanSpec exists")
 - `docs/COMMANDS.md` ← Complete command reference
 - `docs/FRONTMATTER.md` ← Frontmatter specification
@@ -94,12 +99,14 @@ README must immediately communicate:
 **Target**: ~100 lines total
 
 **Key Positioning**:
+
 - README itself demonstrates "lean" principle (walks the talk)
 - Hook immediately answers "Is this for me?" (BMAD users asking about documentation = YES, this is for you)
 - Flexibility examples show we're not rigid like competitors
 - Links to detailed docs let researchers and technical leads find depth without overwhelming newcomers
 
 **Pros:**
+
 - Fast scanning for humans
 - Clear next steps based on use case
 - Easier to maintain individual docs
@@ -107,6 +114,7 @@ README must immediately communicate:
 - **Demonstrates our core principle through the README itself** ← This is the real win
 
 **Cons:**
+
 - Requires creating new doc files
 - Need to ensure links are discoverable
 
@@ -132,11 +140,13 @@ Use `<details>` tags to hide advanced content:
 ```
 
 **Pros:**
+
 - Single-file convenience
 - User controls detail level
 - Quick to implement
 
 **Cons:**
+
 - Still visually cluttered when collapsed
 - Harder to maintain large single file
 - Not ideal for deep linking
@@ -155,11 +165,13 @@ Create audience-specific entry points:
 Keep `AGENTS.md` and `CONTRIBUTING.md` at root.
 
 **Pros:**
+
 - Clear audience targeting
 - Each doc has focused purpose
 - Reduces cognitive load
 
 **Cons:**
+
 - More files to navigate
 - Risk of content duplication
 
@@ -247,6 +259,7 @@ The README becomes proof-by-example that LeanSpec solves the exact problems othe
 ## References
 
 Good examples of lean READMEs:
+
 - [Commander.js](https://github.com/tj/commander.js) - Clean, scannable
 - [Chalk](https://github.com/chalk/chalk) - Visual, quick examples
 - [Inquirer](https://github.com/SBoudrias/Inquirer.js) - Progressive disclosure done right

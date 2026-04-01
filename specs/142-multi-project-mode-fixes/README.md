@@ -49,6 +49,7 @@ Critical fixes for multi-project mode issues identified after implementing specs
 **Expected:** URLs should follow pattern `/projects/[projectId]/specs`, `/projects/[projectId]/dependencies`, etc.
 
 **Solution:**
+
 - Ensure all page navigation uses dynamic `[projectId]` route segments
 - Update links in sidebar navigation to include current project ID
 - Implement proper URL updates when switching projects
@@ -60,15 +61,17 @@ Critical fixes for multi-project mode issues identified after implementing specs
 **Expected:** Both modes should use consistent SSR approach.
 
 **Solution:**
+
 - Review `/projects/[projectId]/specs/page.tsx` and ensure it uses `generateMetadata` and server components
 - Apply same SSR patterns used in single-project mode pages
 - Ensure data fetching happens server-side when possible
 
 ### Issue 3: Add Project Popup Path Overflow
 
-**Problem:** Long file paths in the Add Project popup cause horizontal overflow, breaking the UI layout. The path `/Users/marvzhang/projects/codervisor/lean-spec/packages/ui` overflows the container.
+**Problem:** Long file paths in the Add Project popup cause horizontal overflow, breaking the UI layout. The path `/Users/marvzhang/projects/codervisor/harnspec/packages/ui` overflows the container.
 
 **Solution:**
+
 - Add `overflow-hidden` and `text-ellipsis` to path display
 - Use `truncate` class with proper width constraints
 - Add tooltip showing full path on hover
@@ -95,6 +98,7 @@ Critical fixes for multi-project mode issues identified after implementing specs
 **Solution:**
 
 **4a. Hide Main Sidebar:**
+
 ```tsx
 // projects/page.tsx or projects/layout.tsx
 // Use a layout that doesn't include MainSidebar
@@ -102,11 +106,13 @@ Critical fixes for multi-project mode issues identified after implementing specs
 ```
 
 **4b. Fix Paddings/Spacing:**
+
 - Add proper container padding (`p-6` or `p-8`)
 - Improve card grid spacing
 - Add page header with consistent styling
 
 **4c. Enable Project Switching:**
+
 ```tsx
 // Project card click handler
 const handleProjectClick = async (projectId: string) => {
@@ -118,24 +124,28 @@ const handleProjectClick = async (projectId: string) => {
 ## Plan
 
 ### Phase 1: URL Routing Fix
+
 - [ ] Audit current multi-project routing structure
 - [ ] Ensure all sidebar links include `projectId` in path
 - [ ] Verify URL updates correctly on project switch
 - [ ] Test deep linking works (share URL, reload page)
 
 ### Phase 2: SSR Consistency
+
 - [ ] Compare single-project and multi-project page implementations
 - [ ] Migrate data fetching to server components where possible
 - [ ] Add `generateMetadata` for proper SEO/titles
 - [ ] Test initial page load performance
 
 ### Phase 3: Add Project Popup Fix
+
 - [ ] Add path truncation with CSS
 - [ ] Add tooltip for full path
 - [ ] Test with various path lengths
 - [ ] Consider breadcrumb display alternative
 
 ### Phase 4: Projects Page Fixes
+
 - [ ] Create projects-specific layout without sidebar
 - [ ] Add proper page container and spacing
 - [ ] Implement project click → switch + navigate
@@ -144,23 +154,27 @@ const handleProjectClick = async (projectId: string) => {
 ## Test
 
 ### URL Routing
+
 - [ ] `/projects/[id]/specs` loads correct project specs
 - [ ] Sidebar links navigate to project-scoped URLs
 - [ ] Browser back/forward works correctly
 - [ ] Shared URLs load correct project
 
 ### SSR
+
 - [ ] Page source contains initial data (not loading state)
 - [ ] Fast initial load comparable to single-project mode
 - [ ] No hydration mismatch errors in console
 
 ### Add Project Popup
+
 - [ ] Long paths truncate correctly
 - [ ] Full path visible on hover (tooltip)
 - [ ] No horizontal scrollbar appears
 - [ ] Works on various screen sizes
 
 ### Projects Page
+
 - [ ] Main sidebar hidden on /projects
 - [ ] Proper spacing and visual hierarchy
 - [ ] Click project → switches and navigates
@@ -209,12 +223,14 @@ packages/ui/src/app/
 All four issues have been successfully resolved:
 
 **Issue 1: Dynamic Path Routing** ✅
+
 - Updated `MainSidebar` to use project-scoped URLs in multi-project mode
 - Added `getNavUrl()` helper that transforms `/specs` → `/projects/[projectId]/specs`
 - Navigation now properly updates URLs when switching projects
 - Deep linking works correctly (shareable URLs)
 
 **Issue 2: SSR for Multi-Project Pages** ✅
+
 - Created `/projects/[projectId]/dependencies/page.tsx` with SSR
 - Created `/projects/[projectId]/stats/page.tsx` with SSR  
 - Created `/projects/[projectId]/context/page.tsx` with SSR
@@ -222,11 +238,13 @@ All four issues have been successfully resolved:
 - Created corresponding API endpoints in `/api/projects/[id]/*`
 
 **Issue 3: Add Project Popup Path Overflow** ✅
+
 - Added `title={currentPath}` tooltip to breadcrumb container
 - Existing CSS (`overflow-x-auto`, `scrollbar-hide`) already handles overflow
 - Full path visible on hover
 
 **Issue 4: Projects Page UI Issues** ✅
+
 - Created `/projects/layout.tsx` to hide MainSidebar on projects list
 - Updated project click handler to navigate to `/projects/[projectId]/specs`
 - Page already has proper spacing with `container max-w-5xl py-8`

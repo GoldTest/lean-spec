@@ -31,7 +31,7 @@ transitions:
 
 > **Status**: 🚧 In Progress · **Priority**: High · **Created**: 2025-11-17 · **Tags**: web, ai, ux, v0.3.0
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -42,7 +42,8 @@ Add an **AI agentic system** to `@leanspec/ui` (Vite SPA) that uses native Rust 
 
 **Core Value**: Transform the web UI into a fully interactive spec management platform powered by AI tools. The chatbot acts as an **intelligent agent** that executes LeanSpec operations (create, update, search, link, validate) and basic utilities (web search, calculations) through function calling.
 
-**Key Unlock**: 
+**Key Unlock**:
+
 - **Developers**: Manage specs without leaving the browser
 - **Non-technical users**: Participate in SDD workflow through conversation
 - **Everyone**: AI handles complex operations (dependency graphs, bulk updates, validation)
@@ -52,19 +53,22 @@ Add an **AI agentic system** to `@leanspec/ui` (Vite SPA) that uses native Rust 
 **The core gap**: `@leanspec/ui` is currently **partially interactive**. Users can browse and view specs, edit some metadata, but cannot create specs or perform complex operations without switching to CLI or VS Code.
 
 **Current limitations** (as of UI Vite SPA):
-- ❌ **No spec creation** - Must drop to terminal: `lean-spec create ...`
-- ❌ **No status updates via chat** - Must use CLI: `lean-spec update 082 --status complete`
+
+- ❌ **No spec creation** - Must drop to terminal: `harnspec create ...`
+- ❌ **No status updates via chat** - Must use CLI: `harnspec update 082 --status complete`
 - ✅ **Metadata editing** - Can change priority, tags via UI (added in spec 187)
 - ❌ **No content editing** - Can't modify spec README or sub-specs
 - ✅ **Interactive browsing** - Can view, search, filter, edit metadata
 
 **The bigger problem**: Write operations are **locked behind developer tools**:
+
 - Non-technical users (PMs, designers) can't participate
 - Requires context switch (browser → terminal → IDE → back to browser)
 - Mobile users completely blocked from management tasks
 - No path for casual contributors
 
 **User Pain Points**:
+
 - "I'm viewing spec 082 - can I mark it complete?" → No, need terminal
 - "Let me create a spec for API rate limiting..." → Can't, need CLI
 - "This spec's priority should be high" → Can't change it here
@@ -97,6 +101,7 @@ Browser (UI) via useChat
 ```
 
 **Key modules**:
+
 - `rust/leanspec-core/src/ai_native/chat.rs` - streaming chat
 - `rust/leanspec-core/src/ai_native/tools/mod.rs` - LeanSpec tool registry
 - `rust/leanspec-http/src/handlers/chat_handler.rs` - `/api/chat` SSE handler
@@ -110,6 +115,7 @@ Browser (UI) via useChat
 **Purpose**: Standalone Node.js server that provides AI chatbot capabilities via AI SDK
 
 **Package Structure**:
+
 ```
 @leanspec/chat-server/
 ├── package.json
@@ -131,6 +137,7 @@ Browser (UI) via useChat
 ```
 
 **Build Process**:
+
 ```json
 // package.json scripts
 {
@@ -144,6 +151,7 @@ Browser (UI) via useChat
 ```
 
 **Installation**:
+
 ```bash
 # As standalone tool
 npm install -g @leanspec/chat-server
@@ -155,11 +163,13 @@ node node_modules/@leanspec/chat-server/dist/index.js
 ```
 
 **Relationship to Other Packages**:
+
 - `@leanspec/http-server` (Rust): Proxies `/api/chat` requests to this package
 - `@leanspec/ui` (Vite): optionalDependency, uses chat via HTTP proxy
 - `@leanspec/desktop` (Tauri): optionalDependency, starts as subprocess if AI features enabled
 
 **Version Synchronization**:
+
 - All packages share same version from root `package.json`
 - Updated by `pnpm sync-versions` script
 - Published together during release
@@ -167,6 +177,7 @@ node node_modules/@leanspec/chat-server/dist/index.js
 ### Architecture
 
 **Tech Stack**:
+
 - **AI SDK** v6 (`ai`, `@ai-sdk/react`) - Universal AI abstraction with streaming + tool calling
 - **AI Elements** - Pre-built shadcn chat components (`ai-elements`)
 - **Zod** - Schema validation for tool inputs
@@ -174,6 +185,7 @@ node node_modules/@leanspec/chat-server/dist/index.js
 - **Transport**: Server-sent events (SSE) for streaming
 
 **Backend Architecture** (Node.js Sidecar + Rust Proxy):
+
 ```
 Browser → Rust HTTP Server (:3030) → Node.js Chat Server (socket/port) → AI Provider
               ↓                              ↓
@@ -181,11 +193,13 @@ Browser → Rust HTTP Server (:3030) → Node.js Chat Server (socket/port) → A
 ```
 
 **IPC Communication**:
+
 - **Default**: Unix socket (`/tmp/leanspec-chat.sock`) - 30% faster, more secure, no port conflicts
 - **Fallback**: HTTP with dynamic port - Node.js picks available port, writes to config file
 - **Configuration**: `LEANSPEC_CHAT_SOCKET` or `LEANSPEC_CHAT_TRANSPORT=http`
 
 **Why Node.js Sidecar?**
+
 - ✅ 3 days vs 10 days development time (70% faster than Rust-only)
 - ✅ Battle-tested streaming + tool calling (AI SDK handles edge cases)
 - ✅ Multi-provider support (50+ models out of the box)
@@ -195,6 +209,7 @@ Browser → Rust HTTP Server (:3030) → Node.js Chat Server (socket/port) → A
 See [NOTES.md](./NOTES.md) for detailed architecture analysis.
 
 **Component Structure**:
+
 ```
 packages/
 ├── chat-server/                  # NEW: Standalone npm package
@@ -221,6 +236,7 @@ rust/leanspec-http/src/handlers/  # Rust HTTP server (proxies chat)
 ```
 
 **Data Flow**:
+
 ```
 Browser (UI)
   ↓ POST /api/chat { messages: [...] }
@@ -236,6 +252,7 @@ Browser (UI) via useChat hook
 ### Chat UI/UX
 
 **Key Components** (from `ai-elements`):
+
 - `<Conversation>` - Chat container with auto-scroll
 - `<Message>` - User/assistant bubbles with actions (copy, retry, feedback)
 - `<PromptInput>` - Multi-line input with send button
@@ -248,6 +265,7 @@ Browser (UI) via useChat hook
 ### AI Tools (Function Calling)
 
 **LeanSpec Tools** (10 core operations):
+
 1. `list_specs` - Filter by status/priority/tags
 2. `search_specs` - Semantic search
 3. `get_spec` - Fetch full spec by ID/name
@@ -260,6 +278,7 @@ Browser (UI) via useChat hook
 10. `run_subagent` - Dispatch task to a runner
 
 **Content Editing Tools** (5 operations):
+
 1. `edit_spec_section` - Update Overview/Design/Plan/Test/Notes
 2. `update_checklist_item` - Toggle checklist items
 3. `append_to_section` - Add without overwriting
@@ -267,6 +286,7 @@ Browser (UI) via useChat hook
 5. `get_spec_content` - Retrieve for context-aware edits
 
 **Tool Definition Pattern**:
+
 ```typescript
 import { tool } from 'ai';
 import { z } from 'zod';
@@ -290,6 +310,7 @@ All tools call Rust REST APIs (`/api/specs`, `/api/search`, etc.)
 ### Multi-Step Orchestration
 
 **Configuration**:
+
 ```typescript
 import { streamText, stepCountIs } from 'ai';
 
@@ -306,6 +327,7 @@ const result = await streamText({
 ```
 
 **Example Flow**:
+
 ```
 User: "Create API rate limiting spec and link to 082"
 → Step 1: create_spec() → { id: 95 }
@@ -333,6 +355,7 @@ Context economy: stay focused.`;
 ## Plan
 
 ### Native Rust Plan (Current)
+
 - [x] Native Rust chat streaming (`ai_native/chat.rs`)
 - [x] Provider integration (OpenAI/Anthropic)
 - [x] Tool registry with 14 tools (including `run_subagent`)
@@ -345,6 +368,7 @@ Context economy: stay focused.`;
 ### Legacy Node.js Plan (Deprecated)
 
 ### Phase 1: Node.js Chat Server Package Setup (2 days)
+
 - [x] Create `packages/chat-server` package with standalone build
 - [x] Add package.json with proper bin entry: `"bin": { "leanspec-chat": "./dist/index.js" }`
 - [x] Install: `pnpm add ai @ai-sdk/openai zod express`
@@ -359,6 +383,7 @@ Context economy: stay focused.`;
 - [x] Add to `pnpm-workspace.yaml`
 
 ### Phase 2: CI/CD Integration (1 day)
+
 - [ ] Add `build-chat-server` job to `.github/workflows/publish.yml`
 - [ ] Add unit tests: `vitest` for tool schemas and prompts
 - [ ] Add integration tests: Mock AI SDK streaming
@@ -367,6 +392,7 @@ Context economy: stay focused.`;
 - [ ] Test dev version publish: `gh workflow run publish.yml --field dev=true`
 
 ### Phase 3: Rust HTTP Proxy Handler (1 day)
+
 - [x] Add dependencies to `rust/leanspec-http/Cargo.toml`: `hyperlocal`, `reqwest`
 - [x] Create `rust/leanspec-http/src/handlers/chat.rs`
 - [x] Implement `ChatServerConfig::from_env()` (reads socket/port config)
@@ -375,6 +401,7 @@ Context economy: stay focused.`;
 - [ ] Test: Browser calls `/api/chat` → Node.js responds via proxy
 
 ### Phase 4: Tool Implementation (3 days)
+
 - [x] Create `packages/chat-server/src/tools/leanspec-tools.ts`
 - [x] Implement 9 core tools: list, search, get, create, update, link, deps, stats, validate
 - [x] Implement 5 content editing tools: edit_section, update_checklist, append, edit_subspec, get_content
@@ -383,6 +410,7 @@ Context economy: stay focused.`;
 - [ ] Test: Each tool via curl to `/api/chat` (through Rust proxy)
 
 ### Phase 5: Chat UI Components (2 days)
+
 - [x] Install in UI package: `pnpm add ai @ai-sdk/react`
 - [ ] Run: `npx ai-elements@latest` (installs shadcn components)
 - [x] Create `/chat` route in Vite router
@@ -393,6 +421,7 @@ Context economy: stay focused.`;
 - [ ] Test: Send message → stream response → tool execution
 
 ### Phase 6: Multi-Step & Polish (2 days)
+
 - [x] Add `stopWhen: stepCountIs(10)` to Node.js server
 - [x] Implement system prompt with LeanSpec rules
 - [x] Add model picker UI (GPT-4o, Claude, Deepseek)
@@ -403,6 +432,7 @@ Context economy: stay focused.`;
 - [x] Loading states and retry logic
 
 ### Phase 7: Process Management (1 day)
+
 - [x] Add development script: `pnpm dev:all` (concurrently runs HTTP + chat + UI)
 - [ ] Docker Compose configuration for production deployment
 - [ ] Systemd service files for self-hosted deployment
@@ -411,6 +441,7 @@ Context economy: stay focused.`;
 - [ ] Graceful shutdown handling
 
 ### Phase 8: Testing & Documentation (1 day)
+
 - [ ] E2E tests: create spec, update status, link deps via chat
 - [ ] Load test: 50 concurrent chat sessions
 - [ ] Document in main README: setup, env vars, model selection
@@ -419,6 +450,7 @@ Context economy: stay focused.`;
 - [ ] Verify: Dev and stable release workflows work end-to-end
 
 ### Phase 9: Optional - Desktop Integration (Future)
+
 - [x] Add `@leanspec/chat-server` as optional dependency to desktop
 - [ ] Implement ChatServerManager in Rust for subprocess management
 - [ ] Add feature flag: `cargo build --features ai-chat`
@@ -431,6 +463,7 @@ Context economy: stay focused.`;
 ### Quick Reference
 
 **Package Structure**:
+
 - `@leanspec/chat-server` - Standalone Node.js package (AI SDK + tools)
 - `@leanspec/http-server` - Rust HTTP server (proxies `/api/chat`)
 - `@leanspec/ui` - Vite SPA (optional dependency on chat-server)
@@ -438,12 +471,14 @@ Context economy: stay focused.`;
 **Publishing Order**: Platform binaries → chat-server → main packages
 
 **Deployment Options**:
+
 - Local dev: 3 processes (HTTP + chat + UI)
 - Production: Docker Compose with Unix socket
 - Desktop: Optional subprocess if AI features enabled
 - Self-hosted: systemd services
 
 **Environment Variables**:
+
 ```bash
 # IPC
 LEANSPEC_CHAT_SOCKET=/tmp/leanspec-chat.sock  # Unix socket (default)
@@ -459,6 +494,7 @@ MAX_STEPS=10
 ```
 
 **See [IMPLEMENTATION.md](./IMPLEMENTATION.md) for**:
+
 - Complete CI/CD pipeline configuration
 - Process management strategies
 - Docker Compose and systemd examples
@@ -468,6 +504,7 @@ MAX_STEPS=10
 ## Test
 
 ### CI/CD Verification
+
 - [ ] Dev version publish workflow succeeds: `gh workflow run publish.yml --field dev=true`
 - [ ] Chat-server package builds successfully in CI
 - [ ] Chat-server tests pass with mocked AI provider
@@ -477,6 +514,7 @@ MAX_STEPS=10
 - [ ] Stable release workflow publishes all packages with same version
 
 ### Manual Testing
+
 - [ ] User can open/close chat panel
 - [ ] Chat persists across page navigation
 - [ ] All tools execute correctly
@@ -485,6 +523,7 @@ MAX_STEPS=10
 - [ ] Error states: chat server unavailable, API key missing, tool execution fails
 
 ### Automated Testing
+
 - [ ] Unit tests for tool handlers (Zod schema validation)
 - [ ] Integration tests for API route (mocked AI SDK)
 - [ ] E2E tests for common queries:
@@ -495,12 +534,14 @@ MAX_STEPS=10
 - [ ] Process management tests: health checks, restarts
 
 ### Performance Testing
+
 - [ ] Response time <2s for simple queries
 - [ ] Streaming starts within 500ms
 - [ ] No memory leaks in long chat sessions
 - [ ] Chat panel loads without blocking main UI
 
 ### Success Criteria
+
 - ✅ Users can complete all spec CRUD operations via chat
 - ✅ Chat feels "instant" (streaming UX)
 - ✅ 80%+ accuracy on natural language queries
@@ -511,6 +552,7 @@ MAX_STEPS=10
 ### Progress Notes
 
 **2026-02-04**
+
 - Verified native Rust AI chat streaming and tool registry.
 - Added `run_subagent` tool for runner dispatch.
 - Tests: `cargo test -p leanspec-core --features full`.

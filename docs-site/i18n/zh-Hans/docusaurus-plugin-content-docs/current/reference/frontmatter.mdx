@@ -29,7 +29,7 @@ HarnSpec frontmatter字段的完整参考。
 **格式：** `YYYY-MM-DD`  
 **描述：** Spec创建的日期
 
-由 `lean-spec create` 自动填充。
+由 `harnspec create` 自动填充。
 
 ## 可选字段
 
@@ -54,7 +54,7 @@ tags: [api, security, mvp]
 **类型：** `array`  
 **描述：** 硬依赖（方向阻塞）
 
-在依赖完成之前Spec无法开始。在 `lean-spec deps` 中方向显示。
+在依赖完成之前Spec无法开始。在 `harnspec deps` 中方向显示。
 
 **示例：**
 ```yaml
@@ -78,7 +78,7 @@ depends_on: [018-spec-validation]
 
 ## 自定义字段
 
-在 `.lean-spec/config.json` 中定义：
+在 `.harnspec/config.json` 中定义：
 
 ```json
 {

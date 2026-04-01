@@ -35,7 +35,8 @@ Is the spec over 300 lines?
 
 ## Distinct Concerns (Worthy of Split)
 
-### Worthy of separate file:
+### Worthy of separate file
+
 - Detailed configuration (JSON schemas, examples >50 lines)
 - Extensive test strategy (beyond simple checklist)
 - Multi-phase implementation (>6 phases)
@@ -44,7 +45,8 @@ Is the spec over 300 lines?
 - Migration strategy (from old to new approach)
 - API specifications (endpoints, schemas, validation)
 
-### Not worthy of separate file:
+### Not worthy of separate file
+
 - Simple plan with 3-4 steps
 - Basic testing checklist
 - Short code snippets (<20 lines)
@@ -53,21 +55,25 @@ Is the spec over 300 lines?
 ## Progressive Disclosure Stages
 
 ### Stage 1: Single File (Most Specs - <300 lines)
+
 - Use standard template
 - Keep under ~300 lines
 - If it fits comfortably, don't split
 
 ### Stage 2: Growing Complexity (Some Specs - 300-400 lines)
+
 - Approaching complexity threshold
 - Multiple distinct concerns emerging
 - Consider splitting, but don't force it
 
 ### Stage 3: Complex Feature (Few Specs - >400 lines)
+
 - Over 400 lines or multiple major concerns
 - Use sub-spec files (spec 012)
 - Split by concern, not arbitrarily
 
 ### Stage 4: Epic/Multi-Phase (Rare - >600 lines)
+
 - Multi-month initiative
 - Consider whether it should be multiple specs instead
 - Or use sub-specs with phase-based breakdown
@@ -121,6 +127,7 @@ README.md: Entry point, links to details
 ```
 
 **Benefits**:
+
 - Each file fits in <1 screen
 - Can edit one concern without touching others
 - Reduces corruption risk (smaller, focused edits)
@@ -130,10 +137,10 @@ README.md: Entry point, links to details
 
 ## Future Tooling
 
-### Detection: `lean-spec check --complexity`
+### Detection: `harnspec check --complexity`
 
 ```bash
-$ lean-spec check --complexity
+$ harnspec check --complexity
 
 Complexity Analysis:
   ⚠ 3 specs may be too complex:
@@ -155,35 +162,36 @@ Complexity Analysis:
 Recommendations:
   - Review specs over 400 lines
   - Use sub-spec files (spec 012) to split concerns
-  - See: lean-spec view 012 for guidance
+  - See: harnspec view 012 for guidance
 ```
 
 ### Guided Splitting (v0.3.0+)
 
 ```bash
 # Analyze spec complexity
-lean-spec check --complexity
+harnspec check --complexity
 
 # Guided splitting
-lean-spec split 018 --interactive
+harnspec split 018 --interactive
   → Analyzes structure
   → Suggests split strategy
   → Creates sub-spec files
   → Moves content appropriately
 
 # View sub-specs
-lean-spec view 018            # Shows README.md
-lean-spec view 018 --all      # Lists all sub-specs
-lean-spec view 018/DESIGN     # Views specific sub-spec
+harnspec view 018            # Shows README.md
+harnspec view 018 --all      # Lists all sub-specs
+harnspec view 018/DESIGN     # Views specific sub-spec
 
 # Open in editor
-lean-spec open 018            # Opens README.md
-lean-spec open 018 --files    # Opens all sub-specs
+harnspec open 018            # Opens README.md
+harnspec open 018 --files    # Opens all sub-specs
 ```
 
 ## Warning Signs
 
 Your spec might be too complex if:
+
 - ⚠️ It takes >10 minutes to read through
 - ⚠️ You can't summarize it in 2 paragraphs
 - ⚠️ Recent edits caused corruption

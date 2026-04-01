@@ -20,6 +20,7 @@ updated_at: 2026-01-20T03:16:27.831295218Z
 Use LLMs to detect semantic corruption in specs that programmatic validation can't catch (contradictions, incomplete thoughts, content in wrong section, etc.). Complements structural validation with understanding of logical consistency.
 
 **The Problem:**
+
 - Programmatic validation catches structural issues (syntax, formatting)
 - But misses semantic issues that "look good but aren't logically right"
 - Examples: contradictions, incomplete sentences, wrong section placement
@@ -29,6 +30,7 @@ Use LLMs to detect semantic corruption in specs that programmatic validation can
 Send spec content to LLM for semantic analysis, get structured feedback on logical issues.
 
 **Key Principles:**
+
 - **Opt-in** - Costs money, requires API key
 - **Token efficient** - Only send spec content, use cheap models
 - **Actionable** - LLM provides specific suggestions
@@ -40,6 +42,7 @@ Send spec content to LLM for semantic analysis, get structured feedback on logic
 ### What LLMs Catch That Regex Can't
 
 #### 1. Logical Contradictions
+
 ```markdown
 ## Overview
 This feature adds dark mode support.
@@ -47,9 +50,11 @@ This feature adds dark mode support.
 ## Design
 We won't implement theming in this version.
 ```
+
 → LLM detects: Overview says "adds dark mode" but Design says "won't implement"
 
 #### 2. Content in Wrong Section
+
 ```markdown
 ## Overview
 We'll use React hooks and Context API for state management...
@@ -58,18 +63,22 @@ We'll use React hooks and Context API for state management...
 ## Design
 [Empty]
 ```
+
 → LLM detects: Implementation details belong in Design, not Overview
 
 #### 3. Incomplete Thoughts
+
 ```markdown
 ## Plan
 - [ ] Set up authentication
 - [ ] Create user model
 - [ ] The API endpoint should
 ```
+
 → LLM detects: Incomplete sentence, likely corruption
 
 #### 4. Semantic Duplicates
+
 ```markdown
 ## Design
 We'll use JWT tokens for authentication.
@@ -77,9 +86,11 @@ We'll use JWT tokens for authentication.
 ## Implementation
 Authentication will be handled via JWT tokens.
 ```
+
 → LLM detects: Same concept repeated, likely copy-paste
 
 #### 5. Missing Logical Connections
+
 ```markdown
 ## Overview
 Add real-time notifications.
@@ -87,12 +98,15 @@ Add real-time notifications.
 ## Plan
 - [ ] Set up Redis
 ```
+
 → LLM detects: Gap - why Redis? No explanation
 
 #### 6. Status Mismatches
+
 ```yaml
 status: complete
 ```
+
 ```markdown
 ## Plan
 - [ ] Start implementation (unchecked)
@@ -100,6 +114,7 @@ status: complete
 ## Test
 [Empty section]
 ```
+
 → LLM detects: Marked complete but incomplete content
 
 ### LLM Validator Implementation
@@ -314,17 +329,20 @@ export class ValidationCache {
 ### Cost Estimation
 
 **Per validation:**
+
 - Spec content: ~1,000 tokens (average)
 - Prompt overhead: ~300 tokens
 - Response: ~500 tokens
 - **Total: ~1,800 tokens**
 
 **Pricing (gpt-4o-mini):**
+
 - Input: $0.15 / 1M tokens = $0.00027 per spec
 - Output: $0.60 / 1M tokens = $0.0003 per spec
 - **Total: ~$0.0006 per spec**
 
 **With caching:**
+
 - Unchanged specs: $0 (cached)
 - Only validate on actual changes
 - **Realistic cost: < $0.01 per week for typical project**
@@ -340,7 +358,7 @@ export class ValidationCache {
   - [ ] Local Ollama
 - [ ] Create validation prompt (prompt engineering)
 - [ ] Add result caching with content hashing
-- [ ] Add CLI command: `lean-spec validate --semantic <spec>`
+- [ ] Add CLI command: `harnspec validate --semantic <spec>`
 - [ ] Write tests (20+ test cases)
 - [ ] Add cost estimation to docs
 - [ ] Integration with file watcher (opt-in)
@@ -349,6 +367,7 @@ export class ValidationCache {
 ## Test
 
 ### Semantic Detection Tests
+
 - [ ] Detects contradictions across sections
 - [ ] Detects content in wrong section
 - [ ] Detects incomplete thoughts
@@ -358,6 +377,7 @@ export class ValidationCache {
 - [ ] No false positives on valid specs
 
 ### Provider Tests
+
 - [ ] Works with OpenAI
 - [ ] Works with Anthropic
 - [ ] Works with LeanSpec Models
@@ -365,6 +385,7 @@ export class ValidationCache {
 - [ ] Gracefully degrades when unavailable
 
 ### Performance Tests
+
 - [ ] Average validation < 5 seconds
 - [ ] Caching reduces redundant calls
 - [ ] Token usage within expected bounds
@@ -373,17 +394,20 @@ export class ValidationCache {
 ## Notes
 
 **When to Use:**
-- Run manually with `lean-spec validate --semantic <spec>`
+
+- Run manually with `harnspec validate --semantic <spec>`
 - Run in CI/CD before merging (block corrupted specs)
 - Run on-demand from file watcher (user's choice)
 - **Don't** run automatically on every file change (too expensive)
 
 **Privacy:**
+
 - Only spec content is sent to LLM (no workspace/code)
 - Users can choose local models (Ollama) for full privacy
 - No data retention (one-time API call)
 
 **Future Enhancements:**
+
 - Fine-tuned model specifically for LeanSpec
 - Learn from user feedback (thumbs up/down)
 - Context-aware validation (project-specific conventions)

@@ -17,16 +17,17 @@ updated_at: 2026-01-16T06:37:09.341622Z
 
 > **Status**: 🗓️ Planned · **Priority**: High · **Created**: 2025-11-20 · **Tags**: init, templates, ai-agents, dx
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
 ### Problem: Generic AGENTS.md Doesn't Fit All Projects
 
-When users run `lean-spec init` on their projects, the generated `AGENTS.md` is **too generic** and misses critical project-specific context:
+When users run `harnspec init` on their projects, the generated `AGENTS.md` is **too generic** and misses critical project-specific context:
 
 **Example: agent-relay (Self-hosted AI orchestration platform)**
+
 - ❌ **Missing**: How to run agent-relay locally (docker-compose, env vars, API keys)
 - ❌ **Missing**: Security guidance (API key exposure, network access, authentication)
 - ❌ **Missing**: MCP server config for local deployment (port, auth, environment)
@@ -93,13 +94,15 @@ When users run `lean-spec init` on their projects, the generated `AGENTS.md` is 
 ### Why This Matters
 
 **Impact on AI Agent Experience**:
+
 - 😞 **Without context**: Agent doesn't know how to run/test the project
 - 😞 **Without security**: Agent may suggest insecure patterns
 - 😞 **Without MCP config**: Agent can't help with integration
 - 😃 **With context**: Agent provides project-appropriate guidance
 
 **User Frustration**:
-- Must manually edit `AGENTS.md` after `lean-spec init`
+
+- Must manually edit `AGENTS.md` after `harnspec init`
 - High-value information (README, architecture) not leveraged
 - Generic guidance feels disconnected from actual project needs
 
@@ -113,7 +116,8 @@ When users run `lean-spec init` on their projects, the generated `AGENTS.md` is 
 
 ### Success Criteria
 
-After `lean-spec init` on any project:
+After `harnspec init` on any project:
+
 - ✅ `AGENTS.md` includes project purpose from README.md
 - ✅ Development setup steps extracted from README.md
 - ✅ Security guidance for projects handling secrets/auth
@@ -127,7 +131,7 @@ After `lean-spec init` on any project:
 
 **High-Level Flow**:
 
-    lean-spec init
+    harnspec init
       ↓
     1. Detect project type (web, CLI, library, service, orchestration)
     2. Parse README.md for:
@@ -146,6 +150,7 @@ After `lean-spec init` on any project:
 ### Project Type Detection
 
 **Heuristics** (check in order):
+
 1. **Orchestration Platform**: Keywords in README (orchestration, agent relay, multi-agent)
 2. **Web Service**: Has `docker-compose.yml` or port bindings
 3. **CLI Tool**: Has `bin/` folder or CLI keywords in README
@@ -154,6 +159,7 @@ After `lean-spec init` on any project:
 6. **Unknown**: Fall back to generic template
 
 **What Changes Per Type**:
+
 | Type | Security | Dev Setup | MCP Config | Examples |
 |------|----------|-----------|------------|----------|
 | Orchestration | ✅ High (secrets) | ✅ Docker/env | ✅ Port/auth | Agent patterns |
@@ -174,7 +180,7 @@ Uses available LLM providers in priority order (with user permission):
    - No configuration needed - works out of the box
    - Privacy-focused: README analysis only, no data retention
    - Rate-limited per user (fair usage)
-   
+
 2. **User API Keys** (detected from environment)
    - `OPENAI_API_KEY` → User selects model (gpt-5-mini, gpt-5.1, etc.)
    - `ANTHROPIC_API_KEY` → User selects model (claude-3-5-haiku, claude-3-5-sonnet, etc.)
@@ -182,7 +188,7 @@ Uses available LLM providers in priority order (with user permission):
    - **Model selection**: Interactive prompt or config file preference
    - User can opt-out (falls back to regex)
    - Useful when LeanSpec Models rate-limited or unavailable
-   
+
 3. **Fallback: Simple Regex Extraction**
    - No LLM available or user declined
    - Find first paragraph (project description)
@@ -191,7 +197,8 @@ Uses available LLM providers in priority order (with user permission):
    - Still functional, just less smart
 
 **LeanSpec Models API**:
-- Endpoint: `https://api.lean-spec.dev/v1/analyze-project`
+
+- Endpoint: `https://api.harnspec.dev/v1/analyze-project`
 - Method: POST with README content + project files list
 - Response: Structured ProjectContext JSON
 - Free tier: 100 requests/day per IP
@@ -199,7 +206,7 @@ Uses available LLM providers in priority order (with user permission):
 
 **Permission Flow**:
 
-    $ lean-spec init
+    $ harnspec init
     
     ✓ Analyzing project with LeanSpec Models...
     ✓ Generated project-specific AGENTS.md
@@ -217,6 +224,7 @@ Uses available LLM providers in priority order (with user permission):
     Choice [1-2, or n to skip]:
 
 **Why This Approach**:
+
 - ✅ **Zero config**: Works immediately for all users
 - ✅ **Free**: LeanSpec Models free tier (GitHub Models backend)
 - ✅ **Privacy**: Explicit privacy policy, no data retention
@@ -226,6 +234,7 @@ Uses available LLM providers in priority order (with user permission):
 - ✅ **Always functional**: Regex fallback
 
 **LLM Provider Priority**:
+
 1. LeanSpec Models (free, no config, official, any backend model)
 2. User's OpenAI key (with permission + model selection, ~$0.002-0.009/analysis)
 3. User's Anthropic key (with permission + model selection, ~$0.002-0.01/analysis)
@@ -514,14 +523,17 @@ Handlebars template content:
 ### Alternative Approaches Considered
 
 **A. Always Use External LLM (OpenAI/Anthropic)**
+
 - Require API key for smart generation
 - ❌ **Rejected**: Adds friction, costs money, not accessible to all users
 
 **B. Direct GitHub Models Integration**
+
 - Integrate GitHub Models directly in CLI
 - ❌ **Rejected**: Requires users to have Copilot subscription, less accessible
 
 **C. LeanSpec Models Proxy (Official API)** ✅ **CHOSEN**
+
 - Official LeanSpec API powered by GitHub Models
 - ✅ **Zero config**: Works for all users out of the box
 - ✅ **Free**: Free tier for all users (100/day)
@@ -532,15 +544,18 @@ Handlebars template content:
 - ✅ **Always works**: Multiple fallback layers
 
 **D. User API Keys Only**
+
 - Only support user-provided API keys
 - ❌ **Rejected**: Too much friction for new users
 
 **E. Regex-Only (No LLM)**
+
 - Parse README with string matching only
 - ❌ **Rejected**: Less accurate, misses edge cases
 - ✅ **Kept as final fallback**: When all LLMs fail
 
 **F. User Questionnaire (Interactive)**
+
 - Ask user questions instead of analyzing README
 - ❌ **Rejected**: Friction, breaks quick start
 - ⚠️ Could be optional `--interactive` mode
@@ -550,6 +565,7 @@ Handlebars template content:
 ## Plan
 
 ### Phase 1: LeanSpec Models API (Week 1-2)
+
 - [ ] **Backend API Setup** (separate repo/service)
   - [ ] Create Next.js API route `/api/v1/analyze-project`
   - [ ] Integrate multiple LLM backends (GitHub Models primary, OpenAI/Anthropic fallback)
@@ -585,6 +601,7 @@ Handlebars template content:
 - [ ] Update `build-agents-templates.ts` to support dynamic sections
 
 ### Phase 2: Init Integration (Week 2-3)
+
 - [ ] Modify `init.ts` to call LeanSpec Models API
 - [ ] Add graceful degradation (API → User Keys → Regex)
 - [ ] Implement loading indicators ("Analyzing project...")
@@ -597,15 +614,17 @@ Handlebars template content:
 - [ ] Test on multiple project types
 
 ### Phase 3: Template Configs (Week 2)
+
 - [ ] Update `minimal/agents-config.json` (skip advanced sections)
 - [ ] Update `standard/agents-config.json` (include all sections)
 - [ ] Update `enterprise/agents-config.json` (enhanced security)
 - [ ] Add `projectAnalysis` config option (enable/disable per template)
 
 ### Phase 4: Testing & Validation (Week 2-3)
+
 - [ ] Test on sample projects:
   - [ ] agent-relay (orchestration platform)
-  - [ ] lean-spec itself (CLI tool)
+  - [ ] harnspec itself (CLI tool)
   - [ ] Simple web service
   - [ ] Library project
 - [ ] Verify AGENTS.md quality for each type
@@ -613,6 +632,7 @@ Handlebars template content:
 - [ ] Validate MCP configs are correct
 
 ### Phase 5: Documentation (Week 3)
+
 - [ ] Update init command docs
 - [ ] Add "Project Analysis" section to AGENTS.md guide
 - [ ] Document security guidance patterns
@@ -620,7 +640,8 @@ Handlebars template content:
 - [ ] Update CONTRIBUTING.md with template authoring guide
 
 ### Phase 6: Future Enhancements (Backlog)
-- [ ] `lean-spec enhance-agents` command (manual refinement)
+
+- [ ] `harnspec enhance-agents` command (manual refinement)
 - [ ] LeanSpec Models paid tier (unlimited requests, priority)
 - [ ] Support more LLM providers (Gemini, Mistral, local models)
 - [ ] Template marketplace (community templates)
@@ -632,6 +653,7 @@ Handlebars template content:
 ## Test
 
 ### LLM Provider Selection
+
 - [ ] Correctly prioritizes LeanSpec Models (free, zero-config)
 - [ ] Falls back to user API keys when LeanSpec Models unavailable
 - [ ] Detects `OPENAI_API_KEY` environment variable
@@ -642,6 +664,7 @@ Handlebars template content:
 - [ ] Falls back to regex when all LLM providers unavailable
 
 ### LeanSpec Models API
+
 - [ ] API endpoint responds correctly
 - [ ] Rate limiting works (100 req/day per IP)
 - [ ] Handles timeouts gracefully (5s max)
@@ -650,6 +673,7 @@ Handlebars template content:
 - [ ] Privacy policy accessible and clear
 
 ### README.md Parsing
+
 - [ ] Extracts first paragraph as project description
 - [ ] Finds development setup sections
 - [ ] Extracts setup commands from code blocks
@@ -657,6 +681,7 @@ Handlebars template content:
 - [ ] Handles missing README.md gracefully
 
 ### Security Context Detection
+
 - [ ] Flags projects with API key references
 - [ ] Flags projects with docker-compose (network access)
 - [ ] Flags projects with authentication keywords
@@ -664,6 +689,7 @@ Handlebars template content:
 - [ ] Skips security section for simple libraries
 
 ### MCP Config Generation
+
 - [ ] Generates correct port numbers
 - [ ] Includes environment variables
 - [ ] Handles authentication requirements
@@ -671,6 +697,7 @@ Handlebars template content:
 - [ ] Skips MCP section for non-service projects
 
 ### Template Integration
+
 - [ ] Generated AGENTS.md validates (no broken syntax)
 - [ ] All substitution variables resolved
 - [ ] Conditional sections render correctly
@@ -678,7 +705,8 @@ Handlebars template content:
 - [ ] File size remains under 2,000 tokens
 
 ### End-to-End Workflow
-- [ ] `lean-spec init` on agent-relay produces useful AGENTS.md
+
+- [ ] `harnspec init` on agent-relay produces useful AGENTS.md
 - [ ] LeanSpec Models API called automatically (no config needed)
 - [ ] Loading indicator shows during analysis
 - [ ] Falls back gracefully when API unavailable
@@ -696,12 +724,14 @@ Handlebars template content:
 ### Design Decisions
 
 **Why README.md as Primary Source?**
+
 - Already maintained by developers
 - High-quality project description
 - Contains setup instructions developers actually use
 - No additional maintenance burden
 
 **Why LeanSpec Models (Official API)?**
+
 - Zero configuration - works out of the box
 - Free tier for all users (100 requests/day)
 - Privacy-focused with clear policies
@@ -709,6 +739,7 @@ Handlebars template content:
 - Sustainable business model potential
 
 **Why Conditional Sections in Template?**
+
 - Avoids bloat for simple projects (libraries don't need security section)
 - Allows template evolution (add sections without breaking existing)
 - Clear separation between generic and project-specific content
@@ -716,8 +747,8 @@ Handlebars template content:
 ### Open Questions
 
 1. **How to handle evolving README.md?**
-   - Option A: Re-run `lean-spec init` (destructive)
-   - Option B: `lean-spec update-agents` command (non-destructive)
+   - Option A: Re-run `harnspec init` (destructive)
+   - Option B: `harnspec update-agents` command (non-destructive)
    - **Decision**: Implement update-agents in Phase 6
 
 2. **Should we parse package.json / requirements.txt?**
@@ -756,12 +787,14 @@ Handlebars template content:
 ### Related Work
 
 **Existing Specs**:
+
 - `003-init-system-redesign` (archived) - Original init design
 - `073-template-engine-agents-md` (complete) - Current template engine
 - `086-template-component-deduplication` (complete) - Component architecture
 - `072-ai-agent-first-use-workflow` (planned) - Discovery commands improvement
 
 **Dependencies**:
+
 - Requires existing template engine (spec 073) ✅ Complete
 - Requires component-based templates (spec 086) ✅ Complete
 - Compatible with existing init flow (spec 003) ✅
@@ -769,6 +802,7 @@ Handlebars template content:
 ### Success Metrics
 
 **Quantitative**:
+
 - Generated AGENTS.md includes 80%+ project-specific content (when using LLM)
 - Security section present for 90%+ projects handling secrets
 - MCP config accuracy: 95%+ (correct ports, env vars)
@@ -778,6 +812,7 @@ Handlebars template content:
 - Permission prompt acceptance rate: Track for UX improvements (only shown when needed)
 
 **Qualitative**:
+
 - Users report "AGENTS.md feels tailored to my project"
 - Reduced manual editing after init
 - AI agents provide better project-specific guidance
@@ -786,34 +821,42 @@ Handlebars template content:
 ### Risk Mitigation
 
 **Risk**: README.md parsing fails for unusual formats
+
 - **Mitigation**: LLMs handle edge cases better than regex; graceful fallback to generic template if all fail
 - **Test**: Run on 50+ diverse open-source projects
 
 **Risk**: LLM providers unavailable or rate-limited
+
 - **Mitigation**: LeanSpec Models API + user API keys + regex = triple fallback
 - **Test**: Verify fallback chain works correctly, simulate API downtime
 
 **Risk**: LeanSpec Models API costs
+
 - **Mitigation**: GitHub Models free tier, rate limiting (100/day), monitor usage
 - **Plan**: Add paid tier if needed (sustainable business model)
 
 **Risk**: User privacy concerns about sending README to LeanSpec API
+
 - **Mitigation**: Clear privacy policy, no data retention, allow opt-out with `--no-llm`
 - **Transparency**: Document what data is sent and why
 - **Test**: Verify privacy policy is accessible and clear
 
 **Risk**: API key costs surprise users
+
 - **Mitigation**: Show estimated cost in permission prompt (~$0.002-0.009)
 - **Note**: Cost is negligible but transparency builds trust
 
 **Risk**: Security guidance is too generic/not actionable
+
 - **Mitigation**: Use specific patterns per project type
 - **Review**: Security expert review of templates
 
 **Risk**: MCP config examples don't work
+
 - **Mitigation**: Test configs with real AI tools
 - **Validation**: Automated tests for config syntax
 
 **Risk**: Template complexity makes maintenance harder
+
 - **Mitigation**: Keep analyzer logic separate from templates
 - **Documentation**: Clear template authoring guide

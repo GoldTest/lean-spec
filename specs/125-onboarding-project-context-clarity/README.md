@@ -21,7 +21,7 @@ completed: '2025-11-26'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-26 · **Tags**: onboarding, user-experience, agents-md
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -29,13 +29,16 @@ completed: '2025-11-26'
 User feedback indicates confusion about where to add project information (description, objectives, tech stack) during onboarding. The current AGENTS.md has a generic placeholder that users don't realize needs customization.
 
 **Problem**: Current AGENTS.md header says:
+
 ```
 ## Project: {project_name}
 Lightweight spec methodology for AI-powered development.
 ```
+
 Users don't realize this is a placeholder they should replace with their actual project description.
 
-**Solution**: 
+**Solution**:
+
 1. Add an explicit "Project Context" section with clear TODO markers
 2. Include prompts for what to add (description, tech stack, objectives)
 3. Improve "Next steps" messaging to specifically call out this section
@@ -69,10 +72,11 @@ _Example: Launch MVP with core CRUD operations by Q1_
 ### Init "Next steps" Update
 
 Change from vague "Review and customize AGENTS.md" to specific:
+
 ```
 Next steps:
   1. Edit AGENTS.md → Fill in "Project Context" section with your project info
-  2. Create your first spec: lean-spec create my-feature
+  2. Create your first spec: harnspec create my-feature
 ```
 
 ## Plan
@@ -85,4 +89,5 @@ Next steps:
 ## Notes
 
 ### User Feedback
+
 User didn't know where to add project info (what the project is about, objectives). The AGENTS.md file looked "complete" and they didn't realize customization was needed.

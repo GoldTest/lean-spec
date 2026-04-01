@@ -26,6 +26,7 @@ updated_at: 2026-02-02T08:13:38.660211570Z
 ### Current Search Limitations
 
 Existing search (specs 075, 124) uses lexical/keyword matching with relevance scoring:
+
 - **No semantic understanding** - "authentication flow" won't find "login process" or "user verification"
 - **Keyword-dependent** - Requires exact terms or close variants
 - **No conceptual similarity** - Can't discover specs about similar concepts with different vocabulary
@@ -34,6 +35,7 @@ Existing search (specs 075, 124) uses lexical/keyword matching with relevance sc
 ### Why Embeddings Search?
 
 **Semantic understanding**:
+
 ```
 Query: "user authentication"
 Lexical: Matches "authentication" literally
@@ -47,11 +49,13 @@ Embeddings: Also finds "login", "OAuth", "JWT", "session management", "access co
 ### Why PgVector + Cloud Service?
 
 **Non-file storage requirement**: Embeddings are binary vectors (1536 dimensions for OpenAI), not human-readable markdown. Storing in git is impractical:
+
 - ❌ Large binary files (not diff-friendly)
 - ❌ Not human-editable
 - ❌ Regeneration required when embedding model changes
 
 **PostgreSQL + pgvector benefits**:
+
 - ✅ Industry-standard vector database
 - ✅ ACID guarantees
 - ✅ Efficient similarity search (HNSW, IVFFlat indexes)
@@ -59,6 +63,7 @@ Embeddings: Also finds "login", "OAuth", "JWT", "session management", "access co
 - ✅ Can be self-hosted or cloud-hosted
 
 **Cloud service opportunity**:
+
 - LeanSpec-managed embedding service
 - No user setup required (optional paid tier)
 - Includes embedding generation + storage
@@ -97,11 +102,13 @@ User configures:
 ### Hybrid Search Strategy
 
 **Phase 1: Embeddings-only**
+
 1. Generate query embedding
 2. Vector similarity search in pgvector
 3. Return top-k results with scores
 
 **Phase 2: Hybrid (Future)**
+
 - Combine lexical (BM25) + semantic (embeddings) scores
 - Re-rank using cross-encoder or RRF (Reciprocal Rank Fusion)
 - Best of both worlds
@@ -109,6 +116,7 @@ User configures:
 ### Configuration Through UI
 
 **Settings Page: `/settings/search` (Web/Desktop)**
+
 ```typescript
 interface SearchConfig {
   // Search mode
@@ -134,6 +142,7 @@ interface SearchConfig {
 ```
 
 **UI Mockup**:
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ Search Configuration                            │
@@ -177,12 +186,14 @@ interface SearchConfig {
 ### Vercel AI SDK v6 Integration
 
 **Why Vercel AI SDK?**
+
 - Unified interface for multiple LLM providers
 - Built-in streaming support
 - Type-safe
 - Excellent DX
 
 **Embedding generation**:
+
 ```typescript
 import { embed } from 'ai';
 import { openai } from '@ai-sdk/openai';
@@ -197,6 +208,7 @@ async function generateEmbedding(text: string, config: SearchConfig) {
 ```
 
 **Provider adapters** (from config):
+
 ```typescript
 function getEmbeddingModel(config: SearchConfig) {
   switch (config.provider) {
@@ -246,11 +258,11 @@ function getEmbeddingModel(config: SearchConfig) {
 - [ ] **Indexing Pipeline**
   - Watch for spec changes (file system watcher)
   - Incremental embedding generation
-  - Batch re-indexing command (`lean-spec search:index`)
+  - Batch re-indexing command (`harnspec search:index`)
   - Handle spec deletions (remove from vector DB)
 
 - [ ] **CLI/MCP Integration**
-  - `lean-spec search` supports `--mode embeddings`
+  - `harnspec search` supports `--mode embeddings`
   - MCP `search` tool respects config
   - Clear error messages when embeddings not configured
 
@@ -279,12 +291,14 @@ function getEmbeddingModel(config: SearchConfig) {
 ## Dependencies
 
 **Builds on**:
+
 - 075-intelligent-search-engine (lexical search foundation)
 - 124-advanced-search-capabilities (query parsing, filters)
 - 147-json-config-format (configuration storage)
 - 184-ui-packages-consolidation (UI architecture)
 
 **Technology stack**:
+
 - Vercel AI SDK v6 (`ai` package)
 - PostgreSQL + pgvector extension
 - Rust `pgvector` crate (for Rust backend)
@@ -311,7 +325,7 @@ const { embedding } = await embed({
 
 ### Configuration
 
-Stored in `~/.lean-spec/config.json` under `search` key. API keys encrypted using system keychain (macOS/Windows/Linux) or AES-256-GCM fallback.
+Stored in `~/.harnspec/config.json` under `search` key. API keys encrypted using system keychain (macOS/Windows/Linux) or AES-256-GCM fallback.
 
 ### Costs & Performance
 
@@ -327,20 +341,20 @@ Embeddings search automatically falls back to lexical search on failure (API err
 
 1. **Should we support multiple embedding models simultaneously?** (e.g., compare results)
    - Likely NO - adds complexity, minimal user benefit
-   
+
 2. **Chunking strategy for long specs?** (>3500 tokens)
    - Phase 1: Single embedding (truncate)
    - Phase 2: Semantic chunking
-   
+
 3. **Cloud service pricing model?**
    - Free tier: 1000 searches/month
    - Paid tier: $5/month for unlimited
    - Enterprise: Custom pricing
-   
+
 4. **Should embeddings be project-specific or cross-project?**
    - Project-specific initially (simpler)
    - Cross-project search in future (requires multi-tenant architecture)
-   
+
 5. **How to handle embedding model updates?**
    - Store model name + version in DB
    - Prompt user to re-index when model changes

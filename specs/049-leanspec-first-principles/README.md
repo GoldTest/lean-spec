@@ -18,7 +18,7 @@ depends_on:
 
 > **Status**: ✅ Complete · **Priority**: Critical · **Created**: 2025-11-04 · **Tags**: philosophy, meta, foundation, principles
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -26,6 +26,7 @@ depends_on:
 **Purpose**: Establish the **first principles** (第一性原理) for LeanSpec - the fundamental, unchanging rules that define what LeanSpec is and guide all design decisions.
 
 **Why Now**: Through dogfooding, we discovered we're violating our own principles:
+
 - Built to solve "30-page specs that overflow AI context windows"
 - Yet our own specs have grown to 591-1,166 lines
 - Experiencing the exact problems we're solving (spec corruption, cognitive overload)
@@ -50,6 +51,7 @@ This analysis is organized into multiple focused documents (split for Context Ec
 After comprehensive analysis, we identified 5 fundamental principles that define LeanSpec:
 
 ### 1. Context Economy
+
 **Specs must fit in working memory—both human and AI.**
 
 - Target: <300 lines per spec file
@@ -58,6 +60,7 @@ After comprehensive analysis, we identified 5 fundamental principles that define
 - Rationale: Physics (context windows), biology (working memory), economics (token costs)
 
 ### 2. Signal-to-Noise Maximization
+
 **Every word must inform decisions or be cut.**
 
 - Test: "What decision does this sentence inform?"
@@ -66,6 +69,7 @@ After comprehensive analysis, we identified 5 fundamental principles that define
 - Rationale: Cognitive load, token costs, maintenance burden
 
 ### 3. Progressive Disclosure
+
 **Start simple, add structure only when pain is felt.**
 
 - Solo dev: Just status + created
@@ -74,6 +78,7 @@ After comprehensive analysis, we identified 5 fundamental principles that define
 - Rationale: Teams evolve, requirements emerge, premature abstraction is waste
 
 ### 4. Intent Over Implementation
+
 **Capture "why" and "what," let "how" emerge.**
 
 - Must have: Problem, intent, success criteria
@@ -82,6 +87,7 @@ After comprehensive analysis, we identified 5 fundamental principles that define
 - Rationale: Intent is stable, implementation changes, AI needs why
 
 ### 5. Bridge the Gap
+
 **Specs exist to align human intent with machine execution.**
 
 - For humans: Overview, context, rationale
@@ -98,6 +104,7 @@ See **[FIRST-PRINCIPLES.md](FIRST-PRINCIPLES.md)** for complete details, conflic
 ### The Problem We Discovered
 
 Through dogfooding LeanSpec on itself, we found:
+
 - **Built to solve**: "30-page specs overflow AI context windows"
 - **What we did**: Created 591-1,166 line specs ourselves
 - **Result**: Experienced the exact problems we're solving (corruption, cognitive overload)
@@ -106,6 +113,7 @@ Through dogfooding LeanSpec on itself, we found:
 ### Why This Happened
 
 **We had principles but not first principles:**
+
 - "Keep it minimal" → aspirational, not enforced
 - No clear thresholds (when is "too long"?)
 - No tooling to detect problems
@@ -117,12 +125,14 @@ Through dogfooding LeanSpec on itself, we found:
 ### What We Learned
 
 Through comprehensive analysis of:
+
 - **Hard constraints**: Context windows (physics), cognition (biology), token costs (economics)
 - **Comparisons**: Traditional SDD, Agile, alternatives
 - **Thought experiments**: "What if context were infinite?" "Only keep 3 rules?"
 - **Our evolution**: What worked, what failed, why
 
 We identified that effective principles must be:
+
 1. **Derived from immutable constraints** (not preferences)
 2. **Operationalized** (tooling + culture + metrics)
 3. **Testable** (can verify adherence)
@@ -133,6 +143,7 @@ We identified that effective principles must be:
 **LeanSpec**: A lightweight Spec-Driven Development (SDD) methodology for AI-powered development.
 
 **Stated Principles** (from README.md):
+
 - "Write only what matters" - Clear intent AI can act on
 - "Clarity over documentation"
 - "Structure that adapts, not constrains"
@@ -143,6 +154,7 @@ We identified that effective principles must be:
 ### The Dogfooding Paradox
 
 **What we experienced:**
+
 1. ✅ Identified problem: "Context overload from large specs"
 2. ✅ Built solution: Sub-spec files (spec 012)
 3. ❌ Didn't use it: All specs stayed single-file
@@ -158,23 +170,27 @@ We identified that effective principles must be:
 Applied four complementary methodologies:
 
 **1. Constraint-Based Derivation**
+
 - Listed all hard constraints (context windows, cognition, economics)
 - Derived what MUST be true given these constraints
 - Result: Principles forced by reality, not chosen
 
 **2. Comparison Analysis**
+
 - Compared to Traditional SDD (RFCs, ADRs, PRDs)
 - Compared to Agile/Lean methodologies
 - Identified what makes LeanSpec distinct
 - Result: Clear differentiation and identity
 
 **3. Thought Experiments**
+
 - "If context windows were infinite, what changes?" → Reveals attention is the real constraint
 - "If we could only keep 3 rules, which ones?" → Reveals core vs. derived
 - "When does violating a rule make it not LeanSpec?" → Reveals hierarchy
 - Result: Understanding of essential vs. nice-to-have
 
 **4. Historical Analysis**
+
 - Analyzed our own evolution
 - What worked (templates, frontmatter, CLI)
 - What failed (specs grew too large, didn't use sub-specs)
@@ -191,6 +207,7 @@ See **[FIRST-PRINCIPLES.md](FIRST-PRINCIPLES.md)** for complete documentation.
 5. **Bridge the Gap** - Align human intent with machine execution
 
 **Why these 5?**
+
 - ✅ Derived from immutable constraints
 - ✅ Everything current derives from them
 - ✅ Resolve conflicts systematically
@@ -208,6 +225,7 @@ When practices conflict, apply principles in priority order:
 5. **Progressive Disclosure** - Add structure when pain is felt
 
 **Examples:**
+
 - "My spec is 450 lines. Should I split it?" → Yes (Context Economy at 400 lines)
 - "Should I document every edge case?" → Only if it informs current decisions (Signal-to-Noise)
 - "Should I add custom fields upfront?" → Only if you feel pain without them (Progressive Disclosure)
@@ -221,10 +239,10 @@ See **[OPERATIONALIZATION.md](OPERATIONALIZATION.md)** for complete strategy.
 **Three Layers Required:**
 
 1. **Tooling** - Make principles easy to follow
-   - `lean-spec validate --max-lines 400`
-   - `lean-spec complexity <spec>`
-   - `lean-spec health` (project-wide check)
-   - `lean-spec split <spec>` (guided splitting)
+   - `harnspec validate --max-lines 400`
+   - `harnspec complexity <spec>`
+   - `harnspec health` (project-wide check)
+   - `harnspec split <spec>` (guided splitting)
 
 2. **Culture** - Make principles expected
    - Review checklist includes first principles
@@ -243,6 +261,7 @@ See **[OPERATIONALIZATION.md](OPERATIONALIZATION.md)** for complete strategy.
 ## Plan
 
 ### Phase 1: Foundation (v0.2.0) ✅
+
 - [x] Conduct deep-dive analysis
 - [x] Identify 5 first principles
 - [x] Create comprehensive documentation
@@ -252,25 +271,29 @@ See **[OPERATIONALIZATION.md](OPERATIONALIZATION.md)** for complete strategy.
 - [ ] Document 300/400/600 line thresholds clearly
 
 ### Phase 2: Detection (v0.2.0)
-- [ ] Implement `lean-spec validate --max-lines 400`
-- [ ] Implement `lean-spec complexity <spec>` 
-- [ ] Implement `lean-spec health` (project-wide check)
-- [ ] Add warnings in `lean-spec list` for large specs
+
+- [ ] Implement `harnspec validate --max-lines 400`
+- [ ] Implement `harnspec complexity <spec>`
+- [ ] Implement `harnspec health` (project-wide check)
+- [ ] Add warnings in `harnspec list` for large specs
 - [ ] Add frontmatter warning for specs >300 lines
 
 ### Phase 3: Guidance (v0.3.0)
-- [ ] Implement `lean-spec split <spec>` (interactive splitting)
-- [ ] Implement `lean-spec files <spec>` (list sub-specs)
+
+- [ ] Implement `harnspec split <spec>` (interactive splitting)
+- [ ] Implement `harnspec files <spec>` (list sub-specs)
 - [ ] Add AI-powered simplification suggestions
 - [ ] Create splitting wizard with best practices
 
 ### Phase 4: Prevention (v0.3.0+)
+
 - [ ] Create git hook templates
 - [ ] Create GitHub Action for PR checks
 - [ ] Add CI/CD validation examples
 - [ ] Implement `--strict` mode for enforcement
 
 ### Phase 5: Culture (Ongoing)
+
 - [ ] Review all specs >400 lines for splitting (dogfood)
 - [ ] Document exemplary specs in gallery
 - [ ] Share splitting case studies
@@ -278,6 +301,7 @@ See **[OPERATIONALIZATION.md](OPERATIONALIZATION.md)** for complete strategy.
 - [ ] Add first principles to review checklist
 
 ### Phase 6: Metrics (v0.4.0)
+
 - [ ] Track spec health over time
 - [ ] Implement alerting system
 - [ ] Create health dashboard
@@ -298,6 +322,7 @@ See **[OPERATIONALIZATION.md](OPERATIONALIZATION.md)** for complete strategy.
 ### Operationalization Success (Future)
 
 We'll know operationalization succeeded when:
+
 - ✅ Zero specs over 400 lines (or justified with sub-specs)
 - ✅ Zero spec corruption incidents for 30+ days
 - ✅ Team splits specs proactively (before 400 lines)
@@ -314,7 +339,7 @@ We'll know operationalization succeeded when:
 1. **Update README.md** - Add "Core Principles" section with 5 first principles
 2. **Update AGENTS.md** - Add conflict resolution framework for AI agents
 3. **Dogfood** - Review specs 048 (591 lines) and 045 (1,166 lines) for splitting
-4. **Implement basic validation** - Start with `lean-spec validate --max-lines` command
+4. **Implement basic validation** - Start with `harnspec validate --max-lines` command
 
 ### Future Work
 
@@ -328,6 +353,7 @@ We'll know operationalization succeeded when:
 ### Why This Analysis Matters
 
 This is foundational work because:
+
 - **Identity**: Defines what LeanSpec IS at its core
 - **Decision-making**: Provides framework for all design decisions
 - **Quality**: Prevents us from violating our own principles
@@ -339,6 +365,7 @@ This is foundational work because:
 **Biggest insight**: Good principles need operationalization.
 
 We had "keep it minimal" but:
+
 - No threshold (when is too much?)
 - No detection (how do we know?)
 - No enforcement (what stops us?)
@@ -351,6 +378,7 @@ Result: Violated our own principles.
 ### This Spec as Example
 
 **Note**: This spec itself demonstrates the principles:
+
 - **Context Economy**: Split into 4 focused documents (README 312 lines, ANALYSIS 287, FIRST-PRINCIPLES 245, OPERATIONALIZATION 198)
 - **Progressive Disclosure**: README = overview, detailed docs = deep dives
 - **Signal-to-Noise**: Each document focused, no unnecessary content
@@ -371,4 +399,3 @@ After splitting: Largest file is 312 lines (well within limits)
 ---
 
 **Remember**: These aren't principles we chose—they're constraints we discovered. LeanSpec works because it aligns with how humans and AI actually work, not how we wish they worked.
-

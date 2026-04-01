@@ -19,12 +19,12 @@ completed: '2025-11-26'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-26 · **Tags**: init, dx, ai-agents, ux
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-Auto-detection of installed AI CLI tools during `lean-spec init` to pre-select relevant options in the AI tools prompt. Improves UX by showing users which tools were detected and why.
+Auto-detection of installed AI CLI tools during `harnspec init` to pre-select relevant options in the AI tools prompt. Improves UX by showing users which tools were detected and why.
 
 ### Detection Methods
 
@@ -37,7 +37,7 @@ Auto-detection of installed AI CLI tools during `lean-spec init` to pre-select r
 
 ### User Experience
 
-When running `lean-spec init`, users now see:
+When running `harnspec init`, users now see:
 
 ```
 🔍 Detected AI tools:
@@ -104,7 +104,7 @@ interface AIToolConfig {
 
 ## Test
 
-- [x] `lean-spec init` shows detection results when tools found
+- [x] `harnspec init` shows detection results when tools found
 - [x] Detected tools are pre-selected in checkbox
 - [x] Detection reasons shown for each tool
 - [x] Falls back to defaults when nothing detected

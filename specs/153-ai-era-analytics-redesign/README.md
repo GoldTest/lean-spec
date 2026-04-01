@@ -26,6 +26,7 @@ Current stats/analytics have critical issues for AI-accelerated development:
 4. **No actionable insights** - Stats show "what" but not "so what" or "now what"
 
 ### Before: Current Stats Output
+
 ```
 📊 Spec Stats
   Total Specs     45
@@ -40,6 +41,7 @@ Current stats/analytics have critical issues for AI-accelerated development:
 ```
 
 ### After: AI-Era Analytics
+
 ```
 ⚡ AI Velocity Dashboard
   
@@ -98,6 +100,7 @@ type TimeBucket =
 ### 2. Agile Flow Metrics
 
 #### Cumulative Flow Diagram (CFD) Data
+
 ```typescript
 interface CumulativeFlowData {
   // Time series data for CFD visualization
@@ -122,6 +125,7 @@ interface CumulativeFlowData {
 ```
 
 #### Lead Time vs Cycle Time
+
 ```typescript
 interface FlowTimes {
   // Lead Time: Idea → Done (includes wait time)
@@ -195,9 +199,11 @@ interface AnalyticsQuery {
 ### 5. CLI Output Redesign
 
 #### Default View: Executive Summary
+
 ```
-lean-spec stats
+harnspec stats
 ```
+
 ```
 ⚡ LeanSpec Analytics
 
@@ -213,14 +219,16 @@ lean-spec stats
    • 3 specs stuck > 3 days
    • High WIP on tag:api (6 specs)
 
-💡 Run `lean-spec stats --flow` for cumulative flow
-   Run `lean-spec stats --distribution` for cycle time breakdown
+💡 Run `harnspec stats --flow` for cumulative flow
+   Run `harnspec stats --distribution` for cycle time breakdown
 ```
 
 #### Flow View
+
 ```
-lean-spec stats --flow
+harnspec stats --flow
 ```
+
 ```
 📈 Cumulative Flow (30 days)
 
@@ -238,9 +246,11 @@ Bottleneck: review stage (+2.3h vs target)
 ```
 
 #### Distribution View
+
 ```
-lean-spec stats --distribution
+harnspec stats --distribution
 ```
+
 ```
 ⏱️  Cycle Time Distribution (completed specs)
 
@@ -275,7 +285,7 @@ lean-spec stats --distribution
       "issue": "3 specs have been in-progress > 3 days",
       "specs": ["045-unified-dashboard", "052-api-redesign", "067-auth-flow"],
       "suggestion": "Review for blockers or scope creep",
-      "action": "run `lean-spec view 045` to investigate"
+      "action": "run `harnspec view 045` to investigate"
     }
   ],
   "metrics": {
@@ -291,6 +301,7 @@ lean-spec stats --distribution
 ### 7. Web UI Redesign
 
 See **[UI-DESIGN.md](./UI-DESIGN.md)** for detailed UI specifications including:
+
 - Dashboard overview with health score, velocity, WIP, throughput cards
 - Cumulative Flow Chart (replacing pie charts)
 - Cycle Time Histogram with AI-era time buckets
@@ -303,42 +314,49 @@ See **[UI-DESIGN.md](./UI-DESIGN.md)** for detailed UI specifications including:
 ## Plan
 
 ### Phase 1: Core Infrastructure
+
 - [ ] Add minute-level timestamp precision to frontmatter
 - [ ] Create `Duration` type with smart formatting
 - [ ] Add time bucket classification utility
 - [ ] Update velocity.ts for sub-day granularity
 
 ### Phase 2: Flow Metrics
+
 - [ ] Implement cumulative flow data collection
 - [ ] Add lead time breakdown (planning/execution/waiting)
 - [ ] Calculate flow efficiency metrics
 - [ ] Track WIP over time for trend analysis
 
 ### Phase 3: Distribution Analytics
+
 - [ ] Cycle time histogram/distribution
 - [ ] Percentile calculations (P50, P75, P90, P95, P99)
 - [ ] Time bucket analysis
 - [ ] Comparative analysis (this period vs last)
 
 ### Phase 4: AI Insights
+
 - [ ] Pattern detection (AI-assisted ratio)
 - [ ] Bottleneck identification algorithm
 - [ ] Predictability scoring
 - [ ] Actionable recommendations engine
 
 ### Phase 5: CLI Redesign
+
 - [ ] New default executive summary view
 - [ ] `--flow` flag for cumulative flow
 - [ ] `--distribution` flag for cycle time histogram
 - [ ] `--compare` flag for period comparison
 
 ### Phase 6: MCP Enhancement
+
 - [ ] Structured analytics tool output
 - [ ] Query-based analytics API
 - [ ] Recommendations in tool response
 - [ ] Export formats (JSON, CSV)
 
 ### Phase 7-10: UI Implementation
+
 See [UI-DESIGN.md](./UI-DESIGN.md) for detailed UI phases.
 
 ## Test

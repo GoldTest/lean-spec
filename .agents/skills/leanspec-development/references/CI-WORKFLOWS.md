@@ -25,6 +25,7 @@ on:
 **Runs on**: `ubuntu-latest`
 
 **Steps**:
+
 1. Checkout code
 2. Setup Node.js 20
 3. Setup pnpm with caching
@@ -37,6 +38,7 @@ on:
 **Duration**: ~2-4 minutes
 
 **Common Failure Points**:
+
 - TypeScript compilation errors
 - Test failures
 - Missing dependencies
@@ -47,6 +49,7 @@ on:
 **Depends on**: `node` (needs UI dist artifact)
 
 **Steps**:
+
 1. Checkout code
 2. Install Rust stable toolchain
 3. Setup cargo caching
@@ -61,6 +64,7 @@ on:
 **Duration**: ~5-8 minutes
 
 **Common Failure Points**:
+
 - Clippy warnings (treated as errors)
 - Formatting issues
 - Test failures
@@ -110,6 +114,7 @@ on:
 **Depends on**: `build-ui`
 
 **Matrix**:
+
 | OS | Target | Platform |
 |----|--------|----------|
 | `macos-latest` | `x86_64-apple-darwin` | `darwin-x64` |
@@ -118,7 +123,8 @@ on:
 | `windows-latest` | `x86_64-pc-windows-msvc` | `windows-x64` |
 
 **Builds**:
-- `leanspec-cli` (lean-spec binary)
+
+- `leanspec-cli` (harnspec binary)
 - `leanspec-mcp` (MCP server binary)
 - `leanspec-http` (HTTP server binary)
 
@@ -134,6 +140,7 @@ on:
 **Purpose**: Publish platform-specific npm packages before main packages.
 
 **Packages Published**:
+
 - `@leanspec/cli-darwin-arm64`
 - `@leanspec/cli-darwin-x64`
 - `@leanspec/cli-linux-x64`
@@ -157,7 +164,8 @@ on:
 **Special Step**: Waits for platform packages to propagate on npm registry (up to 20 attempts with exponential backoff).
 
 **Packages Published**:
-- `lean-spec` (CLI main package)
+
+- `harnspec` (CLI main package)
 - `@leanspec/mcp` (MCP server main package)
 - `@leanspec/ui` (UI bundle)
 
@@ -233,6 +241,7 @@ on:
 **Runs on**: Matrix of `macos-latest`, `ubuntu-latest`, `windows-latest`
 
 **Steps**:
+
 1. Checkout code
 2. Setup pnpm, Node.js 20, Rust
 3. Install dependencies
@@ -276,6 +285,7 @@ on:
 **Runs on**: `ubuntu-latest`
 
 **Steps**:
+
 1. Checkout code
 2. Setup Node.js 20
 3. Setup pnpm
@@ -284,7 +294,7 @@ on:
 6. Install Linux system dependencies for Tauri
 7. Build Rust binaries
 8. Copy binaries to packages
-9. Install lean-spec CLI globally
+9. Install harnspec CLI globally
 10. Verify installation
 
-**Purpose**: Provides Copilot agent with a fully configured development environment including the lean-spec CLI available globally.
+**Purpose**: Provides Copilot agent with a fully configured development environment including the harnspec CLI available globally.

@@ -22,6 +22,7 @@ The current "subspec" display conflates two different concepts (child specs and 
 ## Requirements
 
 ### Phase 1: Deprecate Current SubSpec Display
+
 - [ ] Remove `subSpecsCount` from `LightweightSpec` type and API responses
 - [ ] Remove subspec count badge from `spec-card.tsx` (the `hasChildren` logic mixing `children` and `subSpecsCount`)
 - [ ] Remove `loadSubFiles()` function from core spec loading
@@ -30,6 +31,7 @@ The current "subspec" display conflates two different concepts (child specs and 
 - [ ] Update MCP `children` tool to no longer return sub-spec files
 
 ### Phase 2: Design Artifacts Sub-Tree
+
 - [ ] Define `Artifact` type: `{ name, path, kind, size }` where kind is `document | code | asset | config`
 - [ ] Artifacts are displayed as a collapsible sub-tree under each spec in the UI
 - [ ] Artifacts include ALL files in a spec folder (excluding README.md)
@@ -37,9 +39,10 @@ The current "subspec" display conflates two different concepts (child specs and 
 - [ ] Keep artifacts lightweight — metadata only, content loaded on demand
 
 ### Phase 3: Implement Artifacts Display
+
 - [ ] Add `artifacts` field to spec detail response (not list/board — too heavy)
 - [ ] Add collapsible artifacts tree to spec detail view in web UI
-- [ ] Add `lean-spec artifacts <spec>` CLI command (replaces `lean-spec files`)
+- [ ] Add `harnspec artifacts <spec>` CLI command (replaces `harnspec files`)
 - [ ] Add `artifacts` MCP tool for listing spec artifacts
 - [ ] Show artifact count (not list) in spec card as an indicator
 
@@ -67,7 +70,7 @@ The current "subspec" display conflates two different concepts (child specs and 
 | subSpecs | `artifacts` | Code property name |
 | subSpecsCount | `artifactsCount` | Lightweight count for cards |
 | loadSubFiles() | `loadArtifacts()` | Function name |
-| `lean-spec files` | `lean-spec artifacts` | CLI command |
+| `harnspec files` | `harnspec artifacts` | CLI command |
 
 ### Artifact Kinds
 
@@ -80,7 +83,7 @@ The current "subspec" display conflates two different concepts (child specs and 
 
 - [ ] No references to "subspec" or "sub-spec" remain in UI/CLI/MCP output
 - [ ] Spec detail view shows artifacts as a collapsible tree
-- [ ] `lean-spec artifacts <spec>` lists all artifacts with kind and size
+- [ ] `harnspec artifacts <spec>` lists all artifacts with kind and size
 - [ ] Spec card shows artifact count indicator (not conflated with children count)
 - [ ] Existing spec folders with extra files are correctly detected as artifacts
 

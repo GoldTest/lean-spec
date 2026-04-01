@@ -19,16 +19,18 @@ updated_at: 2025-12-18T14:02:41.727119Z
 # Unified UI Architecture: Rust-Powered Web & Desktop (Umbrella)
 
 > **Status**: planned · **Priority**: high · **Created**: 2025-12-18
-> 
+>
 > **⚠️ Umbrella Spec**: This coordinates 3 sub-specs. Read sub-specs for implementation details.
 
 ## Overview
 
 **Problem**: We currently maintain two separate UI implementations with different architectures:
+
 - **`packages/ui`**: Rich Next.js SSR app with full-featured UI (good UX, but heavy)
 - **`packages/desktop`**: Basic Tauri + Vite SPA with Rust backend (fast, but UI too basic)
 
 This creates:
+
 - **UI Quality Gap**: Desktop UI is too basic compared to web UI
 - **Architecture Mismatch**: Next.js SSR vs Tauri native vs Rust backend
 - **Maintenance Burden**: Implementing features twice (if we want feature parity)
@@ -36,6 +38,7 @@ This creates:
 - **Performance Issues**: TypeScript backend slower than Rust for spec operations
 
 **Solution**: Boldly migrate to **Vite SPA + Rust HTTP Server** architecture in one shot:
+
 - Extract and upgrade UI components from both packages/ui and packages/desktop
 - Build Rust HTTP server (Axum) for web, reuse Tauri commands for desktop
 - Share single UI codebase between web and desktop
@@ -105,6 +108,7 @@ This creates:
 ```
 
 **Key Benefits:**
+
 - ✅ **Performance**: 10x faster than TypeScript backend
 - ✅ **Bundle Size**: 30MB (web) vs 150MB+ (Next.js)
 - ✅ **Unified Codebase**: Same UI components for web and desktop
@@ -117,21 +121,25 @@ This creates:
 ### Key Architectural Decisions
 
 **Decision 1: Eliminate Next.js**
+
 - **Rationale**: Next.js SSR/SSG adds 150MB+ for local file operations we don't need
 - **Action**: Migrate to Vite SPA (same dev experience, 83% smaller)
 
 **Decision 2: Rust HTTP Server for Web**
+
 - **Technology**: Axum (fast, modern, async)
 - **API Design**: RESTful JSON endpoints matching current Next.js API routes
 - **Integration**: Direct `leanspec_core` function calls (no CLI spawning)
 
 **Decision 3: Upgrade Desktop to Rich UI**
+
 - **Action**: Desktop uses same components as web
 - **Result**: Feature parity between web and desktop
 
 **Decision 4: Create Shared Component Library**
+
 - **Package**: `packages/ui-components` (new)
-- **Contents**: 
+- **Contents**:
   - React components (SpecList, SpecDetail, DepsGraph, Stats, Search, etc.)
   - Custom hooks (useSpecs, useProjects, useDependencies, etc.)
   - Utilities (formatters, validators, helpers)
@@ -148,14 +156,14 @@ This creates:
 ┌──────────────────────────────────────────────────────────┐
 │              Rust HTTP Server (Single Instance)          │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │  Project Registry (~/.lean-spec/projects.json)     │  │
+│  │  Project Registry (~/.harnspec/projects.json)     │  │
 │  │  - Shared between desktop and web                  │  │
 │  │  - Server loads projects on startup                │  │
 │  │  - CRUD operations via HTTP API                    │  │
 │  └────────────────────────────────────────────────────┘  │
 │                                                           │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │  Config (~/.lean-spec/config.json)                 │  │
+│  │  Config (~/.harnspec/config.json)                 │  │
 │  │  - server.host (default: 127.0.0.1)                │  │
 │  │  - server.port (default: 3333, auto-pick if busy)  │  │
 │  │  - server.cors.origins (configurable)              │  │
@@ -177,10 +185,11 @@ This creates:
 
 2. **Server-Side Project Registry**
    - Already exists in both packages/ui and packages/desktop
-   - Format: `~/.lean-spec/projects.json` (identical structure)
+   - Format: `~/.harnspec/projects.json` (identical structure)
    - Server loads on startup, exposes CRUD via `/api/projects`
 
-3. **Configuration File: `~/.lean-spec/config.json`**
+3. **Configuration File: `~/.harnspec/config.json`**
+
    ```json
    {
      "server": {
@@ -249,15 +258,15 @@ struct ServerConfig {
 
 struct ProjectRegistry {
     projects: HashMap<String, Project>,
-    config_path: PathBuf,  // ~/.lean-spec/projects.json
+    config_path: PathBuf,  // ~/.harnspec/projects.json
 }
 
 #[tokio::main]
 async fn main() {
-    // Load config from ~/.lean-spec/config.json
+    // Load config from ~/.harnspec/config.json
     let config = ServerConfig::load().unwrap_or_default();
     
-    // Load project registry from ~/.lean-spec/projects.json
+    // Load project registry from ~/.harnspec/projects.json
     let project_registry = ProjectRegistry::load().expect("Failed to load projects");
     
     let state = Arc::new(AppState {
@@ -457,6 +466,7 @@ async fn update_metadata(
 ```
 
 **Key Features:**
+
 - **CORS**: Enabled for local development
 - **Error Handling**: Proper HTTP status codes
 - **Type Safety**: Serde for JSON serialization
@@ -694,7 +704,7 @@ packages/ui/
   - Error handling and retries
   
 - [ ] **Configure Rust HTTP server integration**
-  - Environment variables for API URL (default: http://localhost:3333)
+  - Environment variables for API URL (default: <http://localhost:3333>)
   - Dev proxy configuration in Vite (optional)
   - Production build configuration
   
@@ -710,7 +720,7 @@ packages/ui/
 - [ ] **Update `packages/desktop` to use HTTP server**
   - Remove Next.js spawning logic
   - Spawn Rust HTTP server instead (reuse leanspec-http crate)
-  - Use webview pointing to http://localhost:3333
+  - Use webview pointing to <http://localhost:3333>
   - Keep Tauri file dialogs for project folder picker
   
 - [ ] **Migrate to shared UI components**
@@ -732,7 +742,7 @@ packages/ui/
   
 - [ ] **Promote new UI**
   - Rename `packages/ui-new` → `packages/ui`
-  - Update `lean-spec ui` command launcher
+  - Update `harnspec ui` command launcher
   - Start Rust HTTP server automatically
   
 - [ ] **Update documentation**
@@ -788,7 +798,7 @@ packages/ui/
 ### Integration Tests
 
 - [ ] Desktop app still works with shared components
-- [ ] `lean-spec ui` launches new UI correctly
+- [ ] `harnspec ui` launches new UI correctly
 - [ ] Multi-project switching works in both desktop and web
 - [ ] CLI operations reflect in UI immediately
 
@@ -813,6 +823,7 @@ packages/ui/
 ### Why Bold Direct Migration?
 
 **In AI coding era, velocity > incrementalism:**
+
 - AI can port large codebases faster than humans
 - Component extraction is mechanical work (AI excels)
 - Rust HTTP server template is well-established
@@ -820,6 +831,7 @@ packages/ui/
 - Risk is low when you have good tests
 
 **Avoiding temporary bridges:**
+
 - CLI spawning adds overhead we don't want long-term
 - Two architectures mean two maintenance paths
 - Incremental = slower time-to-value
@@ -849,24 +861,24 @@ packages/ui/
 1. **Rust HTTP Server Distribution**: Should we bundle it with `@leanspec/ui` or as separate binary?
    - **Decided**: Separate binary (`@leanspec/http-server` npm package with platform-specific binaries)
    - **Rationale**: Cleaner separation, can version independently, easier CI/CD
-   
+
 2. **Web UI Production Use Case**: Should we support web UI in production?
    - **Leaning toward**: Dev-only (local contributor use)
    - **Rationale**: Browser security prevents arbitrary file access, not useful for end users
    - **Alternative**: Could add GitHub repo browsing (spec 035/082) but that's future work
-   
-3. **Config File Format & Location**: JSON at `~/.lean-spec/config.json`
+
+3. **Config File Format & Location**: JSON at `~/.harnspec/config.json`
    - **Rationale**: JSON easier to parse in Rust, consistency with projects.json format
-   - **Location**: `~/.lean-spec/` for consistency, single directory for all data
-   
+   - **Location**: `~/.harnspec/` for consistency, single directory for all data
+
 4. **Hot Reload**: Should server watch projects.json and auto-reload?
    - **Leaning toward**: Yes, with file system watcher (notify-rs)
    - **Rationale**: Better UX when projects.json edited externally (e.g., manual edits, sync)
-   
+
 5. **Authentication**: Do we need auth for local HTTP server?
    - **Decision**: Start without auth (localhost only), add JWT if we support remote access later
    - **Rationale**: Local development doesn't need auth, adds complexity
-   
+
 6. **Spec File Hot Reload**: How to handle spec file changes?
    - **Option A**: File watcher in HTTP server + WebSocket push updates
    - **Option B**: Polling from frontend (simpler, works immediately)

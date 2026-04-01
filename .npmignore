@@ -5,7 +5,7 @@ src/
 # Development files
 coverage/
 specs/
-.lean-spec/
+.harnspec/
 examples/
 docs/
 

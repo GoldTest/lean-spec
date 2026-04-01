@@ -1,7 +1,8 @@
 # Migration Examples: Metadata & Folder Organization
 
 The key migration challenges vary by source tool:
-1. **Metadata/Frontmatter** (ALL sources) - Use `lean-spec backfill`
+
+1. **Metadata/Frontmatter** (ALL sources) - Use `harnspec backfill`
 2. **Folder organization** (OpenSpec, ADR) - Reorganize into `specs/###-name/`
 3. **spec-kit** - Already compatible! Just needs frontmatter
 
@@ -56,11 +57,11 @@ mv .specify/specs specs/
 find specs -name 'spec.md' -execdir mv {} README.md \;
 ```
 
-**Metadata generation** (PRIMARY CHALLENGE): Use `lean-spec backfill`
+**Metadata generation** (PRIMARY CHALLENGE): Use `harnspec backfill`
 
 ```bash
 # Generate frontmatter from git history
-lean-spec backfill --assignee --all
+harnspec backfill --assignee --all
 
 # This extracts:
 # - created_at: from first git commit
@@ -123,7 +124,7 @@ mv specs/api-gateway specs/002-api-gateway
 find specs -name 'spec.md' -execdir mv {} README.md \;
 ```
 
-**Metadata**: `lean-spec backfill --assignee --all`
+**Metadata**: `harnspec backfill --assignee --all`
 ---
 
 ## Example 2: OpenSpec → LeanSpec (Moderate Complexity)
@@ -171,6 +172,7 @@ specs/
 ### Migration Process
 
 **AI Analysis:**
+
 - spec-kit already uses sequential numbering—preserve it
 - Multiple files per feature—decide: merge or keep as sub-specs
 - Contracts folder—preserve structure
@@ -180,25 +182,26 @@ specs/
 
 ```bash
 # Option 1: Keep sub-specs (complex features)
-lean-spec create task-management
+harnspec create task-management
 # AI copies spec.md → README.md
 # AI copies plan.md + tasks.md → IMPLEMENTATION.md (merged)
 # AI copies data-model.md → DESIGN.md
 # AI preserves contracts/ folder
-lean-spec update task-management --status complete --tags product,mvp
+harnspec update task-management --status complete --tags product,mvp
 
 # Option 2: Single file (simple features)
-lean-spec create user-authentication
+harnspec create user-authentication
 # AI merges spec.md + plan.md into single README.md
-lean-spec update user-authentication --status complete --tags auth,security
+harnspec update user-authentication --status complete --tags auth,security
 
 # Option 3: Minimal (very simple features)
-lean-spec create notifications
+harnspec create notifications
 # AI copies spec.md → README.md only
-lean-spec update notifications --status in-progress --tags product
+harnspec update notifications --status in-progress --tags product
 ```
 
 **Key Points:**
+
 - Numbering preserved (001 → 001)
 - Multi-file decision: merge vs sub-specs depends on complexity
 - Content stays mostly intact
@@ -249,28 +252,31 @@ mv docs/adr/0042-event-sourcing-audit.md specs/002-event-sourcing-audit/README.m
 # ... repeat for all ADRs
 ```
 
-**Metadata**: `lean-spec backfill --assignee --all`
+**Metadata**: `harnspec backfill --assignee --all`
 
 ---
 
 ## Summary: Migration Complexity by Source
 
 ### spec-kit (Easiest) ✅
+
 - **Folder structure**: Already compatible! Just rename spec.md → README.md
 - **Challenge**: Metadata/frontmatter only
-- **Solution**: `lean-spec backfill`
+- **Solution**: `harnspec backfill`
 - **Time**: < 5 minutes for 20 specs
 
 ### OpenSpec (Moderate) ⚠️
+
 - **Folder structure**: Merge specs/ + changes/archive/ directories
 - **Challenge**: Folder merge + metadata
-- **Solution**: Manual merge + `lean-spec backfill`
+- **Solution**: Manual merge + `harnspec backfill`
 - **Time**: 15-30 minutes for 20 specs
 
 ### ADR/RFC (Complex) 🔴
+
 - **Folder structure**: Flat files → folder hierarchy
 - **Challenge**: Complete reorganization + metadata
-- **Solution**: Reorganize + `lean-spec backfill`
+- **Solution**: Reorganize + `harnspec backfill`
 - **Time**: 30-60 minutes for 20 specs
 
 ---
@@ -280,7 +286,7 @@ mv docs/adr/0042-event-sourcing-audit.md specs/002-event-sourcing-audit/README.m
 ### What Actually Needs Migration
 
 1. **Frontmatter (ALL sources - PRIMARY CHALLENGE)**:
-   - Extract timestamps from git: `lean-spec backfill`
+   - Extract timestamps from git: `harnspec backfill`
    - Infer status from content/history
    - Set priority (defaults to 'medium')
    - Extract/create tags
@@ -296,25 +302,26 @@ mv docs/adr/0042-event-sourcing-audit.md specs/002-event-sourcing-audit/README.m
    - Keep existing writing style
    - No format conversion needed
 
-### The `lean-spec backfill` Command
+### The `harnspec backfill` Command
 
 This is the key tool for migration:
 
 ```bash
 # Basic: Extract timestamps from git history
-lean-spec backfill
+harnspec backfill
 
 # With assignee from git author
-lean-spec backfill --assignee
+harnspec backfill --assignee
 
 # Full metadata extraction
-lean-spec backfill --all
+harnspec backfill --all
 
 # Preview before applying
-lean-spec backfill --dry-run
+harnspec backfill --dry-run
 ```
 
 **What it extracts from git**:
+
 - `created_at` - First commit timestamp
 - `updated_at` - Last commit timestamp
 - `completed_at` - When status changed to 'complete'
@@ -322,8 +329,9 @@ lean-spec backfill --dry-run
 - `transitions` - Full status change history (with `--transitions`)
 
 **What you set manually after**:
-- `priority` - Defaults to 'medium', adjust with `lean-spec update --priority`
-- `tags` - Defaults from folder names, adjust with `lean-spec update --tags`
+
+- `priority` - Defaults to 'medium', adjust with `harnspec update --priority`
+- `tags` - Defaults from folder names, adjust with `harnspec update --tags`
 - `status` - Inferred from content/history, adjust if needed
 
 See [spec 047-git-backfill-timestamps](../047-git-backfill-timestamps/) for complete `backfill` documentation.
@@ -345,10 +353,11 @@ AGENTS.md (in project root)
 ```
 
 **Migration strategy**:
+
 1. Review existing AI guidance from source tool
 2. Preserve project-specific conventions
 3. Merge with LeanSpec AGENTS.md template
-4. Update commands (openspec → lean-spec)
+4. Update commands (openspec → harnspec)
 5. Keep team workflows intact
 
 This ensures AI agents maintain continuity during transition.

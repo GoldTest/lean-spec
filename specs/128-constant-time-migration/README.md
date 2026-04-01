@@ -22,7 +22,7 @@ completed: '2025-11-28'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-28 · **Tags**: cli, migration, dx, performance
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -53,11 +53,13 @@ Migration time should NOT scale with the number of existing specs. Whether you h
 ### Strategy: Batch Everything, Parallelize, Cache
 
 **Phase 1: One-Shot Folder Transform**
+
 ```bash
-lean-spec migrate ./source --auto
+harnspec migrate ./source --auto
 ```
 
 This single command should:
+
 1. Auto-detect source format (spec-kit, OpenSpec, generic markdown)
 2. Bulk rename/restructure in one pass (using filesystem batch ops)
 3. Run backfill in parallel across all specs
@@ -66,8 +68,9 @@ This single command should:
 **Phase 2: AI-Assisted Instant Migration**
 
 For any source format, generate a single AI prompt that handles ALL specs at once:
+
 ```bash
-lean-spec migrate ./source --ai
+harnspec migrate ./source --ai
 ```
 
 Outputs a comprehensive migration script that the AI executes in one shot.
@@ -75,8 +78,9 @@ Outputs a comprehensive migration script that the AI executes in one shot.
 **Phase 3: Zero-Touch Migration**
 
 Ideal future state:
+
 ```bash
-lean-spec init  # Detects existing specs anywhere, migrates automatically
+harnspec init  # Detects existing specs anywhere, migrates automatically
 ```
 
 ### Key Insight
@@ -114,15 +118,16 @@ lean-spec init  # Detects existing specs anywhere, migrates automatically
    - Auto-runs backfill and validation after migration
 
 2. **Usage**:
+
 ```bash
 # One-shot migration (recommended)
-lean-spec migrate ./old-specs --auto
+harnspec migrate ./old-specs --auto
 
 # Preview without changes
-lean-spec migrate ./old-specs --auto --dry-run
+harnspec migrate ./old-specs --auto --dry-run
 
 # Manual mode (shows prompt for AI assistant)
-lean-spec migrate ./old-specs
+harnspec migrate ./old-specs
 ```
 
 ## Success Metrics

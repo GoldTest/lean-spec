@@ -28,9 +28,11 @@ transitions:
 ## Current Architecture vs ACP
 
 ### Current Approach
+
 ```
 LeanSpec HTTP Server → spawn subprocess(runner, env=[LEANSPEC_SPEC_IDS, ...]) → watch stdout/stderr logs
 ```
+
 - LeanSpec injects spec context via env vars
 - Session state tracked only in LeanSpec's own DB
 - No bidirectional communication once process is running
@@ -39,9 +41,11 @@ LeanSpec HTTP Server → spawn subprocess(runner, env=[LEANSPEC_SPEC_IDS, ...]) 
 - Runner terminates = session ends
 
 ### ACP-Enabled Approach
+
 ```
 LeanSpec HTTP Server (ACP Client) ←→ JSON-RPC over stdio/HTTP ←→ Agent Runner (ACP Agent)
 ```
+
 - LeanSpec calls `session/new` with `cwd` + MCP servers list
 - LeanSpec injects spec context via `session/prompt` as structured `ContentBlock`s (text + resource links)
 - Agent streams updates via `session/update` notifications (message chunks, tool calls, diffs, plans)
@@ -78,6 +82,7 @@ LeanSpec HTTP Server (ACP Client) ←→ JSON-RPC over stdio/HTTP ←→ Agent R
 | `terminal/release` | Agent releases terminal resources |
 
 ### Session Update Types (streamed via `session/update`)
+
 - `agent_message_chunk` — streaming LLM output
 - `user_message_chunk` — echo of user message
 - `agent_thought_chunk` — internal reasoning
@@ -146,9 +151,10 @@ Instead of env vars, spec content is passed as structured ACP `ContentBlock`s:
 ### MCP Integration for LeanSpec Tools
 
 LeanSpec can expose its own tools (spec read/write, board view) to ACP agents via MCP:
+
 - Run `leanspec-mcp` as a stdio MCP server
 - Pass it in `session/new.mcpServers` so the agent connects automatically
-- Agent can then call `lean-spec` tools natively within its reasoning loop
+- Agent can then call `harnspec` tools natively within its reasoning loop
 
 ```json
 {
@@ -216,6 +222,7 @@ This means ACP integration immediately benefits the entire runner ecosystem.
 ## Plan
 
 ### Phase 1: Research & Prototype
+
 - [x] Add `agent-client-protocol` crate to `leanspec-core` Cargo.toml
 - [ ] Prototype ACP client connection with Claude Code (`claude --acp` or similar)
 - [ ] Map existing `Session` struct fields to ACP protocol concepts
@@ -223,6 +230,7 @@ This means ACP integration immediately benefits the entire runner ecosystem.
 - [ ] Document discovery: how to detect if a runner supports ACP vs raw CLI
 
 ### Phase 2: Core ACP Client
+
 - [x] Implement `AcpClient` in `leanspec-core` (stdio transport only)
 - [x] `initialize` → capability negotiation
 - [x] `session/new` → returns ACP session ID
@@ -231,16 +239,19 @@ This means ACP integration immediately benefits the entire runner ecosystem.
 - [x] `session/cancel` → map to session stop
 
 ### Phase 3: Enhanced Session State
+
 - [x] Store ACP session ID alongside LeanSpec session ID in DB
 - [x] Surface tool calls & diffs in session log stream (not just raw text)
 - [x] Surface agent execution plan (`plan` update) in UI
 - [x] Permission request flow: agent → LeanSpec → UI → back to agent
 
 ### Phase 4: MCP Integration
+
 - [x] Pass `leanspec-mcp` as MCP server in `session/new`
 - [ ] Agent can directly read/update specs during session execution- [ ] Test with Claude Code, Gemini CLI, OpenCode
 
 ### Phase 5: Session Resume
+
 - [ ] Store ACP session ID so sessions can be resumed with `session/load`
 - [x] Only for runners with `loadSession` capability
 - [x] UI: "Resume" button on completed/interrupted sessions

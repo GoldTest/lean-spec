@@ -86,15 +86,15 @@ breaking: true
 
 ### Implementation Approach
 
-1. **Template Updates**: 
+1. **Template Updates**:
    - `minimal/`: `status`, `created`
    - `standard/`: + `tags`, `priority`
    - `enterprise/`: + `assignee`, `reviewer`, `issue`, `epic`
 
-2. **CLI Support**: 
+2. **CLI Support**:
    - Parse frontmatter when listing specs
-   - Common filters: `lean-spec list --status=in-progress --tag=api --priority=high`
-   - Quick updates: `lean-spec update <spec> --status=complete`
+   - Common filters: `harnspec list --status=in-progress --tag=api --priority=high`
+   - Quick updates: `harnspec update <spec> --status=complete`
    - Validation: warn on unknown fields, validate enum values
 
 3. **Smart Defaults**:
@@ -112,6 +112,7 @@ breaking: true
 **Add more only when you need them**. If you're not sure, you don't need it.
 
 **Template defaults:**
+
 - **Minimal**: `status`, `created` only
 - **Standard**: `status`, `created`, `tags`, `priority`
 - **Enterprise**: Standard + team fields (assignee, reviewer) + links (issue, epic)
@@ -119,6 +120,7 @@ breaking: true
 ### Example Specs
 
 **Typical Solo Developer:**
+
 ```markdown
 ---
 status: in-progress
@@ -133,6 +135,7 @@ tags: [feature, cli]
 ```
 
 **Small Team:**
+
 ```markdown
 ---
 status: planned
@@ -150,6 +153,7 @@ related: [20251031/001-typescript-cli]
 ```
 
 **Enterprise (Maximum Fields):**
+
 ```markdown
 ---
 status: in-progress
@@ -177,8 +181,8 @@ breaking: true
 - [ ] Add frontmatter parsing library (`gray-matter`)
 - [ ] Update template files: minimal (2 fields), standard (4 fields), enterprise (8-10 fields)
 - [ ] Implement frontmatter parser with validation
-- [ ] Add filtering to `lean-spec list` (status, tags, priority)
-- [ ] Create `lean-spec update` command for status changes
+- [ ] Add filtering to `harnspec list` (status, tags, priority)
+- [ ] Create `harnspec update` command for status changes
 - [ ] Add smart defaults for optional timestamp fields
 - [ ] Update documentation emphasizing minimalism
 - [ ] Add tests for core fields + graceful handling of extra fields
@@ -186,8 +190,8 @@ breaking: true
 ## Test
 
 - [ ] CLI parses minimal frontmatter (status, created)
-- [ ] Filtering works: `lean-spec list --status=planned --tag=api`
-- [ ] `lean-spec update <spec> --status=complete` updates correctly
+- [ ] Filtering works: `harnspec list --status=planned --tag=api`
+- [ ] `harnspec update <spec> --status=complete` updates correctly
 - [ ] Old specs without frontmatter still work (fallback)
 - [ ] Templates generate appropriate field sets per tier
 - [ ] Unknown fields generate warnings but don't fail
@@ -215,12 +219,12 @@ breaking: true
 
 Only build these if users ask for them:
 
-- `lean-spec stats` - "5 in-progress, 12 complete" summary
-- `lean-spec board` - Kanban-style view by status (planned | in-progress | complete)
-- `lean-spec gantt` - Timeline view with dependencies and due dates
-- `lean-spec timeline` - Visualize spec creation/completion over time
-- `lean-spec deps <spec>` - Show dependency graph (depends_on, blocks visualization)
-- `lean-spec search` - Full-text search with metadata filters
+- `harnspec stats` - "5 in-progress, 12 complete" summary
+- `harnspec board` - Kanban-style view by status (planned | in-progress | complete)
+- `harnspec gantt` - Timeline view with dependencies and due dates
+- `harnspec timeline` - Visualize spec creation/completion over time
+- `harnspec deps <spec>` - Show dependency graph (depends_on, blocks visualization)
+- `harnspec search` - Full-text search with metadata filters
 - Export formats: JSON, CSV, markdown table for reporting
 - Integration hooks: webhook on status change, sync to Jira/Linear
 - AI suggestions: auto-tag based on content, suggest related specs

@@ -91,7 +91,7 @@ All existing filesystem logic moves into `FilesystemProvider`. The cache layer s
 
 ### Configuration
 
-Add a `providers` section to `.lean-spec/config.json`:
+Add a `providers` section to `.harnspec/config.json`:
 
 ```json
 {
@@ -126,16 +126,19 @@ With `CompositeProvider`, the same spec ID could theoretically appear in multipl
 Today, every write path (MCP tools, CLI commands, HTTP handlers) is hardwired to `std::fs`. This section describes how tools remain compatible with non-filesystem providers without changing their interface.
 
 **What stays the same for AI agents:**
+
 - MCP tool parameters (`update`, `create`, `view`, etc.) are unchanged.
 - Content operations (`replacements`, `sectionUpdates`, `checklistToggles`) are pure string transforms — already provider-agnostic.
 - Agents call the same tools with the same arguments regardless of backend.
 
 **What changes internally:**
+
 - MCP tools currently receive `specs_dir: &str` and build filesystem paths. They must instead receive `Arc<dyn SpecProvider>` (or a `SpecLoader` backed by one).
 - `SpecWriter::atomic_write_file()` (currently `fs::write` + `fs::rename`) must delegate to `provider.write()`.
 - `SpecLoader::create_spec()` (currently `fs::create_dir_all` + `fs::write`) must delegate to `provider.write()`.
 
 **New concern — optimistic concurrency:**
+
 - The current `contentHash` mismatch check works for local files. For database/API providers, the provider should also support version-based optimistic locking (e.g., `ETag` or `version` column).
 - Add an optional `version` field to the `SpecProvider` trait responses so `SpecLoader` can perform compare-and-swap on writes.
 

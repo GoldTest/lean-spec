@@ -32,24 +32,24 @@ This works in both filesystem mode (local development) and multi-project mode (t
 
 ```bash
 # Launch the web UI
-lean-spec ui
+harnspec ui
 
 # Or with a custom port
-lean-spec ui --port 3001
+harnspec ui --port 3001
 ```
 
 Open any spec, and you'll see the editable metadata panel on the right side.
 
 ## 🔧 MCP Auto-Setup During Init
 
-Setting up MCP server integration used to require manual configuration. Now `lean-spec init` handles it automatically.
+Setting up MCP server integration used to require manual configuration. Now `harnspec init` handles it automatically.
 
 ### Automatic Detection
 
-When you run `lean-spec init`, HarnSpec detects your AI tools and offers to configure MCP:
+When you run `harnspec init`, HarnSpec detects your AI tools and offers to configure MCP:
 
 ```bash
-$ lean-spec init
+$ harnspec init
 
 ✔ Detected AI tools: Claude Code, VS Code, Cursor
 
@@ -67,7 +67,7 @@ Each configuration file gets the correct format with absolute paths:
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
       "args": ["@HarnSpec/mcp"],
       "cwd": "/absolute/path/to/your/project"
@@ -92,7 +92,7 @@ Migrating existing specs that lack frontmatter? The new `--bootstrap` flag makes
 
 ```bash
 # Create frontmatter for specs that don't have any
-lean-spec backfill --bootstrap
+harnspec backfill --bootstrap
 ```
 
 ### What Bootstrap Does
@@ -112,10 +112,10 @@ Bootstrap understands common documentation patterns:
 
 ```bash
 # Preview what would change
-lean-spec backfill --bootstrap --dry-run
+harnspec backfill --bootstrap --dry-run
 
 # Apply changes
-lean-spec backfill --bootstrap
+harnspec backfill --bootstrap
 ```
 
 ## 📁 Multi-Project Management Polish
@@ -155,7 +155,7 @@ If you missed it in the previous release, the new `/dependencies` page gives you
 
 ### Dependencies Page Works on Custom Ports
 
-Previously, `lean-spec ui --port 3002` would break the dependencies page due to hardcoded localhost:3000 calls. Fixed—the page now works on any port.
+Previously, `harnspec ui --port 3002` would break the dependencies page due to hardcoded localhost:3000 calls. Fixed—the page now works on any port.
 
 ### Multi-Project Dependencies Fixed
 
@@ -179,10 +179,10 @@ Full content loads on-demand when you open a spec detail page.
 
 ```bash
 # Update global installation
-npm install -g lean-spec@latest
+npm install -g harnspec@latest
 
 # Or use npx (always gets latest)
-npx lean-spec@latest board
+npx harnspec@latest board
 ```
 
 If you're using the MCP server:
@@ -198,12 +198,12 @@ npm install -g @HarnSpec/mcp@latest
 - **GitHub Action** - Automated spec validation in CI
 - **More MCP tool improvements** - Based on your feedback
 
-**Have ideas?** [Open an issue](https://github.com/codervisor/lean-spec/issues) or [start a discussion](https://github.com/codervisor/lean-spec/discussions).
+**Have ideas?** [Open an issue](https://github.com/codervisor/harnspec/issues) or [start a discussion](https://github.com/codervisor/harnspec/discussions).
 
 ---
 
 **Links**:
-- [Documentation](https://lean-spec.dev)
-- [GitHub Repository](https://github.com/codervisor/lean-spec)
-- [Full Changelog](https://github.com/codervisor/lean-spec/blob/main/CHANGELOG.md)
-- [Getting Started Guide](https://lean-spec.dev/docs/guide/getting-started)
+- [Documentation](https://harnspec.dev)
+- [GitHub Repository](https://github.com/codervisor/harnspec)
+- [Full Changelog](https://github.com/codervisor/harnspec/blob/main/CHANGELOG.md)
+- [Getting Started Guide](https://harnspec.dev/docs/guide/getting-started)

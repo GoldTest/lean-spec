@@ -8,8 +8,9 @@
 ## Executive Summary
 
 This document contains systematic validation of all LeanSpec documentation against:
+
 - Source code implementation (`src/`)
-- CLI command behavior (`lean-spec --help`)
+- CLI command behavior (`harnspec --help`)
 - Template files (`templates/`)
 - Configuration schemas (`config.ts`, `frontmatter.ts`)
 
@@ -19,6 +20,7 @@ This document contains systematic validation of all LeanSpec documentation again
 **Issues Fixed**: All 11 issues resolved
 
 **Most Critical Findings (FIXED):**
+
 1. ✅ **Configuration structure completely out of sync** - FIXED: Rewrote entire config reference
 2. ✅ **Invalid status values in docs** - FIXED: Removed `blocked` and `cancelled`, added `archived`
 3. ✅ **Missing CLI options** - FIXED: Added all missing options to all commands
@@ -56,10 +58,11 @@ This document contains systematic validation of all LeanSpec documentation again
 
 ### Critical Issues
 
-#### Issue #1: Missing CLI options in `lean-spec create` documentation
+#### Issue #1: Missing CLI options in `harnspec create` documentation
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 54-58)
-- **Docs say**: 
+- **Docs say**:
+
   ```
   Options:
   - `--status <status>` - Set initial status (default: `planned`)
@@ -67,7 +70,9 @@ This document contains systematic validation of all LeanSpec documentation again
   - `--tags <tags>` - Comma-separated tags
   - `--field <key=value>` - Set custom field (can be used multiple times)
   ```
+
 - **Reality is**: CLI has additional options not documented:
+
   ```
   --title <title>          Set custom title
   --description <desc>     Set initial description
@@ -75,14 +80,16 @@ This document contains systematic validation of all LeanSpec documentation again
   --template <template>    Use a specific template
   --no-prefix              Skip date prefix even if configured
   ```
+
 - **Severity**: **Critical** - Users are missing important functionality
 - **Fix**: Add missing options to the documentation
-- **Verification**: Run `lean-spec create --help` and compare to docs
+- **Verification**: Run `harnspec create --help` and compare to docs
 
-#### Issue #2: Status icon mismatch in `lean-spec list` output
+#### Issue #2: Status icon mismatch in `harnspec list` output
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 139-144)
 - **Docs say**:
+
   ```
   Status Icons:
   - 📅 Planned
@@ -91,6 +98,7 @@ This document contains systematic validation of all LeanSpec documentation again
   - 🚫 Blocked
   - ❌ Cancelled
   ```
+
 - **Reality is**: Need to verify actual icon implementation in source code
 - **Severity**: **Medium** - Icons "Blocked" and "Cancelled" may not exist in StatusSchema
 - **Fix**: Verify against `src/frontmatter.ts` StatusSchema and update
@@ -102,14 +110,15 @@ This document contains systematic validation of all LeanSpec documentation again
 
 ### Medium Issues
 
-#### Issue #3: Missing validation of `lean-spec list` filtering options
+#### Issue #3: Missing validation of `harnspec list` filtering options
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 97-102)
 - **Docs say**: Several filtering options listed
 - **Reality is**: Need to verify all options against actual CLI help output
 - **Severity**: **Medium** - Need to ensure complete accuracy
-- **Fix**: Cross-reference with `lean-spec list --help` output
+- **Fix**: Cross-reference with `harnspec list --help` output
 - **Verification**: Command shows:
+
   ```
   --archived               Include archived specs
   --status <status>        Filter by status (planned, in-progress, complete, archived)
@@ -128,14 +137,18 @@ This document contains systematic validation of all LeanSpec documentation again
 #### Issue #4: Incorrect status values in frontmatter documentation
 
 - **Location**: `docs-site/docs/reference/frontmatter.mdx` (line 17)
-- **Docs say**: 
+- **Docs say**:
+
   ```
   Values: `planned` | `in-progress` | `complete` | `blocked` | `cancelled`
   ```
+
 - **Reality is**: According to `src/frontmatter.ts` line 9:
+
   ```typescript
   export type SpecStatus = 'planned' | 'in-progress' | 'complete' | 'archived';
   ```
+
 - **Severity**: **Critical** - Documentation shows invalid status values
 - **Fix**: Remove `blocked` and `cancelled`, change to match actual schema
 - **Verification**: Check StatusSchema type in `src/frontmatter.ts`
@@ -157,49 +170,51 @@ This document contains systematic validation of all LeanSpec documentation again
 - **Location**: `docs-site/docs/guide/variables.mdx` - documents built-in variables
 - **Docs say**: Variables like `{status}` can be used
 - **Reality is**: `src/utils/variable-resolver.ts` shows status formatting:
+
   ```typescript
   'planned': '📅 Planned',
   'in-progress': '⏳ In progress',  // Note: ⏳ not 🔨
   'complete': '✅ Complete',
   'archived': '📦 Archived',
   ```
+
 - **Severity**: **Minor** - Icon for in-progress is ⏳ not 🔨 as shown in CLI docs
 - **Fix**: Standardize icons across all documentation
 - **Verification**: Check `variable-resolver.ts` line 70-76
 
-#### Issue #7: Missing CLI options for `lean-spec list`
+#### Issue #7: Missing CLI options for `harnspec list`
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 97-102)
 - **Docs say**: Lists filtering options but missing several
-- **Reality is**: According to `lean-spec list --help`:
+- **Reality is**: According to `harnspec list --help`:
   - Missing: `--archived` (Include archived specs)
   - Missing: `--sort <field>` (Sort by field)
   - Missing: `--order <order>` (Sort order)
   - Missing: `--assignee <name>` (Filter by assignee)
 - **Severity**: **Medium** - Users missing useful filtering options
 - **Fix**: Add all missing options to documentation
-- **Verification**: Run `lean-spec list --help`
+- **Verification**: Run `harnspec list --help`
 
-#### Issue #8: Missing CLI options for `lean-spec search`
+#### Issue #8: Missing CLI options for `harnspec search`
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 211-215)
 - **Docs say**: Lists some filtering options
-- **Reality is**: According to `lean-spec search --help`:
+- **Reality is**: According to `harnspec search --help`:
   - Missing: `--priority <priority>` (Filter by priority)
   - Missing: `--assignee <name>` (Filter by assignee)
 - **Severity**: **Medium** - Incomplete option documentation
 - **Fix**: Add missing options
-- **Verification**: Run `lean-spec search --help`
+- **Verification**: Run `harnspec search --help`
 
-#### Issue #9: Missing CLI options for `lean-spec update`
+#### Issue #9: Missing CLI options for `harnspec update`
 
 - **Location**: `docs-site/docs/reference/cli.mdx` (lines 162-167)
 - **Docs say**: Lists update options
-- **Reality is**: According to `lean-spec update --help`:
+- **Reality is**: According to `harnspec update --help`:
   - Missing: `--assignee <name>` (Set assignee)
 - **Severity**: **Medium** - Missing documented option
 - **Fix**: Add `--assignee` option to docs
-- **Verification**: Run `lean-spec update --help`
+- **Verification**: Run `harnspec update --help`
 
 ---
 
@@ -209,16 +224,19 @@ This document contains systematic validation of all LeanSpec documentation again
 
 - **Location**: `docs-site/docs/reference/config.mdx` (entire file)
 - **Docs say**: Shows simplified config structure:
+
   ```json
   {
     "specsDir": "specs",
     "archiveDir": "archive",
-    "templateFile": ".lean-spec/templates/spec-template.md",
+    "templateFile": ".harnspec/templates/spec-template.md",
     "frontmatter": {...},
     "variables": {}
   }
   ```
+
 - **Reality is**: According to `src/config.ts`, actual structure is:
+
   ```typescript
   {
     template: string;
@@ -239,6 +257,7 @@ This document contains systematic validation of all LeanSpec documentation again
     variables?: {...};
   }
   ```
+
 - **Severity**: **CRITICAL** - Documentation shows completely different structure
 - **Fix**: Rewrite entire configuration reference to match actual implementation
 - **Missing fields in docs**:
@@ -266,42 +285,51 @@ This document contains systematic validation of all LeanSpec documentation again
 ### By Severity
 
 **Critical (5 issues):**
-- Issue #1: Missing CLI options in `lean-spec create`
-- Issue #2: Invalid status values in `lean-spec list` docs
+
+- Issue #1: Missing CLI options in `harnspec create`
+- Issue #2: Invalid status values in `harnspec list` docs
 - Issue #4: Invalid status values in frontmatter reference
 - Issue #5: Status icons for non-existent statuses
 - Issue #10: Configuration structure completely out of sync
 
 **Medium (5 issues):**
+
 - Issue #3: Missing validation needed for list options
-- Issue #7: Missing CLI options for `lean-spec list`
-- Issue #8: Missing CLI options for `lean-spec search`
-- Issue #9: Missing CLI options for `lean-spec update`
+- Issue #7: Missing CLI options for `harnspec list`
+- Issue #8: Missing CLI options for `harnspec search`
+- Issue #9: Missing CLI options for `harnspec update`
 - Issue #11: Getting started config example wrong
 
 **Minor (1 issue):**
+
 - Issue #6: Inconsistent status icon (⏳ vs 🔨)
 
 ### By File
 
 **`docs-site/docs/reference/cli.mdx`** (6 issues):
+
 - Issues #1, #2, #3, #7, #8, #9
 
 **`docs-site/docs/reference/frontmatter.mdx`** (2 issues):
+
 - Issues #4, #5
 
 **`docs-site/docs/reference/config.mdx`** (1 issue):
+
 - Issue #10
 
 **`docs-site/docs/guide/getting-started.mdx`** (1 issue):
+
 - Issue #11
 
 **`docs-site/docs/guide/variables.mdx`** (1 issue):
+
 - Issue #6
 
 ### Validation Coverage
 
 **Validated:**
+
 - ✅ CLI command help output vs documentation
 - ✅ Status schema (StatusSchema type)
 - ✅ Priority schema (PrioritySchema type)
@@ -311,6 +339,7 @@ This document contains systematic validation of all LeanSpec documentation again
 - ✅ Frontmatter field definitions
 
 **Still Need Validation:**
+
 - ⏳ Init flow interactive prompts
 - ⏳ Code examples (bash commands)
 - ⏳ YAML/JSON examples (syntax validation)
@@ -344,23 +373,26 @@ This document contains systematic validation of all LeanSpec documentation again
 
 ### Medium Priority
 
-5. **Validate Code Examples** - Test all bash commands
-6. **Validate Init Prompts** - Match actual interactive flow
-7. **Fix Getting Started Config** - Show correct structure
+1. **Validate Code Examples** - Test all bash commands
+2. **Validate Init Prompts** - Match actual interactive flow
+3. **Fix Getting Started Config** - Show correct structure
 
 ### Testing Plan
 
 **Phase 1: Unit Testing**
+
 - Test each CLI command with all options
 - Verify config file loading with various structures
 - Test variable substitution
 
 **Phase 2: Integration Testing**
-- Run `lean-spec init` and verify prompts
+
+- Run `harnspec init` and verify prompts
 - Create specs with various options
 - Test filtering and searching
 
 **Phase 3: Example Testing**
+
 - Run every bash command in documentation
 - Validate every YAML/JSON example
 - Test every configuration snippet
@@ -377,6 +409,7 @@ This document contains systematic validation of all LeanSpec documentation again
 ---
 
 **Completed:**
+
 - [x] CLI commands - basic validation
 - [x] Status schema validation
 - [x] Variables system validation
@@ -384,6 +417,7 @@ This document contains systematic validation of all LeanSpec documentation again
 - [x] Configuration structure validation
 
 **Remaining:**
+
 - [ ] Init flow prompts validation
 - [ ] Custom fields validation
 - [ ] AI integration documentation
@@ -404,10 +438,10 @@ All 11 issues have been successfully fixed in PR #[number]:
 
 2. **docs-site/docs/reference/cli.mdx**
    - Fixed status icons in examples
-   - Added missing options for `lean-spec create`: `--title`, `--description`, `--assignee`, `--template`, `--no-prefix`
-   - Added missing options for `lean-spec list`: `--archived`, `--sort`, `--order`, `--assignee`
-   - Added missing options for `lean-spec search`: `--priority`, `--assignee`
-   - Added missing options for `lean-spec update`: `--assignee`
+   - Added missing options for `harnspec create`: `--title`, `--description`, `--assignee`, `--template`, `--no-prefix`
+   - Added missing options for `harnspec list`: `--archived`, `--sort`, `--order`, `--assignee`
+   - Added missing options for `harnspec search`: `--priority`, `--assignee`
+   - Added missing options for `harnspec update`: `--assignee`
    - Updated config example to match actual structure
 
 3. **docs-site/docs/reference/config.mdx**
@@ -438,7 +472,7 @@ All 11 issues have been successfully fixed in PR #[number]:
 ### Verification
 
 - ✅ Documentation site builds successfully
-- ✅ `lean-spec validate` passes (warnings are pre-existing, unrelated)
+- ✅ `harnspec validate` passes (warnings are pre-existing, unrelated)
 - ✅ Code review passed with no issues
 - ✅ All examples use correct field names and values
 
@@ -476,12 +510,14 @@ All 11 issues have been successfully fixed in PR #[number]:
 5. **Document issues** - Record any mismatches found
 
 **Sources of truth:**
+
 - `src/` - Source code implementation
-- `lean-spec --help` - CLI help output
+- `harnspec --help` - CLI help output
 - `templates/` - Template files
 - Actual command execution - Real behavior
 
 **Severity levels:**
+
 - **Critical**: Wrong information that breaks user workflows
 - **Medium**: Missing or incomplete information
 - **Minor**: Formatting, examples, or non-critical details

@@ -13,7 +13,7 @@ completed: '2025-11-03'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: integration, mcp, ai
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -25,31 +25,36 @@ Build a Model Context Protocol (MCP) server for LeanSpec that enables AI assista
 ## Design
 
 **Architecture:**
+
 - TypeScript MCP server (`packages/mcp-server/`)
 - Implements MCP protocol for tools, prompts, and resources
 - Reuses existing CLI logic via shared core package
 
 **MCP Tools (exposed to AI):**
-- `lean-spec_list` - List specs with filtering
-- `lean-spec_search` - Full-text search across specs
-- `lean-spec_read` - Read full spec content
-- `lean-spec_create` - Create new spec
-- `lean-spec_update` - Update spec frontmatter/status
-- `lean-spec_stats` - Get project statistics
-- `lean-spec_board` - Get Kanban board view
-- `lean-spec_deps` - Show dependencies
+
+- `harnspec_list` - List specs with filtering
+- `harnspec_search` - Full-text search across specs
+- `harnspec_read` - Read full spec content
+- `harnspec_create` - Create new spec
+- `harnspec_update` - Update spec frontmatter/status
+- `harnspec_stats` - Get project statistics
+- `harnspec_board` - Get Kanban board view
+- `harnspec_deps` - Show dependencies
 
 **MCP Resources (browsable by AI):**
+
 - `spec://<spec-name>` - Individual spec content
 - `board://kanban` - Current board state
 - `stats://overview` - Project statistics
 
 **MCP Prompts (quick actions for users):**
+
 - "Create feature spec" - Guided spec creation
 - "Update spec status" - Quick status changes
 - "Find related specs" - Dependency discovery
 
 **Configuration:**
+
 - Add to Claude Desktop config or any MCP-compatible client
 - Auto-discover project root from config file
 - Support multiple projects via config path parameter
@@ -77,13 +82,15 @@ Build a Model Context Protocol (MCP) server for LeanSpec that enables AI assista
 
 ## Notes
 
-**MCP Protocol Reference:** https://modelcontextprotocol.io/
+**MCP Protocol Reference:** <https://modelcontextprotocol.io/>
 
 **Related Work:**
+
 - VS Code extension (spec 006) - complementary UX for different context
 - PM integrations (planned) - MCP could expose sync status
 
 **Implementation Notes:**
+
 - Consider using `@modelcontextprotocol/sdk` for TypeScript
 - Keep server stateless; read from filesystem on each request
 - Reuse validation and config logic from core CLI

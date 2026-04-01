@@ -19,13 +19,14 @@ transitions:
 
 ## Overview
 
-When running `lean-spec init`, the skill installation via skills.sh was creating 37+ `.xxx` folders (one for every supported AI agent) even when the user only has 1-2 AI tools installed. This clutters the project with unnecessary directories.
+When running `harnspec init`, the skill installation via skills.sh was creating 37+ `.xxx` folders (one for every supported AI agent) even when the user only has 1-2 AI tools installed. This clutters the project with unnecessary directories.
 
 ### Problem
 
-The `skill::install()` function called `npx skills add codervisor/lean-spec -y` without specifying target agents, causing skills.sh to install to ALL supported agents by default.
+The `skill::install()` function called `npx skills add codervisor/harnspec -y` without specifying target agents, causing skills.sh to install to ALL supported agents by default.
 
 **Before (37+ folders created):**
+
 ```
 .adal/  .agent/  .agents/  .augment/  .claude/  .cline/  
 .codebuddy/  .codex/  .commandcode/  .continue/  .crush/  
@@ -37,6 +38,7 @@ The `skill::install()` function called `npx skills add codervisor/lean-spec -y` 
 ```
 
 **After (only detected tools):**
+
 ```
 .agents/  .claude/  .codex/  .cursor/  .gemini/  .github/  .opencode/
 ```
@@ -49,7 +51,7 @@ Modified `skill.rs` to accept an optional list of agent names:
 
 ```rust
 pub fn install(agents: Option<&[String]>) -> Result<(), Box<dyn Error>> {
-    let mut args = vec!["skills", "add", "codervisor/lean-spec", "-y"];
+    let mut args = vec!["skills", "add", "codervisor/harnspec", "-y"];
     if let Some(agent_list) = agents {
         for agent in agent_list {
             args.push("--agent");
@@ -85,6 +87,7 @@ fn runner_to_skills_agent(runner_id: &str) -> Option<&'static str> {
 ### 3. Filter Detected Tools for Skill Installation
 
 Modified `handle_skills_install()` to:
+
 1. Take AI detections as parameter
 2. Filter to only detected tools
 3. Map runner IDs to skills.sh agent names
@@ -96,11 +99,11 @@ Modified `handle_skills_install()` to:
 - [x] Add `runner_to_skills_agent()` mapping function
 - [x] Update `handle_skills_install()` to pass detected agents
 - [x] Update call site in `run_standard_init()`
-- [x] Test with `lean-spec init -y`
+- [x] Test with `harnspec init -y`
 
 ## Test
 
-- [x] Run `lean-spec init -y` in fresh directory
+- [x] Run `harnspec init -y` in fresh directory
 - [x] Verify only detected AI tool folders are created (7 vs 37+)
 - [x] Output shows: "Installing to detected tools: claude-code, codex, ..."
 

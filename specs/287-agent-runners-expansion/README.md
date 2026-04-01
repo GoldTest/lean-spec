@@ -178,12 +178,12 @@ Update documentation with support matrix:
   - [ ] Add Qwen Code runner
   
 - [ ] **Phase 2: Detection Config** - Add detection config to new runners
-    - [ ] Add detection config to Kiro runner
-    - [ ] Add detection config to Kimi runner
-    - [ ] Add detection config to Qodo runner
-    - [ ] Add detection config to Trae runner
-    - [ ] Add detection config to Qwen Code runner
-    - [ ] Add detection config to Amp runner
+  - [ ] Add detection config to Kiro runner
+  - [ ] Add detection config to Kimi runner
+  - [ ] Add detection config to Qodo runner
+  - [ ] Add detection config to Trae runner
+  - [ ] Add detection config to Qwen Code runner
+  - [ ] Add detection config to Amp runner
   
 - [ ] **Phase 3: Symlink Support** - Review symlink requirements
   - [ ] Kiro: uses AGENTS.md or steering files (`.kiro/steering.md`)
@@ -204,46 +204,52 @@ Update documentation with support matrix:
 - [ ] `RunnerRegistry::builtins()` includes all new runners from this spec
 - [ ] Detection config present for all new runners
 - [ ] Environment variable interpolation works for API keys
-- [ ] `lean-spec init` shows new tools in selection
+- [ ] `harnspec init` shows new tools in selection
 
 ## Notes
 
 ### Research Findings
 
 **Kiro CLI** (AWS):
+
 - Install: `curl -fsSL https://cli.kiro.dev/install | bash`
 - Command: `kiro-cli`
 - Features: Custom agents, MCP support, smart hooks, steering files
 - Agent instructions: AGENTS.md or `.kiro/steering.md`
 
 **Kimi CLI** (MoonshotAI):
-- GitHub: https://github.com/MoonshotAI/kimi-cli
+
+- GitHub: <https://github.com/MoonshotAI/kimi-cli>
 - Install: `pip install kimi-cli`
 - Command: `kimi`
 - Features: Uses Kimi K2 model, terminal-based coding assistant
 - Env: `MOONSHOT_API_KEY`
 
 **Qodo CLI** (formerly Codium):
+
 - Install: `npm install -g @qodo/command`
 - Command: `qodo`
 - Features: Custom review agents, CI mode, webhook mode, MCP server mode
 - Focus on code review and quality
 
 **Amp** (Sourcegraph):
+
 - Install: `curl -fsSL https://ampcode.com/install.sh | bash`
 - Command: `amp`
 - Features: TUI terminal experience, deep mode, librarian, oracle
 - VS Code/Cursor/Windsurf/JetBrains/Neovim extensions available
 
 **Trae Agent** (ByteDance):
-- GitHub: https://github.com/bytedance/trae-agent
+
+- GitHub: <https://github.com/bytedance/trae-agent>
 - Install: `pip install trae-agent`
 - Command: `trae`
 - Features: ByteDance's AI coding agent, SOLO mode for autonomous coding
 - Agent instructions: AGENTS.md
 
 **Qwen Code** (Alibaba):
-- GitHub: https://github.com/QwenLM/qwen-code
+
+- GitHub: <https://github.com/QwenLM/qwen-code>
 - Install: `pip install qwen-code`
 - Command: `qwen-code`
 - Features: Alibaba's Qwen LLM-based coding assistant

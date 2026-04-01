@@ -1,6 +1,6 @@
 # Dark Theme Demo
 
-> **Tutorial**: [Adding Dark Theme Support](https://lean-spec.dev/docs/tutorials/adding-dark-theme)
+> **Tutorial**: [Adding Dark Theme Support](https://harnspec.dev/docs/tutorials/adding-dark-theme)
 
 ## Scenario
 
@@ -9,6 +9,7 @@ You're building a professional admin dashboard for a SaaS product. The dashboard
 ## What's Here
 
 A professional admin dashboard with:
+
 - Interactive data visualization with charts (Chart.js)
 - Real-time statistics cards with animations
 - Sidebar navigation and top bar
@@ -18,6 +19,7 @@ A professional admin dashboard with:
 - No dark mode support (yet!)
 
 **Files:**
+
 - `src/server.js` - Express server for static files
 - `src/public/index.html` - Dashboard interface with sidebar, charts, and stats
 - `src/public/style.css` - Current light theme styles (CSS custom properties ready)
@@ -43,6 +45,7 @@ Add dark theme support with automatic switching based on system preferences. Fol
 > "Help me add dark theme support to this admin dashboard using LeanSpec. It should automatically switch based on the user's system theme preference."
 
 The AI will guide you through:
+
 1. Creating a spec for dark theme support
 2. Designing CSS custom properties for dark mode colors
 3. Implementing the `@media (prefers-color-scheme: dark)` query

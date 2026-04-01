@@ -3,6 +3,7 @@
 ## Architecture
 
 ### File Structure
+
 ```
 src/commands/
   ├── dashboard.ts       # NEW: Comprehensive overview
@@ -15,6 +16,7 @@ src/commands/
 ```
 
 ### Code Reuse
+
 - Extract shared visualization helpers to `utils/vis.ts`:
   - `createBar(count, max, width, char)` - reusable bar charts
   - `formatMetric(label, value, color)` - consistent metric display
@@ -23,6 +25,7 @@ src/commands/
 - Stats command owns all analytics logic (including timeline)
 
 ### Performance
+
 - Dashboard: Single `loadAllSpecs()` for all sections
 - Smart caching between dashboard and other commands
 - Lazy rendering (skip empty sections)
@@ -31,15 +34,19 @@ src/commands/
 ## Part 0: Timestamp Tracking (Foundation)
 
 ### Problem
+
 Current tracking only stores dates (YYYY-MM-DD), not timestamps:
+
 - Can't calculate precise cycle times
 - Can't distinguish specs completed same day
 - Loses granularity for velocity analysis
 
 ### Solution
+
 Add ISO 8601 timestamp fields alongside date fields
 
 ### Frontmatter Schema Update
+
 ```yaml
 ---
 status: in-progress
@@ -61,6 +68,7 @@ transitions:
 ```
 
 ### Migration Strategy
+
 - Add new `*_at` fields alongside existing date fields
 - Auto-generate timestamps on spec creation/updates
 - Existing specs: infer timestamps from dates (use midnight UTC)
@@ -68,6 +76,7 @@ transitions:
 - Make timestamps optional (graceful degradation)
 
 ### Implementation
+
 ```typescript
 // In frontmatter.ts
 export interface SpecFrontmatter {
@@ -129,17 +138,19 @@ export function enrichWithTimestamps(
 ## Part 1: Unified Analytics Command
 
 ### Command Structure
-Keep `lean-spec stats` (backward compatible), enhanced with velocity modes:
+
+Keep `harnspec stats` (backward compatible), enhanced with velocity modes:
 
 ```bash
-lean-spec stats              # Default: current stats (unchanged)
-lean-spec stats --timeline   # Add timeline section
-lean-spec stats --history    # Full historical view (current timeline command)
-lean-spec stats --velocity   # NEW: Cycle time & throughput analysis
-lean-spec stats --all        # Everything (stats + timeline + velocity)
+harnspec stats              # Default: current stats (unchanged)
+harnspec stats --timeline   # Add timeline section
+harnspec stats --history    # Full historical view (current timeline command)
+harnspec stats --velocity   # NEW: Cycle time & throughput analysis
+harnspec stats --all        # Everything (stats + timeline + velocity)
 ```
 
 ### Velocity Section Output
+
 ```
 📊 Velocity Metrics (Last 30 Days)
 
@@ -168,23 +179,27 @@ Velocity Trend
 ```
 
 ### Implementation Details
+
 - Calculate cycle time: `completed_at - created_at`
 - Track stage durations from transitions array
 - Show percentiles (P50, P90, P95) for cycle time distribution
-- Compare to targets (configurable in .lean-spec/config.json)
+- Compare to targets (configurable in .harnspec/config.json)
 - Show trends (last 4 weeks)
 
 ## Part 2: Dashboard Command (NOT IMPLEMENTED)
 
 > **Decision**: Dashboard command was not implemented. Enhanced `stats` and `board` commands provide the needed functionality without adding CLI complexity.
 
-### Original Design (for reference):
+### Original Design (for reference)
 
 ### Command
-`lean-spec` (no args) or `lean-spec dashboard`
+
+`harnspec` (no args) or `harnspec dashboard`
 
 ### Purpose
+
 Quick project health overview combining:
+
 - Summary metrics (from stats)
 - Key activity indicators (from timeline)  
 - Active work snapshot (from board)
@@ -194,7 +209,7 @@ Quick project health overview combining:
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  LeanSpec Dashboard · lean-spec                          ║
+║  LeanSpec Dashboard · harnspec                          ║
 ╚══════════════════════════════════════════════════════════╝
 
 📊 Project Health
@@ -224,52 +239,58 @@ Quick project health overview combining:
   WIP:             5 specs (healthy)
 
 ─────────────────────────────────────────────────────────────
-💡 Commands: lean-spec list | lean-spec board | lean-spec stats --velocity
+💡 Commands: harnspec list | harnspec board | harnspec stats --velocity
 ```
 
 ### Smart Insights
+
 - Show overdue specs first
 - Highlight critical priority items
 - Show specs assigned to user (if `--assignee` or git config)
 - Suggest next actions
 
 ### Display Options
+
 ```bash
-lean-spec                      # Full dashboard
-lean-spec dashboard            # Explicit
-lean-spec --compact            # Minimal (just health + attention)
-lean-spec --expand-active      # Show all in-progress (not just top 5)
-lean-spec --json               # JSON for tooling
+harnspec                      # Full dashboard
+harnspec dashboard            # Explicit
+harnspec --compact            # Minimal (just health + attention)
+harnspec --expand-active      # Show all in-progress (not just top 5)
+harnspec --json               # JSON for tooling
 ```
 
 ### vs. Individual Commands
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
-| `lean-spec` | Quick overview | Daily standup, "what's happening?" |
-| `lean-spec list` | Browse/search specs | Find specific spec, apply filters |
-| `lean-spec board` | Kanban workflow | Sprint planning, status changes |
-| `lean-spec gantt` | Timeline planning | Schedule work, see deadlines |
-| `lean-spec stats` | Deep analytics | Metrics review, team performance |
+| `harnspec` | Quick overview | Daily standup, "what's happening?" |
+| `harnspec list` | Browse/search specs | Find specific spec, apply filters |
+| `harnspec board` | Kanban workflow | Sprint planning, status changes |
+| `harnspec gantt` | Timeline planning | Schedule work, see deadlines |
+| `harnspec stats` | Deep analytics | Metrics review, team performance |
 
 ## Command Organization Philosophy
 
 ### PM Commands (keep separate - distinct workflows)
+
 - `list` - Browse/search/filter specs
 - `board` - Kanban workflow (status changes)
 - `deps` - Dependency visualization
 - `gantt` - Timeline planning (schedule work)
 
 ### Analytics Commands (consolidate - overlapping purpose)
+
 - `stats` - Current metrics + historical trends
 - `timeline` - Redundant with stats (merge in)
 
 ### Dashboard (new - quick overview)
-- `lean-spec` - Glanceable project health
+
+- `harnspec` - Glanceable project health
 - Entry point for daily use
 - Directs to PM commands for detail
 
 This organization makes sense because:
+
 - PM commands have distinct UX patterns (kanban, graph, gantt chart)
 - Analytics commands both show "numbers over time"
 - Dashboard is a meta-view (doesn't replace PM commands)
@@ -277,6 +298,7 @@ This organization makes sense because:
 ## Why Merge Stats + Timeline?
 
 ### Current Redundancy
+
 - Both load all specs
 - Both show date-based trends
 - Both have bar charts
@@ -284,11 +306,14 @@ This organization makes sense because:
 - Both output similar visualizations
 
 ### Differences
+
 - `stats` - emphasizes current state (status, priority, tags)
 - `timeline` - emphasizes historical change (created/completed over time)
 
 ### Solution
+
 Make `stats` the comprehensive analytics command:
+
 - Default: current stats (backward compatible)
 - `--timeline`: add timeline section
 - `--history`: timeline-focused view
@@ -298,6 +323,7 @@ Make `stats` the comprehensive analytics command:
 "Needs Attention" section prioritizes:
 
 1. **Overdue & Critical** - highest urgency
+
    ```typescript
    spec.frontmatter.due < today &&
    spec.frontmatter.status != 'complete' &&
@@ -305,18 +331,21 @@ Make `stats` the comprehensive analytics command:
    ```
 
 2. **Overdue & In-Progress** - likely blockers
+
    ```typescript
    spec.frontmatter.due < today &&
    spec.frontmatter.status == 'in-progress'
    ```
 
 3. **Critical & Planned** - not started yet
+
    ```typescript
    spec.frontmatter.priority == 'critical' &&
    spec.frontmatter.status == 'planned'
    ```
 
 4. **Long-running In-Progress** - potential stalls
+
    ```typescript
    spec.frontmatter.status == 'in-progress' &&
    daysSince(spec.frontmatter.updated) > 14
@@ -324,34 +353,38 @@ Make `stats` the comprehensive analytics command:
 
 Show top 3-5 items max, then "and N more need attention"
 
-## Why `lean-spec` Should Default to Dashboard
+## Why `harnspec` Should Default to Dashboard
 
 ### Current behavior
-`lean-spec` shows help
+
+`harnspec` shows help
 
 ### Proposed
-`lean-spec` shows dashboard
+
+`harnspec` shows dashboard
 
 ### Reasoning
-- Help still accessible via `lean-spec --help`
+
+- Help still accessible via `harnspec --help`
 - Dashboard is most frequently needed view
 - Matches modern CLI patterns (gh, git status at root)
 - Better new user experience (show, don't tell)
 - OpenSpec uses `openspec view` as primary command
 
 ### User flow
+
 ```bash
 cd my-project
-lean-spec                    # Quick overview (dashboard)
+harnspec                    # Quick overview (dashboard)
 # See something interesting...
-lean-spec list --tag bug     # Drill down
-lean-spec board              # Change status
-lean-spec                    # Check dashboard again
+harnspec list --tag bug     # Drill down
+harnspec board              # Change status
+harnspec                    # Check dashboard again
 ```
 
 ## Velocity Configuration
 
-Add to `.lean-spec/config.json`:
+Add to `.harnspec/config.json`:
 
 ```json
 {
@@ -375,6 +408,7 @@ Add to `.lean-spec/config.json`:
 ```
 
 ### Defaults (if not configured)
+
 - Cycle time target: 7 days
 - Max WIP: 5 concurrent specs
 - Long-running threshold: 14 days

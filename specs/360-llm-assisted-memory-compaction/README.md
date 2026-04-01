@@ -82,8 +82,8 @@ LLM reviews entries against current project context to flag potentially stale fa
 
 - Receives entry content + relevant file snippets from the codebase
 - Asked: "Is this fact still accurate given the current code?"
-- Stale entries are flagged (not auto-deleted) for human review via `lean-spec memory review`
-- Optionally triggered on: post-merge, scheduled, or manual `lean-spec memory check-stale`
+- Stale entries are flagged (not auto-deleted) for human review via `harnspec memory review`
+- Optionally triggered on: post-merge, scheduled, or manual `harnspec memory check-stale`
 
 **Scope limit**: Only checks entries against files they reference (via tags or keyword matching). Does not scan the entire codebase.
 
@@ -99,7 +99,7 @@ Instead of terse bullet points, the LLM generates a coherent summary for `index.
 ### Configuration
 
 ```json
-// .lean-spec/config.json
+// .harnspec/config.json
 {
   "memory": {
     "compaction": {
@@ -123,14 +123,14 @@ Every LLM-assisted change is traceable:
 - Fused/merged entries retain `merged_into` field pointing to the new entry
 - New entries created by fusion have `source: "compaction"` and `source_entries: [<ids>]` in their JSON
 - Staleness flags include the LLM's reasoning as a `stale_reason` field
-- `lean-spec memory log` shows compaction history (what was merged, when, by which stage)
+- `harnspec memory log` shows compaction history (what was merged, when, by which stage)
 
 ### Cost Controls
 
 - **Batch size cap**: Maximum 10 entries per LLM call
-- **Frequency limit**: LLM compaction runs at most once per `lean-spec memory compact --llm` invocation (never auto-triggered in hot path)
+- **Frequency limit**: LLM compaction runs at most once per `harnspec memory compact --llm` invocation (never auto-triggered in hot path)
 - **Token budget**: LLM calls are bounded by configurable max tokens per compaction run
-- **Dry run**: `lean-spec memory compact --llm --dry-run` shows proposed changes without applying
+- **Dry run**: `harnspec memory compact --llm --dry-run` shows proposed changes without applying
 
 ## Plan
 
@@ -141,9 +141,9 @@ Every LLM-assisted change is traceable:
 - [ ] Implement narrative index generation as alternative to bullet-point format
 - [ ] Add `merged_into`, `source`, `source_entries`, `stale_reason` fields to entry schema
 - [ ] Add `compaction.llmAssisted` and sub-toggles to config schema
-- [ ] Add `lean-spec memory compact --llm [--dry-run]` CLI flag
-- [ ] Add `lean-spec memory check-stale` CLI command
-- [ ] Add `lean-spec memory log` for compaction audit history
+- [ ] Add `harnspec memory compact --llm [--dry-run]` CLI flag
+- [ ] Add `harnspec memory check-stale` CLI command
+- [ ] Add `harnspec memory log` for compaction audit history
 - [ ] Expose LLM compaction via MCP tool (`memory_compact` with `llm` parameter)
 
 ## Test

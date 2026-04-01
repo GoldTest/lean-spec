@@ -12,10 +12,12 @@ transitions:
 # Integrate models.dev as Default Model Registry
 
 ## Why
+
 LeanSpec users currently need to manually configure LLM models and providers in their AI chat settings. This creates friction during onboarding and ongoing usage. By integrating models.dev as the default model registry, users get automatic access to 80+ providers and hundreds of models without manual configuration.
 
 ## Goal
-- Use models.dev API (https://models.dev/api.json) as the source of truth for available AI models
+
+- Use models.dev API (<https://models.dev/api.json>) as the source of truth for available AI models
 - Auto-detect configured API keys in environment and only show usable providers
 - Allow optional user overrides for custom configurations
 - Reduce time-to-first-chat from minutes to seconds
@@ -23,11 +25,14 @@ LeanSpec users currently need to manually configure LLM models and providers in 
 ## Design
 
 ### Data Source
+
 models.dev provides:
+
 - Provider metadata: `id`, `name`, `env` (required API key vars), `npm` (AI SDK package), `api` (base URL), `doc`
 - Rich model info: `id`, `name`, `family`, capabilities (`tool_call`, `reasoning`, `attachment`), `cost` (input/output), `limit` (context/output tokens)
 
 ### Architecture
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      models.dev API                          │
@@ -37,7 +42,7 @@ models.dev provides:
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │           ModelRegistry (Rust leanspec-core)                 │
-│  - Cache models.dev data locally (~/.lean-spec/models.json)  │
+│  - Cache models.dev data locally (~/.harnspec/models.json)  │
 │  - Refresh on startup if stale (24h TTL)                     │
 │  - Filter providers by available API keys                    │
 └───────────────────────────┬─────────────────────────────────┘
@@ -69,7 +74,9 @@ models.dev provides:
    - Highlight models with reasoning/tool_call support
 
 ### Priority Providers
+
 Focus on commonly used providers with tool_call support:
+
 - openai (OPENAI_API_KEY)
 - anthropic (ANTHROPIC_API_KEY)
 - deepseek (DEEPSEEK_API_KEY)
@@ -79,10 +86,12 @@ Focus on commonly used providers with tool_call support:
 - fireworks-ai (FIREWORKS_API_KEY)
 
 ### Offline Fallback
+
 - Bundle a snapshot of models.dev in the binary for offline use
 - Update bundled snapshot with each release
 
 ## Checklist
+
 - [x] Create `models_registry` module in leanspec-core
 - [x] Implement models.dev API fetching with caching
 - [x] Filter providers by configured environment variables

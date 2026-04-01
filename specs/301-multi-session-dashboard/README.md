@@ -14,6 +14,7 @@ updated_at: 2026-02-03T14:16:37.326442Z
 A dedicated page for monitoring all AI coding sessions across projects simultaneously, providing a real-time control center for AI orchestration.
 
 **Problem:**
+
 - Sessions are scoped to individual projects - no unified view
 - Users running AI agents on multiple specs/projects must switch contexts to monitor
 - No way to see "all running agents" at a glance
@@ -38,7 +39,7 @@ New dashboard page showing all sessions across all registered projects with real
 │                                                                  │
 │  ┌─── RUNNING (3) ──────────────────────────────────────────┐   │
 │  │                                                           │   │
-│  │ 🟢 Session #a1b2    Claude    lean-spec/168    12m 34s   │   │
+│  │ 🟢 Session #a1b2    Claude    harnspec/168    12m 34s   │   │
 │  │    ████████████░░░░░░ 60%     127K tokens    [⏸] [⏹]     │   │
 │  │                                                           │   │
 │  │ 🟢 Session #c3d4    Copilot   my-app/042      3m 21s     │   │
@@ -51,10 +52,10 @@ New dashboard page showing all sessions across all registered projects with real
 │                                                                  │
 │  ┌─── RECENT (5) ───────────────────────────────────────────┐   │
 │  │                                                           │   │
-│  │ ✅ Session #g7h8    Claude    lean-spec/244   15m   ✓    │   │
+│  │ ✅ Session #g7h8    Claude    harnspec/244   15m   ✓    │   │
 │  │    Completed 2 minutes ago                    [↻] [🗑]    │   │
 │  │                                                           │   │
-│  │ ❌ Session #i9j0    Claude    lean-spec/287   8m    ✗    │   │
+│  │ ❌ Session #i9j0    Claude    harnspec/287   8m    ✗    │   │
 │  │    Failed: Test assertion error               [↻] [📋]    │   │
 │  │                                                           │   │
 │  └───────────────────────────────────────────────────────────┘   │
@@ -73,10 +74,11 @@ New dashboard page showing all sessions across all registered projects with real
 ### Session Card Components
 
 **Running Session Card:**
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ 🟢 Session #a1b2c3d4                                            │
-│ Tool: Claude Code  │  Spec: 168-orchestration  │  lean-spec    │
+│ Tool: Claude Code  │  Spec: 168-orchestration  │  harnspec    │
 ├─────────────────────────────────────────────────────────────────┤
 │ ████████████████░░░░░░░░░░░░ 60%                                │
 │ Duration: 12m 34s  │  Tokens: 127,432 (~$0.85)  │  Iter: 3/10  │
@@ -88,10 +90,11 @@ New dashboard page showing all sessions across all registered projects with real
 ```
 
 **Failed Session Card:**
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │ ❌ Session #i9j0k1l2                                 8m │ 2h ago│
-│ Tool: Claude  │  Spec: 287-agent-runners  │  lean-spec         │
+│ Tool: Claude  │  Spec: 287-agent-runners  │  harnspec         │
 ├─────────────────────────────────────────────────────────────────┤
 │ Error: Test assertion failed in agent_test.rs:42                │
 │ "Expected 'running' but got 'pending'"                          │
@@ -103,16 +106,19 @@ New dashboard page showing all sessions across all registered projects with real
 ### Filtering & Controls
 
 **Filter Bar:**
+
 ```
 [All Projects ▼] [All Tools ▼] [All Status ▼] [🔍 Search...]  [⟳ Refresh]
 ```
 
 **Filter Options:**
+
 - **Project**: All / Specific project
 - **Tool**: All / Claude / Copilot / Cursor / Codex / etc.
 - **Status**: All / Running / Paused / Pending / Completed / Failed
 
 **Auto-Refresh:**
+
 - Default: Poll every 5 seconds
 - WebSocket for instant updates when available
 - Manual refresh button for immediate update
@@ -133,6 +139,7 @@ New dashboard page showing all sessions across all registered projects with real
 ### Real-Time Updates
 
 **WebSocket Events:**
+
 ```typescript
 type SessionEvent = 
   | { type: 'session.started'; session: Session }
@@ -143,6 +150,7 @@ type SessionEvent =
 ```
 
 **Visual Feedback:**
+
 - Progress bars animate smoothly
 - New sessions slide in from top
 - Completed sessions fade to "Recent" section
@@ -151,6 +159,7 @@ type SessionEvent =
 ### Notifications Integration
 
 When dashboard is not focused:
+
 - Desktop notification on session complete/fail
 - Badge on Sessions nav item: `🤖 Sessions (3)` → shows running count
 - Sound notification option (configurable)
@@ -302,16 +311,19 @@ function useSessionUpdates(onUpdate: (event: SessionEvent) => void) {
 ### Design Decisions
 
 **Why a separate dashboard vs enhanced /sessions?**
+
 - /sessions is project-scoped (fits current model)
 - Dashboard is cross-project (different purpose)
 - Can coexist - nav to dashboard or project sessions
 
 **Why group by status vs time?**
+
 - Running sessions need immediate visibility
 - Status grouping aids prioritization
 - Time-based within groups for context
 
 **Why limit "Recent" to 24h?**
+
 - Prevents infinite list growth
 - Older sessions less actionable
 - Can always go to project-level /sessions for history

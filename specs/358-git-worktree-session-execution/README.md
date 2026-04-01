@@ -33,6 +33,7 @@ Use **git worktrees** to give each agent session an isolated working directory b
 ### Scope
 
 **In Scope**:
+
 - Worktree lifecycle management (create, bind to session, cleanup)
 - Branch naming conventions and automatic branch creation per session
 - Parallel session execution using isolated worktrees
@@ -42,6 +43,7 @@ Use **git worktrees** to give each agent session an isolated working directory b
 - Integration with shell-based runner execution (spec 357)
 
 **Out of Scope**:
+
 - Distributed execution across multiple machines
 - Container-based isolation (Docker, etc.)
 - Monorepo-specific subtree strategies
@@ -114,16 +116,16 @@ Branch naming: `leanspec/session/{session-id}-{spec-slug}`
 
 1. **Pre-merge check**: Before merging, do a dry-run merge to detect conflicts
 2. **No conflicts**: Proceed with configured strategy (auto-merge/squash)
-3. **Conflicts detected**: 
+3. **Conflicts detected**:
    - Keep the session branch and worktree alive
    - Report conflicting files to user
-   - Provide CLI command to resolve: `lean-spec session merge <id> --resolve`
+   - Provide CLI command to resolve: `harnspec session merge <id> --resolve`
    - Optionally open a diff view in the UI
 
 ### Parallel Execution Flow
 
 ```
-User: lean-spec run --spec 101 --spec 102 --spec 103 --parallel
+User: harnspec run --spec 101 --spec 102 --spec 103 --parallel
 
   ┌─────────────────────────────────────────────────┐
   │              Session Orchestrator                │
@@ -153,26 +155,26 @@ User: lean-spec run --spec 101 --spec 102 --spec 103 --parallel
 
 ```bash
 # Run a session in a worktree (auto-creates worktree)
-lean-spec run -p "fix auth bug" --worktree
+harnspec run -p "fix auth bug" --worktree
 
 # Run multiple specs in parallel worktrees
-lean-spec run --spec 101 --spec 102 --parallel
+harnspec run --spec 101 --spec 102 --parallel
 
 # List active worktree sessions
-lean-spec session worktrees
+harnspec session worktrees
 
 # Merge a completed session back
-lean-spec session merge <session-id>
-lean-spec session merge <session-id> --strategy squash
+harnspec session merge <session-id>
+harnspec session merge <session-id> --strategy squash
 
 # Resolve merge conflicts
-lean-spec session merge <session-id> --resolve
+harnspec session merge <session-id> --resolve
 
 # Clean up a session worktree (abort/discard)
-lean-spec session cleanup <session-id>
+harnspec session cleanup <session-id>
 
 # GC: remove all stale worktrees
-lean-spec session gc
+harnspec session gc
 ```
 
 ### Session-Worktree Data Model
@@ -216,6 +218,7 @@ enum MergeStrategy {
 Checked items below reflect requirements that are implemented in the current codebase. Acceptance criteria remain open until the CLI worktree flows pass end-to-end.
 
 ### Worktree Lifecycle
+
 - [x] Create git worktree for a session with auto-generated branch name
 - [x] Worktree created outside the main repo (e.g., `/tmp/leanspec-worktrees/`)
 - [x] Session metadata stored in worktree registry
@@ -223,13 +226,15 @@ Checked items below reflect requirements that are implemented in the current cod
 - [x] Stale worktree detection and garbage collection (`session gc`)
 
 ### Parallel Execution
-- [x] `--worktree` flag on `lean-spec run` to enable worktree isolation
+
+- [x] `--worktree` flag on `harnspec run` to enable worktree isolation
 - [x] `--parallel` flag to run multiple specs concurrently in separate worktrees
 - [x] Each parallel session gets its own runner process
 - [x] Session orchestrator monitors all parallel sessions
 - [x] Results aggregated and reported after all sessions complete
 
 ### Merge & Conflict Resolution
+
 - [x] Pre-merge dry-run conflict detection
 - [x] Auto-merge with fast-forward or 3-way merge
 - [x] Squash merge option (`--strategy squash`)
@@ -239,10 +244,11 @@ Checked items below reflect requirements that are implemented in the current cod
 - [ ] Sequential merge ordering for parallel sessions (FIFO)
 
 ### Integration
+
 - [x] Works with shell-based runner execution (spec 357)
 - [x] Session status reflected in the existing session tracking system
 - [x] Worktree path passed to runner as working directory
-- [x] `lean-spec session worktrees` lists active worktree sessions
+- [x] `harnspec session worktrees` lists active worktree sessions
 
 ## Non-Goals
 
@@ -255,6 +261,7 @@ Checked items below reflect requirements that are implemented in the current cod
 ## Technical Notes
 
 ### Git Worktree Fundamentals
+
 - `git worktree add <path> -b <branch>` creates a new worktree with a new branch
 - Worktrees share the same `.git` object store — no full repo clone needed
 - Worktrees are lightweight: only the working directory is duplicated
@@ -263,11 +270,13 @@ Checked items below reflect requirements that are implemented in the current cod
 - `git worktree prune` removes stale worktree references
 
 ### Key Files (Existing)
+
 - `rust/leanspec-core/src/sessions/` — Session management
 - `rust/leanspec-cli/src/commands/session.rs` — Session CLI commands
 - `schemas/runners.json` — Runner definitions
 
 ### Performance Considerations
+
 - Worktree creation is fast (~100ms for typical repos)
 - Disk usage: only working tree files are duplicated (objects shared)
 - For large repos, consider shallow worktrees or sparse checkout
@@ -275,11 +284,11 @@ Checked items below reflect requirements that are implemented in the current cod
 
 ## Acceptance Criteria
 
-- [ ] `lean-spec run -p "prompt" --worktree` creates a worktree, runs the agent, merges back, and cleans up
-- [ ] `lean-spec run --spec 101 --spec 102 --parallel` runs two agents concurrently in separate worktrees
+- [ ] `harnspec run -p "prompt" --worktree` creates a worktree, runs the agent, merges back, and cleans up
+- [ ] `harnspec run --spec 101 --spec 102 --parallel` runs two agents concurrently in separate worktrees
 - [ ] Merge conflicts are detected and reported without data loss
-- [ ] `lean-spec session worktrees` shows active worktree sessions with status
-- [ ] `lean-spec session gc` cleans up stale worktrees and branches
+- [ ] `harnspec session worktrees` shows active worktree sessions with status
+- [ ] `harnspec session gc` cleans up stale worktrees and branches
 - [ ] No interference between parallel sessions (verified with concurrent writes to same file)
 
 ## Progress Check
@@ -289,22 +298,26 @@ Checked items below reflect requirements that are implemented in the current cod
 Verified against the current codebase and targeted test runs.
 
 Implemented and present in code:
+
 - `rust/leanspec-core/src/sessions/worktree.rs` exists and adds worktree registry, branch naming, merge, cleanup, and GC helpers.
 - `rust/leanspec-core/src/sessions/manager/lifecycle.rs` wires worktree metadata into session creation/start/completion and passes worktree paths as the runner working directory.
 - `rust/leanspec-cli/src/commands/session.rs` and `rust/leanspec-cli/src/cli_args.rs` add `--worktree`, `--parallel`, `--merge-strategy`, plus `session worktrees|merge|cleanup|gc` commands.
 - `.leanspec-worktrees/` is gitignored.
 
 Validation results:
+
 - `cargo test --manifest-path rust/Cargo.toml -p leanspec-core --features 'sessions storage' --quiet` passed.
 - `cargo test --manifest-path rust/Cargo.toml -p leanspec-cli --test session -- --nocapture` failed.
 - `pnpm typecheck` passed.
 
 Verified blockers still preventing completion:
-- The new single-worktree CLI path is not yet verified end-to-end. The added test currently fails before execution because `lean-spec run` still requires either `--prompt` or `--spec`.
+
+- The new single-worktree CLI path is not yet verified end-to-end. The added test currently fails before execution because `harnspec run` still requires either `--prompt` or `--spec`.
 - Parallel worktree execution is not yet acceptance-ready. The current implementation fails during sequential merge-back with `Validation error: Merge requires a clean target branch worktree`.
 - Failed-session cleanup is not yet verified by passing tests. The current failing-worktree test shows the command completes and records a failed status, but the end-to-end expectation for preserved worktree cleanup is not yet passing.
 - `session merge --resolve` is exposed, but current verification did not show behavior distinct from a normal merge retry.
 
 Conclusion:
+
 - Keep status as `in-progress`.
 - Do not mark requirements or acceptance criteria complete until the CLI session test suite passes for the worktree flows and the merge/conflict path is verified end-to-end.

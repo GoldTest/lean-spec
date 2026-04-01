@@ -23,9 +23,10 @@ Add inline dependencies editor to `@leanspec/ui` allowing users to add/remove sp
 ### Problem
 
 Currently, managing spec dependencies requires:
+
 1. Opening the spec file in a code editor
 2. Editing YAML frontmatter manually (`depends_on:` array)
-3. Or using CLI: `lean-spec link <spec> --depends-on <other>`
+3. Or using CLI: `harnspec link <spec> --depends-on <other>`
 
 This friction slows down common workflows like linking related work during planning.
 
@@ -83,11 +84,11 @@ export async function updateSpecDependencies(
 ) {
   // Add new dependencies
   if (add?.length) {
-    await exec(`lean-spec link ${specId} --depends-on ${add.join(',')}`);
+    await exec(`harnspec link ${specId} --depends-on ${add.join(',')}`);
   }
   // Remove dependencies  
   if (remove?.length) {
-    await exec(`lean-spec unlink ${specId} --depends-on ${remove.join(',')}`);
+    await exec(`harnspec unlink ${specId} --depends-on ${remove.join(',')}`);
   }
 }
 ```
@@ -107,6 +108,7 @@ interface DependenciesEditorProps {
 ```
 
 **Component Structure**:
+
 1. **Display Mode**: Show dependencies as `Badge` components with "X" remove button
 2. **Add Mode**: Popover with searchable `Command` dropdown (Cmdk pattern)
 3. **Dropdown Items**: Show `#NNN Title` with `StatusBadge` for each spec
@@ -129,6 +131,7 @@ Add to `spec-detail-client.tsx` header alongside existing editors:
 ### State Management
 
 Follow existing pattern from `TagsEditor`:
+
 - Optimistic updates with rollback on error
 - Toast notifications for success/failure
 - Loading spinner during API call
@@ -136,22 +139,26 @@ Follow existing pattern from `TagsEditor`:
 ## Plan
 
 ### Phase 1: API & Backend
+
 - [ ] Extend metadata API route to handle `dependsOn` updates
 - [ ] Add `updateSpecDependencies` service function
 - [ ] Handle both filesystem mode and project mode
 
 ### Phase 2: UI Component
+
 - [ ] Create `DependenciesEditor` component following `TagsEditor` pattern
 - [ ] Implement searchable spec picker dropdown
 - [ ] Add remove button functionality
 - [ ] Show spec status in dropdown for context
 
 ### Phase 3: Integration
+
 - [ ] Add to `spec-detail-client.tsx` header
 - [ ] Add to `editable-spec-metadata.tsx` card
 - [ ] Pass allSpecs data (may need API adjustment)
 
 ### Phase 4: Polish
+
 - [ ] Circular dependency prevention
 - [ ] Keyboard navigation (Enter/Escape)
 - [ ] Loading and error states
@@ -160,12 +167,14 @@ Follow existing pattern from `TagsEditor`:
 ## Test
 
 **API Tests**
+
 - [ ] Adding dependency updates frontmatter correctly
 - [ ] Removing dependency updates frontmatter correctly  
 - [ ] Non-existent spec returns 404
 - [ ] Invalid spec ID returns validation error
 
 **UI Tests**
+
 - [ ] Clicking "+" opens spec picker dropdown
 - [ ] Selecting spec adds to dependencies list
 - [ ] Clicking "X" removes dependency
@@ -173,6 +182,7 @@ Follow existing pattern from `TagsEditor`:
 - [ ] Error triggers rollback and toast
 
 **Edge Cases**
+
 - [ ] Circular dependency prevention works (A→B→A blocked)
 - [ ] Self-dependency blocked
 - [ ] Empty dependencies handled correctly

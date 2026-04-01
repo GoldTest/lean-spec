@@ -1097,7 +1097,7 @@ pub fn global_runners_path() -> PathBuf {
 }
 
 pub fn project_runners_path(project_path: &Path) -> PathBuf {
-    project_path.join(".lean-spec").join("runners.json")
+    project_path.join(".harnspec").join("runners.json")
 }
 
 /// Resolve available models for a runner by looking up its `model_providers`

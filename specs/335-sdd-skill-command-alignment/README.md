@@ -61,6 +61,7 @@ The CLI has **30+ commands**:
 **CLI**: 5 separate commands: `rel`, `link`, `unlink`, `children`, `deps`
 
 The skill docs incorrectly reference these as separate MCP tools:
+
 - `set_parent` → doesn't exist; use `relationships(action=add, type=parent)`
 - `link` → doesn't exist; use `relationships(action=add, type=depends_on)`
 - `unlink` → doesn't exist; use `relationships(action=remove, type=depends_on)`
@@ -86,10 +87,12 @@ The skill docs incorrectly reference these as separate MCP tools:
 ### 3. Feature Parity Gaps
 
 **MCP has, CLI lacks:**
+
 - `create --parent` / `--depends-on` (set relationships at creation time)
 - `update` with replacements, sectionUpdates, checklistToggles (surgical content editing)
 
 **CLI has, MCP lacks:**
+
 - `deps` (dependency graph traversal with --upstream/--downstream/--depth)
 - `children` (dedicated child listing)
 - `list --hierarchy` (hierarchy tree view)
@@ -121,9 +124,9 @@ Add dedicated MCP tools that mirror CLI shortcuts for common operations:
 
 | New MCP Tool | Maps To | Rationale |
 |-------------|---------|-----------|
-| `deps` | `lean-spec deps` | Graph traversal is distinct from `relationships` view |
-| `children` | `lean-spec children` | Common enough to warrant a shortcut |
-| `archive` | `lean-spec archive` | Common status transition |
+| `deps` | `harnspec deps` | Graph traversal is distinct from `relationships` view |
+| `children` | `harnspec children` | Common enough to warrant a shortcut |
+| `archive` | `harnspec archive` | Common status transition |
 
 Keep `relationships` as the unified tool, but add convenience tools for the most common operations that agents perform frequently.
 
@@ -149,7 +152,6 @@ Deprecate `link`, `unlink`, `children` CLI commands in favor of `rel`. This is p
 - [x] Add `--hierarchy` documentation to list command
 - [x] Decide on `link`/`unlink` CLI fate (keep as aliases? deprecation warning?)
 - [x] Final cross-verification pass
-
 
 - [x] Update SDD skill docs to use `relationships` MCP semantics and correct command examples
 - [x] Correct CLI reference flags and remove invalid options in `references/commands.md`

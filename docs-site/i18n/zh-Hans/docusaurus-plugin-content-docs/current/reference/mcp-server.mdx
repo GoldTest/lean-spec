@@ -58,7 +58,7 @@ AI 助手可访问的可浏览内容：
 MCP 服务器包含在 HarnSpec 中。无需额外安装。
 
 ```bash
-npm install -g lean-spec
+npm install -g harnspec
 ```
 
 ## 配置
@@ -75,9 +75,9 @@ npm install -g lean-spec
 ```json
 {
   "github.copilot.chat.mcp.servers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "${workspaceFolder}"
     }
   }
@@ -102,16 +102,16 @@ npm install -g lean-spec
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
+    "harnspec": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
-      "cwd": "/path/to/your/lean-spec/project"
+      "args": ["-y", "harnspec", "mcp"],
+      "cwd": "/path/to/your/harnspec/project"
     }
   }
 }
 ```
 
-将 `/path/to/your/lean-spec/project` 替换为您的 HarnSpec 项目目录的绝对路径。
+将 `/path/to/your/harnspec/project` 替换为您的 HarnSpec 项目目录的绝对路径。
 
 ### 多个项目
 
@@ -120,14 +120,14 @@ npm install -g lean-spec
 ```json
 {
   "mcpServers": {
-    "lean-spec-projectA": {
+    "harnspec-projectA": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "/path/to/projectA"
     },
-    "lean-spec-projectB": {
+    "harnspec-projectB": {
       "command": "npx",
-      "args": ["-y", "lean-spec", "mcp"],
+      "args": ["-y", "harnspec", "mcp"],
       "cwd": "/path/to/projectB"
     }
   }
@@ -136,15 +136,15 @@ npm install -g lean-spec
 
 ### 替代方案：使用全局安装
 
-如果您全局安装了 HarnSpec（`npm install -g lean-spec`），可以使用：
+如果您全局安装了 HarnSpec（`npm install -g harnspec`），可以使用：
 
 ```json
 {
   "mcpServers": {
-    "lean-spec": {
-      "command": "lean-spec",
+    "harnspec": {
+      "command": "harnspec",
       "args": ["mcp"],
-      "cwd": "/path/to/your/lean-spec/project"
+      "cwd": "/path/to/your/harnspec/project"
     }
   }
 }
@@ -153,7 +153,7 @@ npm install -g lean-spec
 ### 其他 MCP 客户端
 
 对于其他兼容 MCP 的客户端，配置它们运行：
-- **命令**：`npx -y lean-spec mcp`（推荐）或 `lean-spec mcp`（如果全局安装）
+- **命令**：`npx -y harnspec mcp`（推荐）或 `harnspec mcp`（如果全局安装）
 - **工作目录**：您的 HarnSpec 项目根目录
 - **传输**：stdio
 
@@ -289,16 +289,16 @@ Show me detailed token breakdown for spec 066
 
 ### 服务器无法启动
 
-- 验证配置中的 `cwd` 路径指向有效的 HarnSpec 项目（有 `.lean-spec/config.json`）
+- 验证配置中的 `cwd` 路径指向有效的 HarnSpec 项目（有 `.harnspec/config.json`）
 - 如果使用 `npx`，确保首次运行时有互联网访问
-- 如果使用全局安装，检查 `lean-spec` 是否在您的 PATH 中
-- 尝试直接从项目目录运行 `npx -y lean-spec mcp` 或 `lean-spec mcp`
+- 如果使用全局安装，检查 `harnspec` 是否在您的 PATH 中
+- 尝试直接从项目目录运行 `npx -y harnspec mcp` 或 `harnspec mcp`
 
 ### 工具未出现
 
 - 配置更改后重新启动 MCP 客户端
 - 检查客户端日志是否有连接错误
-- 验证 HarnSpec 项目是否正确初始化（`lean-spec init`）
+- 验证 HarnSpec 项目是否正确初始化（`harnspec init`）
 
 ### 权限错误
 
@@ -312,16 +312,16 @@ Show me detailed token breakdown for spec 066
 您可以使用 [MCP Inspector](https://github.com/modelcontextprotocol/inspector) 测试 MCP 服务器：
 
 ```bash
-npx @modelcontextprotocol/inspector npx -y lean-spec mcp
+npx @modelcontextprotocol/inspector npx -y harnspec mcp
 ```
 
 或直接从您的项目测试：
 
 ```bash
-cd /path/to/your/lean-spec/project
-npx -y lean-spec mcp
+cd /path/to/your/harnspec/project
+npx -y harnspec mcp
 # 或如果全局安装：
-lean-spec mcp
+harnspec mcp
 ```
 
 ## 安全注意事项

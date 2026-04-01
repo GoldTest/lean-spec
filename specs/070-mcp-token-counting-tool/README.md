@@ -26,15 +26,16 @@ transitions:
 
 **The Problem**: AI agents cannot query token counts programmatically. They need to make context-aware decisions about which specs to load, but have no way to check token sizes.
 
-**The Solution**: Add `mcp_lean-spec_tokens` tool to the MCP server, enabling AI agents to query token counts for specs and sub-specs before loading them into context.
+**The Solution**: Add `mcp_harnspec_tokens` tool to the MCP server, enabling AI agents to query token counts for specs and sub-specs before loading them into context.
 
 ## Overview
 
 ### Context
 
 From **Spec 069** (Token Counting Utilities):
+
 - ✅ Core infrastructure complete (`TokenCounter` class)
-- ✅ CLI commands working (`lean-spec tokens`)
+- ✅ CLI commands working (`harnspec tokens`)
 - ✅ Validation integrated (using tiktoken)
 - ❌ MCP tool not yet implemented
 
@@ -43,26 +44,29 @@ This spec extracts the MCP tool implementation into focused, standalone work.
 ### Why This Matters
 
 **For AI Agents**:
+
 1. **Context Budget Management** - Check if spec fits before loading
 2. **Smart Loading Decisions** - Load README.md vs full spec with sub-specs
 3. **Cost Awareness** - Understand token costs before operations
 4. **Performance Optimization** - Avoid context window overflow
 
 **Use Case Example**:
+
 ```
 Agent: "I need to understand spec 059"
-Agent: [queries mcp_lean-spec_tokens("059", includeSubSpecs=true)]
+Agent: [queries mcp_harnspec_tokens("059", includeSubSpecs=true)]
 Response: { total: 8450, files: [...] }
 Agent: "Too large. Let me just load README.md"
-Agent: [queries mcp_lean-spec_tokens("059")]
+Agent: [queries mcp_harnspec_tokens("059")]
 Response: { total: 2100 }
 Agent: "Perfect, I'll load that"
-Agent: [queries mcp_lean-spec_view("059")]
+Agent: [queries mcp_harnspec_view("059")]
 ```
 
 ### What We're Building
 
-**Single MCP Tool**: `mcp_lean-spec_tokens`
+**Single MCP Tool**: `mcp_harnspec_tokens`
+
 - Query token count for spec or sub-spec
 - Support for detailed breakdown
 - Integration with existing MCP server
@@ -74,7 +78,7 @@ Agent: [queries mcp_lean-spec_view("059")]
 
 ```typescript
 {
-  name: "mcp_lean-spec_tokens",
+  name: "mcp_harnspec_tokens",
   description: "Count tokens in spec or sub-spec for LLM context management. Use this before loading specs to check if they fit in context budget.",
   inputSchema: {
     type: "object",
@@ -102,6 +106,7 @@ Agent: [queries mcp_lean-spec_view("059")]
 ### Response Format
 
 **Basic Response**:
+
 ```json
 {
   "spec": "059-programmatic-spec-management",
@@ -113,6 +118,7 @@ Agent: [queries mcp_lean-spec_view("059")]
 ```
 
 **With Sub-Specs**:
+
 ```json
 {
   "spec": "059-programmatic-spec-management",
@@ -131,6 +137,7 @@ Agent: [queries mcp_lean-spec_view("059")]
 ```
 
 **With Detailed Breakdown**:
+
 ```json
 {
   "spec": "066-context-economy-thresholds-refinement",
@@ -156,9 +163,9 @@ Agent: [queries mcp_lean-spec_view("059")]
 Add to existing MCP server at `packages/cli/src/mcp-server.ts`:
 
 ```typescript
-// Add near other tool registrations (after mcp_lean-spec_view, etc.)
+// Add near other tool registrations (after mcp_harnspec_view, etc.)
 server.addTool({
-  name: 'mcp_lean-spec_tokens',
+  name: 'mcp_harnspec_tokens',
   description: 'Count tokens in spec or sub-spec for LLM context management',
   inputSchema: zodToJsonSchema(
     z.object({
@@ -198,7 +205,8 @@ server.addTool({
 ## Plan
 
 ### Phase 1: Implementation (v0.3.0 - Week 1)
-- [ ] Add `mcp_lean-spec_tokens` tool to MCP server
+
+- [ ] Add `mcp_harnspec_tokens` tool to MCP server
 - [ ] Implement handler using existing `TokenCounter` class
 - [ ] Support `specPath` resolution (name, number, file path)
 - [ ] Support `includeSubSpecs` flag
@@ -207,6 +215,7 @@ server.addTool({
 - [ ] Ensure proper resource cleanup (TokenCounter.dispose())
 
 ### Phase 2: Testing (v0.3.0 - Week 1)
+
 - [ ] Unit tests for MCP tool handler
 - [ ] Integration tests with MCP client
 - [ ] Test all parameter combinations
@@ -214,6 +223,7 @@ server.addTool({
 - [ ] Verify memory cleanup
 
 ### Phase 3: Documentation (v0.3.0 - Week 1)
+
 - [ ] Add to MCP tool catalog in README
 - [ ] Update AGENTS.md with token query examples
 - [ ] Add usage examples to docs site
@@ -224,18 +234,21 @@ server.addTool({
 ### Functional Tests
 
 **Basic Token Counting**:
+
 - [ ] Query single spec returns total token count
 - [ ] Query with sub-specs aggregates correctly
 - [ ] Query specific sub-spec file works
 - [ ] Detailed breakdown includes all content types
 
 **Path Resolution**:
+
 - [ ] Spec number resolves correctly (e.g., "59" or "059")
 - [ ] Spec name resolves correctly (e.g., "unified-dashboard")
 - [ ] Full spec folder name works (e.g., "059-programmatic-spec-management")
 - [ ] Sub-spec file path works (e.g., "059/DESIGN.md")
 
 **Error Cases**:
+
 - [ ] Invalid spec returns proper error
 - [ ] Missing file returns proper error
 - [ ] Invalid parameters return validation error
@@ -243,12 +256,14 @@ server.addTool({
 ### Integration Tests
 
 **With Real Specs**:
+
 - [ ] Matches CLI output for same spec
 - [ ] Matches validation complexity scores
 - [ ] Performance indicators are correct
 - [ ] Recommendations are actionable
 
 **MCP Protocol**:
+
 - [ ] Tool appears in MCP tool list
 - [ ] Schema validation works
 - [ ] Response format matches MCP spec
@@ -257,30 +272,32 @@ server.addTool({
 ### AI Agent Workflows
 
 **Context Budget Planning**:
+
 ```typescript
 // Agent checks token count before loading
-const result = await callTool('mcp_lean-spec_tokens', { 
+const result = await callTool('mcp_harnspec_tokens', { 
   specPath: '059',
   includeSubSpecs: true 
 });
 
 if (result.total > 5000) {
   // Load just README instead
-  await callTool('mcp_lean-spec_tokens', { specPath: '059' });
+  await callTool('mcp_harnspec_tokens', { specPath: '059' });
 }
 ```
 
 **Smart Loading**:
+
 ```typescript
 // Agent decides what to load based on tokens
-const tokens = await callTool('mcp_lean-spec_tokens', { specPath: '066' });
+const tokens = await callTool('mcp_harnspec_tokens', { specPath: '066' });
 
 if (tokens.total < 3500) {
   // Load full spec
-  await callTool('mcp_lean-spec_view', { specPath: '066' });
+  await callTool('mcp_harnspec_view', { specPath: '066' });
 } else {
   // Load just overview
-  await callTool('mcp_lean-spec_view', { 
+  await callTool('mcp_harnspec_view', { 
     specPath: '066',
     section: 'overview' 
   });
@@ -292,11 +309,13 @@ if (tokens.total < 3500) {
 ### Quantitative
 
 **Performance**:
+
 - [ ] Token counting via MCP takes <100ms per request
 - [ ] No memory leaks (TokenCounter properly disposed)
 - [ ] MCP server startup time unaffected (<2s)
 
 **Reliability**:
+
 - [ ] Matches CLI token counts exactly
 - [ ] Error handling covers all edge cases
 - [ ] Schema validation prevents invalid requests
@@ -304,12 +323,14 @@ if (tokens.total < 3500) {
 ### Qualitative
 
 **AI Agent Experience**:
+
 - [ ] "Can query token counts programmatically" ✅
 - [ ] "Makes informed context budget decisions" ✅
 - [ ] "Avoids overloading context windows" ✅
 - [ ] "Understands which specs fit in context" ✅
 
 **Developer Experience**:
+
 - [ ] MCP tool is discoverable (shows in tool list)
 - [ ] Error messages are clear and actionable
 - [ ] Documentation with examples is complete
@@ -319,6 +340,7 @@ if (tokens.total < 3500) {
 ### Why Separate Spec?
 
 **Separated from Spec 069** because:
+
 1. **Different scope**: MCP integration vs core utilities
 2. **Different stakeholder**: AI agents vs developers
 3. **Can be deferred**: Core infrastructure works without it
@@ -329,6 +351,7 @@ if (tokens.total < 3500) {
 ### Implementation Strategy
 
 **Reuse, Don't Rebuild**:
+
 - Use existing `TokenCounter` class (proven, tested)
 - Use existing path resolution (from `resolveSpecPath`)
 - Use existing spec loading (from `getSpec`)
@@ -339,25 +362,27 @@ if (tokens.total < 3500) {
 ### Future Enhancements (v0.4.0+)
 
 **Context Budget Planning**:
+
 - [ ] `--budget` flag to check "will this fit in X tokens?"
 - [ ] Multi-spec budget planning (e.g., "can I load specs 59, 66, 69?")
 - [ ] Cost estimation ($/1M tokens by model)
 
 **Advanced Queries**:
+
 - [ ] "Find specs under 2K tokens"
 - [ ] "What's the largest spec in the project?"
 - [ ] Token trends over time (git history)
 
 ### Open Questions
 
-1. **Should we cache token counts?** 
+1. **Should we cache token counts?**
    - Pro: Faster repeated queries
    - Con: Need invalidation strategy
    - **Decision**: No caching for v0.3.0 (YAGNI)
 
 2. **Should we add token count to other MCP tools?**
-   - E.g., `mcp_lean-spec_list` shows token counts
-   - E.g., `mcp_lean-spec_view` includes token info in response
+   - E.g., `mcp_harnspec_list` shows token counts
+   - E.g., `mcp_harnspec_view` includes token info in response
    - **Decision**: Start with dedicated tool, expand later if needed
 
 3. **Should we support token budgets directly?**

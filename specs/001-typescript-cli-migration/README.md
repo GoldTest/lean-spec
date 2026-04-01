@@ -12,7 +12,7 @@ completed: 2025-10-31
 
 ## Goal
 
-Migrate lean-spec CLI from bash script to TypeScript/pnpm while keeping the methodology language-agnostic. Better tooling for maintainability without sacrificing lean principles.
+Migrate harnspec CLI from bash script to TypeScript/pnpm while keeping the methodology language-agnostic. Better tooling for maintainability without sacrificing lean principles.
 
 ## Key Points
 
@@ -25,6 +25,7 @@ Migrate lean-spec CLI from bash script to TypeScript/pnpm while keeping the meth
 ## Non-Goals
 
 What we're explicitly NOT doing:
+
 - Adding complex CLI features or frameworks
 - Over-engineering with unnecessary dependencies
 - Making methodology TS-specific (stays language-agnostic)

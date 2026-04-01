@@ -32,11 +32,13 @@ This creates risk of publishing broken packages and makes the release process er
 ### Pre-Release Script
 
 **Current**: `package.json`
+
 ```json
-"pre-release": "pnpm sync-versions && pnpm typecheck && pnpm test:run && pnpm build && node bin/lean-spec.js validate --warnings-only"
+"pre-release": "pnpm sync-versions && pnpm typecheck && pnpm test:run && pnpm build && node bin/harnspec.js validate --warnings-only"
 ```
 
 **Issues**:
+
 - ❌ No Rust build validation
 - ❌ Can pass pre-release even with missing Rust binaries
 - ❌ `validate` command might run TypeScript version instead of Rust binary
@@ -47,11 +49,11 @@ This creates risk of publishing broken packages and makes the release process er
 
 ```
 packages/cli/
-  bin/lean-spec.js              # Points to dist/cli.js (TypeScript)
+  bin/harnspec.js              # Points to dist/cli.js (TypeScript)
   binaries/
     darwin-arm64/
-      package.json               # lean-spec-darwin-arm64
-      lean-spec                  # Rust binary (copied here)
+      package.json               # harnspec-darwin-arm64
+      harnspec                  # Rust binary (copied here)
     darwin-x64/
     linux-x64/
     linux-arm64/
@@ -63,10 +65,10 @@ rust/
     mcp-wrapper.js
     package.json.example         # Has optionalDependencies pattern
   target/release/
-    lean-spec                    # Source of truth
+    harnspec                    # Source of truth
 
 packages/mcp/
-  bin/leanspec-mcp.js            # Spawns `lean-spec mcp`
+  bin/leanspec-mcp.js            # Spawns `harnspec mcp`
   binaries/
     darwin-arm64/
       package.json               # leanspec-mcp-darwin-arm64
@@ -77,17 +79,20 @@ packages/mcp/
 
 ### Binary Resolution
 
-**CLI** (`packages/cli/bin/lean-spec.js`):
+**CLI** (`packages/cli/bin/harnspec.js`):
+
 ```javascript
 import '../dist/cli.js';  // Still using TypeScript!
 ```
 
 **MCP** (`packages/mcp/bin/leanspec-mcp.js`):
+
 ```javascript
-spawn('lean-spec', ['mcp'], { stdio: 'inherit' });  // Delegates to CLI
+spawn('harnspec', ['mcp'], { stdio: 'inherit' });  // Delegates to CLI
 ```
 
 **Intended wrapper** (`rust/npm-dist/binary-wrapper.js`):
+
 ```javascript
 // Tries platform package first: @leanspec/${platform}-${arch}
 // Falls back to local binaries/
@@ -97,6 +102,7 @@ spawn('lean-spec', ['mcp'], { stdio: 'inherit' });  // Delegates to CLI
 ### Workflow Analysis
 
 **`publish.yml`** (production releases):
+
 ```yaml
 - name: Build Rust binaries
   working-directory: rust
@@ -111,11 +117,13 @@ spawn('lean-spec', ['mcp'], { stdio: 'inherit' });  // Delegates to CLI
 ```
 
 **Issues**:
+
 - Builds Rust binaries inline (matrix) and uses the produced artifacts
 - Publishes main package immediately (should publish platform packages first)
 - No desktop app builds
 
 **`rust-binaries.yml`** (removed; superseded by inline Rust builds in `publish.yml`):
+
 - Builds all platforms via matrix
 - Uploads artifacts
 - Has conditional publish step
@@ -136,13 +144,14 @@ spawn('lean-spec', ['mcp'], { stdio: 'inherit' });  // Delegates to CLI
 // package.json
 {
   "scripts": {
-    "pre-release": "pnpm sync-versions && pnpm rust:build && pnpm typecheck && pnpm test:run && pnpm build && node bin/lean-spec.js validate --warnings-only",
-    "pre-release:skip-rust": "pnpm sync-versions && pnpm typecheck && pnpm test:run && pnpm build && node bin/lean-spec.js validate --warnings-only"
+    "pre-release": "pnpm sync-versions && pnpm rust:build && pnpm typecheck && pnpm test:run && pnpm build && node bin/harnspec.js validate --warnings-only",
+    "pre-release:skip-rust": "pnpm sync-versions && pnpm typecheck && pnpm test:run && pnpm build && node bin/harnspec.js validate --warnings-only"
   }
 }
 ```
 
 **Validation**:
+
 ```bash
 # Should succeed with Rust binary
 pnpm pre-release
@@ -151,8 +160,8 @@ pnpm pre-release
 ls -lh packages/cli/binaries/$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/')
 
 # Verify validate uses Rust binary
-which lean-spec  # Should show local path
-lean-spec validate --warnings-only
+which harnspec  # Should show local path
+harnspec validate --warnings-only
 ```
 
 ### Phase 2: Consolidate Binary Paths
@@ -167,16 +176,18 @@ lean-spec validate --warnings-only
 **Actions**:
 
 1. **Remove `rust/npm-dist/`** (keep templates in docs):
+
    ```bash
    rm -rf rust/npm-dist/
    ```
 
 2. **Update `.gitignore`**:
+
    ```gitignore
    # In packages/cli/binaries/ and packages/mcp/binaries/
    # Don't ignore package.json, but ignore binaries
-   */lean-spec
-   */lean-spec.exe
+   */harnspec
+   */harnspec.exe
    */leanspec-mcp
    */leanspec-mcp.exe
    ```
@@ -186,14 +197,15 @@ lean-spec validate --warnings-only
 ### Phase 3: Fix Binary Resolution
 
 - [ ] Replace TypeScript entry point with Rust wrapper
-- [ ] Update `packages/cli/bin/lean-spec.js` to spawn Rust binary
+- [ ] Update `packages/cli/bin/harnspec.js` to spawn Rust binary
 - [ ] Update `packages/mcp/bin/leanspec-mcp.js` to spawn Rust binary directly
 - [ ] Add platform detection and error messages
 - [ ] Test on all platforms
 
 **Implementation**:
 
-**`packages/cli/bin/lean-spec.js`** (new):
+**`packages/cli/bin/harnspec.js`** (new):
+
 ```javascript
 #!/usr/bin/env node
 import { spawn } from 'child_process';
@@ -224,7 +236,7 @@ function findBinary() {
   }
 
   const isWindows = platform() === 'win32';
-  const binaryName = isWindows ? 'lean-spec.exe' : 'lean-spec';
+  const binaryName = isWindows ? 'harnspec.exe' : 'harnspec';
 
   // Try local binaries first (for development)
   const localBinary = join(__dirname, '..', 'binaries', platformKey, binaryName);
@@ -234,7 +246,7 @@ function findBinary() {
 
   // Try platform package (for published npm packages)
   try {
-    const pkgName = `lean-spec-${platformKey}`;
+    const pkgName = `harnspec-${platformKey}`;
     const { resolve } = await import(`${pkgName}/package.json`);
     return join(dirname(resolve), binaryName);
   } catch {
@@ -245,9 +257,9 @@ function findBinary() {
     `LeanSpec binary not found for ${platform()}-${arch()}.\n` +
     `Expected at: ${localBinary}\n\n` +
     `If you installed via npm, try reinstalling:\n` +
-    `  npm install -g lean-spec\n\n` +
+    `  npm install -g harnspec\n\n` +
     `Or install the platform-specific package:\n` +
-    `  npm install lean-spec-${platformKey}`
+    `  npm install harnspec-${platformKey}`
   );
 }
 
@@ -273,6 +285,7 @@ try {
 ```
 
 **`packages/mcp/bin/leanspec-mcp.js`** (new):
+
 ```javascript
 #!/usr/bin/env node
 import { spawn } from 'child_process';
@@ -347,16 +360,16 @@ Each `packages/{cli,mcp}/binaries/{platform}/package.json`:
 
 ```json
 {
-  "name": "lean-spec-darwin-arm64",
+  "name": "harnspec-darwin-arm64",
   "version": "0.2.10",
   "description": "LeanSpec CLI binary for macOS ARM64",
   "os": ["darwin"],
   "cpu": ["arm64"],
-  "main": "lean-spec",
-  "files": ["lean-spec"],
+  "main": "harnspec",
+  "files": ["harnspec"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/codervisor/lean-spec.git"
+    "url": "https://github.com/codervisor/harnspec.git"
   },
   "license": "MIT"
 }
@@ -368,11 +381,11 @@ Each `packages/{cli,mcp}/binaries/{platform}/package.json`:
 // packages/cli/package.json
 {
   "optionalDependencies": {
-    "lean-spec-darwin-x64": "0.2.10",
-    "lean-spec-darwin-arm64": "0.2.10",
-    "lean-spec-linux-x64": "0.2.10",
-    "lean-spec-linux-arm64": "0.2.10",
-    "lean-spec-windows-x64": "0.2.10"
+    "harnspec-darwin-x64": "0.2.10",
+    "harnspec-darwin-arm64": "0.2.10",
+    "harnspec-linux-x64": "0.2.10",
+    "harnspec-linux-arm64": "0.2.10",
+    "harnspec-windows-x64": "0.2.10"
   }
 }
 ```
@@ -444,7 +457,7 @@ jobs:
         run: pnpm build
       
       - name: Validate
-        run: node bin/lean-spec.js validate --warnings-only
+        run: node bin/harnspec.js validate --warnings-only
       
       - name: Publish platform package (linux-x64 only)
         if: ${{ !inputs.dry_run }}
@@ -517,7 +530,7 @@ jobs:
           for platform in darwin-x64 darwin-arm64 linux-x64 linux-arm64 windows-x64; do
             # CLI
             mkdir -p packages/cli/binaries/$platform
-            cp artifacts/binaries-$platform/lean-spec* packages/cli/binaries/$platform/
+            cp artifacts/binaries-$platform/harnspec* packages/cli/binaries/$platform/
             
             # MCP
             mkdir -p packages/mcp/binaries/$platform
@@ -653,6 +666,7 @@ jobs:
 - [ ] Update documentation
 
 **Platforms**:
+
 - macOS: `.dmg` (Intel + Apple Silicon universal binary via lipo)
 - Linux: `.deb` (x64 + arm64)
 - Windows: `.exe` NSIS installer (x64)
@@ -662,29 +676,31 @@ jobs:
 ### Local Testing
 
 **Pre-release validation**:
+
 ```bash
 # Clean build
 pnpm rust:clean
-rm -rf packages/*/binaries/*/lean-spec*
+rm -rf packages/*/binaries/*/harnspec*
 
 # Run pre-release
 pnpm pre-release
 
 # Verify binaries exist
-find packages -name "lean-spec*" -type f -executable
+find packages -name "harnspec*" -type f -executable
 
 # Test CLI
-./packages/cli/binaries/$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/')/lean-spec --version
+./packages/cli/binaries/$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/')/harnspec --version
 
 # Test MCP
 ./packages/mcp/binaries/$(uname -s | tr '[:upper:]' '[:lower:]')-$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/')/leanspec-mcp --version
 ```
 
 **Wrapper testing**:
+
 ```bash
 # Test CLI wrapper
 cd packages/cli
-node bin/lean-spec.js list
+node bin/harnspec.js list
 
 # Test MCP wrapper
 cd packages/mcp
@@ -692,6 +708,7 @@ node bin/leanspec-mcp.js --help
 ```
 
 **Platform package testing**:
+
 ```bash
 # Simulate npm install
 cd /tmp
@@ -699,16 +716,17 @@ mkdir test-install && cd test-install
 npm init -y
 
 # Link local packages
-npm link ../../lean-spec/packages/cli
-npm link ../../lean-spec/packages/cli/binaries/darwin-arm64
+npm link ../../harnspec/packages/cli
+npm link ../../harnspec/packages/cli/binaries/darwin-arm64
 
 # Test execution
-npx lean-spec list
+npx harnspec list
 ```
 
 ### CI Testing
 
 **Dev workflow test**:
+
 ```bash
 # Trigger manually
 gh workflow run publish.yml --field dev=true --field dry_run=true
@@ -719,6 +737,7 @@ gh run view <run-id> --log
 ```
 
 **Production workflow test**:
+
 ```bash
 # Create test tag
 git tag v0.2.11-test
@@ -738,28 +757,28 @@ gh run list --workflow=publish.yml
 ```bash
 # macOS Intel
 docker run --platform linux/amd64 -it node:20 bash
-npm install -g lean-spec@dev
-lean-spec --version
-lean-spec list
+npm install -g harnspec@dev
+harnspec --version
+harnspec list
 
 # macOS ARM
 # (Test on actual M1/M2 Mac)
-npm install -g lean-spec@dev
-lean-spec --version
+npm install -g harnspec@dev
+harnspec --version
 
 # Linux x64
 docker run --platform linux/amd64 -it node:20 bash
-npm install -g lean-spec@dev
-lean-spec --version
+npm install -g harnspec@dev
+harnspec --version
 
 # Linux ARM64
 docker run --platform linux/arm64 -it node:20 bash
-npm install -g lean-spec@dev
-lean-spec --version
+npm install -g harnspec@dev
+harnspec --version
 
 # Windows (via WSL or Windows machine)
-npm install -g lean-spec@dev
-lean-spec.cmd --version
+npm install -g harnspec@dev
+harnspec.cmd --version
 ```
 
 ## Risk Analysis
@@ -768,7 +787,7 @@ lean-spec.cmd --version
 
 1. **Breaking change for existing users**
    - **Impact**: Users on TypeScript version will suddenly get Rust version
-   - **Mitigation**: 
+   - **Mitigation**:
      - Major version bump (v0.3.0)
      - Clear migration guide
      - Keep TypeScript fallback for one version

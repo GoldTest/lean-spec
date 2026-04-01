@@ -19,12 +19,14 @@ updated_at: 2026-02-02T08:14:11.887481645Z
 **Problem**: Both CLI and MCP `view` commands only return the README.md content but don't list additional files in multi-file specs. Users and AI agents need to make a separate `files` call (CLI only) to discover sub-spec files.
 
 **Current State:**
+
 - ✅ CLI has separate `files` command that lists all markdown files
 - ❌ MCP has no `files` tool at all
 - ❌ CLI `view` output doesn't include file list
 - ❌ MCP `view` output doesn't include file list
 
 **Example**: Spec 018 has 7 markdown files:
+
 - README.md (main spec)
 - CLI-DESIGN.md
 - CONFIGURATION-EXAMPLES.md
@@ -33,11 +35,12 @@ updated_at: 2026-02-02T08:14:11.887481645Z
 - TESTING.md
 - VALIDATION-RULES.md
 
-But `lean-spec view 018` only shows README.md content without mentioning the other files exist.
+But `harnspec view 018` only shows README.md content without mentioning the other files exist.
 
 **Goal**: Add a `files` array to the `view` command JSON output in both CLI and MCP, making it easy to discover multi-file specs in a single call.
 
 **Value**:
+
 - AI agents discover multi-file specs without extra tool calls
 - Better UX: `view` shows complete picture of spec structure
 - Parity: CLI and MCP have consistent behavior
@@ -64,16 +67,18 @@ See [DESIGN.md](./DESIGN.md) for complete implementation details.
 ## Test
 
 ### Single-File Spec
+
 ```bash
-$ lean-spec view 178 --output json | jq '.files'
+$ harnspec view 178 --output json | jq '.files'
 [
   "README.md"
 ]
 ```
 
 ### Multi-File Spec
+
 ```bash
-$ lean-spec view 018 --output json | jq '.files'
+$ harnspec view 018 --output json | jq '.files'
 [
   "README.md",
   "CLI-DESIGN.md",
@@ -86,6 +91,7 @@ $ lean-spec view 018 --output json | jq '.files'
 ```
 
 ### MCP Tool
+
 ```json
 {
   "path": "018-spec-validation",

@@ -14,7 +14,7 @@ completed: '2025-11-03'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: bug, templates, frontmatter, enhancement
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -30,6 +30,7 @@ priority: high    # ✓ Correct (from --field)
 ```
 
 **Why this matters:**
+
 - Inconsistent data between frontmatter and body content
 - Users expect `--field` values to populate throughout the spec
 - Manual editing required to fix mismatches
@@ -55,12 +56,14 @@ export interface VariableContext {
 ```
 
 **Variable resolution flow:**
+
 1. Parse template to extract frontmatter
 2. Merge frontmatter fields into variable context
 3. Resolve variables in body (including `{priority}`, `{status}`, etc.)
 4. Support nested fields like `{tags}` (array → comma-separated string)
 
 **Template update:**
+
 ```markdown
 ---
 status: planned
@@ -104,7 +107,7 @@ More robust, consistent with existing variable system, enables richer templates.
   - [ ] `templates/standard/spec-template.md`
   - [ ] `templates/minimal/spec-template.md`
   - [ ] `templates/enterprise/spec-template.md`
-  - [ ] `.lean-spec/templates/spec-template.md` (if exists)
+  - [ ] `.harnspec/templates/spec-template.md` (if exists)
 - [ ] Update docs to document available frontmatter variables
 - [ ] Add tests for frontmatter variable resolution
 - [ ] Test with various field types (string, number, boolean, array)
@@ -112,6 +115,7 @@ More robust, consistent with existing variable system, enables richer templates.
 ## Test
 
 ### Variable Resolution
+
 - [ ] `{priority}` resolves to frontmatter priority value
 - [ ] `{status}` resolves to frontmatter status value
 - [ ] `{tags}` resolves to comma-separated tag list
@@ -119,12 +123,14 @@ More robust, consistent with existing variable system, enables richer templates.
 - [ ] Missing fields don't break template (empty string or default)
 
 ### Integration
-- [ ] `lean-spec create test --field priority=high` shows "Priority: high" in body
-- [ ] `lean-spec create test --field status=in-progress` shows correct status
+
+- [ ] `harnspec create test --field priority=high` shows "Priority: high" in body
+- [ ] `harnspec create test --field status=in-progress` shows correct status
 - [ ] Array fields like tags display correctly
 - [ ] Existing specs without variables still work
 
 ### Edge Cases
+
 - [ ] Boolean fields (true/false) resolve as strings
 - [ ] Number fields resolve as strings
 - [ ] Nested objects are handled gracefully
@@ -174,13 +180,13 @@ Implemented Solution 1 (frontmatter variables in variable resolver) as recommend
 
 ```bash
 # Create spec with high priority - body shows "Priority: High"
-lean-spec create my-feature --priority high
+harnspec create my-feature --priority high
 
 # Create spec with tags - frontmatter and body stay in sync
-lean-spec create api-feature --tags api,backend
+harnspec create api-feature --tags api,backend
 
 # Enterprise template with assignee
-lean-spec create project --assignee alice
+harnspec create project --assignee alice
 ```
 
 ### Benefits Delivered

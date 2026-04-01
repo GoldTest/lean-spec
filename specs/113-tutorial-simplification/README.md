@@ -20,7 +20,7 @@ transitions:
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-24 · **Tags**: documentation, user-experience, ai-workflow
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -28,6 +28,7 @@ transitions:
 Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose and lack the progressive, full-lifecycle approach demonstrated in the simplified getting-started guide. They focus on basic operations rather than showcasing LeanSpec's core value: AI-driven spec-to-implementation workflow.
 
 **Problem**: Tutorials don't reflect how users actually work with LeanSpec:
+
 - Too many manual CLI commands instead of AI-driven workflow
 - Verbose explanations that lose the reader
 - Missing the full lifecycle: intent → spec → implementation → completion
@@ -35,6 +36,7 @@ Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose a
 - Step-by-step format feels rigid vs. natural conversation flow
 
 **Goal**: Rewrite tutorials to be:
+
 - **Simple**: Get to value quickly, minimal ceremony
 - **Linear**: Follow natural workflow progression
 - **Progressive**: Build on previous concepts
@@ -73,6 +75,7 @@ Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose a
 ### Content Principles
 
 **From getting-started.mdx approach:**
+
 - Use conversational prompts: "Ask your AI: ..." instead of "Run this command: ..."
 - Show AI workflow first, CLI details second (reference links)
 - Realistic examples with actual output samples
@@ -80,6 +83,7 @@ Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose a
 - Visual progression: Intent → Spec → Code → Complete
 
 **Avoid:**
+
 - ❌ Long prerequisite sections (link to getting-started)
 - ❌ Manual CLI commands unless necessary
 - ❌ Step-by-step numbered instructions (feels rigid)
@@ -87,6 +91,7 @@ Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose a
 - ❌ Separate "what you learned" summaries (embed learning)
 
 **Include:**
+
 - ✅ Real-world scenarios (login, dashboard, API)
 - ✅ AI conversation examples with actual prompts
 - ✅ Visual spec examples (before/after)
@@ -98,39 +103,47 @@ Current tutorials (e.g., "Writing Your First Spec with AI") are overly verbose a
 Each tutorial follows this flow:
 
 **Opening (Hook + Context)**
+
 - One-sentence hook explaining why this matters
 - Time estimate and learning outcome
 - Prerequisites (link to getting-started, mention MCP)
 
 **The Scenario**
+
 - Real-world context in 2-3 sentences
 - Show starting point: file tree, existing code, or problem statement
 
 **Creating the Spec**
+
 - Natural language prompt example
 - Explain what the AI does
 - Show key parts of the generated spec (excerpt)
 
 **Implementation**
+
 - Implementation prompt example
 - List what the AI will do (3-4 bullet points)
 - Show key code changes or progress updates
 
 **Review and Complete**
+
 - How to verify and test
 - Update status (command or AI prompt)
 
 **What Just Happened**
+
 - Reflection on the workflow
 - Key concepts learned
 - Why this approach is powerful
 
 **Next Steps**
+
 - Immediate action reader can take
 - Link to related concept
 - Link to next tutorial (progression)
 
 **Structure Notes:**
+
 - Use conversational tone, not instructional
 - Show prompts as code blocks with actual examples
 - Include realistic spec/code excerpts
@@ -140,16 +153,19 @@ Each tutorial follows this flow:
 
 **Phase 1: Rewrite Core Tutorials**
 0. Create "Adding Dark Theme Support" (new - simplest tutorial) ✅ Completed 2025-11-24
+
 1. Keep "Your First Feature with AI" (formerly first, now second)
 2. Keep "Managing Multiple Features" (existing)
 3. Keep "Refactoring with Specs" (existing)
 
 **Phase 2: Archive or Consolidate**
+
 - "AI-Assisted Feature Development" → Merge into tutorial 1
 - "Managing Multiple Specs with AI" → Becomes tutorial 2
 - Other tutorials: Archive or convert to guides if too detailed
 
 **Phase 3: Polish**
+
 - Add screenshots/GIFs of AI interactions
 - Cross-link to relevant guide sections
 - Ensure Chinese translations match
@@ -157,6 +173,7 @@ Each tutorial follows this flow:
 ## Plan
 
 ### Content Creation
+
 - [x] Draft "Adding Dark Theme Support" tutorial (NEW)
   - Use simplest example (CSS theming for task manager)
   - Show full MCP workflow with minimal complexity
@@ -172,7 +189,7 @@ Each tutorial follows this flow:
 
 - [ ] Draft "Managing Multiple Features" tutorial
   - Scenario: Dashboard with 3 widgets (list, create, update)
-  - Show: `lean-spec list`, search, dependencies, parallel work
+  - Show: `harnspec list`, search, dependencies, parallel work
   - Demonstrate project-level visibility
 
 - [ ] Draft "Refactoring with Specs" tutorial
@@ -181,6 +198,7 @@ Each tutorial follows this flow:
   - Demonstrate AI-assisted refactoring
 
 ### Documentation Updates
+
 - [x] Update tutorial index page with new structure
   - **Status**: ✅ Completed 2025-11-24 - Added dark-theme as first tutorial
 - [x] Add navigation: Tutorial 0 → 1 → 2 → 3 progression
@@ -190,6 +208,7 @@ Each tutorial follows this flow:
   - **Status**: ✅ Completed 2025-11-24
 
 ### Translations
+
 - [x] Translate new tutorials to Chinese (zh-Hans)
   - **Status**: ✅ Completed 2025-11-24 - Added dark-theme tutorial Chinese translation
 - [x] Maintain content parity with English versions
@@ -198,6 +217,7 @@ Each tutorial follows this flow:
   - **Status**: ✅ Completed 2025-11-24 - All 49 files pass validation
 
 ### Quality Assurance
+
 - [ ] Test AI prompts with GitHub Copilot Agent Mode
 - [ ] Test AI prompts with Claude Code + MCP
 - [x] Verify all links work
@@ -209,6 +229,7 @@ Each tutorial follows this flow:
 ## Test
 
 **Success Criteria:**
+
 - [x] New user can complete tutorial 0 (dark theme) in <10 minutes
   - **Status**: ✅ Target: 8 minutes, simple CSS-only feature
 - [ ] New user can complete tutorial 1 in <15 minutes
@@ -220,10 +241,11 @@ Each tutorial follows this flow:
 - [ ] Chinese translations have complete parity
 
 **Validation:**
+
 - [ ] User testing: Can a new user follow tutorial 1 successfully?
 - [ ] AI testing: Do the prompts produce expected results?
 - [ ] Content review: Applies getting-started simplification principles?
-- [ ] Token check: `lean-spec tokens` on each tutorial file
+- [ ] Token check: `harnspec tokens` on each tutorial file
 - [ ] Link check: All internal/external links valid
 
 ## Notes
@@ -231,12 +253,14 @@ Each tutorial follows this flow:
 **Key Differences from Current Approach:**
 
 Current "Writing Your First Spec with AI":
+
 - 6 steps with substeps
 - Focuses on spec writing techniques
 - Heavy on manual commands
 - Ends at spec creation (no implementation)
 
 New "Your First Feature with AI":
+
 - Natural flow: intent → spec → code → done
 - Focuses on AI workflow
 - Shows complete lifecycle
@@ -259,6 +283,7 @@ Content: "In your AI tool, describe what you want: [code block with prompt]. The
 **Key difference:** Conversational and outcome-focused vs. instructional and process-focused.
 
 **Why This Matters:**
+
 - Aligns with getting-started simplification
 - Makes tutorials actionable vs. instructional
 - Shows LeanSpec value (AI integration) not just features (CLI commands)

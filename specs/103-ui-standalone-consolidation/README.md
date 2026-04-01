@@ -21,12 +21,13 @@ completed: '2025-11-18'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-18 · **Tags**: ui, architecture, simplification
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
 
-**Problem**: Current `@leanspec/ui` tries to package `@leanspec/web`'s Next.js standalone build, which creates symlink and node_modules distribution failures. When users run `lean-spec ui` via `pnpm dlx @leanspec/ui`, the published package can't resolve `next` dependency because:
+**Problem**: Current `@leanspec/ui` tries to package `@leanspec/web`'s Next.js standalone build, which creates symlink and node_modules distribution failures. When users run `harnspec ui` via `pnpm dlx @leanspec/ui`, the published package can't resolve `next` dependency because:
+
 - Standalone build uses pnpm symlinks that break when packaged
 - Symlink rewriting logic is complex and error-prone
 - Materializing symlinks hits broken symlink targets
@@ -39,6 +40,7 @@ completed: '2025-11-18'
 ### Architecture Changes
 
 **Before**:
+
 ```
 @leanspec/web (workspace-only)
   └─> Next.js app with standalone output
@@ -47,6 +49,7 @@ completed: '2025-11-18'
 ```
 
 **After**:
+
 ```
 @leanspec/ui (published)
   └─> Next.js app + CLI entry point
@@ -72,16 +75,18 @@ completed: '2025-11-18'
 
 4. **Update monorepo references**:
    - Remove `@leanspec/web` from workspace
-   - Update `lean-spec ui --dev` to use local `@leanspec/ui`
+   - Update `harnspec ui --dev` to use local `@leanspec/ui`
    - Update build pipelines
 
 ### Dev vs Prod Modes
 
-**Dev mode** (monorepo): `lean-spec ui --dev`
+**Dev mode** (monorepo): `harnspec ui --dev`
+
 - Runs `next dev` directly in `packages/ui`
 - No standalone build needed
 
-**Prod mode** (published): `npx @leanspec/ui` or `lean-spec ui`
+**Prod mode** (published): `npx @leanspec/ui` or `harnspec ui`
+
 - Runs pre-built standalone server
 - All dependencies bundled by Next.js
 
@@ -100,7 +105,7 @@ completed: '2025-11-18'
 
 ## Test
 
-- [ ] `lean-spec ui --dev` works in monorepo
+- [ ] `harnspec ui --dev` works in monorepo
 - [ ] `pnpm pack` produces valid tarball
 - [ ] `pnpm dlx file:./tarball` successfully launches UI
 - [ ] Published `@leanspec/ui` resolves all dependencies
@@ -112,4 +117,4 @@ completed: '2025-11-18'
 
 **Rationale**: The two-package split was premature optimization. Next.js standalone output is designed to be self-contained and portable. Trying to repackage it breaks that model. By making `@leanspec/ui` the Next.js app itself, we leverage Next.js's built-in bundling and eliminate all symlink/node_modules issues.
 
-**Breaking Changes**: None for users. The `lean-spec ui` command and `npx @leanspec/ui` usage remain identical. Only internal package structure changes.
+**Breaking Changes**: None for users. The `harnspec ui` command and `npx @leanspec/ui` usage remain identical. Only internal package structure changes.

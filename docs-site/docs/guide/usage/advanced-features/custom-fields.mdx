@@ -13,7 +13,7 @@ Add project-specific metadata to your specs.
 
 ### Defining Custom Fields
 
-Edit `.lean-spec/config.json`:
+Edit `.harnspec/config.json`:
 
 ```json
 {
@@ -43,19 +43,19 @@ Edit `.lean-spec/config.json`:
 
 **When creating specs:**
 ```bash
-lean-spec create user-auth --field epic=PROJ-123 --field sprint=42
+harnspec create user-auth --field epic=PROJ-123 --field sprint=42
 ```
 
 **When updating specs:**
 ```bash
-lean-spec update 001 --field reviewer=alice --field estimate=large
+harnspec update 001 --field reviewer=alice --field estimate=large
 ```
 
 **When filtering:**
 ```bash
-lean-spec list --field epic=PROJ-123
-lean-spec list --field sprint=42
-lean-spec search "API" --field team=backend
+harnspec list --field epic=PROJ-123
+harnspec list --field sprint=42
+harnspec search "API" --field team=backend
 ```
 
 ### Example Configuration
@@ -118,7 +118,7 @@ Available automatically:
 
 ### Custom Variables
 
-Define in `.lean-spec/config.json`:
+Define in `.harnspec/config.json`:
 
 ```json
 {
@@ -133,7 +133,7 @@ Define in `.lean-spec/config.json`:
 
 ### Using Variables in Templates
 
-Create or edit `.lean-spec/templates/spec-template.md`:
+Create or edit `.harnspec/templates/spec-template.md`:
 
 ```markdown
 ---
@@ -164,7 +164,7 @@ Documentation: {docs_url}
 When you create a spec, all variables are automatically resolved:
 
 ```bash
-lean-spec create user-authentication
+harnspec create user-authentication
 ```
 
 Results in:
@@ -197,7 +197,7 @@ Documentation: https://docs.acme.com
 
 **Basic custom field usage:**
 ```bash
-lean-spec create user-authentication \
+harnspec create user-authentication \
   --field epic=AUTH-2024 \
   --field sprint=5 \
   --field estimate=3d \
@@ -206,7 +206,7 @@ lean-spec create user-authentication \
 
 **With all options:**
 ```bash
-lean-spec create payment-integration \
+harnspec create payment-integration \
   --title "Stripe Payment Integration" \
   --description "Integrate Stripe for subscription payments" \
   --tags backend,payment,api \
@@ -222,12 +222,12 @@ lean-spec create payment-integration \
 **Updating custom fields:**
 ```bash
 # Update custom fields only
-lean-spec update 001-user-authentication \
+harnspec update 001-user-authentication \
   --field sprint=6 \
   --field estimate=2d
 
 # Update standard and custom fields together
-lean-spec update 001-user-authentication \
+harnspec update 001-user-authentication \
   --status in-progress \
   --priority high \
   --field sprint=6
@@ -236,19 +236,19 @@ lean-spec update 001-user-authentication \
 **Filtering by custom fields:**
 ```bash
 # Filter by epic
-lean-spec list --field epic=AUTH-2024
+harnspec list --field epic=AUTH-2024
 
 # Filter by sprint
-lean-spec list --field sprint=5
+harnspec list --field sprint=5
 
 # Combine with standard filters
-lean-spec list --status in-progress --field sprint=6
+harnspec list --status in-progress --field sprint=6
 
 # Multiple custom fields
-lean-spec list --field epic=AUTH-2024 --field sprint=6
+harnspec list --field epic=AUTH-2024 --field sprint=6
 
 # Search with custom field filter
-lean-spec search "authentication" --field epic=AUTH-2024
+harnspec search "authentication" --field epic=AUTH-2024
 ```
 
 ### Agile Team Setup
@@ -386,13 +386,13 @@ HarnSpec automatically coerces values to the correct type:
 
 ```bash
 # "42" is converted to number 42
-lean-spec create feature --field sprint=42
+harnspec create feature --field sprint=42
 
 # "true" is converted to boolean true
-lean-spec create feature --field needs_review=true
+harnspec create feature --field needs_review=true
 
 # Arrays work with comma separation
-lean-spec create feature --field teams=backend,frontend
+harnspec create feature --field teams=backend,frontend
 ```
 
 ## Limitations
@@ -408,7 +408,7 @@ If you add custom fields to existing specs:
 
 ```bash
 # Update existing specs manually or with a script
-lean-spec update 001 --field epic=PROJ-123
+harnspec update 001 --field epic=PROJ-123
 
 # Or edit frontmatter directly in each README.md
 ```

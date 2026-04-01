@@ -13,7 +13,7 @@ completed: '2025-11-03'
 
 > **Status**: ✅ Complete · **Priority**: High · **Created**: 2025-11-03 · **Tags**: cli, ux, enhancement
 
-**Project**: lean-spec  
+**Project**: harnspec  
 **Team**: Core Development
 
 ## Overview
@@ -51,6 +51,7 @@ Create a **rich, beautiful CLI experience** inspired by Python's `rich` library:
 **ALL commands should use Ink/React** for consistent, rich rendering:
 
 Benefits:
+
 - Beautiful, modern UI with professional polish
 - Interactive features (keyboard navigation, selection)
 - Live updates without re-rendering full screen
@@ -74,6 +75,7 @@ Benefits:
 Build reusable Ink components:
 
 **`<Panel>`** - Rounded box with title, padding, and optional footer
+
 ```tsx
 <Panel title="📊 Spec Statistics" border="rounded" padding={1}>
   {content}
@@ -81,6 +83,7 @@ Build reusable Ink components:
 ```
 
 **`<Table>`** - Auto-sized columns with headers, borders, alignment
+
 ```tsx
 <Table
   columns={[
@@ -94,6 +97,7 @@ Build reusable Ink components:
 ```
 
 **`<ProgressBar>`** - Rich progress indicator with percentage, ETA
+
 ```tsx
 <ProgressBar
   current={15}
@@ -105,6 +109,7 @@ Build reusable Ink components:
 ```
 
 **`<KeyValueList>`** - Aligned key-value pairs
+
 ```tsx
 <KeyValueList
   items={[
@@ -116,6 +121,7 @@ Build reusable Ink components:
 ```
 
 **`<Tree>`** - Hierarchical display with indent lines
+
 ```tsx
 <Tree
   data={specsByDate}
@@ -125,6 +131,7 @@ Build reusable Ink components:
 ```
 
 **`<Tabs>`** - Multiple views with tab navigation
+
 ```tsx
 <Tabs activeTab={activeTab} onChange={setActiveTab}>
   <Tab name="board" label="📋 Board">
@@ -138,31 +145,36 @@ Build reusable Ink components:
 
 ### Enhanced Commands
 
-**`lean-spec list`** - Interactive tree view:
+**`harnspec list`** - Interactive tree view:
+
 - Group by date with collapsible sections
 - Filter with `j/k` keys, select with space
 - Show inline previews (first line of spec)
 - Responsive columns that adapt to terminal width
 
-**`lean-spec stats`** - Rich dashboard:
+**`harnspec stats`** - Rich dashboard:
+
 - Multiple panels (status, priority, tags, timeline)
 - Bar charts for distribution
 - Sparklines for trends over time
 - Color gradients for visual appeal
 
-**`lean-spec board`** - Enhanced kanban:
+**`harnspec board`** - Enhanced kanban:
+
 - Prettier cards with rounded corners
 - Syntax-highlighted metadata
 - Drag-and-drop to change status (with arrow keys)
 - Live updates if specs change
 
-**`lean-spec search`** - Rich results:
+**`harnspec search`** - Rich results:
+
 - Highlight matching text
 - Context snippets with line numbers
 - Preview pane for selected result
 - Fuzzy matching scores
 
-**`lean-spec timeline/gantt`** - Visual timeline:
+**`harnspec timeline/gantt`** - Visual timeline:
+
 - Rich ASCII chart with colors
 - Milestone markers
 - Dependencies shown with lines/arrows
@@ -171,6 +183,7 @@ Build reusable Ink components:
 ### Standardized UI Patterns
 
 **Panel Headers** (with rounded corners):
+
 ```
 ╭─ 📊 Spec Statistics ────────────────────────────────────╮
 │                                                          │
@@ -180,6 +193,7 @@ Build reusable Ink components:
 ```
 
 **Tables** (auto-sized, aligned):
+
 ```
 ╭────────────────────────────┬──────────┬──────────┬────────────────╮
 │ Spec                       │  Status  │ Priority │ Tags           │
@@ -191,11 +205,13 @@ Build reusable Ink components:
 ```
 
 **Progress Bars**:
+
 ```
 Loading specs ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (26/26) ⠹
 ```
 
 **Hierarchical Lists**:
+
 ```
 📂 20251103/
 ├─ 📄 001-feature-a/          ✅ high     [api, backend]
@@ -204,6 +220,7 @@ Loading specs ━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Status Cards**:
+
 ```
 ╭─ 📅 Planned (6) ──────────────╮
 │                               │
@@ -217,6 +234,7 @@ Loading specs ━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Key-Value Displays**:
+
 ```
 Status:         🔨 In Progress
 Priority:       🔴 High
@@ -241,6 +259,7 @@ Consider integrating:
 ## Plan
 
 ### Phase 1: Component Library Foundation
+
 - [x] Audit current rendering patterns
 - [ ] Install additional Ink libraries (ink-box, ink-table, ink-gradient, ink-spinner, etc.)
 - [ ] Create shared component library in `src/components/ui/`:
@@ -254,6 +273,7 @@ Consider integrating:
 - [ ] Document component usage patterns
 
 ### Phase 2: Migrate Commands to Rich UI
+
 - [ ] Refactor `stats` command:
   - [ ] Multi-panel dashboard layout
   - [ ] Bar charts for distributions
@@ -276,6 +296,7 @@ Consider integrating:
   - [ ] Navigation controls
 
 ### Phase 3: Interactive Features
+
 - [ ] Add keyboard navigation to all commands
 - [ ] Implement selection/multi-select where appropriate
 - [ ] Add live-updating displays (watch mode)
@@ -283,6 +304,7 @@ Consider integrating:
 - [ ] Add help overlays (press `?` for help)
 
 ### Phase 4: Advanced Visualizations
+
 - [ ] Enhance `timeline` command with rich ASCII chart
 - [ ] Enhance `gantt` command with colors and dependencies
 - [ ] Add `deps` command visualization (dependency graph)
@@ -290,6 +312,7 @@ Consider integrating:
 - [ ] Add diff view for spec changes
 
 ### Phase 5: Polish & Testing
+
 - [ ] Ensure responsive layouts (80-200+ column terminals)
 - [ ] Test with various terminal emulators
 - [ ] Add loading states and transitions
@@ -299,6 +322,7 @@ Consider integrating:
 ## Test
 
 ### Visual Quality Tests
+
 - [ ] All commands render beautifully with rich UI
 - [ ] Tables auto-size correctly and align properly
 - [ ] Panels have proper rounded corners and padding
@@ -306,6 +330,7 @@ Consider integrating:
 - [ ] Typography is clean and readable
 
 ### Interactive Tests
+
 - [ ] Keyboard navigation works (arrow keys, enter, esc)
 - [ ] Selection states are visually clear
 - [ ] Live updates don't cause flicker
@@ -313,6 +338,7 @@ Consider integrating:
 - [ ] Help overlays appear on `?` key
 
 ### Responsive Tests
+
 - [ ] Works in 80-column terminal (minimum)
 - [ ] Expands nicely in wide terminals (200+ columns)
 - [ ] Content doesn't overflow or wrap awkwardly
@@ -320,6 +346,7 @@ Consider integrating:
 - [ ] Mobile terminal emulators (Termux, etc.)
 
 ### Terminal Compatibility
+
 - [ ] iTerm2 (macOS)
 - [ ] Terminal.app (macOS)
 - [ ] Windows Terminal
@@ -328,6 +355,7 @@ Consider integrating:
 - [ ] tmux/screen sessions
 
 ### Performance Tests
+
 - [ ] 50+ specs render smoothly
 - [ ] 100+ specs don't cause lag
 - [ ] Interactive navigation is responsive
@@ -335,6 +363,7 @@ Consider integrating:
 - [ ] Memory usage is reasonable
 
 ### Edge Cases
+
 - [ ] Empty states look good (no specs)
 - [ ] Single spec displays properly
 - [ ] Very long spec names are truncated nicely
@@ -343,6 +372,7 @@ Consider integrating:
 - [ ] Custom frontmatter fields display well
 
 ### Integration Tests
+
 - [ ] All existing tests pass
 - [ ] Output can still be piped/redirected (fallback to plain text)
 - [ ] `--json` flags work alongside rich UI
@@ -381,6 +411,7 @@ Existing libraries to leverage:
 ### Design Philosophy
 
 **"Rich but tasteful"** - We want beautiful, feature-rich UI that:
+
 - Delights users with polish and attention to detail
 - Makes information clear and scannable
 - Adds interactivity where it helps productivity
@@ -388,6 +419,7 @@ Existing libraries to leverage:
 - Stays performant even with lots of data
 
 **Not** aiming for:
+
 - Over-the-top animations or effects
 - Complexity for complexity's sake
 - Slowness or lag
@@ -396,11 +428,13 @@ Existing libraries to leverage:
 ### Current State Analysis
 
 **What works:**
+
 - Basic Ink integration for stats/board
 - Spinner for loading states
 - Color usage for status/priority
 
 **What needs improvement:**
+
 - Limited component reusability
 - Basic layouts (no panels, limited tables)
 - No interactivity (navigation, selection)
@@ -411,17 +445,20 @@ Existing libraries to leverage:
 ### Technical Considerations
 
 **Performance:**
+
 - Ink's React reconciliation is fast enough for our use case
 - Virtual rendering prevents full-screen redraws
 - Component memoization for optimal updates
 
 **Compatibility:**
+
 - Detect interactive vs non-interactive terminals
 - Fallback to plain output for pipes/redirects
 - Support `NO_COLOR` environment variable
 - Handle narrow terminals gracefully (80 col minimum)
 
 **Testing:**
+
 - Use ink-testing-library for component tests
 - Snapshot tests for visual regression
 - Integration tests for command output
@@ -436,6 +473,7 @@ Existing libraries to leverage:
 ### Future Enhancements
 
 **Phase 2 (post-launch):**
+
 - Interactive spec editing (TUI editor)
 - Real-time collaboration indicators
 - Git diff visualization
@@ -446,6 +484,7 @@ Existing libraries to leverage:
 - Export to HTML/PDF with styling
 
 **Advanced features:**
+
 - Mouse support (click to navigate)
 - Split-pane views
 - Fuzzy search with live preview

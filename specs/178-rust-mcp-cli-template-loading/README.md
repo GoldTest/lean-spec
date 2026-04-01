@@ -15,23 +15,25 @@ updated_at: 2025-12-18T09:15:55.243238336Z
 completed_at: 2025-12-18T09:15:55.243238626Z
 ---
 
-# Fix Rust MCP/CLI to Load Templates from .lean-spec/templates
+# Fix Rust MCP/CLI to Load Templates from .harnspec/templates
 
 > **Status**: ⏳ In-progress · **Created**: 2025-12-18 · **Priority**: High · **Tags**: bug, rust, mcp, cli, templates
 
 ## Overview
 
-**Problem**: The Rust MCP server and CLI currently hardcode spec templates in `generate_spec_content()` functions instead of loading them from the `.lean-spec/templates/` directory. This means:
+**Problem**: The Rust MCP server and CLI currently hardcode spec templates in `generate_spec_content()` functions instead of loading them from the `.harnspec/templates/` directory. This means:
+
 - User template customizations are ignored
 - Rust implementation is inconsistent with TypeScript implementation
 - Cannot use `--template` flag with custom templates
-- Template management commands (`lean-spec templates`) are disconnected from spec creation
+- Template management commands (`harnspec templates`) are disconnected from spec creation
 
 **Value**: Fixing template loading ensures feature parity between Rust and TypeScript implementations, enables template customization, and makes the Rust version production-ready.
 
 ## Current Behavior
 
 ### Rust CLI (`rust/leanspec-cli/src/commands/create.rs`)
+
 ```rust
 pub fn run(
     specs_dir: &str,
@@ -44,7 +46,7 @@ pub fn run(
 ) -> Result<(), Box<dyn Error>> {
     // ...
     let content = generate_spec_content(&title, status, priority.as_deref(), &tags_vec);
-    // ⚠️ Hardcoded template, ignores .lean-spec/templates/
+    // ⚠️ Hardcoded template, ignores .harnspec/templates/
 }
 
 fn generate_spec_content(...) -> String {
@@ -61,6 +63,7 @@ _Describe the problem being solved..._
 ```
 
 ### Rust MCP (`rust/leanspec-mcp/src/tools.rs`)
+
 ```rust
 fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
     // ...
@@ -74,9 +77,10 @@ fn generate_spec_content(...) -> String {
 ```
 
 ### Expected Behavior (TypeScript implementation)
+
 ```typescript
 // packages/cli/src/commands/create.ts
-const templatesDir = path.join(cwd, '.lean-spec', 'templates');
+const templatesDir = path.join(cwd, '.harnspec', 'templates');
 let templateName = options.template 
   ? config.templates[options.template]
   : config.template || 'spec-template.md';
@@ -100,14 +104,14 @@ pub struct TemplateLoader {
 impl TemplateLoader {
     pub fn new(project_root: &Path) -> Self {
         Self {
-            templates_dir: project_root.join(".lean-spec").join("templates"),
+            templates_dir: project_root.join(".harnspec").join("templates"),
             config: None,
         }
     }
     
     pub fn with_config(project_root: &Path, config: LeanSpecConfig) -> Self {
         Self {
-            templates_dir: project_root.join(".lean-spec").join("templates"),
+            templates_dir: project_root.join(".harnspec").join("templates"),
             config: Some(config),
         }
     }
@@ -260,7 +264,8 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 ## Test
 
 ### Template Loading
-- [x] Loads from `.lean-spec/templates/spec-template.md` by default
+
+- [x] Loads from `.harnspec/templates/spec-template.md` by default
 - [x] Loads custom template with `--template` flag
 - [x] Falls back to `spec-template.md` if named template not found
 - [x] Falls back to `README.md` if no spec-template.md exists
@@ -268,6 +273,7 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 - [x] Returns error if no templates exist
 
 ### Variable Resolution
+
 - [x] Replaces `{{title}}` with spec title
 - [x] Replaces `{{name}}` with spec name
 - [x] Replaces `{{date}}` with current date
@@ -275,25 +281,27 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 - [x] Leaves unrecognized variables unchanged
 
 ### Integration
+
 - [x] CLI creates spec with custom template (deferred - MCP only for now)
 - [x] MCP creates spec with custom template
 - [x] Frontmatter from template is preserved
 - [x] CLI options (status, priority, tags) override template defaults
-- [x] Works with existing `.lean-spec/templates/` directory
+- [x] Works with existing `.harnspec/templates/` directory
 
 ## Notes
 
 **Root Cause**: Both Rust implementations were ported from early TypeScript code that also hardcoded templates. The TS version was later refactored to support template loading, but the Rust ports retained the original hardcoded approach.
 
-**Breaking Change**: None - this is backward compatible. If no `.lean-spec/templates/` exists, return a helpful error message.
+**Breaking Change**: None - this is backward compatible. If no `.harnspec/templates/` exists, return a helpful error message.
 
 **Reference Implementation**: `packages/cli/src/commands/create.ts` lines 160-220
 
 ### Implementation Summary
 
 **Completed:**
+
 - ✅ Created `TemplateLoader` utility in `rust/leanspec-core/src/utils/template_loader.rs`
-- ✅ Implemented template loading from `.lean-spec/templates/` with fallback chain
+- ✅ Implemented template loading from `.harnspec/templates/` with fallback chain
 - ✅ Added variable substitution: `{name}`, `{title}`, `{date}`, `{status}`, `{priority}`  
 - ✅ Updated MCP `create` tool to use `TemplateLoader` instead of hardcoded templates
 - ✅ Added `content` parameter support for direct content override
@@ -303,6 +311,7 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 - ✅ Updated test helpers to seed default template in test projects
 
 **Files Modified:**
+
 - `rust/leanspec-core/src/utils/template_loader.rs` (new)
 - `rust/leanspec-core/src/utils/mod.rs`
 - `rust/leanspec-core/src/lib.rs`
@@ -312,6 +321,7 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 - `rust/leanspec-mcp/tests/tools/create.rs`
 
 **Behavior Changes:**
+
 - MCP `create` tool now loads templates from filesystem instead of using hardcoded template
 - `--template` parameter now functional (loads named template)
 - `--content` parameter now properly generates frontmatter when needed
@@ -319,10 +329,12 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 - Variable resolution supports both `{var}` and `{{var}}` syntax
 
 **Known Issues:**
+
 - 3 pre-existing test failures unrelated to this work (stats empty project tests)
 - CLI `create` command not yet updated (MCP-only implementation for now)
 
 **Related Specs:**
+
 - See [179-view-command-file-listing](../179-view-command-file-listing) for adding file lists to `view` output
 
 ### MCP Tool Parity Status
@@ -330,6 +342,7 @@ fn tool_create(specs_dir: &str, args: Value) -> Result<String, String> {
 **Current Rust MCP Tools (12)**: list, view, create, update, validate, deps, link, unlink, search, board, tokens, stats
 
 **Not Yet Ported (intentional - will add when needed)**:
+
 - `files` - List files in spec directory → **Tracked in spec 179** (will embed in `view` output)
 - `agent` - Dispatch to AI coding agents → **Will add later when agent workflow is mature**
 - `archive` - Archive specs → Lower priority, manual workflow OK for now

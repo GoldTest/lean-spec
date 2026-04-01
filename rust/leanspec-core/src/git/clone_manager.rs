@@ -9,7 +9,7 @@ use super::types::*;
 use std::path::Path;
 
 /// Candidate directories where specs might live inside a repo.
-const SPECS_DIR_CANDIDATES: &[&str] = &["specs", ".lean-spec/specs", "doc/specs", "docs/specs"];
+const SPECS_DIR_CANDIDATES: &[&str] = &["specs", ".harnspec/specs", "doc/specs", "docs/specs"];
 
 pub struct CloneManager;
 

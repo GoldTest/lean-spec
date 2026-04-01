@@ -5,9 +5,9 @@ Understanding LeanSpec's monorepo architecture, package organization, and key fi
 ## Workspace Layout
 
 ```
-lean-spec/
+harnspec/
 ├── packages/           # Published npm packages
-│   ├── cli/           # lean-spec CLI (wrapper)
+│   ├── cli/           # harnspec CLI (wrapper)
 │   ├── mcp/           # @leanspec/mcp (MCP server)
 │   ├── ui/            # @leanspec/ui (Web interface)
 │   ├── ui-components/ # Shared UI components (internal)
@@ -49,6 +49,7 @@ lean-spec/
 ### Package Structure
 
 Each package in `packages/` typically has:
+
 ```
 packages/my-package/
 ├── package.json       # Package metadata
@@ -113,7 +114,7 @@ CLI and MCP use optional dependencies for platform-specific binaries:
 
 ```bash
 pnpm build                              # Build all packages
-turbo run build --filter=lean-spec      # Build specific package
+turbo run build --filter=harnspec      # Build specific package
 turbo run build --force                 # Ignore cache
 ```
 
@@ -147,6 +148,7 @@ pnpm sync-versions --dry-run
 ```
 
 **Script updates:**
+
 - All `packages/*/package.json` versions
 - Cross-package dependency versions
 - Rust crate versions in `Cargo.toml` files
@@ -158,7 +160,7 @@ pnpm sync-versions --dry-run
 ```bash
 # Pull latest docs (maintainers only)
 git subtree pull --prefix=docs-site \
-  https://github.com/codervisor/lean-spec-docs.git \
+  https://github.com/codervisor/harnspec-docs.git \
   main --squash
 
 # For development, work directly in docs-site/
@@ -171,6 +173,7 @@ pnpm start
 ### TypeScript Packages
 
 Built to `dist/`:
+
 ```
 packages/ui/
 ├── src/           # Source
@@ -182,6 +185,7 @@ packages/ui/
 ### Rust Binaries
 
 Built to `rust/target/`:
+
 ```
 rust/target/
 ├── debug/         # Development builds
@@ -191,6 +195,7 @@ rust/target/
 ```
 
 **After building**, binaries are copied to packages:
+
 ```bash
 pnpm rust:build    # Build Rust
 pnpm rust:copy     # Copy to packages/cli/binaries/
@@ -211,10 +216,12 @@ turbo run build --force
 ## Environment Setup
 
 ### Required
+
 - **Node.js 18+**
 - **pnpm 8+**
 
 ### Optional (for Rust development)
+
 - **Rust 1.70+**
 - **cargo**
 
@@ -259,6 +266,7 @@ pnpm list
 
 1. Create directory in `packages/`
 2. Add `package.json`:
+
 ```json
 {
   "name": "@leanspec/my-package",
@@ -270,8 +278,9 @@ pnpm list
   }
 }
 ```
+
 3. Run `pnpm install` to link workspace
-4. Package auto-discovered by pnpm workspace
+2. Package auto-discovered by pnpm workspace
 
 ---
 

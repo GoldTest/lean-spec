@@ -16,7 +16,6 @@ completed: '2025-11-01'
 
 > **Status**: ✅ Complete · **Priority**: Medium · **Created**: 2025-11-01 · **Tags**: documentation, ai-agents, templates
 
-
 ## Overview
 
 Once structured frontmatter and PM visualization tools are implemented, AI agents should know about them and use them effectively. We need to update `AGENTS.md` in all templates to guide agents on:
@@ -36,26 +35,31 @@ This ensures AI agents become better teammates by using the full LeanSpec toolse
 Add section on using frontmatter when creating specs:
 
 **Minimal (solo developers):**
+
 - Just `status` and `created` fields
 
 **Standard (teams):**
+
 - Add `tags`, `priority`, `assignee`
 
 **Updating status:**
-- Use `lean-spec update` command or edit frontmatter directly
+
+- Use `harnspec update` command or edit frontmatter directly
 
 #### 2. Discovery Commands
 
 Add section on discovery before starting work:
-- `lean-spec stats` - See work distribution
-- `lean-spec board` - View specs by status
-- `lean-spec list --tag=api` - Find relevant specs
-- `lean-spec search "topic"` - Full-text search
-- `lean-spec deps <spec>` - Check dependencies
+
+- `harnspec stats` - See work distribution
+- `harnspec board` - View specs by status
+- `harnspec list --tag=api` - Find relevant specs
+- `harnspec search "topic"` - Full-text search
+- `harnspec deps <spec>` - Check dependencies
 
 #### 3. Workflow Integration
 
 Add AI agent workflow section:
+
 1. Understand context (run stats/board/search)
 2. Check dependencies before starting
 3. Create or update spec with frontmatter
@@ -65,14 +69,17 @@ Add AI agent workflow section:
 #### 4. Template-Specific Guidance
 
 **For minimal template:**
+
 - Emphasize `status` and `created` only
 - Keep it simple, optional fields are truly optional
 
 **For standard template:**
+
 - Encourage `tags` and `priority`
 - Mention `assignee` for team coordination
 
 **For enterprise template:**
+
 - Full field usage with `issue`, `epic`, `reviewer`
 - Integration with external tools
 - Compliance tracking fields
@@ -80,6 +87,7 @@ Add AI agent workflow section:
 ### Files to Update
 
 All template AGENTS.md files need updates:
+
 - `AGENTS.md` (root) - Update main file
 - `templates/minimal/files/AGENTS.md` - Minimal guidance
 - `templates/standard/files/AGENTS.md` - Standard guidance  
@@ -88,12 +96,14 @@ All template AGENTS.md files need updates:
 ### Key Additions to Each Template
 
 **All templates get:**
+
 - Discovery commands section (stats, board, search, deps)
 - Workflow integration steps
 - Frontmatter usage examples appropriate to template tier
 - Updated workflow that includes checking existing specs
 
 **Template-specific customization:**
+
 - Minimal: Focus on basics, minimal fields
 - Standard: Full workflow, team coordination
 - Enterprise: Advanced features, compliance, integrations
@@ -125,11 +135,13 @@ All template AGENTS.md files need updates:
 ### Why This Matters
 
 AI agents are powerful but need clear instructions. By updating system prompts with:
+
 - Structured frontmatter usage
 - Discovery commands for context
 - Clear workflow integration
 
 We turn AI agents into better teammates who:
+
 1. Understand project state before acting
 2. Keep specs in sync with implementation
 3. Use the full LeanSpec toolset effectively
@@ -138,6 +150,7 @@ We turn AI agents into better teammates who:
 ### Progressive Disclosure
 
 Match guidance to template complexity:
+
 - **Minimal**: Basic commands only, don't overwhelm
 - **Standard**: Full workflow, team coordination
 - **Enterprise**: Advanced features, compliance, integrations
@@ -145,6 +158,7 @@ Match guidance to template complexity:
 ### AI Tool Integration
 
 Consider creating tool-specific guides:
+
 - **Cursor**: `.cursorrules` integration examples
 - **GitHub Copilot**: Workspace instructions format
 - **Cline/Aider**: Custom prompt patterns
@@ -153,6 +167,7 @@ Consider creating tool-specific guides:
 ### Testing with AI
 
 After updates, test with real AI coding assistants:
+
 1. Ask them to create a spec
 2. Check if they use frontmatter correctly
 3. Verify they run discovery commands
@@ -161,8 +176,9 @@ After updates, test with real AI coding assistants:
 ### Future: AI-Specific Commands
 
 Consider commands that help AI agents:
+
 ```bash
-lean-spec context          # Output formatted for AI context
-lean-spec summary --ai     # AI-optimized summary format
-lean-spec related <topic>  # Find related specs for context
+harnspec context          # Output formatted for AI context
+harnspec summary --ai     # AI-optimized summary format
+harnspec related <topic>  # Find related specs for context
 ```

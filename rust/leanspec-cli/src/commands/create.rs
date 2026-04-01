@@ -442,7 +442,7 @@ fn get_next_spec_number(specs_dir: &str) -> Result<u32, Box<dyn Error>> {
 }
 
 fn find_project_root(specs_dir: &str) -> Result<PathBuf, Box<dyn Error>> {
-    // Walk up from specs_dir to find .lean-spec/
+    // Walk up from specs_dir to find .harnspec/
     let specs_path = Path::new(specs_dir).canonicalize().unwrap_or_else(|_| {
         // If specs_dir doesn't exist yet, use current dir
         std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
@@ -450,25 +450,25 @@ fn find_project_root(specs_dir: &str) -> Result<PathBuf, Box<dyn Error>> {
     let mut current = Some(specs_path.as_path());
 
     while let Some(path) = current {
-        if path.join(".lean-spec").exists() {
+        if path.join(".harnspec").exists() {
             return Ok(path.to_path_buf());
         }
         current = path.parent();
     }
 
-    Err("Could not find .lean-spec directory. Run 'lean-spec init' first.".into())
+    Err("Could not find .harnspec directory. Run 'harnspec init' first.".into())
 }
 
 fn load_config(project_root: &Path) -> Result<LeanSpecConfig, Box<dyn Error>> {
     // Try to load config.yaml first (new format)
-    let yaml_path = project_root.join(".lean-spec/config.yaml");
+    let yaml_path = project_root.join(".harnspec/config.yaml");
     if yaml_path.exists() {
         let content = fs::read_to_string(&yaml_path)?;
         return Ok(serde_yaml::from_str(&content)?);
     }
 
     // Try config.json (legacy format) - parse as JSON and convert
-    let json_path = project_root.join(".lean-spec/config.json");
+    let json_path = project_root.join(".harnspec/config.json");
     if json_path.exists() {
         let content = fs::read_to_string(&json_path)?;
         let json_value: serde_json::Value = serde_json::from_str(&content)?;
@@ -494,7 +494,7 @@ fn load_config(project_root: &Path) -> Result<LeanSpecConfig, Box<dyn Error>> {
 
 fn is_draft_status_enabled(project_root: &Path) -> bool {
     // Try config.yaml first
-    let yaml_path = project_root.join(".lean-spec/config.yaml");
+    let yaml_path = project_root.join(".harnspec/config.yaml");
     if yaml_path.exists() {
         if let Ok(content) = fs::read_to_string(&yaml_path) {
             if let Ok(config) = serde_yaml::from_str::<ProjectConfig>(&content) {
@@ -507,7 +507,7 @@ fn is_draft_status_enabled(project_root: &Path) -> bool {
     }
 
     // Try config.json (legacy format)
-    let json_path = project_root.join(".lean-spec/config.json");
+    let json_path = project_root.join(".harnspec/config.json");
     if let Ok(content) = fs::read_to_string(json_path) {
         return serde_json::from_str::<ProjectConfig>(&content)
             .ok()

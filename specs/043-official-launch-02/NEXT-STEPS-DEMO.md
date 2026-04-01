@@ -11,6 +11,7 @@
 ## What's Ready
 
 ### 1. Main Demo Script: `DEMO-AI-ASSISTED.md`
+
 - **Duration**: 3-5 minutes
 - **Format**: Split-screen (AI chat + terminal)
 - **6 scenes** with complete dialogue and timing
@@ -18,6 +19,7 @@
 - **Key moments** identified for post-production
 
 ### 2. Recording Strategy
+
 **Show, don't tell**: AI creating/reading/managing specs through conversation
 
 **Core differentiator**: MCP integration = specs as semantic memory
@@ -27,12 +29,14 @@
 ## Recording Options
 
 ### Option A: Full Production (Recommended)
+
 **What**: Split-screen recording with AI chat + terminal  
 **Tools**: OBS Studio (free) or Loom  
 **Time**: 2-3 hours (setup + recording + editing)  
 **Impact**: ⭐⭐⭐⭐⭐ Maximum impact
 
 **Setup**:
+
 1. Install OBS Studio or open Loom
 2. Configure split layout (60% AI chat, 40% terminal)
 3. Prepare clean demo-project directory
@@ -41,18 +45,21 @@
 6. Record with voiceover or add later
 
 ### Option B: Screen + Terminal Only (Simpler)
+
 **What**: Single screen showing terminal + editor, typed AI prompts  
 **Tools**: OBS Studio / QuickTime  
 **Time**: 1 hour  
 **Impact**: ⭐⭐⭐⭐ Good, but less "magic"
 
 **Setup**:
+
 1. Terminal + VS Code side-by-side
 2. Type AI prompts as comments or in text file
 3. Show commands AI would run via MCP
 4. Simulate the workflow manually
 
 ### Option C: Slides + Narration (Fastest)
+
 **What**: Slides showing conversation + results  
 **Tools**: Google Slides / Keynote + Loom narration  
 **Time**: 30 minutes  
@@ -63,6 +70,7 @@
 ## Immediate Next Steps (Choose Your Path)
 
 ### Path 1: Record This Week (Option A)
+
 ```bash
 # Day 1: Setup (30 min)
 - Install OBS Studio or sign up for Loom
@@ -84,6 +92,7 @@
 ```
 
 ### Path 2: Delegate/Postpone
+
 - **Delegate**: Share `DEMO-AI-ASSISTED.md` with someone to record
 - **Postpone**: Focus on other launch prep, revisit demos later
 
@@ -92,6 +101,7 @@
 ## Technical Checklist
 
 ### Before Recording
+
 - [ ] Clean terminal (clear history, simple prompt: `user@machine:~/demo-project$`)
 - [ ] Fresh directory: `mkdir ~/demo-project && cd ~/demo-project`
 - [ ] MCP configured in Claude Desktop or GitHub Copilot
@@ -101,6 +111,7 @@
 - [ ] Close distracting apps (notifications off)
 
 ### During Recording
+
 - [ ] Slow, deliberate typing (150-200ms between characters)
 - [ ] Pause 2-3 seconds after each AI response
 - [ ] Keep cursor visible
@@ -108,11 +119,12 @@
 - [ ] If you mess up, pause 5 seconds and restart that scene
 
 ### After Recording
+
 - [ ] Watch full video for issues
 - [ ] Note timestamps for key moments
 - [ ] Add captions at key points
 - [ ] Add intro (0-5s): "LeanSpec + AI Demo"
-- [ ] Add outro (last 5s): "npm install lean-spec" + website
+- [ ] Add outro (last 5s): "npm install harnspec" + website
 
 ---
 
@@ -122,8 +134,8 @@
 # Terminal
 cd ~/demo-project
 npm init -y
-npm install --save-dev lean-spec
-npx lean-spec init  # Choose minimal
+npm install --save-dev harnspec
+npx harnspec init  # Choose minimal
 
 # AI Chat (Claude Desktop or Copilot)
 Ask: "What specs exist in this project?"
@@ -173,12 +185,14 @@ This still shows the workflow, just less "magical".
 ## Success Criteria
 
 **Demo is successful if a viewer can:**
+
 - ✅ Understand that AI manages specs through conversation
 - ✅ See the value of semantic memory ("what did we decide?")
 - ✅ Recognize this is different from traditional CLI tools
 - ✅ Want to try it themselves
 
 **Demo has failed if:**
+
 - ❌ Looks like "just another CLI tool with AI wrapper"
 - ❌ MCP integration isn't clear or seems buggy
 - ❌ Too complex to follow
@@ -189,6 +203,7 @@ This still shows the workflow, just less "magical".
 ## Timeline Suggestion
 
 **Option 1: Full quality (1 week)**
+
 - Day 1: Setup and practice
 - Day 2: Record main video
 - Day 3: Edit and polish
@@ -196,11 +211,13 @@ This still shows the workflow, just less "magical".
 - Day 5: Upload and embed
 
 **Option 2: Quick version (2-3 days)**
+
 - Day 1: Setup and record (Option B - terminal only)
 - Day 2: Quick edit, upload
 - Day 3: Create GIFs
 
 **Option 3: Defer to later phase**
+
 - Focus on Product Hunt text, social posts
 - Record demo after launch based on feedback
 - Use screenshots/terminal commands for now
@@ -210,15 +227,18 @@ This still shows the workflow, just less "magical".
 ## Where to Get Help
 
 **Recording issues:**
+
 - OBS Studio tutorials: YouTube "OBS screen recording setup"
 - Loom is simpler: Just click record
 
 **MCP setup issues:**
-- Check docs: https://modelcontextprotocol.io/
-- Test with: `npx lean-spec mcp` (should start server)
+
+- Check docs: <https://modelcontextprotocol.io/>
+- Test with: `npx harnspec mcp` (should start server)
 - Claude Desktop config: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 **Script questions:**
+
 - Full script is in `DEMO-AI-ASSISTED.md`
 - Voiceover timing provided
 - Feel free to adapt/improvise
@@ -228,6 +248,7 @@ This still shows the workflow, just less "magical".
 ## Ready to Record?
 
 **If yes:**
+
 1. Read through `DEMO-AI-ASSISTED.md` completely
 2. Choose your recording tool (OBS / Loom / QuickTime)
 3. Set up demo-project directory
@@ -235,6 +256,7 @@ This still shows the workflow, just less "magical".
 5. Hit record!
 
 **If not yet:**
+
 - What's blocking? (Technical setup? Time? Uncertainty?)
 - Can I help with setup, or should we defer?
 

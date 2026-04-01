@@ -20,6 +20,7 @@ updated_at: 2026-01-12T13:42:30.773693Z
 ## Overview
 
 **Problem**: Spec templates are currently plain markdown files with hardcoded structure. This limits flexibility and makes it difficult to:
+
 - Configure which sections require mandatory checkboxes
 - Update templates through UI (web/desktop)
 - Provide context-aware guidance in MCP/CLI tools
@@ -35,7 +36,7 @@ Replace plain markdown templates with JSON-based template definitions:
 
 | Current (Markdown)                      | Proposed (JSON → Markdown)                    |
 | --------------------------------------- | --------------------------------------------- |
-| `.lean-spec/templates/spec-template.md` | `.lean-spec/templates/default.json`           |
+| `.harnspec/templates/spec-template.md` | `.harnspec/templates/default.json`           |
 | Static markdown content                 | JSON schema defining sections + rules         |
 | No validation rules                     | Configurable mandatory sections & checkboxes  |
 | CLI/MCP reads raw markdown              | Tools understand structure & provide guidance |
@@ -99,6 +100,7 @@ Replace plain markdown templates with JSON-based template definitions:
 ### Backward Compatibility
 
 Support both formats during transition:
+
 - **Phase 1**: JSON templates preferred, fallback to `.md`
 - **Phase 2**: Auto-migrate existing `.md` to JSON
 - **Phase 3**: Deprecate plain markdown templates
@@ -108,6 +110,7 @@ Support both formats during transition:
 ### 1. Configurable Mandatory Checkboxes
 
 Validate specs have required checklist items:
+
 ```typescript
 // Validation rule from template config
 if (section.type === "checklist" && section.checkboxRequired) {
@@ -121,9 +124,10 @@ if (section.type === "checklist" && section.checkboxRequired) {
 ### 2. UI-Based Template Updates
 
 In web/desktop UI:
+
 - Visual template editor (drag sections, edit placeholders)
 - Live markdown preview
-- Save changes to `.lean-spec/templates/*.json`
+- Save changes to `.harnspec/templates/*.json`
 - No CLI/terminal needed
 
 ### 3. Context-Aware MCP/CLI
@@ -143,6 +147,7 @@ AI agents get clear guidance on expected structure.
 ### 4. Structured Content Editing in MCP
 
 Instead of plain markdown strings, enable structural edits:
+
 ```json
 // MCP create with structured content
 {
@@ -192,7 +197,7 @@ This provides better AI agent control over spec structure.
 
 ### File Structure
 
-    .lean-spec/
+    .harnspec/
       templates/
         default.json         # Default template (replaces spec-template.md)
         minimal.json         # Minimal template
@@ -205,6 +210,7 @@ This provides better AI agent control over spec structure.
 ## Acceptance Criteria
 
 ### Template System
+
 - [ ] Define and document template JSON schema
 - [ ] Implement `TemplateParser` in Rust core
 - [ ] Implement `MarkdownGenerator` to convert JSON → markdown
@@ -212,11 +218,13 @@ This provides better AI agent control over spec structure.
 - [ ] Migration guide for existing `.md` templates
 
 ### CLI Integration
-- [ ] Update `lean-spec create` to use JSON templates
-- [ ] Add template validation to `lean-spec validate`
+
+- [ ] Update `harnspec create` to use JSON templates
+- [ ] Add template validation to `harnspec validate`
 - [ ] CLI shows helpful section guidance during creation
 
 ### MCP Tool Enhancements
+
 - [ ] Update MCP `create` tool with template structure context
 - [ ] Add MCP `create` structured content mode (sections object)
 - [ ] Add MCP `update-section` tool for granular edits
@@ -225,6 +233,7 @@ This provides better AI agent control over spec structure.
 - [ ] Test with AI agents (Claude, etc.) to verify structure understanding
 
 ### Documentation
+
 - [ ] MCP structured editing guide for AI agents
 - [ ] Examples of structured vs plain markdown mode
 - [ ] Migration path for existing MCP integrations
@@ -245,9 +254,11 @@ This provides better AI agent control over spec structure.
 ## Dependencies
 
 **Depends on:**
+
 - [132-ui-edit-capabilities](../132-ui-edit-capabilities/README.md) - UI editing foundation
 
 **Enables:**
+
 - [160-ui-tokens-validation-display](../160-ui-tokens-validation-display/README.md) - Enhanced validation
 - Template updates via UI (new capability)
 
@@ -256,14 +267,16 @@ This provides better AI agent control over spec structure.
 ### Migration Strategy
 
 Auto-migrate existing markdown templates:
+
 ```bash
-lean-spec migrate-templates
+harnspec migrate-templates
 # Converts .md → .json, preserves in legacy/ folder
 ```
 
 ### MCP Tool Design
 
 Two modes for `create` tool:
+
 1. **Plain Mode** (backward compatible): Single `content` string parameter
 2. **Structured Mode** (new): `sections` object parameter
 
@@ -280,6 +293,7 @@ if args.contains_key("sections") {
 ```
 
 New MCP tool: `update-section`
+
 ```json
 {
   "name": "update-section",
@@ -311,6 +325,7 @@ New MCP tool: `update-section`
 ### UI Template Editor (Future)
 
 JSON editing in Phase 1, visual editor in Phase 2:
+
 - Monaco editor for JSON
 - Section drag-and-drop reordering
 - Live markdown preview

@@ -13,7 +13,7 @@ pub fn run(
     name: Option<&str>,
     output_format: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let config_dir = Path::new(".lean-spec");
+    let config_dir = Path::new(".harnspec");
     let templates_dir = config_dir.join("templates");
 
     match action {
@@ -39,7 +39,7 @@ pub fn run(
 fn list_templates(templates_dir: &Path, output_format: &str) -> Result<(), Box<dyn Error>> {
     if !templates_dir.exists() {
         println!("{}", "No templates directory found.".yellow());
-        println!("Run: {}", "lean-spec init".cyan());
+        println!("Run: {}", "harnspec init".cyan());
         return Ok(());
     }
 
@@ -98,7 +98,7 @@ fn list_templates(templates_dir: &Path, output_format: &str) -> Result<(), Box<d
     println!();
     println!(
         "Use templates with: {}",
-        "lean-spec create <name> --template=<template-name>".dimmed()
+        "harnspec create <name> --template=<template-name>".dimmed()
     );
     println!();
 
@@ -183,7 +183,7 @@ _Additional context, decisions, and learnings._
     println!("  Edit: {}", template_file.display().to_string().dimmed());
     println!(
         "  Use with: {}",
-        format!("lean-spec create <spec-name> --template={}", name).dimmed()
+        format!("harnspec create <spec-name> --template={}", name).dimmed()
     );
 
     Ok(())
